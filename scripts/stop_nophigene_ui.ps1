@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$ContainerName = "nophigene-drd4-analysis-ui"
+    [string]$ContainerName = "nophigene-ui"
 )
 
 $ErrorActionPreference = "Stop"

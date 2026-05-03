@@ -1,8 +1,8 @@
 [CmdletBinding()]
 param(
     [int]$Port = 8000,
-    [string]$ImageName = "nophigene-drd4-analysis:latest",
-    [string]$ContainerName = "nophigene-drd4-analysis-ui",
+    [string]$ImageName = "nophigene:latest",
+    [string]$ContainerName = "nophigene-ui",
     [switch]$SkipBuild,
     [switch]$NoOpenBrowser,
     [switch]$DryRun

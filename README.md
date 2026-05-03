@@ -1,4 +1,4 @@
-# nophigene-drd4-analysis
+# nophigene
 
 Local-first DRD4 analysis workbench with an optional Docker path.
 
@@ -213,7 +213,7 @@ That should materially reduce Docker build context size and image churn.
 ### Build the Docker image manually
 
 ```bash
-docker build -t nophigene-drd4-analysis:latest .
+docker build -t nophigene:latest .
 ```
 
 ### Run Docker manually
@@ -223,7 +223,7 @@ docker run --rm -it \
   -p 8000:8000 \
   -v "${PWD}/data":/home/appuser/app/data \
   -v "${PWD}/results":/home/appuser/app/results \
-  nophigene-drd4-analysis:latest
+  nophigene:latest
 ```
 
 Then open:
