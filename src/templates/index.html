@@ -2103,7 +2103,7 @@
         <span class="overview-badge">One row per observed variant</span>
         <h2 class="architecture-title">Central Analysis Database</h2>
         <p class="overview-copy">
-          This table reads <code>{{ general_database.path }}</code> directly from the generated results folder. Each row is one observed variant within an analyzed gene, with locus, allele change, VCF source quality, curated biological context, and methylation beta summaries captured after a run.
+          This table reads <code>{{ general_database.path }}</code> directly from the generated results folder. Each row is one observed sample genotype call within an analyzed gene, with locus, site definition, decoded GT, VCF call quality, curated biological context, and methylation beta summaries captured after a run.
         </p>
 
         <div class="metrics database-actions">
@@ -2346,7 +2346,7 @@
               <div class="diagram-arrow" aria-hidden="true">↓</div>
               <div class="diagram-node">
                 <strong>Analysis core</strong>
-                <span><code>src/analysis.py</code> loads PASS variants, processes IDAT methylation data, applies gene-specific manifest subsets, and builds the previews.</span>
+                <span><code>src/analysis.py</code> loads regional VCF calls, decodes sample GT and call quality, processes IDAT methylation data, applies gene-specific manifest subsets, and builds the previews.</span>
               </div>
               <div class="diagram-arrow" aria-hidden="true">↓</div>
               <div class="diagram-node-row">
@@ -2583,7 +2583,7 @@
                       <span>Overwrite gene variant rows in general database</span>
                     </label>
                     <p class="hint">
-                      The central database stores one row per observed variant in
+                      The central database stores one row per observed sample genotype call in
                       <code>results/general_gene_analysis_database.csv</code>. Leave this unchecked to keep existing
                       variant rows for the gene; check it to replace that gene's rows after this run completes.
                     </p>
@@ -2672,7 +2672,7 @@
                 {% if result %}
                 <div class="metrics loading-hideable">
                   <article class="metric">
-                    <span>PASS variants</span>
+                    <span>VCF calls</span>
                     <strong>{{ result.variant_count }}</strong>
                   </article>
                   <article class="metric">
@@ -2759,7 +2759,7 @@
                               <div class="expandable-copy">
                                 <span class="insight-kicker">Sample-linked variants</span>
                                 <h4>Exact variant links in this sample</h4>
-                                <p>A compact variant-by-variant table showing the label, allele change, and the most specific bundled link available for each visible sample result.</p>
+                                <p>A compact variant-by-variant table showing the label, site definition, decoded sample genotype, QC confidence, and the most specific bundled link available for each visible sample result.</p>
                               </div>
                             </summary>
                             <div class="expandable-body">
@@ -2768,7 +2768,12 @@
                                   <thead>
                                     <tr>
                                       <th>Variant label</th>
-                                      <th>Change</th>
+                                      <th>Site definition</th>
+                                      <th>Genotype</th>
+                                      <th>Zygosity</th>
+                                      <th>ALT dosage</th>
+                                      <th>Confidence</th>
+                                      <th>QC flags</th>
                                       <th>Linked to</th>
                                     </tr>
                                   </thead>
@@ -2777,6 +2782,11 @@
                                     <tr>
                                       <td>{{ row.variant_label }}</td>
                                       <td>{{ row.change }}</td>
+                                      <td>{{ row.genotype }}</td>
+                                      <td>{{ row.zygosity }}</td>
+                                      <td>{{ row.allele_dosage }}</td>
+                                      <td>{{ row.confidence_score }}</td>
+                                      <td>{{ row.qc_flags | join(", ") if row.qc_flags else "None" }}</td>
                                       <td>{{ row.linked_to }}</td>
                                     </tr>
                                     {% endfor %}
@@ -2888,7 +2898,7 @@
                               </div>
                               <div class="badge-row">
                                 <span class="muted-badge">Matched records: {{ result.variant_interpretations.matched_records | length }}</span>
-                                <span class="muted-badge">Unclassified PASS variants: {{ result.variant_interpretations.unclassified_variant_count }}</span>
+                                <span class="muted-badge">Unclassified VCF calls: {{ result.variant_interpretations.unclassified_variant_count }}</span>
                                 <span class="muted-badge">Promoter included: {{ "Yes" if result.variant_interpretations.promoter_analysis.included else "No" }}</span>
                                 <span class="muted-badge">Gene included: {{ "Yes" if result.variant_interpretations.gene_analysis.included else "No" }}</span>
                               </div>
@@ -3172,7 +3182,7 @@
                       <div class="viewer-scroll">
                         <div class="table-pagination">
                           <span class="subtle" data-variant-raw-summary>
-                            Showing 1-{{ result.variant_rows | length if (result.variant_rows | length) < result.variant_raw_page_size else result.variant_raw_page_size }} of {{ result.variant_rows | length }} PASS variants
+                            Showing 1-{{ result.variant_rows | length if (result.variant_rows | length) < result.variant_raw_page_size else result.variant_raw_page_size }} of {{ result.variant_rows | length }} VCF calls
                           </span>
                           <div class="table-pagination-actions">
                             <button type="button" data-variant-raw-prev disabled>Previous page</button>
@@ -3451,6 +3461,20 @@
                   </summary>
                   <div class="predictive-card-body">
                     <p>{{ result.predictive_theses.variant_summary }}</p>
+                    {% if result.predictive_theses.phenotype_prediction %}
+                    <div class="predictive-empty">
+                      <strong>Phenotype-level prediction:</strong>
+                      {{ result.predictive_theses.phenotype_prediction.phenotype_prediction }}
+                      <br>
+                      <strong>Confidence:</strong> {{ result.predictive_theses.phenotype_prediction.confidence }}
+                      {% if result.predictive_theses.phenotype_prediction.evidence_summary %}
+                      <br><strong>Evidence:</strong> {{ result.predictive_theses.phenotype_prediction.evidence_summary }}
+                      {% endif %}
+                      {% if result.predictive_theses.phenotype_prediction.uncertainty_summary %}
+                      <br><strong>Uncertainty:</strong> {{ result.predictive_theses.phenotype_prediction.uncertainty_summary }}
+                      {% endif %}
+                    </div>
+                    {% endif %}
 
                     {% if result.predictive_theses.variant_prediction_rows %}
                     <div class="table-shell predictive-table-shell">
@@ -3458,18 +3482,28 @@
                         <thead>
                           <tr>
                             <th>Observed signal</th>
+                            <th>Genotype</th>
+                            <th>Zygosity</th>
+                            <th>ALT dosage</th>
+                            <th>Confidence</th>
                             <th>Source</th>
                             <th>Prediction</th>
                             <th>Research focus</th>
+                            <th>Confidence explanation</th>
                           </tr>
                         </thead>
                         <tbody>
                           {% for row in result.predictive_theses.variant_prediction_rows %}
                           <tr>
                             <td>{{ row.observed_signal or "n/a" }}</td>
+                            <td>{{ row.genotype or "n/a" }}</td>
+                            <td>{{ row.zygosity or "n/a" }}</td>
+                            <td>{{ row.allele_dosage or "n/a" }}</td>
+                            <td>{{ row.confidence or "n/a" }}</td>
                             <td>{{ row.source or "n/a" }}</td>
                             <td>{{ row.prediction or "n/a" }}</td>
                             <td>{{ row.research_focus or "Research context from the bundled gene database." }}</td>
+                            <td>{{ row.confidence_explanation or "n/a" }}</td>
                           </tr>
                           {% endfor %}
                         </tbody>
@@ -3673,7 +3707,7 @@
       };
       const analysisLoadingSteps = [
         { threshold: 0, label: "Preparing analysis workspace", note: "Result Viewer is tracking progress" },
-        { threshold: 24, label: "Calling selected-gene variants", note: "VCF signals are being filtered to PASS loci" },
+        { threshold: 24, label: "Calling selected-gene variants", note: "VCF GT, dosage, and call quality are being decoded" },
         { threshold: 52, label: "Processing methylation intensities", note: "Paired IDAT channels are being converted to beta values" },
         { threshold: 78, label: "Joining interpretation context", note: "Biological and clinical context is being assembled" },
         { threshold: 94, label: "Finalizing previews", note: "Preparing the nested result tabs" }
@@ -3982,7 +4016,7 @@
         variantRawTable.innerHTML = renderPreviewTable(pageRows);
 
         if (variantRawSummary) {
-          variantRawSummary.textContent = `Showing ${startIndex + 1}-${endIndex} of ${totalRows} PASS variants`;
+          variantRawSummary.textContent = `Showing ${startIndex + 1}-${endIndex} of ${totalRows} VCF calls`;
         }
         if (variantRawPrevButton) {
           variantRawPrevButton.disabled = startIndex === 0;

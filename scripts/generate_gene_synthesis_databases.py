@@ -53,9 +53,9 @@ BAND_CONTEXT = {
 
 GENE_CONCRETE_VARIANT_PREDICTIONS = {
     "HERC2": (
-        "The variant observed in this sample suggests a HERC2/OCA2 pigmentation prediction rather than a HERC2 protein-disease prediction. "
-        "If the matched marker is rs12913832, the forward-strand G state used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin; the A state supports a darker or brown-eye tendency. "
-        "Linked HERC2 markers should be read as light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2 variants able to modify the visible result."
+        "A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. "
+        "For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. "
+        "Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result."
     ),
     "DRD4": (
         "The variant observed in this sample suggests a dopamine-D4 regulatory or repeat-background thesis: the individual may carry a research-grade modifier of attentional, novelty-seeking, addiction, social-affective, or neuropsychiatric trait studies because DRD4 variation can alter receptor regulation or dopaminergic signaling context. "
@@ -113,8 +113,8 @@ GENE_CONCRETE_VARIANT_PREDICTIONS = {
 VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
     "HERC2": {
         "rs12913832": (
-            "Observed rs12913832 is the strongest concrete prediction in this bundle: in the forward-strand A/G representation used here, G supports a lighter or blue-eye tendency and A supports a darker or brown-eye tendency because this enhancer variant changes HERC2-OCA2 looping and OCA2-driven iris melanin production. "
-            "A single observed allele without full genotype should be treated as directional evidence rather than a final eye-colour call."
+            "GT-decoded rs12913832 is the strongest concrete prediction in this bundle: in the forward-strand A/G representation used here, G dosage supports a lighter or blue-eye tendency and A dosage supports a darker or brown-eye-compatible tendency because this enhancer variant changes HERC2-OCA2 looping and OCA2-driven iris melanin production. "
+            "A/G should reduce certainty relative to G/G, and a small SNP subset should never be treated as a final eye-colour call."
         ),
         "rs1129038": (
             "Observed rs1129038 suggests the sample carries the linked HERC2/OCA2 pigmentation haplotype used in light-versus-dark eye-colour prediction models. "
@@ -154,7 +154,7 @@ VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
         ),
         "rs10305420": (
             "Observed GLP1R rs10305420 suggests a liraglutide and metabolic-trait response-context thesis. "
-            "In the bundled evidence, T-allele homozygosity was associated with optimal glycemic response to liraglutide in one Iranian type 2 diabetes cohort, but this app cannot infer homozygosity from a single REF -> ALT row."
+            "In the bundled evidence, T-allele homozygosity was associated with optimal glycemic response to liraglutide in one Iranian type 2 diabetes cohort, so this app only applies that direction when decoded GT supports the relevant dosage."
         ),
         "rs3765467": (
             "Observed GLP1R rs3765467 / p.R131Q suggests a metabolic disease and GLP-1 receptor agonist response-context thesis. "
@@ -163,6 +163,24 @@ VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
         "rs1042044": (
             "Observed GLP1R rs1042044 suggests a BMI and glucose-insulin trait interaction thesis, especially in developmental or gestational-diabetes exposure cohorts. "
             "This is a metabolic-trait context signal rather than a direct obesity or diabetes prediction."
+        ),
+    },
+    "CDKN2A": {
+        "rs11515": (
+            "Observed CDKN2A rs11515 suggests a common 3'UTR regulatory-context thesis. "
+            "This marker is best interpreted as low-effect melanoma/cancer association and haplotype context, with benign germline ClinVar framing, not as high-penetrance CDKN2A cancer predisposition."
+        ),
+        "rs3088440": (
+            "Observed CDKN2A rs3088440 suggests a common 3'UTR melanoma-risk modifier thesis. "
+            "Some cohorts report melanoma-risk or haplotype associations, but ClinVar submitter summaries frame the germline variant as benign, so the prediction should remain population- and haplotype-contextual."
+        ),
+        "rs3731249": (
+            "Observed CDKN2A rs3731249 / p.Ala148Thr suggests a benign-polymorphism thesis: this sample carries a historically studied p16INK4A missense marker that current ClinVar curation classifies as benign. "
+            "Do not convert this into a CDKN2A cancer-predisposition prediction without other pathogenic evidence."
+        ),
+        "CDKN2A p.Gly101Trp": (
+            "Observed CDKN2A p.Gly101Trp / G101W suggests a rare pathogenic tumor-suppressor thesis. "
+            "If the exact GRCh37 C -> A allele is GT-confirmed, the sample carries a high-priority CDKN2A melanoma and melanoma-pancreatic cancer predisposition marker that warrants external clinical confirmation rather than a stand-alone app diagnosis."
         ),
     },
 }
@@ -174,21 +192,21 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
                 "change": "A>G",
                 "alt_allele": "G",
                 "prediction": (
-                    "This sample's actual rs12913832 DNA change is A -> G, so the observed alternate allele is G. "
-                    "In the forward-strand hg19 A/G representation used by this workbench, G is the light-eye-associated state: it reduces HERC2 enhancer support for OCA2 expression, lowers iris melanin biology, and therefore supports a blue or lighter-eye tendency. "
-                    "Because the current preview uses REF -> ALT and does not infer genotype dosage, treat this as directional allele evidence rather than a complete eye-colour call."
+                    "This sample's rs12913832 site definition is A -> G, and interpretation now depends on the decoded GT dosage rather than ALT presence alone. "
+                    "In the forward-strand hg19 A/G representation used by this workbench, G dosage is the light-eye-associated state: it reduces HERC2 enhancer support for OCA2 expression, lowers iris melanin biology, and therefore directionally supports a blue or lighter-eye tendency. "
+                    "If GT is A/G rather than G/G, reduce certainty and keep brown or hazel plausible."
                 ),
-                "basis": "Observed ALT G at rs12913832, the HERC2/OCA2 enhancer state associated with reduced OCA2 expression and lighter iris pigmentation.",
+                "basis": "GT-confirmed G dosage at rs12913832, the HERC2/OCA2 enhancer state associated with reduced OCA2 expression and lighter iris pigmentation.",
             },
             {
                 "change": "G>A",
                 "alt_allele": "A",
                 "prediction": (
-                    "This sample's actual rs12913832 DNA change is G -> A, so the observed alternate allele is A. "
-                    "In the forward-strand hg19 A/G representation used by this workbench, A is the darker-eye-associated state: it is compatible with stronger enhancer-promoter contact, higher OCA2 expression, and greater iris melanin biology, so it supports a brown or darker-eye tendency. "
-                    "Because the current preview uses REF -> ALT and does not infer genotype dosage, treat this as directional allele evidence rather than a complete eye-colour call."
+                    "This sample's rs12913832 site definition is G -> A, and interpretation now depends on decoded GT dosage rather than ALT presence alone. "
+                    "In the forward-strand hg19 A/G representation used by this workbench, A is the darker-eye-compatible state: it is compatible with stronger enhancer-promoter contact, higher OCA2 expression, and greater iris melanin biology, so A dosage supports a brown or darker-eye tendency. "
+                    "This remains probabilistic because eye colour is polygenic."
                 ),
-                "basis": "Observed ALT A at rs12913832, the HERC2/OCA2 enhancer state associated with stronger OCA2 expression and darker iris pigmentation.",
+                "basis": "GT-confirmed A dosage at rs12913832, the HERC2/OCA2 enhancer state associated with stronger OCA2 expression and darker iris pigmentation.",
             },
         ],
     },
@@ -303,7 +321,7 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
                 "prediction": (
                     "This sample row reports T as the observed alternate allele at GLP1R rs10305420. "
                     "In the bundled liraglutide pharmacogenetic study, T-allele homozygosity was associated with optimal glycemic response in an Iranian type 2 diabetes cohort. "
-                    "Because this app does not infer homozygosity, treat ALT T as directional response-context evidence rather than a final liraglutide-responder call."
+                    "Only treat the T-homozygous liraglutide-response evidence as applicable when decoded GT supports T/T; heterozygous T dosage remains directional response-context evidence rather than a final responder call."
                 ),
                 "basis": "Observed ALT T at rs10305420, the allele highlighted in local liraglutide-response evidence.",
             },
@@ -330,7 +348,7 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
                 "alt_allele": "G",
                 "prediction": (
                     "This sample row reports G as the observed alternate allele at GLP1R rs3765467. "
-                    "G is the ancestral/reference state in the local Ensembl record, so avoid applying the alternate p.R131Q direction without full genotype and allele-orientation context."
+                    "G is the ancestral/reference state in the local Ensembl record, so avoid applying the p.R131Q direction unless decoded GT and allele orientation support it."
                 ),
                 "basis": "Observed ALT G at rs3765467, interpreted as the contrast state to the p.R131Q-focused evidence.",
             },
@@ -352,6 +370,41 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
                     "C is the ancestral/reference state in the local Ensembl record; keep the sample interpretation at general GLP1R metabolic context unless genotype dosage supports a carrier-state thesis."
                 ),
                 "basis": "Observed ALT C at rs1042044, interpreted as the contrast state to carrier-state EPOCH evidence.",
+            },
+        ],
+    },
+    "CDKN2A": {
+        "rs3088440": [
+            {
+                "change": "G>A",
+                "alt_allele": "A",
+                "prediction": (
+                    "This sample row reports A as the observed alternate allele at CDKN2A rs3088440 in the hg19 forward-strand VCF representation. "
+                    "The same marker is often described as 540C>T or c.*69C>T in transcript-oriented literature; interpret A dosage as common 3'UTR regulatory and melanoma-association context, not as a pathogenic CDKN2A finding."
+                ),
+                "basis": "Observed ALT A at rs3088440, a common CDKN2A 3'UTR marker discussed in 9p21 melanoma-risk and haplotype studies.",
+            },
+        ],
+        "rs3731249": [
+            {
+                "change": "C>T",
+                "alt_allele": "T",
+                "prediction": (
+                    "This sample row reports T as the observed alternate allele at CDKN2A rs3731249 / p.Ala148Thr. "
+                    "Current ClinVar curation classifies p.Ala148Thr as benign, so the concrete prediction is benign-polymorphism context rather than inherited CDKN2A cancer predisposition."
+                ),
+                "basis": "Observed ALT T at rs3731249, interpreted through ClinVar benign curation for CDKN2A p.Ala148Thr.",
+            },
+        ],
+        "CDKN2A p.Gly101Trp": [
+            {
+                "change": "C>A",
+                "alt_allele": "A",
+                "prediction": (
+                    "This sample row reports A as the observed alternate allele at chr9:21,971,057, the hg19 forward-strand representation of CDKN2A c.301G>T / p.Gly101Trp. "
+                    "GT-confirmed A dosage is a rare pathogenic G101W signal in the local bundle, so the thesis should escalate to external clinical confirmation and genetics review while avoiding a diagnosis from this app alone."
+                ),
+                "basis": "Exact GRCh37 C -> A match for CDKN2A p.Gly101Trp / G101W, a ClinVar pathogenic melanoma and melanoma-pancreatic cancer marker.",
             },
         ],
     },
@@ -519,8 +572,8 @@ def _concrete_variant_prediction_for_gene(gene_name: str) -> str:
     return GENE_CONCRETE_VARIANT_PREDICTIONS.get(
         gene_name,
         (
-            f"The variant observed in this sample suggests a {gene_name} gene-specific research thesis. "
-            "Interpret the result through the bundled gene context and do not treat it as a deterministic clinical prediction."
+            f"A GT-confirmed non-reference genotype in this sample suggests a {gene_name} gene-specific research thesis. "
+            "Interpret the result through decoded genotype dosage, call QC, and the bundled gene context; do not treat it as a deterministic clinical prediction."
         ),
     )
 
@@ -555,9 +608,9 @@ def _format_change_display(change: str) -> str:
 def _build_sample_change_template(gene_name: str, display_name: str) -> str:
     """Return the generic sample-change template for one variant rule."""
     return _clean_text(
-        f"This sample matched {display_name} with the actual DNA change {{change}}. "
-        f"Anchor the {gene_name} prediction to that observed REF -> ALT result instead of treating the variant as only a theoretical marker. "
-        "The current preview does not infer zygosity or allele dose, so dosage-specific conclusions require genotype fields."
+        f"This sample matched {display_name} at site definition {{change}} with GT {{gt_raw}} decoded as {{genotype}} ({{zygosity}}). "
+        f"Anchor the {gene_name} prediction to genotype dosage {{allele_dosage}} rather than REF -> ALT presence alone. "
+        "Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain."
     )
 
 
@@ -605,7 +658,7 @@ def _build_variant_prediction_rules(
         record_prediction = _variant_prediction_override(gene_name, record)
         if not record_prediction:
             record_prediction = _clean_text(
-                f"Observed {display_name} suggests this sample carries the {gene_name} prediction context described by the gene-level thesis. "
+                f"GT-confirmed {display_name} dosage suggests this sample carries the {gene_name} prediction context described by the gene-level thesis. "
                 f"{concrete_variant_prediction} This specific marker is curated as {common_name or 'a gene-specific research marker'}. "
                 f"{record.get('clinical_interpretation', '')}"
             )
@@ -754,7 +807,7 @@ def build_synthesis_database(knowledge_base: dict[str, Any]) -> dict[str, Any]:
             "One base case matches when a promoter or gene-body variant is visible in the current sample. "
             "Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, "
             "or the all-numeric mean beta resolves to low, medium, or high methylation. "
-            "Variant prediction rules also receive the actual sample REF -> ALT change; curated allele-change rules take precedence when the observed ALT allele or exact change has a known direction."
+            "Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage."
         ),
         "disclaimer": (
             "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. "

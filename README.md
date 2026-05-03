@@ -186,6 +186,12 @@ Example:
 - requested report: `results/drd4_report.html`
 - generated methylation file: `results/drd4_report_methylation.csv`
 
+## Genotype-aware variant interpretation
+
+The variant layer decodes sample-level VCF `GT` before making any phenotype-oriented statement. `REF` and `ALT` are kept as the site definition, while the sample genotype is reported separately as decoded alleles, zygosity, ALT dosage, call-quality flags, and confidence.
+
+See [docs/genotype-aware-variant-analysis.md](/C:/Users/Mewxy/Desktop/YouTopy/NophiGene/nophigene-drd4-analysis/docs/genotype-aware-variant-analysis.md:1) for the design note explaining why `GT` is authoritative, why `INFO/AF`, `INFO/AC`, and `INFO/AN` are not substitutes for sample genotype, and why phenotype predictions use dosage plus QC uncertainty.
+
 ## Docker is now secondary
 
 Docker still works, but it is no longer the recommended local default.

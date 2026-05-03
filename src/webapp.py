@@ -582,21 +582,30 @@ def _prepare_methylation_preview_table(df: pd.DataFrame) -> pd.DataFrame:
 def _serialize_table_rows(df: pd.DataFrame) -> list[dict[str, Any]]:
     """Convert dataframe rows into JSON-safe dictionaries for client-side pagination."""
     serialized_rows: list[dict[str, Any]] = []
+
+    def _serialize_value(value: Any) -> Any:
+        if isinstance(value, (list, tuple, set)):
+            return [_serialize_value(item) for item in value]
+        if isinstance(value, dict):
+            return {str(key): _serialize_value(item) for key, item in value.items()}
+        if isinstance(value, (bytes, bytearray)):
+            return value.decode("utf-8", errors="replace")
+        if hasattr(value, "item"):
+            try:
+                return value.item()
+            except Exception:
+                return value
+        try:
+            if pd.isna(value):
+                return None
+        except (TypeError, ValueError):
+            return value
+        return value
+
     for record in df.to_dict(orient="records"):
         serialized_record: dict[str, Any] = {}
         for key, value in record.items():
-            if pd.isna(value):
-                serialized_value = None
-            elif isinstance(value, (bytes, bytearray)):
-                serialized_value = value.decode("utf-8", errors="replace")
-            elif hasattr(value, "item"):
-                try:
-                    serialized_value = value.item()
-                except Exception:
-                    serialized_value = value
-            else:
-                serialized_value = value
-            serialized_record[str(key)] = serialized_value
+            serialized_record[str(key)] = _serialize_value(value)
         serialized_rows.append(serialized_record)
     return serialized_rows
 

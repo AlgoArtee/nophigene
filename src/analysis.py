@@ -13,6 +13,7 @@ Usage examples:
 from __future__ import annotations
 
 import argparse
+import gzip
 import html
 import json
 import logging
@@ -65,16 +66,26 @@ SYNTHESIS_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_synthe
 GENERAL_ANALYSIS_DATABASE_PATH = PROJECT_ROOT / "results" / "general_gene_analysis_database.csv"
 GENERAL_ANALYSIS_DATABASE_COLUMNS = [
     "gene",
+    "sample",
     "variant key",
     "observed gene variant",
     "gene variant label",
     "change",
+    "genotype",
+    "zygosity",
+    "allele dosage",
     "chromosome",
     "position",
     "variant location",
     "gene location",
     "source",
     "(VCF) quality (qual)",
+    "VCF filter",
+    "VCF depth (DP)",
+    "VCF allele depths (AD)",
+    "VCF genotype quality (GQ)",
+    "genotype confidence",
+    "genotype QC flags",
     "matched curated marker",
     "variant interpretation scope",
     "curated biological significance",
@@ -84,6 +95,49 @@ GENERAL_ANALYSIS_DATABASE_COLUMNS = [
     "mean beta whitelist",
     "mean beta related to gene",
     "mean beta on found probes in the area (numerical rows)",
+]
+
+
+@dataclass(frozen=True)
+class GenotypeQCConfig:
+    """Configurable thresholds for sample-level VCF genotype confidence."""
+
+    min_depth: int = 10
+    low_depth: int = 20
+    min_gq: float = 20.0
+    min_qual: float = 20.0
+    heterozygous_balance_mild: float = 0.30
+    heterozygous_balance_severe: float = 0.15
+    homozygous_contamination_fraction: float = 0.10
+    dp_ad_mismatch_fraction: float = 0.20
+    min_pl_delta: float = 20.0
+    min_gp_called_probability: float = 0.80
+    min_gp_probability_margin: float = 0.20
+
+
+DEFAULT_GENOTYPE_QC_CONFIG = GenotypeQCConfig()
+GENOTYPE_OUTPUT_COLUMNS = [
+    "sample",
+    "gt_raw",
+    "phased",
+    "genotype",
+    "genotype_alleles",
+    "zygosity",
+    "allele_dosage_per_alt",
+    "filter_status",
+    "dp",
+    "ad",
+    "sample_af",
+    "sample_af_source",
+    "gq",
+    "pl_or_gp_summary",
+    "sb",
+    "f1r2",
+    "f2r1",
+    "strand_bias_summary",
+    "qc_flags",
+    "confidence_score",
+    "confidence_explanation",
 ]
 
 # Configure the root logger once so both CLI and web runs stream progress.
@@ -151,7 +205,7 @@ class AnalysisResult:
     Attributes
     ----------
     variants : pd.DataFrame
-        Regional PASS variants loaded from the source VCF.
+        Regional VCF sample calls loaded from the source VCF with decoded GT.
     methylation : pd.DataFrame
         Probe-level methylation table after joining with the curated DRD4
         manifest subset.
@@ -173,8 +227,8 @@ class AnalysisResult:
     idat_base : Path
         Input IDAT prefix used during execution.
     variant_interpretations : dict[str, Any]
-        Curated DRD4 variant interpretations matched against the loaded PASS
-        variants using the local interpretation database.
+        Curated variant interpretations matched against loaded VCF calls using
+        sample-level GT plus the local interpretation database.
     methylation_insights : dict[str, Any]
         Gene-level methylation interpretation assembled from the current probe
         table plus the local interpretation database.
@@ -385,6 +439,679 @@ def _decode_scalar(value: Any) -> Any:
     return value
 
 
+def _is_missing_value(value: Any) -> bool:
+    """Return true for scalar missing values without treating lists as ambiguous."""
+    if value is None:
+        return True
+    if isinstance(value, (list, tuple, dict, set)):
+        return False
+    try:
+        return bool(pd.isna(value))
+    except (TypeError, ValueError):
+        return False
+
+
+def _clean_vcf_text(value: Any) -> str:
+    """Convert VCF-ish scalar values into clean display text."""
+    if _is_missing_value(value):
+        return ""
+    decoded = _decode_scalar(value)
+    return str(decoded).strip()
+
+
+def _as_clean_list(value: Any) -> list[Any]:
+    """Convert scalar/list/array values into a clean Python list."""
+    if _is_missing_value(value):
+        return []
+    if hasattr(value, "tolist"):
+        value = value.tolist()
+    if isinstance(value, (list, tuple)):
+        return [item for item in value if not _is_missing_value(item)]
+    text = _clean_vcf_text(value)
+    if not text or text == ".":
+        return []
+    return [part.strip() for part in text.split(",") if part.strip() and part.strip() != "."]
+
+
+def _safe_float(value: Any) -> float | None:
+    """Parse a VCF scalar as a float when possible."""
+    if _is_missing_value(value):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        text = _clean_vcf_text(value)
+        if not text or text == ".":
+            return None
+        try:
+            return float(text)
+        except ValueError:
+            return None
+
+
+def _safe_int(value: Any) -> int | None:
+    """Parse a VCF scalar as an integer when possible."""
+    parsed = _safe_float(value)
+    if parsed is None:
+        return None
+    return int(parsed)
+
+
+def _parse_numeric_list(value: Any, *, as_int: bool = False) -> list[float | int]:
+    """Parse comma-separated or array-valued FORMAT fields."""
+    parsed: list[float | int] = []
+    for item in _as_clean_list(value):
+        number = _safe_float(item)
+        if number is None:
+            continue
+        parsed.append(int(number) if as_int else number)
+    return parsed
+
+
+def _normalize_alt_alleles(value: Any) -> list[str]:
+    """Return non-empty ALT alleles from a VCF ALT field."""
+    alleles: list[str] = []
+    for allele in _as_clean_list(value):
+        text = _clean_vcf_text(allele).upper()
+        if not text or text in {".", "NAN", "NONE"}:
+            continue
+        alleles.append(text)
+    return alleles
+
+
+def _format_alt_alleles(alt_alleles: list[str]) -> str:
+    """Render ALT alleles as a stable VCF-style string."""
+    return ",".join(alt_alleles)
+
+
+def _format_gt_from_codes(codes: list[int | None], *, phased: bool) -> str:
+    """Render numeric genotype codes as a VCF GT string."""
+    separator = "|" if phased else "/"
+    rendered = ["." if code is None or int(code) < 0 else str(int(code)) for code in codes]
+    return separator.join(rendered) if rendered else "./."
+
+
+def _parse_gt_raw(gt_raw: Any) -> tuple[list[int | None], bool, str]:
+    """Parse phased or unphased VCF GT text into allele codes."""
+    text = _clean_vcf_text(gt_raw)
+    if not text:
+        return [], False, ""
+    phased = "|" in text
+    separator = "|" if phased else "/"
+    parts = text.replace("|", separator).replace("/", separator).split(separator)
+    codes: list[int | None] = []
+    for part in parts:
+        cleaned = part.strip()
+        if cleaned in {"", "."}:
+            codes.append(None)
+            continue
+        try:
+            codes.append(int(cleaned))
+        except ValueError:
+            codes.append(None)
+    return codes, phased, text
+
+
+def _extract_gt_codes(row: pd.Series | dict[str, Any]) -> tuple[list[int | None], bool, str]:
+    """Read GT from text or numeric-code columns and preserve phasing."""
+    gt_raw = row.get("gt_raw") if hasattr(row, "get") else None
+    if _clean_vcf_text(gt_raw):
+        return _parse_gt_raw(gt_raw)
+
+    gt_raw = row.get("GT") if hasattr(row, "get") else None
+    if _clean_vcf_text(gt_raw):
+        return _parse_gt_raw(gt_raw)
+
+    for key in ("gt_codes", "genotype_codes"):
+        codes_value = row.get(key) if hasattr(row, "get") else None
+        codes = _as_clean_list(codes_value)
+        if not codes:
+            continue
+        parsed_codes: list[int | None] = []
+        for code in codes:
+            if _clean_vcf_text(code) in {"", "."}:
+                parsed_codes.append(None)
+                continue
+            parsed_codes.append(_safe_int(code))
+        phased = bool(row.get("phased", False)) if hasattr(row, "get") else False
+        return parsed_codes, phased, _format_gt_from_codes(parsed_codes, phased=phased)
+
+    return [], False, ""
+
+
+def _genotype_allele_label(code: int | None, ref: str, alt_alleles: list[str]) -> str:
+    """Map a numeric GT allele code back to REF/ALT sequence text."""
+    if code is None or code < 0:
+        return "."
+    if code == 0:
+        return ref
+    alt_index = code - 1
+    if 0 <= alt_index < len(alt_alleles):
+        return alt_alleles[alt_index]
+    return f"?{code}"
+
+
+def _classify_zygosity(codes: list[int | None]) -> str:
+    """Classify sample genotype state from decoded GT allele codes."""
+    if not codes or any(code is None or code < 0 for code in codes):
+        return "missing"
+    if len(codes) != 2:
+        if len(codes) == 1:
+            return "hemizygous_reference" if codes[0] == 0 else "hemizygous_alternate"
+        return "non_diploid"
+    first, second = codes
+    if first == 0 and second == 0:
+        return "homozygous_reference"
+    if first == second and first > 0:
+        return "homozygous_alternate"
+    if first != second and (first == 0 or second == 0):
+        return "heterozygous"
+    return "compound_heterozygous"
+
+
+def _format_genotype_display(alleles: list[str], *, phased: bool) -> str:
+    """Render decoded alleles using the original GT phasing delimiter."""
+    if not alleles:
+        return "Unavailable"
+    separator = "|" if phased else "/"
+    return separator.join(alleles)
+
+
+def _allele_dosage_per_alt(codes: list[int | None], alt_alleles: list[str]) -> dict[str, int]:
+    """Count how many copies of each ALT allele are present in the sample GT."""
+    dosage = {allele: 0 for allele in alt_alleles}
+    for code in codes:
+        if code is None or code <= 0:
+            continue
+        alt_index = code - 1
+        if 0 <= alt_index < len(alt_alleles):
+            dosage[alt_alleles[alt_index]] += 1
+    return dosage
+
+
+def _format_allele_dosage(dosage: dict[str, int] | Any) -> str:
+    """Render ALT dosage dicts in a compact table-friendly form."""
+    if not isinstance(dosage, dict) or not dosage:
+        return "Unavailable"
+    return "; ".join(f"{allele}:{count}" for allele, count in dosage.items())
+
+
+def _genotype_has_alt_dosage(genotype: dict[str, Any] | pd.Series | dict[str, Any]) -> bool:
+    """Return whether decoded GT contains at least one ALT allele."""
+    dosage = genotype.get("allele_dosage_per_alt", {}) if hasattr(genotype, "get") else {}
+    return isinstance(dosage, dict) and any(int(count or 0) > 0 for count in dosage.values())
+
+
+def _format_filter_status(row: pd.Series | dict[str, Any]) -> str:
+    """Render VCF FILTER status while keeping PASS distinct from unknown."""
+    raw_status = row.get("filter_status") if hasattr(row, "get") else None
+    status_text = _clean_vcf_text(raw_status)
+    if status_text:
+        return "PASS" if status_text in {".", "PASS", "True", "true"} else status_text
+    if hasattr(row, "get") and "filter_pass" in row:
+        return "PASS" if bool(row.get("filter_pass")) else "Non-PASS"
+    return "Unknown"
+
+
+def _diploid_pl_order(max_allele_index: int) -> list[tuple[int, int]]:
+    """Return the VCF-standard diploid PL/GP genotype ordering."""
+    order: list[tuple[int, int]] = []
+    for second in range(max_allele_index + 1):
+        for first in range(second + 1):
+            order.append((first, second))
+    return order
+
+
+def _called_diploid_index(codes: list[int | None], max_allele_index: int) -> int | None:
+    """Return the PL/GP index for the called diploid genotype."""
+    if len(codes) != 2 or any(code is None or code < 0 for code in codes):
+        return None
+    ordered_call = tuple(sorted(int(code) for code in codes))
+    for index, genotype in enumerate(_diploid_pl_order(max_allele_index)):
+        if genotype == ordered_call:
+            return index
+    return None
+
+
+def _summarize_likelihood_support(
+    *,
+    codes: list[int | None],
+    alt_alleles: list[str],
+    pl_values: list[float | int],
+    gp_values: list[float | int],
+    qc_flags: list[str],
+    qc_config: GenotypeQCConfig,
+) -> str:
+    """Summarize PL or GP support for the reported sample genotype."""
+    max_allele_index = len(alt_alleles)
+    called_index = _called_diploid_index(codes, max_allele_index)
+    if called_index is None:
+        return "Unavailable"
+
+    if pl_values and called_index < len(pl_values):
+        called_pl = float(pl_values[called_index])
+        other_pl = [float(value) for index, value in enumerate(pl_values) if index != called_index]
+        best_other = min(other_pl) if other_pl else None
+        if best_other is None:
+            return f"PL called={called_pl:g}; no alternate likelihood available"
+        delta = best_other - called_pl
+        if delta < qc_config.min_pl_delta:
+            qc_flags.append("pl_weak_support")
+        return f"PL called={called_pl:g}; next-best delta={delta:g}"
+
+    if gp_values and called_index < len(gp_values):
+        called_gp = float(gp_values[called_index])
+        other_gp = [float(value) for index, value in enumerate(gp_values) if index != called_index]
+        best_other = max(other_gp) if other_gp else None
+        if best_other is None:
+            return f"GP called={called_gp:.3g}; no alternate posterior available"
+        margin = called_gp - best_other
+        if called_gp < qc_config.min_gp_called_probability or margin < qc_config.min_gp_probability_margin:
+            qc_flags.append("gp_weak_support")
+        return f"GP called={called_gp:.3g}; next-best margin={margin:.3g}"
+
+    return "Unavailable"
+
+
+def _compute_sample_af(
+    *,
+    explicit_af: Any,
+    ad_values: list[int | float],
+) -> tuple[float | list[float] | None, str]:
+    """Return sample-level alternate read fraction from FORMAT/AF or AD."""
+    parsed_af = _parse_numeric_list(explicit_af)
+    if parsed_af:
+        if len(parsed_af) == 1:
+            return float(parsed_af[0]), "FORMAT/AF"
+        return [float(value) for value in parsed_af], "FORMAT/AF"
+
+    if len(ad_values) >= 2:
+        total_depth = sum(float(value) for value in ad_values if value is not None)
+        if total_depth > 0:
+            fractions = [round(float(value) / total_depth, 6) for value in ad_values[1:]]
+            return fractions[0] if len(fractions) == 1 else fractions, "AD"
+    return None, ""
+
+
+def _summarize_bias_fields(
+    *,
+    sb_values: list[int | float],
+    f1r2_values: list[int | float],
+    f2r1_values: list[int | float],
+    qc_flags: list[str],
+) -> str:
+    """Summarize strand/orientation evidence when callers provide it."""
+    summaries: list[str] = []
+    if len(sb_values) >= 4:
+        ref_forward, ref_reverse, alt_forward, alt_reverse = [float(value) for value in sb_values[:4]]
+        alt_total = alt_forward + alt_reverse
+        if alt_total > 0:
+            alt_minor_fraction = min(alt_forward, alt_reverse) / alt_total
+            summaries.append(f"SB alt forward/reverse={alt_forward:g}/{alt_reverse:g}")
+            if alt_minor_fraction < 0.10:
+                qc_flags.append("strand_bias_possible")
+        ref_total = ref_forward + ref_reverse
+        if ref_total > 0:
+            summaries.append(f"SB ref forward/reverse={ref_forward:g}/{ref_reverse:g}")
+
+    if f1r2_values and f2r1_values:
+        f1r2_total = sum(float(value) for value in f1r2_values)
+        f2r1_total = sum(float(value) for value in f2r1_values)
+        orientation_total = f1r2_total + f2r1_total
+        if orientation_total > 0:
+            orientation_minor_fraction = min(f1r2_total, f2r1_total) / orientation_total
+            summaries.append(f"orientation F1R2/F2R1={f1r2_total:g}/{f2r1_total:g}")
+            if orientation_minor_fraction < 0.10:
+                qc_flags.append("orientation_bias_possible")
+
+    return "; ".join(summaries) if summaries else "Unavailable"
+
+
+def _sample_af_for_alt(sample_af: float | list[float] | None, alt_index: int) -> float | None:
+    """Return sample AF for one ALT allele index."""
+    if sample_af is None:
+        return None
+    if isinstance(sample_af, list):
+        if 0 <= alt_index < len(sample_af):
+            return float(sample_af[alt_index])
+        return None
+    return float(sample_af) if alt_index == 0 else None
+
+
+def _score_genotype_confidence(
+    *,
+    zygosity: str,
+    gt_raw: str,
+    filter_status: str,
+    qual: float | None,
+    dp: int | None,
+    ad_values: list[int | float],
+    gq: float | None,
+    sample_af: float | list[float] | None,
+    alt_alleles: list[str],
+    allele_dosage: dict[str, int],
+    qc_flags: list[str],
+    qc_config: GenotypeQCConfig,
+) -> tuple[float, str]:
+    """Apply conservative genotype-call QC heuristics and return score + explanation."""
+    score = 1.0
+    notes: list[str] = []
+
+    if "pl_weak_support" in qc_flags:
+        notes.append("PL values do not strongly separate the reported genotype from the next-best genotype.")
+        score -= 0.12
+    if "gp_weak_support" in qc_flags:
+        notes.append("GP values do not strongly support the reported genotype posterior.")
+        score -= 0.12
+    if "strand_bias_possible" in qc_flags:
+        notes.append("SB suggests possible strand imbalance.")
+        score -= 0.08
+    if "orientation_bias_possible" in qc_flags:
+        notes.append("F1R2/F2R1 suggests possible read-orientation imbalance.")
+        score -= 0.08
+
+    if not gt_raw or zygosity == "missing":
+        qc_flags.append("missing_gt")
+        notes.append("GT is missing, so the person's genotype cannot be inferred from REF/ALT.")
+        score -= 0.65
+    if filter_status != "PASS":
+        qc_flags.append("filter_non_pass")
+        notes.append(f"FILTER is {filter_status}, not PASS.")
+        score -= 0.25
+    if qual is not None and qual < qc_config.min_qual:
+        qc_flags.append("low_qual")
+        notes.append(f"QUAL {qual:g} is below the configured {qc_config.min_qual:g} threshold.")
+        score -= 0.15
+    if dp is None:
+        qc_flags.append("missing_dp")
+        notes.append("FORMAT/DP is unavailable.")
+        score -= 0.08
+    elif dp < qc_config.min_depth:
+        qc_flags.append("very_low_dp")
+        notes.append(f"DP {dp} is below the configured minimum depth {qc_config.min_depth}.")
+        score -= 0.30
+    elif dp < qc_config.low_depth:
+        qc_flags.append("low_dp")
+        notes.append(f"DP {dp} is below the preferred depth {qc_config.low_depth}.")
+        score -= 0.10
+    if gq is not None and gq < qc_config.min_gq:
+        qc_flags.append("low_gq")
+        notes.append(f"GQ {gq:g} is below the configured {qc_config.min_gq:g} threshold.")
+        score -= 0.25
+    if gq is None:
+        notes.append("GQ is unavailable, so confidence relies on depth and allele balance.")
+
+    if dp is not None and ad_values:
+        ad_sum = int(sum(float(value) for value in ad_values))
+        allowed_delta = max(2, int(round(dp * qc_config.dp_ad_mismatch_fraction)))
+        if abs(dp - ad_sum) > allowed_delta:
+            qc_flags.append("dp_ad_inconsistent")
+            notes.append(f"DP {dp} differs from sum(AD) {ad_sum}.")
+            score -= 0.08
+
+    if zygosity == "heterozygous":
+        called_alt_indices = [
+            index
+            for index, allele in enumerate(alt_alleles)
+            if int(allele_dosage.get(allele, 0)) > 0
+        ]
+        fractions = [
+            _sample_af_for_alt(sample_af, index)
+            for index in called_alt_indices
+        ]
+        fractions = [fraction for fraction in fractions if fraction is not None]
+        for fraction in fractions:
+            minor_fraction = min(fraction, 1.0 - fraction)
+            if minor_fraction < qc_config.heterozygous_balance_severe:
+                qc_flags.append("heterozygous_allelic_imbalance_severe")
+                notes.append(f"Heterozygous allele balance is severe at alt fraction {fraction:.2f}.")
+                score -= 0.22
+            elif minor_fraction < qc_config.heterozygous_balance_mild:
+                qc_flags.append("heterozygous_allelic_imbalance_mild")
+                notes.append(f"Heterozygous allele balance is mildly imbalanced at alt fraction {fraction:.2f}.")
+                score -= 0.08
+
+    if zygosity in {"homozygous_alternate", "homozygous_reference"} and sample_af is not None:
+        alt_fractions = sample_af if isinstance(sample_af, list) else [sample_af]
+        if zygosity == "homozygous_alternate":
+            called_fractions = [
+                float(alt_fractions[index])
+                for index, allele in enumerate(alt_alleles)
+                if index < len(alt_fractions) and int(allele_dosage.get(allele, 0)) > 0
+            ]
+            if called_fractions and min(called_fractions) < (1.0 - qc_config.homozygous_contamination_fraction):
+                qc_flags.append("homozygous_alt_has_reference_support")
+                notes.append("Homozygous ALT call retains notable reference-read support.")
+                score -= 0.12
+        if zygosity == "homozygous_reference" and max(float(value) for value in alt_fractions) > qc_config.homozygous_contamination_fraction:
+            qc_flags.append("homozygous_ref_has_alt_support")
+            notes.append("Homozygous REF call retains notable alternate-read support.")
+            score -= 0.12
+
+    if zygosity in {"non_diploid", "hemizygous_reference", "hemizygous_alternate"}:
+        qc_flags.append("unexpected_ploidy")
+        notes.append(f"GT ploidy produced {zygosity}; diploid trait rules may not apply directly.")
+        score -= 0.15
+
+    score = max(0.0, min(1.0, round(score, 3)))
+    deduped_flags = _dedupe_text_items(qc_flags)
+    qc_flags[:] = deduped_flags
+
+    if not notes:
+        notes.append("GT, FILTER, depth, allele balance, and available quality fields support this genotype call.")
+    return score, " ".join(notes)
+
+
+def build_canonical_genotype(
+    row: pd.Series | dict[str, Any],
+    *,
+    qc_config: GenotypeQCConfig = DEFAULT_GENOTYPE_QC_CONFIG,
+) -> dict[str, Any]:
+    """Build the canonical sample-level genotype object for one VCF row.
+
+    REF and ALT describe the possible alleles at a site. GT is the authoritative
+    sample-level field used here to decode the person's genotype state.
+    """
+    ref = _clean_vcf_text(row.get("ref") if hasattr(row, "get") else "").upper()
+    alt_alleles = _normalize_alt_alleles(row.get("alt_alleles") if hasattr(row, "get") else None)
+    if not alt_alleles:
+        alt_alleles = _normalize_alt_alleles(row.get("alt") if hasattr(row, "get") else None)
+
+    codes, phased, gt_raw = _extract_gt_codes(row)
+    alleles = [_genotype_allele_label(code, ref, alt_alleles) for code in codes]
+    zygosity = _classify_zygosity(codes)
+    allele_dosage = _allele_dosage_per_alt(codes, alt_alleles)
+
+    ad_values = _parse_numeric_list(row.get("ad") if hasattr(row, "get") else None, as_int=True)
+    dp = _safe_int(row.get("dp") if hasattr(row, "get") else None)
+    gq = _safe_float(row.get("gq") if hasattr(row, "get") else None)
+    qual = _safe_float(row.get("qual") if hasattr(row, "get") else None)
+    sample_af, sample_af_source = _compute_sample_af(
+        explicit_af=row.get("sample_af") if hasattr(row, "get") else None,
+        ad_values=ad_values,
+    )
+
+    qc_flags: list[str] = []
+    sb_values = _parse_numeric_list(row.get("sb") if hasattr(row, "get") else None, as_int=True)
+    f1r2_values = _parse_numeric_list(row.get("f1r2") if hasattr(row, "get") else None, as_int=True)
+    f2r1_values = _parse_numeric_list(row.get("f2r1") if hasattr(row, "get") else None, as_int=True)
+    strand_bias_summary = _summarize_bias_fields(
+        sb_values=sb_values,
+        f1r2_values=f1r2_values,
+        f2r1_values=f2r1_values,
+        qc_flags=qc_flags,
+    )
+    pl_values = _parse_numeric_list(row.get("pl") if hasattr(row, "get") else None)
+    gp_values = _parse_numeric_list(row.get("gp") if hasattr(row, "get") else None)
+    pl_or_gp_summary = _summarize_likelihood_support(
+        codes=codes,
+        alt_alleles=alt_alleles,
+        pl_values=pl_values,
+        gp_values=gp_values,
+        qc_flags=qc_flags,
+        qc_config=qc_config,
+    )
+    filter_status = _format_filter_status(row)
+    confidence_score, confidence_explanation = _score_genotype_confidence(
+        zygosity=zygosity,
+        gt_raw=gt_raw,
+        filter_status=filter_status,
+        qual=qual,
+        dp=dp,
+        ad_values=ad_values,
+        gq=gq,
+        sample_af=sample_af,
+        alt_alleles=alt_alleles,
+        allele_dosage=allele_dosage,
+        qc_flags=qc_flags,
+        qc_config=qc_config,
+    )
+
+    return {
+        "sample": _clean_vcf_text(row.get("sample") if hasattr(row, "get") else ""),
+        "rsid": _format_variant_label(row.get("id") if hasattr(row, "get") else None),
+        "chrom": _clean_vcf_text(row.get("chrom") if hasattr(row, "get") else ""),
+        "pos": row.get("pos") if hasattr(row, "get") else None,
+        "ref": ref,
+        "alt": _format_alt_alleles(alt_alleles),
+        "alt_alleles": alt_alleles,
+        "gt_raw": gt_raw or "./.",
+        "phased": phased,
+        "genotype_alleles": alleles,
+        "genotype": _format_genotype_display(alleles, phased=phased),
+        "zygosity": zygosity,
+        "allele_dosage_per_alt": allele_dosage,
+        "filter_status": filter_status,
+        "qual": qual,
+        "dp": dp,
+        "ad": ad_values,
+        "sample_af": sample_af,
+        "sample_af_source": sample_af_source,
+        "gq": gq,
+        "pl_or_gp_summary": pl_or_gp_summary,
+        "sb": sb_values,
+        "f1r2": f1r2_values,
+        "f2r1": f2r1_values,
+        "strand_bias_summary": strand_bias_summary,
+        "qc_flags": qc_flags,
+        "confidence_score": confidence_score,
+        "confidence_explanation": confidence_explanation,
+    }
+
+
+def _ensure_variant_genotype_annotations(variants: pd.DataFrame) -> pd.DataFrame:
+    """Ensure a variant table contains canonical genotype/QC output columns."""
+    annotated = variants.copy()
+    if annotated.empty:
+        for column in GENOTYPE_OUTPUT_COLUMNS:
+            if column not in annotated.columns:
+                annotated[column] = pd.Series(dtype="object")
+        return annotated
+
+    genotype_rows = [build_canonical_genotype(row) for _, row in annotated.iterrows()]
+    for column in GENOTYPE_OUTPUT_COLUMNS:
+        annotated[column] = [genotype.get(column) for genotype in genotype_rows]
+    return annotated
+
+
+def _open_text_or_gzip(path: str | Path):
+    """Open plain VCF or gzip/bgzip VCF as text."""
+    path_text = str(path)
+    if path_text.lower().endswith(".gz"):
+        return gzip.open(path_text, "rt", encoding="utf-8", errors="replace")
+    return open(path_text, "rt", encoding="utf-8", errors="replace")
+
+
+def _sample_field_lookup_key(
+    *,
+    chrom: Any,
+    pos: Any,
+    ref: Any,
+    alt: Any,
+    sample: Any,
+) -> tuple[str, int, str, str, str]:
+    """Build a stable key for overlaying raw FORMAT/sample fields."""
+    chrom_text = _clean_vcf_text(chrom).removeprefix("chr")
+    pos_value = _safe_int(pos) or 0
+    return (
+        chrom_text,
+        pos_value,
+        _clean_vcf_text(ref).upper(),
+        _clean_vcf_text(alt).upper(),
+        _clean_vcf_text(sample),
+    )
+
+
+def _load_raw_vcf_sample_fields(vcf_path: str, region: str) -> dict[tuple[str, int, str, str, str], dict[str, Any]]:
+    """Read raw FORMAT/sample strings so GT phasing and sample AF fields are preserved."""
+    try:
+        parsed_region = _parse_region_string(region)
+    except AnalysisError:
+        return {}
+
+    target_chrom = str(parsed_region["chrom"]).removeprefix("chr")
+    target_start = int(parsed_region["start"])
+    target_end = int(parsed_region["end"])
+    sample_names: list[str] = []
+    raw_rows: dict[tuple[str, int, str, str, str], dict[str, Any]] = {}
+
+    try:
+        with _open_text_or_gzip(vcf_path) as handle:
+            for line in handle:
+                if not line:
+                    continue
+                if line.startswith("##"):
+                    continue
+                if line.startswith("#CHROM"):
+                    header = line.rstrip("\n").split("\t")
+                    sample_names = header[9:]
+                    continue
+                if line.startswith("#"):
+                    continue
+
+                parts = line.rstrip("\n").split("\t")
+                if len(parts) < 8:
+                    continue
+                chrom, pos_text, raw_id, ref, alt, qual, filter_status, _info = parts[:8]
+                chrom_normalized = chrom.removeprefix("chr")
+                pos = _safe_int(pos_text)
+                if chrom_normalized != target_chrom or pos is None or pos < target_start or pos > target_end:
+                    continue
+                if len(parts) < 10 or not sample_names:
+                    continue
+
+                format_keys = parts[8].split(":")
+                for sample_name, sample_value in zip(sample_names, parts[9:]):
+                    sample_values = sample_value.split(":")
+                    sample_map = dict(zip(format_keys, sample_values))
+                    raw_rows[
+                        _sample_field_lookup_key(
+                            chrom=chrom,
+                            pos=pos,
+                            ref=ref,
+                            alt=alt,
+                            sample=sample_name,
+                        )
+                    ] = {
+                        "id": None if raw_id in {"", "."} else raw_id,
+                        "filter_status": "PASS" if filter_status in {"", ".", "PASS"} else filter_status,
+                        "gt_raw": sample_map.get("GT", "./."),
+                        "ad": sample_map.get("AD"),
+                        "dp": sample_map.get("DP"),
+                        "gq": sample_map.get("GQ"),
+                        "pl": sample_map.get("PL"),
+                        "gp": sample_map.get("GP"),
+                        "sample_af": sample_map.get("AF"),
+                        "sb": sample_map.get("SB"),
+                        "f1r2": sample_map.get("F1R2"),
+                        "f2r1": sample_map.get("F2R1"),
+                    }
+    except OSError:
+        return {}
+
+    return raw_rows
+
+
 def _normalize_lookup_key(value: str) -> str:
     """Canonicalize lookup keys so IDs and coordinate aliases can match reliably."""
     normalized = value.strip().lower().replace(" ", "")
@@ -510,15 +1237,18 @@ def _build_variant_lookup_keys(row: pd.Series) -> set[str]:
     chrom = str(row.get("chrom", "")).strip()
     pos = row.get("pos")
     ref = str(row.get("ref", "") or "").strip().upper()
-    alt = str(row.get("alt", "") or "").strip().upper()
+    alt_alleles = _normalize_alt_alleles(row.get("alt_alleles"))
+    if not alt_alleles:
+        alt_alleles = _normalize_alt_alleles(row.get("alt"))
 
     if chrom and pd.notna(pos):
         chrom = chrom[3:] if chrom.lower().startswith("chr") else chrom
         pos_text = str(int(pos))
         keys.add(_normalize_lookup_key(f"{chrom}:{pos_text}"))
 
-        if ref and alt and ref not in {"NAN", "NONE"} and alt not in {"NAN", "NONE"}:
-            keys.add(_normalize_lookup_key(f"{chrom}:{pos_text}:{ref}>{alt}"))
+        if ref and ref not in {"NAN", "NONE"}:
+            for alt in alt_alleles:
+                keys.add(_normalize_lookup_key(f"{chrom}:{pos_text}:{ref}>{alt}"))
 
     return keys
 
@@ -542,9 +1272,9 @@ def _format_variant_label(value: Any) -> str:
 
 
 def _format_variant_change(ref: Any, alt: Any) -> str:
-    """Render a concise allele-change display for sample result tables."""
-    ref_text = "" if pd.isna(ref) else str(ref).strip()
-    alt_text = "" if pd.isna(alt) else str(alt).strip()
+    """Render the site-level REF -> ALT definition, not the person's genotype."""
+    ref_text = "" if _is_missing_value(ref) else str(ref).strip()
+    alt_text = "" if _is_missing_value(alt) else str(alt).strip()
     if not ref_text and not alt_text:
         return "Unavailable"
     if not ref_text or not alt_text:
@@ -620,7 +1350,7 @@ def annotate_known_variant_ids(
     knowledge_base: dict[str, Any] | None,
 ) -> pd.DataFrame:
     """Fill display-friendly IDs when the curated bundle can name an unlabeled variant."""
-    labeled = variants.copy()
+    labeled = _ensure_variant_genotype_annotations(variants)
     if labeled.empty:
         if "id_source" not in labeled.columns:
             labeled["id_source"] = pd.Series(dtype="object")
@@ -731,13 +1461,35 @@ def _build_observed_variant_summary(
     position = int(row["pos"])
     quality = row.get("qual")
     quality_display = f"{float(quality):.2f}" if pd.notna(quality) else "n/a"
+    genotype = build_canonical_genotype(row)
+    genotype_summary = (
+        f"VCF GT {genotype['gt_raw']} decodes to {genotype['genotype']} "
+        f"({genotype['zygosity']}); ALT dosage { _format_allele_dosage(genotype['allele_dosage_per_alt']) }."
+    )
 
     if matched_record is None:
         return {
             "display": _format_variant_display(row),
             "variant_label": _format_variant_label(row.get("id")),
             "change": _format_variant_change(row.get("ref"), row.get("alt")),
-            "linked_to": f"No curated local {gene_name} link is bundled for this PASS variant yet.",
+            "site_definition": _format_variant_change(row.get("ref"), row.get("alt")),
+            "genotype": genotype["genotype"],
+            "gt_raw": genotype["gt_raw"],
+            "phased": genotype["phased"],
+            "genotype_alleles": genotype["genotype_alleles"],
+            "zygosity": genotype["zygosity"],
+            "allele_dosage_per_alt": genotype["allele_dosage_per_alt"],
+            "allele_dosage": _format_allele_dosage(genotype["allele_dosage_per_alt"]),
+            "filter_status": genotype["filter_status"],
+            "dp": genotype["dp"],
+            "ad": genotype["ad"],
+            "sample_af": genotype["sample_af"],
+            "gq": genotype["gq"],
+            "pl_or_gp_summary": genotype["pl_or_gp_summary"],
+            "qc_flags": genotype["qc_flags"],
+            "confidence_score": genotype["confidence_score"],
+            "confidence_explanation": genotype["confidence_explanation"],
+            "linked_to": f"No curated local {gene_name} link is bundled for this VCF call yet.",
             "position": _format_point(chrom, position),
             "quality": quality_display,
             "matched_variant": None,
@@ -746,7 +1498,7 @@ def _build_observed_variant_summary(
             ),
             "summary": (
                 f"Observed inside the selected {gene_name} search window, but not one of the seeded "
-                f"common {gene_name} promoter or gene variants."
+                f"common {gene_name} promoter or gene variants. {genotype_summary}"
             ),
             "functional_effects": [],
             "associated_conditions": [],
@@ -759,9 +1511,26 @@ def _build_observed_variant_summary(
         "display": _format_variant_display(row),
         "variant_label": _format_variant_label(row.get("id")),
         "change": _format_variant_change(row.get("ref"), row.get("alt")),
+        "site_definition": _format_variant_change(row.get("ref"), row.get("alt")),
+        "genotype": genotype["genotype"],
+        "gt_raw": genotype["gt_raw"],
+        "phased": genotype["phased"],
+        "genotype_alleles": genotype["genotype_alleles"],
+        "zygosity": genotype["zygosity"],
+        "allele_dosage_per_alt": genotype["allele_dosage_per_alt"],
+        "allele_dosage": _format_allele_dosage(genotype["allele_dosage_per_alt"]),
+        "filter_status": genotype["filter_status"],
+        "dp": genotype["dp"],
+        "ad": genotype["ad"],
+        "sample_af": genotype["sample_af"],
+        "gq": genotype["gq"],
+        "pl_or_gp_summary": genotype["pl_or_gp_summary"],
+        "qc_flags": genotype["qc_flags"],
+        "confidence_score": genotype["confidence_score"],
+        "confidence_explanation": genotype["confidence_explanation"],
         "linked_to": _build_specific_variant_link_summary(
             matched_record,
-            fallback=f"No curated local {gene_name} link is bundled for this PASS variant yet.",
+            fallback=f"No curated local {gene_name} link is bundled for this VCF call yet.",
         ),
         "position": _format_point(chrom, position),
         "quality": quality_display,
@@ -769,7 +1538,7 @@ def _build_observed_variant_summary(
         "clinical_significance": matched_record.get(
             "clinical_significance", "Clinical significance not specified."
         ),
-        "summary": matched_record.get("clinical_interpretation", ""),
+        "summary": f"{matched_record.get('clinical_interpretation', '')} {genotype_summary}".strip(),
         "functional_effects": matched_record.get("functional_effects", []),
         "associated_conditions": matched_record.get("associated_conditions", []),
         "research_context": matched_record.get("research_context", []),
@@ -809,7 +1578,7 @@ def _summarize_observed_region_variants(
     gene_name: str,
     limit: int = 12,
 ) -> list[dict[str, Any]]:
-    """Summarize observed PASS variants in a given region for UI display."""
+    """Summarize observed VCF calls in a given region for UI display."""
     observed = variants[
         (variants["chrom"].astype(str).str.removeprefix("chr") == chrom)
         & (variants["pos"] >= start)
@@ -855,12 +1624,12 @@ def _build_region_variant_analysis(
     if included and found_variants:
         analysis_note = (
             f"The current search window overlaps {region_record['label'].lower()} "
-            f"and found {len(found_variants)} PASS variant(s) in the first preview slice."
+            f"and found {len(found_variants)} VCF call(s) in the first preview slice."
         )
     elif included:
         analysis_note = (
             f"The current search window overlaps {region_record['label'].lower()}, "
-            "but no PASS variants from that region were retained in the current preview."
+            "but no VCF calls from that region were retained in the current preview."
         )
     else:
         analysis_note = (
@@ -972,16 +1741,29 @@ def _build_sample_variant_highlights(
     """Summarize the most visible sample-specific variant findings first."""
     if matched_records:
         summary = (
-            f"This sample matched {len(matched_records)} curated {gene_name} research variant(s). "
-            "Those direct sample hits are shown first below."
+            f"This sample matched {len(matched_records)} curated {gene_name} marker site(s). "
+            "Those direct sample hits are shown first below with decoded GT so homozygous-reference, heterozygous, and homozygous-alternate states stay separate."
         )
         items = [
             {
                 "title": record["variant"],
                 "observed_variant": record["observed_variant"],
                 "change": record.get("change", "Unavailable"),
+                "site_definition": record.get("site_definition", record.get("change", "Unavailable")),
+                "genotype": record.get("genotype", "Unavailable"),
+                "gt_raw": record.get("gt_raw", "./."),
+                "zygosity": record.get("zygosity", "missing"),
+                "allele_dosage": record.get("allele_dosage", "Unavailable"),
+                "confidence_score": record.get("confidence_score", 0),
+                "confidence_explanation": record.get("confidence_explanation", ""),
+                "qc_flags": record.get("qc_flags", []),
                 "category": record.get("interpretation_scope", "Research context"),
-                "description": record.get("clinical_interpretation", ""),
+                "description": (
+                    f"{record.get('clinical_interpretation', '')} "
+                    f"Genotype: {record.get('genotype', 'Unavailable')} "
+                    f"({record.get('zygosity', 'missing')}); confidence "
+                    f"{record.get('confidence_score', 0)}."
+                ).strip(),
                 "conditions": record.get("associated_conditions", []),
                 "literature_findings": record.get("literature_findings", []),
             }
@@ -994,6 +1776,11 @@ def _build_sample_variant_highlights(
                 {
                     "variant_label": record.get("variant_label", "None"),
                     "change": record.get("change", "Unavailable"),
+                    "genotype": record.get("genotype", "Unavailable"),
+                    "zygosity": record.get("zygosity", "missing"),
+                    "allele_dosage": record.get("allele_dosage", "Unavailable"),
+                    "confidence_score": record.get("confidence_score", 0),
+                    "qc_flags": record.get("qc_flags", []),
                     "linked_to": record.get("linked_to", ""),
                 }
                 for record in matched_records
@@ -1011,6 +1798,14 @@ def _build_sample_variant_highlights(
                 {
                     "title": record["display"],
                     "observed_variant": record["position"],
+                    "change": record.get("change", "Unavailable"),
+                    "genotype": record.get("genotype", "Unavailable"),
+                    "gt_raw": record.get("gt_raw", "./."),
+                    "zygosity": record.get("zygosity", "missing"),
+                    "allele_dosage": record.get("allele_dosage", "Unavailable"),
+                    "confidence_score": record.get("confidence_score", 0),
+                    "confidence_explanation": record.get("confidence_explanation", ""),
+                    "qc_flags": record.get("qc_flags", []),
                     "category": region_label,
                     "description": record.get("summary", ""),
                     "conditions": record.get("associated_conditions", []),
@@ -1021,6 +1816,11 @@ def _build_sample_variant_highlights(
                 {
                     "variant_label": record.get("variant_label", "None"),
                     "change": record.get("change", "Unavailable"),
+                    "genotype": record.get("genotype", "Unavailable"),
+                    "zygosity": record.get("zygosity", "missing"),
+                    "allele_dosage": record.get("allele_dosage", "Unavailable"),
+                    "confidence_score": record.get("confidence_score", 0),
+                    "qc_flags": record.get("qc_flags", []),
                     "linked_to": record.get("linked_to", ""),
                 }
             )
@@ -1028,11 +1828,11 @@ def _build_sample_variant_highlights(
     if found_items:
         summary = (
             f"This sample did not hit one of the curated named {gene_name} markers, but it did contain "
-            f"{len(found_items)} observed PASS variant(s) inside the reviewed promoter or gene intervals."
+            f"{len(found_items)} observed VCF call(s) inside the reviewed promoter or gene intervals."
         )
     else:
         summary = (
-            f"This sample did not yield a visible {gene_name} promoter or gene-body PASS variant in the current preview slice."
+            f"This sample did not yield a visible {gene_name} promoter or gene-body VCF call in the current preview slice."
         )
 
     return {
@@ -1439,7 +2239,8 @@ def _build_whitelist_probe_reference_rows(
 def build_variant_interpretations(
     variants: pd.DataFrame, knowledge_base: dict[str, Any], *, region: str
 ) -> dict[str, Any]:
-    """Build a structured DRD4 locus audit for the observed PASS variants."""
+    """Build a structured locus audit for observed VCF calls and decoded sample GT."""
+    variants = _ensure_variant_genotype_annotations(variants)
     variant_records = knowledge_base.get("variant_records", [])
     gene_context = knowledge_base.get("gene_context", {})
     gene_name = str(gene_context.get("gene_name", DEFAULT_GENE_NAME))
@@ -1454,7 +2255,7 @@ def build_variant_interpretations(
         str(search_region["chrom"]).removeprefix("chr"),
         int(search_region["start"]),
         int(search_region["end"]),
-        "Exact interval used to pull PASS variants from the selected VCF.",
+        "Exact interval used to pull VCF calls from the selected file.",
     )
     gene_region_record = _build_interval_record(
         gene_region_source.get("label", f"{gene_name} transcribed interval"),
@@ -1510,17 +2311,48 @@ def build_variant_interpretations(
         dedupe_key = (matched_record["variant"], observed_label)
         if dedupe_key in seen_matches:
             continue
+        genotype = build_canonical_genotype(row)
+        genotype_interpretation = (
+            f"VCF genotype decoding: GT {genotype['gt_raw']} maps to "
+            f"{genotype['genotype']} ({genotype['zygosity']}) with ALT dosage "
+            f"{_format_allele_dosage(genotype['allele_dosage_per_alt'])}. "
+            "REF and ALT define the site alleles; they are not treated as the person's genotype."
+        )
 
         matched_records.append(
             {
+                "rsid": _format_variant_label(row.get("id")),
+                "chrom": str(row.get("chrom", "")).strip(),
+                "pos": int(row.get("pos")) if pd.notna(row.get("pos")) else None,
+                "ref": "" if pd.isna(row.get("ref")) else str(row.get("ref")).strip(),
+                "alt": "" if pd.isna(row.get("alt")) else str(row.get("alt")).strip(),
                 "observed_variant": observed_label,
                 "variant_label": _format_variant_label(row.get("id")),
                 "change": _format_variant_change(row.get("ref"), row.get("alt")),
+                "site_definition": _format_variant_change(row.get("ref"), row.get("alt")),
                 "reference_allele": "" if pd.isna(row.get("ref")) else str(row.get("ref")).strip(),
                 "alternate_allele": "" if pd.isna(row.get("alt")) else str(row.get("alt")).strip(),
+                "gt_raw": genotype["gt_raw"],
+                "phased": genotype["phased"],
+                "genotype_alleles": genotype["genotype_alleles"],
+                "genotype": genotype["genotype"],
+                "zygosity": genotype["zygosity"],
+                "allele_dosage_per_alt": genotype["allele_dosage_per_alt"],
+                "allele_dosage": _format_allele_dosage(genotype["allele_dosage_per_alt"]),
+                "filter_status": genotype["filter_status"],
+                "qual": genotype["qual"],
+                "dp": genotype["dp"],
+                "ad": genotype["ad"],
+                "sample_af": genotype["sample_af"],
+                "gq": genotype["gq"],
+                "pl_or_gp_summary": genotype["pl_or_gp_summary"],
+                "qc_flags": genotype["qc_flags"],
+                "interpretation": genotype_interpretation,
+                "confidence_score": genotype["confidence_score"],
+                "confidence_explanation": genotype["confidence_explanation"],
                 "linked_to": _build_specific_variant_link_summary(
                     matched_record,
-                    fallback=f"No curated local {gene_name} link is bundled for this PASS variant yet.",
+                    fallback=f"No curated local {gene_name} link is bundled for this VCF call yet.",
                 ),
                 "variant": matched_record.get("display_name", matched_record["variant"]),
                 "interpretation_scope": matched_record.get("interpretation_scope", "Research context"),
@@ -1568,7 +2400,8 @@ def build_variant_interpretations(
         f"The current search interval {search_region_record['display']} {promoter_phrase} the operational promoter review window "
         f"{promoter_region_record['display']} and {gene_phrase} the {gene_name} transcribed interval {gene_region_record['display']}. "
         f"In the current preview, {promoter_analysis['found_variant_count']} promoter-window variant(s) and "
-        f"{gene_analysis['found_variant_count']} gene-interval variant(s) were surfaced."
+        f"{gene_analysis['found_variant_count']} gene-interval VCF call(s) were surfaced. "
+        "Sample genotype state is decoded from FORMAT/GT and QC fields; REF -> ALT is shown only as the site definition."
     )
     curated_named_markers = _build_curated_named_marker_catalog(variants, variant_records)
     observed_named_marker_count = sum(1 for item in curated_named_markers if item["observed_in_run"])
@@ -1907,6 +2740,7 @@ def build_generic_variant_interpretations(
     gene_name: str,
 ) -> dict[str, Any]:
     """Build a generic region-based interpretation payload for genes without a curated database."""
+    variants = _ensure_variant_genotype_annotations(variants)
     search_region = _parse_region_string(region)
     chrom = str(search_region["chrom"]).removeprefix("chr")
     search_region_record = _build_interval_record(
@@ -1925,7 +2759,15 @@ def build_generic_variant_interpretations(
         {
             "title": item["display"],
             "observed_variant": item["position"],
-            "category": "Observed PASS variant",
+            "change": item.get("change", "Unavailable"),
+            "genotype": item.get("genotype", "Unavailable"),
+            "gt_raw": item.get("gt_raw", "./."),
+            "zygosity": item.get("zygosity", "missing"),
+            "allele_dosage": item.get("allele_dosage", "Unavailable"),
+            "confidence_score": item.get("confidence_score", 0),
+            "confidence_explanation": item.get("confidence_explanation", ""),
+            "qc_flags": item.get("qc_flags", []),
+            "category": "Observed VCF call",
             "description": item["summary"],
             "conditions": [],
             "literature_findings": [],
@@ -1955,7 +2797,7 @@ def build_generic_variant_interpretations(
         "summary": (
             f"{gene_name} is being analyzed with a generic region-based workflow. "
             f"No curated interpretation database is bundled for this gene yet, so the app is prioritizing "
-            f"observed PASS variants and raw previews inside {search_region_record['display']}."
+            f"observed VCF calls and raw previews inside {search_region_record['display']}."
         ),
         "matched_records": [],
         "unclassified_variant_count": int(len(variants)),
@@ -1972,13 +2814,18 @@ def build_generic_variant_interpretations(
         "condition_research_overview": [],
         "sample_highlights": {
             "summary": (
-                f"This sample yielded {len(observed_summaries)} visible PASS variant(s) in the current {gene_name} interval preview."
+                f"This sample yielded {len(observed_summaries)} visible VCF call(s) in the current {gene_name} interval preview."
             ),
             "highlight_items": highlight_items,
             "result_table_rows": [
                 {
                     "variant_label": item.get("variant_label", "None"),
                     "change": item.get("change", "Unavailable"),
+                    "genotype": item.get("genotype", "Unavailable"),
+                    "zygosity": item.get("zygosity", "missing"),
+                    "allele_dosage": item.get("allele_dosage", "Unavailable"),
+                    "confidence_score": item.get("confidence_score", 0),
+                    "qc_flags": item.get("qc_flags", []),
                     "linked_to": item.get("linked_to", ""),
                 }
                 for item in observed_summaries
@@ -2040,7 +2887,7 @@ def build_generic_variant_interpretations(
             "definition": search_region_record["definition"],
             "included": True,
             "analysis_note": (
-                f"The current run found {len(observed_summaries)} PASS variant(s) in the first preview slice for the selected {gene_name} interval."
+                f"The current run found {len(observed_summaries)} VCF call(s) in the first preview slice for the selected {gene_name} interval."
             ),
             "found_variant_count": len(observed_summaries),
             "found_variants": observed_summaries,
@@ -2216,15 +3063,17 @@ def _summarize_predictive_observed_variants(
         title = str(item.get("title", "")).strip()
         observed_variant = str(item.get("observed_variant", "")).strip()
         change = str(item.get("change", "")).strip()
+        genotype = str(item.get("genotype", "")).strip()
         has_change = bool(change and change.casefold() != "unavailable")
+        genotype_suffix = f" GT={genotype}" if genotype and genotype.casefold() != "unavailable" else ""
         if title and has_change:
-            observed_items.append(f"{title} {change}")
+            observed_items.append(f"{title} {change}{genotype_suffix}")
         elif title and observed_variant and observed_variant != title:
-            observed_items.append(f"{title} ({observed_variant})")
+            observed_items.append(f"{title} ({observed_variant}){genotype_suffix}")
         elif title:
-            observed_items.append(title)
+            observed_items.append(f"{title}{genotype_suffix}")
         elif observed_variant:
-            observed_items.append(observed_variant)
+            observed_items.append(f"{observed_variant}{genotype_suffix}")
     return _dedupe_text_items(observed_items)
 
 
@@ -2269,12 +3118,88 @@ def _find_synthesis_variant_prediction_rule(
 
 
 def _format_predictive_observed_signal(record: dict[str, Any]) -> str:
-    """Render the observed variant and its actual REF -> ALT change together."""
+    """Render observed variant, site definition, and decoded sample genotype."""
     observed_signal = str(record.get("observed_variant", record.get("variant", ""))).strip()
     change = str(record.get("change", "")).strip()
+    genotype = str(record.get("genotype", "")).strip()
+    zygosity = str(record.get("zygosity", "")).strip()
+    genotype_text = ""
+    if genotype and genotype.casefold() != "unavailable":
+        genotype_text = f"GT {record.get('gt_raw', './.')} = {genotype}"
+        if zygosity:
+            genotype_text = f"{genotype_text} ({zygosity})"
     if change and change.casefold() != "unavailable" and change not in observed_signal:
-        return f"{observed_signal} ({change})" if observed_signal else change
+        observed_signal = f"{observed_signal} ({change})" if observed_signal else change
+    if genotype_text:
+        return f"{observed_signal}; {genotype_text}" if observed_signal else genotype_text
     return observed_signal
+
+
+def _record_has_non_reference_genotype(record: dict[str, Any]) -> bool:
+    """Return whether a matched record has GT-confirmed non-reference dosage."""
+    zygosity = str(record.get("zygosity", "")).strip()
+    if zygosity in {"heterozygous", "homozygous_alternate", "compound_heterozygous", "hemizygous_alternate"}:
+        return True
+    return _genotype_has_alt_dosage(record)
+
+
+def _record_genotype_is_missing(record: dict[str, Any]) -> bool:
+    """Return whether the record lacks a usable sample genotype."""
+    return str(record.get("zygosity", "")).strip() in {"", "missing"}
+
+
+def _format_prediction_confidence(score: Any) -> str:
+    """Map numeric call confidence to a short display bucket."""
+    parsed = _safe_float(score)
+    if parsed is None:
+        return "unknown"
+    if parsed >= 0.80:
+        return "high"
+    if parsed >= 0.55:
+        return "moderate"
+    if parsed >= 0.30:
+        return "low"
+    return "very low"
+
+
+def _format_genotype_prediction_context(record: dict[str, Any]) -> str:
+    """Explain how genotype decoding constrains interpretation."""
+    genotype = str(record.get("genotype", "Unavailable")).strip() or "Unavailable"
+    gt_raw = str(record.get("gt_raw", "./.")).strip() or "./."
+    zygosity = str(record.get("zygosity", "missing")).strip() or "missing"
+    dosage = record.get("allele_dosage")
+    if not dosage:
+        dosage = _format_allele_dosage(record.get("allele_dosage_per_alt", {}))
+    return f"GT {gt_raw} decodes as {genotype} ({zygosity}); ALT dosage is {dosage}."
+
+
+def _prediction_row_from_record(
+    *,
+    record: dict[str, Any],
+    selected_prediction: dict[str, str],
+) -> dict[str, Any]:
+    """Build a genotype-aware predictive-thesis table row."""
+    confidence_score = record.get("confidence_score", 0)
+    qc_flags = record.get("qc_flags", [])
+    qc_note = "; ".join(str(flag) for flag in qc_flags) if qc_flags else "No major genotype-call QC flags"
+    return {
+        "observed_signal": _format_predictive_observed_signal(record),
+        "genotype": str(record.get("genotype", "Unavailable")),
+        "zygosity": str(record.get("zygosity", "missing")),
+        "allele_dosage": record.get("allele_dosage") or _format_allele_dosage(record.get("allele_dosage_per_alt", {})),
+        "confidence": _format_prediction_confidence(confidence_score),
+        "confidence_score": confidence_score,
+        "qc_flags": qc_flags,
+        "source": selected_prediction["source"],
+        "prediction": selected_prediction["prediction"],
+        "research_focus": selected_prediction["research_focus"],
+        "confidence_explanation": (
+            f"{_format_genotype_prediction_context(record)} "
+            f"Call confidence is {_format_prediction_confidence(confidence_score)} "
+            f"({confidence_score}); {qc_note}. "
+            f"{record.get('confidence_explanation', '')}"
+        ).strip(),
+    }
 
 
 def _render_sample_change_template(
@@ -2290,6 +3215,13 @@ def _render_sample_change_template(
         "{display_name}": str(concrete_rule.get("display_name", record.get("variant", ""))).strip(),
         "{observed_variant}": str(record.get("observed_variant", "")).strip(),
         "{alt_allele}": _extract_alt_allele_from_change(record.get("change")),
+        "{gt_raw}": str(record.get("gt_raw", "./.")).strip() or "./.",
+        "{genotype}": str(record.get("genotype", "Unavailable")).strip() or "Unavailable",
+        "{zygosity}": str(record.get("zygosity", "missing")).strip() or "missing",
+        "{allele_dosage}": str(
+            record.get("allele_dosage")
+            or _format_allele_dosage(record.get("allele_dosage_per_alt", {}))
+        ),
     }
     rendered = str(template or "")
     for placeholder, value in replacements.items():
@@ -2302,9 +3234,40 @@ def _select_synthesis_prediction_for_record(
     concrete_rule: dict[str, Any] | None,
 ) -> dict[str, str]:
     """Choose the most sample-specific prediction text for one matched variant."""
+    genotype_context = _format_genotype_prediction_context(record)
+    if _record_genotype_is_missing(record):
+        genotype_note = (
+            f"{genotype_context} Because GT is missing, this row is treated as a site-level marker match only; "
+            "phenotype inference is not upgraded from REF/ALT alone."
+        )
+        if concrete_rule is None:
+            prediction = str(record.get("clinical_interpretation", "")).strip()
+        else:
+            prediction = str(concrete_rule.get("prediction", "")).strip()
+        return {
+            "prediction": f"{genotype_note} {prediction}".strip(),
+            "research_focus": (
+                "Genotype unavailable; use as directional locus context only, not an individual genotype call."
+            ),
+            "source": "GT-missing site-level thesis",
+        }
+
+    if not _record_has_non_reference_genotype(record):
+        return {
+            "prediction": (
+                f"{genotype_context} This sample is homozygous reference at the site, so the ALT-defined "
+                "variant effect is not applied as a carried alternate-allele phenotype signal."
+            ),
+            "research_focus": "Reference-genotype context; no alternate-allele dosage for this marker.",
+            "source": "Reference genotype thesis",
+        }
+
     if concrete_rule is None:
         return {
-            "prediction": str(record.get("clinical_interpretation", "")).strip(),
+            "prediction": (
+                f"{genotype_context} "
+                f"{str(record.get('clinical_interpretation', '')).strip()}"
+            ).strip(),
             "research_focus": "; ".join(
                 _dedupe_text_items(record.get("associated_conditions", []))[:3]
             ),
@@ -2319,20 +3282,27 @@ def _select_synthesis_prediction_for_record(
         rule_change = _normalize_allele_change(allele_rule.get("change"))
         rule_alt_allele = str(allele_rule.get("alt_allele", "")).strip().upper()
         change_matches = bool(rule_change and normalized_change and rule_change == normalized_change)
-        alt_matches = bool(rule_alt_allele and observed_alt_allele and rule_alt_allele == observed_alt_allele)
+        alt_dosage = int(record.get("allele_dosage_per_alt", {}).get(rule_alt_allele, 0) or 0)
+        alt_matches = bool(
+            rule_alt_allele
+            and observed_alt_allele
+            and rule_alt_allele == observed_alt_allele
+            and alt_dosage > 0
+        )
         if not change_matches and not alt_matches:
             continue
 
         prediction = str(allele_rule.get("prediction", "")).strip()
         if not prediction:
             prediction = str(concrete_rule.get("prediction", "")).strip()
+        prediction = f"{genotype_context} {prediction}".strip()
         research_focus = str(allele_rule.get("basis", "")).strip()
         if not research_focus:
             research_focus = str(concrete_rule.get("basis", "")).strip()
         return {
             "prediction": prediction,
             "research_focus": research_focus,
-            "source": "Sample allele-change thesis",
+            "source": "GT-confirmed allele-dosage thesis",
         }
 
     prediction = str(concrete_rule.get("prediction", "")).strip()
@@ -2345,9 +3315,9 @@ def _select_synthesis_prediction_for_record(
             concrete_rule=concrete_rule,
         )
         if change_anchor and prediction:
-            prediction = f"{change_anchor} {prediction}"
+            prediction = f"{genotype_context} {change_anchor} {prediction}"
         elif change_anchor:
-            prediction = change_anchor
+            prediction = f"{genotype_context} {change_anchor}"
         return {
             "prediction": prediction,
             "research_focus": research_focus,
@@ -2355,10 +3325,215 @@ def _select_synthesis_prediction_for_record(
         }
 
     return {
-        "prediction": prediction,
+        "prediction": f"{genotype_context} {prediction}".strip(),
         "research_focus": research_focus,
         "source": "Concrete variant thesis",
     }
+
+
+def _record_matches_marker(record: dict[str, Any], marker: str) -> bool:
+    """Return whether a predictive record refers to a marker label."""
+    normalized_marker = _normalize_lookup_key(marker)
+    candidates = [
+        record.get("variant"),
+        record.get("variant_label"),
+        record.get("observed_variant"),
+        record.get("rsid"),
+    ]
+    return any(normalized_marker in _normalize_lookup_key(str(candidate or "")) for candidate in candidates)
+
+
+def _allele_count_in_genotype(record: dict[str, Any], allele: str) -> int:
+    """Count a concrete nucleotide allele in the decoded sample genotype."""
+    target = allele.strip().upper()
+    return sum(1 for item in record.get("genotype_alleles", []) if str(item).strip().upper() == target)
+
+
+def _build_generic_phenotype_prediction(
+    *,
+    gene_name: str,
+    genotype_positive_records: list[dict[str, Any]],
+    genotype_uncertain_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Return a conservative gene-level phenotype payload for non-specialized genes."""
+    qc_warnings = _dedupe_text_items(
+        [
+            str(flag)
+            for record in genotype_positive_records + genotype_uncertain_records
+            for flag in record.get("qc_flags", [])
+        ]
+    )
+    if genotype_positive_records:
+        scores = [
+            float(record.get("confidence_score", 0) or 0)
+            for record in genotype_positive_records
+        ]
+        confidence_score = min(scores) if scores else 0.0
+        prediction = (
+            f"{gene_name} genotype evidence is compatible with a directional gene-level research signal, "
+            "not a deterministic phenotype call."
+        )
+        evidence = (
+            f"{len(genotype_positive_records)} curated marker(s) have GT-confirmed non-reference dosage. "
+            "Variant effects should be interpreted by genotype dosage and call QC."
+        )
+    elif genotype_uncertain_records:
+        confidence_score = 0.2
+        prediction = (
+            f"{gene_name} site-level marker evidence was seen, but GT is missing or unusable; "
+            "no individual genotype-based phenotype should be inferred."
+        )
+        evidence = (
+            f"{len(genotype_uncertain_records)} marker(s) matched the local database without usable sample GT."
+        )
+    else:
+        confidence_score = 0.0
+        prediction = f"No GT-confirmed {gene_name} phenotype signal was available from the current marker set."
+        evidence = "No curated marker had non-reference sample genotype dosage."
+
+    return {
+        "phenotype_prediction": prediction,
+        "confidence": _format_prediction_confidence(confidence_score),
+        "confidence_score": round(confidence_score, 3),
+        "evidence_summary": evidence,
+        "uncertainty_summary": (
+            "Most traits are polygenic and context dependent; this app reports directional compatibility from the "
+            "available marker subset rather than biological certainty."
+        ),
+        "conflicting_evidence": [],
+        "qc_warnings": qc_warnings,
+    }
+
+
+def _build_herc2_eye_color_prediction(matched_records: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build a conservative HERC2/OCA2 eye-colour prediction from GT dosage."""
+    marker_records = {
+        marker: next((record for record in matched_records if _record_matches_marker(record, marker)), None)
+        for marker in ("rs12913832", "rs1129038", "rs7170852")
+    }
+    major = marker_records["rs12913832"]
+    secondary_records = [record for marker, record in marker_records.items() if marker != "rs12913832" and record]
+    qc_warnings = _dedupe_text_items(
+        [
+            str(flag)
+            for record in marker_records.values()
+            if record
+            for flag in record.get("qc_flags", [])
+        ]
+    )
+
+    if major is None:
+        return {
+            "phenotype_prediction": (
+                "HERC2/OCA2 eye-colour inference is incomplete because rs12913832, the strongest marker in this "
+                "small panel, was not available as a decoded sample genotype."
+            ),
+            "confidence": "low",
+            "confidence_score": 0.25,
+            "evidence_summary": "Secondary markers alone are not enough for a clear eye-colour call.",
+            "uncertainty_summary": (
+                "Eye colour is polygenic; this app uses only a small HERC2/OCA2 subset and cannot exclude brown, hazel, "
+                "green, or blue outcomes without broader genotype context."
+            ),
+            "conflicting_evidence": [],
+            "qc_warnings": qc_warnings,
+        }
+
+    rs129_g = _allele_count_in_genotype(major, "G")
+    rs129_a = _allele_count_in_genotype(major, "A")
+    rs112_t = _allele_count_in_genotype(marker_records["rs1129038"], "T") if marker_records["rs1129038"] else 0
+    rs112_c = _allele_count_in_genotype(marker_records["rs1129038"], "C") if marker_records["rs1129038"] else 0
+    rs717_a = _allele_count_in_genotype(marker_records["rs7170852"], "A") if marker_records["rs7170852"] else 0
+    rs717_t = _allele_count_in_genotype(marker_records["rs7170852"], "T") if marker_records["rs7170852"] else 0
+
+    light_score = (rs129_g * 2.0) + (rs112_t * 0.6) + (rs717_a * 0.4)
+    darker_score = (rs129_a * 1.5) + (rs112_c * 0.25) + (rs717_t * 0.2)
+    strongest_is_heterozygous = major.get("zygosity") == "heterozygous"
+    confidence_score = 0.35
+    confidence_score += 0.20 if secondary_records else 0.0
+    confidence_score += 0.15 if not strongest_is_heterozygous else 0.0
+    confidence_score = min(confidence_score, float(major.get("confidence_score", 0) or 0))
+    if strongest_is_heterozygous:
+        confidence_score = min(confidence_score, 0.62)
+    if len(secondary_records) < 2:
+        confidence_score = min(confidence_score, 0.58)
+
+    conflicting_evidence: list[str] = []
+    if rs129_g and rs129_a:
+        conflicting_evidence.append(
+            "rs12913832 is heterozygous, so both lighter-eye-associated G and darker-eye-compatible A are present."
+        )
+    if light_score > 0 and darker_score > 0:
+        conflicting_evidence.append(
+            "The small panel contains both lighter-leaning and darker-compatible allele evidence."
+        )
+
+    if rs129_g == 2 and light_score > darker_score:
+        phenotype = (
+            "Blue or lighter-eye-compatible signal is present, but the result remains probabilistic rather than deterministic."
+        )
+        uncertainty = (
+            "rs12913832 G/G is a strong HERC2/OCA2 contributor, yet eye colour remains polygenic and ancestry-dependent."
+        )
+    elif rs129_g == 1:
+        phenotype = (
+            "Lighter/intermediate-eye signal is present, but the strongest major marker is heterozygous rather than "
+            "homozygous alternate; brown or hazel remains plausible."
+        )
+        uncertainty = (
+            "Intermediate or hazel outcomes should carry only moderate confidence from this small SNP subset. "
+            "The available markers are compatible with lighter pigmentation directionally, not a deterministic blue-eye call."
+        )
+    elif rs129_g == 0 and rs129_a >= 1:
+        phenotype = (
+            "Brown or darker-eye-compatible signal is stronger at rs12913832, while secondary markers may still leave "
+            "room for intermediate pigmentation depending on the broader polygenic background."
+        )
+        uncertainty = (
+            "Absence of the rs12913832 G signal in this panel does not fully determine eye colour; additional OCA2/HERC2 "
+            "and genome-wide pigmentation markers can modify the visible result."
+        )
+    else:
+        phenotype = (
+            "Eye-colour prediction is directionally inconclusive because rs12913832 genotype dosage could not be mapped cleanly."
+        )
+        uncertainty = (
+            "The marker is present, but the decoded genotype does not match the expected A/G representation."
+        )
+        confidence_score = min(confidence_score, 0.25)
+
+    evidence_parts = [
+        f"rs12913832 decoded as {major.get('genotype')} ({major.get('zygosity')}).",
+        f"Lighter-score components: rs12913832 G dosage {rs129_g}, rs1129038 T dosage {rs112_t}, rs7170852 A dosage {rs717_a}.",
+        f"Darker-compatible components: rs12913832 A dosage {rs129_a}, rs1129038 C dosage {rs112_c}, rs7170852 T dosage {rs717_t}.",
+    ]
+
+    return {
+        "phenotype_prediction": phenotype,
+        "confidence": _format_prediction_confidence(confidence_score),
+        "confidence_score": round(confidence_score, 3),
+        "evidence_summary": " ".join(evidence_parts),
+        "uncertainty_summary": uncertainty,
+        "conflicting_evidence": conflicting_evidence,
+        "qc_warnings": qc_warnings,
+    }
+
+
+def _build_phenotype_prediction(
+    *,
+    gene_name: str,
+    matched_records: list[dict[str, Any]],
+    genotype_positive_records: list[dict[str, Any]],
+    genotype_uncertain_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Build phenotype-level output with explicit uncertainty."""
+    if gene_name.upper() == "HERC2":
+        return _build_herc2_eye_color_prediction(matched_records)
+    return _build_generic_phenotype_prediction(
+        gene_name=gene_name,
+        genotype_positive_records=genotype_positive_records,
+        genotype_uncertain_records=genotype_uncertain_records,
+    )
 
 
 def build_predictive_theses(
@@ -2394,10 +3569,21 @@ def build_predictive_theses(
     )
 
     matched_records = variant_interpretations.get("matched_records", [])
+    genotype_positive_records = [
+        record for record in matched_records if _record_has_non_reference_genotype(record)
+    ]
+    genotype_uncertain_records = [
+        record for record in matched_records if _record_genotype_is_missing(record)
+    ]
     highlight_items = variant_interpretations.get("sample_highlights", {}).get("highlight_items", [])
-    sample_variant_rows = variant_interpretations.get("sample_highlights", {}).get("result_table_rows", [])
     observed_variant_labels = _summarize_predictive_observed_variants(variant_interpretations)
-    variant_found = bool(sample_variant_rows)
+    variant_found = bool(genotype_positive_records)
+    phenotype_prediction = _build_phenotype_prediction(
+        gene_name=gene_name,
+        matched_records=matched_records,
+        genotype_positive_records=genotype_positive_records,
+        genotype_uncertain_records=genotype_uncertain_records,
+    )
 
     variant_case = case_lookup.get("gene_variant_found")
     variant_summary = (
@@ -2407,13 +3593,21 @@ def build_predictive_theses(
     )
     if not variant_summary and variant_found:
         variant_summary = (
-            f"Observed {gene_name} variation is present in this sample, so the gene-level predictive thesis "
+            f"GT-confirmed non-reference {gene_name} variation is present in this sample, so the gene-level predictive thesis "
             "should be read as locus-specific research context rather than as a stand-alone diagnosis."
+        )
+    if not variant_found and genotype_uncertain_records:
+        variant_summary = (
+            f"{gene_name} marker rows matched the local database, but sample GT was missing or unusable. "
+            "The app therefore reports site-level context and does not infer an individual genotype from REF/ALT alone."
         )
     if not variant_found:
         variant_summary = (
-            f"No promoter or gene-body {gene_name} variant was visible in the current preview, so the "
-            "variant-gated predictive thesis cases did not match this sample."
+            variant_summary
+            or (
+                f"No GT-confirmed non-reference promoter or gene-body {gene_name} genotype was visible in the current preview, so the "
+                "variant-gated predictive thesis cases did not match this sample."
+            )
         )
     if observed_variant_labels:
         variant_summary = (
@@ -2427,13 +3621,20 @@ def build_predictive_theses(
                 "observed_signal": (
                     ", ".join(observed_variant_labels[:3])
                     if observed_variant_labels
-                    else f"{gene_name} interval variant observed"
+                    else f"{gene_name} interval non-reference genotype observed"
                 ),
+                "genotype": "Multiple",
+                "zygosity": "See marker rows",
+                "allele_dosage": "See marker rows",
+                "confidence": phenotype_prediction.get("confidence", "unknown"),
+                "confidence_score": phenotype_prediction.get("confidence_score", 0),
+                "qc_flags": phenotype_prediction.get("qc_warnings", []),
                 "source": "Gene-level thesis",
                 "prediction": str(variant_case.get("prediction", "")).strip(),
                 "research_focus": "; ".join(
                     _dedupe_text_items(variant_case.get("research_focus", []))[:3]
                 ),
+                "confidence_explanation": phenotype_prediction.get("uncertainty_summary", ""),
             }
         )
 
@@ -2445,12 +3646,10 @@ def build_predictive_theses(
         selected_prediction = _select_synthesis_prediction_for_record(record, concrete_rule)
 
         variant_prediction_rows.append(
-            {
-                "observed_signal": _format_predictive_observed_signal(record),
-                "source": selected_prediction["source"],
-                "prediction": selected_prediction["prediction"],
-                "research_focus": selected_prediction["research_focus"],
-            }
+            _prediction_row_from_record(
+                record=record,
+                selected_prediction=selected_prediction,
+            )
         )
 
     if not matched_records:
@@ -2458,11 +3657,18 @@ def build_predictive_theses(
             variant_prediction_rows.append(
                 {
                     "observed_signal": str(item.get("title", item.get("observed_variant", ""))).strip(),
+                    "genotype": str(item.get("genotype", "Unavailable")).strip(),
+                    "zygosity": str(item.get("zygosity", "missing")).strip(),
+                    "allele_dosage": str(item.get("allele_dosage", "Unavailable")).strip(),
+                    "confidence": _format_prediction_confidence(item.get("confidence_score", 0)),
+                    "confidence_score": item.get("confidence_score", 0),
+                    "qc_flags": item.get("qc_flags", []),
                     "source": str(item.get("category", "Interval variant")).strip(),
                     "prediction": str(item.get("description", "")).strip(),
                     "research_focus": "; ".join(
                         _dedupe_text_items(item.get("conditions", []))[:3]
                     ),
+                    "confidence_explanation": str(item.get("confidence_explanation", "")).strip(),
                 }
             )
 
@@ -2525,7 +3731,7 @@ def build_predictive_theses(
         elif not variant_found:
             prediction = (
                 f"{source_row['label']} was computed, but the predictive thesis matrix only matches after "
-                f"a {gene_name} variant is observed."
+                f"a GT-confirmed non-reference {gene_name} genotype is observed."
             )
         elif case is not None:
             prediction = str(case.get("prediction", "")).strip()
@@ -2576,12 +3782,12 @@ def build_predictive_theses(
         )
     elif variant_found:
         summary = (
-            f"{gene_name} variation was observed, but none of the bundled predictive thesis cases could be matched "
+            f"GT-confirmed {gene_name} non-reference variation was observed, but none of the bundled predictive thesis cases could be matched "
             "to the available methylation values."
         )
     else:
         summary = (
-            f"No predictive thesis case matched because the current {gene_name} run did not surface a promoter or gene-body variant."
+            f"No predictive thesis case matched because the current {gene_name} run did not surface a GT-confirmed promoter or gene-body non-reference genotype."
         )
 
     return {
@@ -2604,6 +3810,13 @@ def build_predictive_theses(
         "variant_found": variant_found,
         "variant_found_label": "Yes" if variant_found else "No",
         "variant_summary": variant_summary,
+        "phenotype_prediction": phenotype_prediction,
+        "phenotype_prediction_text": phenotype_prediction.get("phenotype_prediction", ""),
+        "phenotype_confidence": phenotype_prediction.get("confidence", "unknown"),
+        "phenotype_evidence_summary": phenotype_prediction.get("evidence_summary", ""),
+        "phenotype_uncertainty_summary": phenotype_prediction.get("uncertainty_summary", ""),
+        "phenotype_conflicting_evidence": phenotype_prediction.get("conflicting_evidence", []),
+        "phenotype_qc_warnings": phenotype_prediction.get("qc_warnings", []),
         "variant_prediction_rows": variant_prediction_rows,
         "methylation_prediction_rows": methylation_prediction_rows,
         "matched_cases": matched_cases,
@@ -2666,10 +3879,14 @@ def _build_observed_variant_key(row: pd.Series) -> str:
     """Return a biologically stable key for one observed variant allele."""
     chrom = str(row.get("chrom", "")).strip().removeprefix("chr")
     pos = _format_database_position(row.get("pos"))
-    ref = "" if pd.isna(row.get("ref")) else str(row.get("ref")).strip()
-    alt = "" if pd.isna(row.get("alt")) else str(row.get("alt")).strip()
+    ref = "" if _is_missing_value(row.get("ref")) else str(row.get("ref")).strip()
+    alt = "" if _is_missing_value(row.get("alt")) else str(row.get("alt")).strip()
+    sample = "" if _is_missing_value(row.get("sample")) else str(row.get("sample")).strip()
+    gt_raw = "" if _is_missing_value(row.get("gt_raw")) else str(row.get("gt_raw")).strip()
+    suffix = f":{sample}" if sample else ""
+    gt_suffix = f":GT={gt_raw}" if gt_raw else ""
     if chrom and pos and (ref or alt):
-        return f"chr{chrom}:{pos}:{ref}>{alt}"
+        return f"chr{chrom}:{pos}:{ref}>{alt}{suffix}{gt_suffix}"
     return _format_variant_display(row)
 
 
@@ -2691,6 +3908,7 @@ def _build_general_analysis_database_rows(
 ) -> list[dict[str, Any]]:
     """Build central database rows with one entry per observed variant."""
     normalized_gene_name = gene_name.strip().upper() or DEFAULT_GENE_NAME
+    variants = _ensure_variant_genotype_annotations(variants)
 
     gene_region = variant_interpretations.get("gene_region", {})
     search_region = variant_interpretations.get("search_region", {})
@@ -2717,16 +3935,26 @@ def _build_general_analysis_database_rows(
         output_rows.append(
             {
                 "gene": normalized_gene_name,
+                "sample": str(row.get("sample", "") or "").strip(),
                 "variant key": _build_observed_variant_key(row),
                 "observed gene variant": observed_variant,
                 "gene variant label": variant_label,
                 "change": _format_variant_change(row.get("ref"), row.get("alt")),
+                "genotype": str(row.get("genotype", "Unavailable")).strip(),
+                "zygosity": str(row.get("zygosity", "missing")).strip(),
+                "allele dosage": _format_allele_dosage(row.get("allele_dosage_per_alt", {})),
                 "chromosome": f"chr{chrom}" if chrom else "",
                 "position": position,
                 "variant location": _format_variant_location_for_database(row),
                 "gene location": gene_location,
                 "source": "VCF",
                 "(VCF) quality (qual)": _format_database_quality(row.get("qual")),
+                "VCF filter": str(row.get("filter_status", "") or "").strip(),
+                "VCF depth (DP)": "" if _is_missing_value(row.get("dp")) else row.get("dp"),
+                "VCF allele depths (AD)": _join_unique_database_values(list(row.get("ad") or [])),
+                "VCF genotype quality (GQ)": "" if _is_missing_value(row.get("gq")) else row.get("gq"),
+                "genotype confidence": "" if _is_missing_value(row.get("confidence_score")) else row.get("confidence_score"),
+                "genotype QC flags": _join_unique_database_values(list(row.get("qc_flags") or [])),
                 "matched curated marker": str(matched_record.get("variant", "")).strip(),
                 "variant interpretation scope": str(
                     matched_record.get("interpretation_scope", "Unclassified observed variant")
@@ -2856,7 +4084,7 @@ def update_general_analysis_database(
 
 
 def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
-    """Load PASS variants for the requested region from a tabix-indexed VCF.
+    """Load VCF calls for the requested region with sample-level genotype state.
 
     Parameters
     ----------
@@ -2868,14 +4096,14 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
     Returns
     -------
     pd.DataFrame
-        Variant table with one row per PASS site and the columns ``chrom``,
-        ``pos``, ``ref``, ``alt``, ``qual``, and ``filter_pass``.
+        Variant table with one row per site/sample call. REF and ALT describe
+        site alleles; FORMAT/GT and quality fields describe the sample call.
 
     Raises
     ------
     AnalysisError
-        Raised when the VCF cannot be found, parsed, or filtered to any PASS
-        variants in the requested region.
+        Raised when the VCF cannot be found, parsed, or read for any regional
+        calls in the requested interval.
     """
     if not os.path.exists(vcf_path):
         raise AnalysisError(f"VCF not found: {vcf_path}")
@@ -2884,6 +4112,7 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
         callset = allel.read_vcf(
             vcf_path,
             region=region,
+            alt_number=10,
             fields=[
                 "variants/CHROM",
                 "variants/ID",
@@ -2892,6 +4121,16 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
                 "variants/ALT",
                 "variants/QUAL",
                 "variants/FILTER_PASS",
+                "calldata/GT",
+                "calldata/AD",
+                "calldata/DP",
+                "calldata/GQ",
+                "calldata/PL",
+                "calldata/GP",
+                "calldata/AF",
+                "calldata/SB",
+                "calldata/F1R2",
+                "calldata/F2R1",
             ],
         )
     except Exception as exc:
@@ -2900,38 +4139,90 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
     if not callset or "variants/CHROM" not in callset:
         raise AnalysisError(f"No variants could be read from {vcf_path} in region {region}")
 
-    df = pd.DataFrame(
-        {
-            "chrom": [_decode_scalar(value) for value in callset["variants/CHROM"]],
-            "id": [
-                None
-                if _decode_scalar(value) in {None, "."}
-                else _decode_scalar(value)
-                for value in callset["variants/ID"]
-            ],
-            "pos": callset["variants/POS"],
-            "ref": [_decode_scalar(value) for value in callset["variants/REF"]],
-            "alt": [
-                _decode_scalar(alts[0]) if len(alts) > 0 else None
-                for alts in callset["variants/ALT"]
-            ],
-            "qual": callset["variants/QUAL"],
-            "filter_pass": callset["variants/FILTER_PASS"],
-        }
-    )
+    sample_names = [_decode_scalar(sample) for sample in callset.get("samples", [])]
+    if not sample_names:
+        sample_names = [""]
+    raw_sample_fields = _load_raw_vcf_sample_fields(vcf_path, region)
 
-    # Keep only PASS variants so downstream summaries and the visible output
-    # consistently reflect the analysis-ready subset.
-    df = df[df["filter_pass"].fillna(False)].reset_index(drop=True)
+    def _calldata_value(field: str, variant_index: int, sample_index: int) -> Any:
+        payload = callset.get(f"calldata/{field}")
+        if payload is None:
+            return None
+        try:
+            if payload.ndim >= 2:
+                return payload[variant_index, sample_index]
+            return payload[variant_index]
+        except Exception:
+            return None
+
+    rows: list[dict[str, Any]] = []
+    for variant_index, chrom_value in enumerate(callset["variants/CHROM"]):
+        alt_alleles = _normalize_alt_alleles(callset["variants/ALT"][variant_index])
+        filter_pass_values = callset.get("variants/FILTER_PASS")
+        filter_pass = bool(filter_pass_values[variant_index]) if filter_pass_values is not None else False
+        for sample_index, sample_name in enumerate(sample_names):
+            gt_codes = _as_clean_list(_calldata_value("GT", variant_index, sample_index))
+            gt_codes = [
+                None if _clean_vcf_text(code) in {"", "."} else _safe_int(code)
+                for code in gt_codes
+            ]
+            row = {
+                "sample": sample_name,
+                "chrom": _decode_scalar(chrom_value),
+                "id": (
+                    None
+                    if _decode_scalar(callset["variants/ID"][variant_index]) in {None, "."}
+                    else _decode_scalar(callset["variants/ID"][variant_index])
+                ),
+                "pos": callset["variants/POS"][variant_index],
+                "ref": _decode_scalar(callset["variants/REF"][variant_index]),
+                "alt": _format_alt_alleles(alt_alleles),
+                "alt_alleles": alt_alleles,
+                "qual": callset["variants/QUAL"][variant_index],
+                "filter_pass": filter_pass,
+                "filter_status": "PASS" if filter_pass else "Non-PASS",
+                "gt_codes": gt_codes,
+                "gt_raw": _format_gt_from_codes(gt_codes, phased=False) if gt_codes else "./.",
+                "ad": _as_clean_list(_calldata_value("AD", variant_index, sample_index)),
+                "dp": _calldata_value("DP", variant_index, sample_index),
+                "gq": _calldata_value("GQ", variant_index, sample_index),
+                "pl": _as_clean_list(_calldata_value("PL", variant_index, sample_index)),
+                "gp": _as_clean_list(_calldata_value("GP", variant_index, sample_index)),
+                "sample_af": _as_clean_list(_calldata_value("AF", variant_index, sample_index)),
+                "sb": _as_clean_list(_calldata_value("SB", variant_index, sample_index)),
+                "f1r2": _as_clean_list(_calldata_value("F1R2", variant_index, sample_index)),
+                "f2r1": _as_clean_list(_calldata_value("F2R1", variant_index, sample_index)),
+            }
+            raw_overlay = raw_sample_fields.get(
+                _sample_field_lookup_key(
+                    chrom=row["chrom"],
+                    pos=row["pos"],
+                    ref=row["ref"],
+                    alt=row["alt"],
+                    sample=row["sample"],
+                ),
+                {},
+            )
+            if raw_overlay:
+                row.update({key: value for key, value in raw_overlay.items() if value is not None})
+            rows.append(row)
+
+    df = _ensure_variant_genotype_annotations(pd.DataFrame(rows))
     if df.empty:
-        raise AnalysisError(f"No PASS variants found in {region} for {vcf_path}")
+        raise AnalysisError(f"No variants found in {region} for {vcf_path}")
 
     named_id_count = int(df["id"].notna().sum())
+    pass_count = int(df["filter_pass"].fillna(False).sum()) if "filter_pass" in df else 0
+    non_reference_count = int(
+        sum(_genotype_has_alt_dosage(row) for _, row in df.iterrows())
+    )
     logger.info(
-        "Loaded %d PASS variants from %s in region %s (%d named IDs, %d unlabeled in source VCF)",
+        "Loaded %d VCF sample call(s) from %s in region %s (%d PASS, %d GT-confirmed non-reference, %d named IDs, %d unlabeled in source VCF)",
         len(df),
         vcf_path,
         region,
+        pass_count,
+        non_reference_count,
         named_id_count,
         len(df) - named_id_count,
     )
@@ -3204,13 +4495,34 @@ def _with_preferred_column_order(df: pd.DataFrame, preferred_columns: list[str])
 
 def _prepare_variant_table_for_output(df: pd.DataFrame) -> pd.DataFrame:
     """Normalize missing IDs so exported reports stay readable."""
-    preview_df = df.copy()
+    preview_df = _ensure_variant_genotype_annotations(df)
     if "id" in preview_df.columns:
         preview_df["id"] = preview_df["id"].where(preview_df["id"].notna(), "Unlabeled in source VCF")
         preview_df["id"] = preview_df["id"].replace({"": "Unlabeled in source VCF", ".": "Unlabeled in source VCF"})
     return _with_preferred_column_order(
         preview_df,
-        ["chrom", "id", "pos", "ref", "alt", "qual", "filter_pass", "id_source"],
+        [
+            "sample",
+            "chrom",
+            "id",
+            "pos",
+            "ref",
+            "alt",
+            "gt_raw",
+            "genotype",
+            "zygosity",
+            "allele_dosage_per_alt",
+            "filter_status",
+            "qual",
+            "dp",
+            "ad",
+            "sample_af",
+            "gq",
+            "confidence_score",
+            "qc_flags",
+            "filter_pass",
+            "id_source",
+        ],
     )
 
 
@@ -3307,7 +4619,12 @@ def _render_variant_interpretation_report(
                     sample_rows,
                     [
                         ("variant_label", "Variant label"),
-                        ("change", "Change"),
+                        ("change", "Site definition"),
+                        ("genotype", "Decoded genotype"),
+                        ("zygosity", "Zygosity"),
+                        ("allele_dosage", "ALT dosage"),
+                        ("confidence_score", "Call confidence"),
+                        ("qc_flags", "QC flags"),
                         ("linked_to", "Linked to"),
                     ],
                 ),
@@ -3326,7 +4643,20 @@ def _render_variant_interpretation_report(
                         ("variant", "Curated variant"),
                         ("variant_label", "Variant label"),
                         ("observed_variant", "Observed in run"),
-                        ("change", "Change"),
+                        ("change", "Site definition"),
+                        ("gt_raw", "GT"),
+                        ("genotype", "Decoded genotype"),
+                        ("zygosity", "Zygosity"),
+                        ("allele_dosage", "ALT dosage"),
+                        ("filter_status", "FILTER"),
+                        ("dp", "DP"),
+                        ("ad", "AD"),
+                        ("sample_af", "Sample AF"),
+                        ("gq", "GQ"),
+                        ("pl_or_gp_summary", "PL/GP support"),
+                        ("qc_flags", "QC flags"),
+                        ("confidence_score", "Confidence score"),
+                        ("confidence_explanation", "Confidence explanation"),
                         ("linked_to", "Linked to"),
                         ("interpretation_scope", "Scope"),
                         ("clinical_significance", "Clinical significance"),
@@ -3420,7 +4750,11 @@ def _render_variant_interpretation_report(
                     [
                         ("display", "Observed variant"),
                         ("variant_label", "Variant label"),
-                        ("change", "Change"),
+                        ("change", "Site definition"),
+                        ("genotype", "Decoded genotype"),
+                        ("zygosity", "Zygosity"),
+                        ("allele_dosage", "ALT dosage"),
+                        ("confidence_score", "Call confidence"),
                         ("position", "Position"),
                         ("linked_to", "Linked to"),
                         ("clinical_significance", "Clinical significance"),
@@ -3459,7 +4793,11 @@ def _render_variant_interpretation_report(
                     [
                         ("display", "Observed variant"),
                         ("variant_label", "Variant label"),
-                        ("change", "Change"),
+                        ("change", "Site definition"),
+                        ("genotype", "Decoded genotype"),
+                        ("zygosity", "Zygosity"),
+                        ("allele_dosage", "ALT dosage"),
+                        ("confidence_score", "Call confidence"),
                         ("position", "Position"),
                         ("linked_to", "Linked to"),
                         ("clinical_significance", "Clinical significance"),
@@ -3689,6 +5027,27 @@ def _render_predictive_theses_report(predictive_theses: dict[str, Any]) -> str:
         return ""
 
     nested_sections: list[str] = []
+    phenotype_prediction = predictive_theses.get("phenotype_prediction")
+    if isinstance(phenotype_prediction, dict) and phenotype_prediction:
+        nested_sections.append(
+            _render_section_table(
+                _report_df_from_rows(
+                    [phenotype_prediction],
+                    [
+                        ("phenotype_prediction", "Phenotype prediction"),
+                        ("confidence", "Confidence"),
+                        ("confidence_score", "Confidence score"),
+                        ("evidence_summary", "Evidence summary"),
+                        ("uncertainty_summary", "Uncertainty summary"),
+                        ("conflicting_evidence", "Conflicting evidence"),
+                        ("qc_warnings", "QC warnings"),
+                    ],
+                ),
+                "Phenotype-Level Prediction",
+                rows=None,
+            )
+        )
+
     variant_prediction_rows = predictive_theses.get("variant_prediction_rows", [])
     if variant_prediction_rows:
         nested_sections.append(
@@ -3697,9 +5056,14 @@ def _render_predictive_theses_report(predictive_theses: dict[str, Any]) -> str:
                     variant_prediction_rows,
                     [
                         ("observed_signal", "Observed signal"),
+                        ("genotype", "Decoded genotype"),
+                        ("zygosity", "Zygosity"),
+                        ("allele_dosage", "ALT dosage"),
+                        ("confidence", "Confidence"),
                         ("source", "Source"),
                         ("prediction", "Prediction"),
                         ("research_focus", "Research focus"),
+                        ("confidence_explanation", "Confidence explanation"),
                     ],
                 ),
                 "Variant Prediction",
@@ -3767,6 +5131,9 @@ def _render_predictive_theses_report(predictive_theses: dict[str, Any]) -> str:
         [
             predictive_theses.get("summary", ""),
             predictive_theses.get("variant_summary", ""),
+            predictive_theses.get("phenotype_prediction_text", ""),
+            predictive_theses.get("phenotype_evidence_summary", ""),
+            predictive_theses.get("phenotype_uncertainty_summary", ""),
             predictive_theses.get("matching_rule", ""),
             predictive_theses.get("disclaimer", ""),
         ],
@@ -3794,7 +5161,8 @@ def generate_report(
     Parameters
     ----------
     variants : pd.DataFrame
-        PASS variant table for the requested gene interval.
+        VCF call table for the requested gene interval, including decoded
+        sample-level genotype fields when available.
     methylation : pd.DataFrame
         Annotated probe-level beta-value table returned by
         :func:`load_methylation`.
@@ -3827,6 +5195,7 @@ def generate_report(
     suffix = report_path.suffix.lower() or ".html"
     normalized_analysis_scope = normalize_analysis_scope(analysis_scope)
     analysis_scope_label = get_analysis_scope_label(normalized_analysis_scope)
+    prepared_variants = _prepare_variant_table_for_output(variants)
 
     popstats_section = ""
     if isinstance(popstats, pd.DataFrame):
@@ -4014,7 +5383,7 @@ def generate_report(
       {methylation_path_markup}
       <div class="metrics">
         <article class="metric">
-          <span>PASS variants</span>
+          <span>VCF calls</span>
           <strong>{len(variants)}</strong>
         </article>
         <article class="metric">
@@ -4027,7 +5396,7 @@ def generate_report(
         </article>
       </div>
     </section>
-    {_render_section_table(_prepare_variant_table_for_output(variants), "Genetic Variant Results", rows=None)}
+    {_render_section_table(prepared_variants, "Genetic Variant Results", rows=None)}
     {variant_interpretation_section}
     {predictive_theses_section}
     {methylation_interpretation_section}
@@ -4045,7 +5414,8 @@ def generate_report(
             "region": region,
             "analysis_scope": normalized_analysis_scope,
             "analysis_scope_label": analysis_scope_label,
-            "variants": variants.to_dict(orient="records"),
+            "variants": prepared_variants.to_dict(orient="records"),
+            "variant_interpretations": variant_interpretations or {},
             "methylation": methylation.to_dict(orient="records"),
             "population_statistics": _serialize_popstats(popstats),
             "methylation_output_path": str(methylation_output_path) if methylation_output_path else None,

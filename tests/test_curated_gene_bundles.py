@@ -118,7 +118,12 @@ def test_glp1r_curated_bundle_drives_prediction_helpers() -> None:
                 "pos": 39034072,
                 "ref": "G",
                 "alt": "A",
+                "gt_raw": "0/1",
+                "ad": [8, 7],
+                "dp": 15,
+                "gq": 43,
                 "qual": 77.0,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -155,5 +160,84 @@ def test_glp1r_curated_bundle_drives_prediction_helpers() -> None:
     assert predictive_theses["matched_case_count"] >= 1
     assert any(
         "reduced gliptin-response thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_cdkn2a_curated_bundle_distinguishes_common_and_pathogenic_markers() -> None:
+    """CDKN2A should separate benign/common markers from exact pathogenic G101W matching."""
+    knowledge_base = load_gene_interpretation_database("CDKN2A")
+    population_database = load_gene_population_database("CDKN2A")
+    synthesis_database = load_gene_synthesis_database("CDKN2A")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+
+    variant_records = knowledge_base["variant_records"]
+    variant_ids = {record["variant"] for record in variant_records}
+    assert {"rs11515", "rs3088440", "rs3731249", "CDKN2A p.Gly101Trp"} <= variant_ids
+
+    g101w_record = next(record for record in variant_records if record["variant"] == "CDKN2A p.Gly101Trp")
+    assert g101w_record["position"] == 21971057
+    assert "9:21971057:C>A" in g101w_record["lookup_keys"]
+    assert "rs104894094" not in g101w_record["lookup_keys"]
+    assert "Pathogenic ClinVar germline variant" in g101w_record["clinical_significance"]
+
+    a148t_record = next(record for record in variant_records if record["variant"] == "rs3731249")
+    assert "Benign germline ClinVar" in a148t_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "9",
+                "id": ".",
+                "pos": 21971057,
+                "ref": "C",
+                "alt": "A",
+                "gt_raw": "0/1",
+                "ad": [11, 9],
+                "dp": 20,
+                "gq": 55,
+                "qual": 99.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": knowledge_base["gene_context"]["relevant_methylation_probe_ids"][0],
+                "beta": 0.81,
+                "chrom": "9",
+                "pos": 21994765,
+                "GencodeBasicV12_NAME": "CDKN2A",
+                "UCSC_RefGene_Group": "TSS200",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="9:21967751-21996323",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "CDKN2A p.Gly101Trp (c.301G>T / G101W)"
+    assert "Pathogenic ClinVar germline variant" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.81
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "rare pathogenic G101W signal" in row["prediction"]
+        and row["source"] == "GT-confirmed allele-dosage thesis"
         for row in predictive_theses["variant_prediction_rows"]
     )

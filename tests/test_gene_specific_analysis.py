@@ -67,7 +67,7 @@ def test_herc2_gene_databases_load_from_gene_data() -> None:
     assert synthesis_database["database_name"].startswith("NophiGene HERC2 Predictive")
     assert synthesis_database["case_count"] == 10
     assert len(synthesis_database["cases"]) == 10
-    assert "brown-eye tendency" in synthesis_database["concrete_variant_prediction"]
+    assert "darker-eye-compatible" in synthesis_database["concrete_variant_prediction"]
     assert "blue-eye tendency" in synthesis_database["concrete_variant_prediction"]
     rs12913832_rule = next(
         rule
@@ -134,7 +134,12 @@ def test_herc2_predictive_theses_use_concrete_eye_colour_variant_rules() -> None
                 "pos": 28365618,
                 "ref": "A",
                 "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [13, 5],
+                "dp": 18,
+                "gq": 42,
                 "qual": 88.0,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -174,11 +179,12 @@ def test_herc2_predictive_theses_use_concrete_eye_colour_variant_rules() -> None
     concrete_rows = [
         row
         for row in predictive_theses["variant_prediction_rows"]
-        if row["source"] == "Sample allele-change thesis"
+        if row["source"] == "GT-confirmed allele-dosage thesis"
     ]
     assert concrete_rows
     assert "A -> G" in concrete_rows[0]["observed_signal"]
-    assert "observed alternate allele is G" in concrete_rows[0]["prediction"]
+    assert "GT 0/1 decodes as A/G" in concrete_rows[0]["prediction"]
+    assert "G dosage is the light-eye-associated state" in concrete_rows[0]["prediction"]
     assert "blue or lighter-eye tendency" in concrete_rows[0]["prediction"]
     assert "reduced OCA2 expression" in concrete_rows[0]["research_focus"]
 
@@ -199,7 +205,12 @@ def test_herc2_predictive_theses_use_actual_reverse_eye_colour_change() -> None:
                 "pos": 28365618,
                 "ref": "G",
                 "alt": "A",
+                "gt_raw": "0/1",
+                "ad": [5, 10],
+                "dp": 15,
+                "gq": 47,
                 "qual": 88.0,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -237,11 +248,12 @@ def test_herc2_predictive_theses_use_actual_reverse_eye_colour_change() -> None:
     concrete_rows = [
         row
         for row in predictive_theses["variant_prediction_rows"]
-        if row["source"] == "Sample allele-change thesis"
+        if row["source"] == "GT-confirmed allele-dosage thesis"
     ]
     assert concrete_rows
     assert "G -> A" in concrete_rows[0]["observed_signal"]
-    assert "observed alternate allele is A" in concrete_rows[0]["prediction"]
+    assert "GT 0/1 decodes as G/A" in concrete_rows[0]["prediction"]
+    assert "A dosage supports a brown or darker-eye tendency" in concrete_rows[0]["prediction"]
     assert "brown or darker-eye tendency" in concrete_rows[0]["prediction"]
 
 
@@ -261,7 +273,12 @@ def test_predictive_theses_match_variant_and_all_three_methylation_views() -> No
                 "pos": 99478225,
                 "ref": "G",
                 "alt": "A",
+                "gt_raw": "0/1",
+                "ad": [9, 8],
+                "dp": 17,
+                "gq": 44,
                 "qual": 61.2,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]

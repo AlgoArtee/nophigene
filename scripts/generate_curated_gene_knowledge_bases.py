@@ -172,7 +172,7 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
                 ],
                 "research_context": [
                     "Interpret directionally only when the observed allele and genotype dosage are known.",
-                    "The local app reports REF -> ALT evidence and does not infer homozygosity from a single variant row.",
+                    "The local app now decodes FORMAT/GT and reports zygosity plus allele dosage; REF -> ALT is retained only as the site definition.",
                 ],
                 "usual_variant_note": "GLP1R missense marker studied in liraglutide and EPOCH metabolic cohorts.",
                 "methylation_interpretation": (
@@ -1271,20 +1271,24 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
         "start": 21967751,
         "end": 21995323,
         "strand": "-",
+        "coordinate_source": "NCBI Gene 1029 GRCh37 / hg19 coordinates, with ClinVar GRCh37 variant loci for seeded markers",
         "gene_summary": (
-            "CDKN2A encodes multiple tumor-suppressor products, including p16INK4A and p14ARF, that regulate the RB and p53 pathways, G1 cell-cycle control, senescence, and oncogenic stress responses."
+            "CDKN2A is a 9p21.3 protein-coding tumor-suppressor gene that encodes multiple products, including p16INK4A and p14ARF. "
+            "These products regulate CDK4/6-RB and MDM2-p53 control points, G1 cell-cycle arrest, senescence, and oncogenic-stress response."
         ),
         "clinical_context": (
-            "The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events are often rare germline variants, deletions, or promoter methylation changes rather than common low-effect polymorphisms."
+            "The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call."
         ),
         "variant_effect_overview": [
             "For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+            "Pathogenic p16INK4A or p14ARF-disrupting variants can affect melanoma, pancreatic cancer, and melanoma-neural-system tumor predisposition biology.",
             "Promoter methylation and deletion are central recurring mechanisms in cancer biology and senescence research at this locus.",
             "Observed PASS variants in the interval should therefore be treated as locus context unless they match a seeded research SNP or have outside clinical curation.",
         ],
         "condition_research_overview": [
             "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
             "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+            "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp.",
         ],
         "methylation_interpretation": (
             "CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. "
@@ -1301,22 +1305,35 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
         ],
         "evidence": [
             _evidence("NCBI Gene 1029: CDKN2A gene summary", "https://www.ncbi.nlm.nih.gov/gene/1029"),
+            _evidence("GeneReviews: CDKN2A Cancer Predisposition", "https://www.ncbi.nlm.nih.gov/books/NBK616232/"),
+            _evidence("ClinVar VCV000009412: CDKN2A c.301G>T / p.Gly101Trp", "https://www.ncbi.nlm.nih.gov/clinvar/variation/9412/"),
+            _evidence("ClinVar RCV000034482: CDKN2A c.442G>A / p.Ala148Thr", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000034482/"),
             _evidence("PubMed 26557774: CDKN2A 3'UTR sequence variants in melanoma", "https://pubmed.ncbi.nlm.nih.gov/26557774/"),
+            _evidence("PubMed 23816148: rs3088440 and 9p21 melanoma risk", "https://pubmed.ncbi.nlm.nih.gov/23816148/"),
+            _evidence("PubMed 33910831: 3'UTR CDKN2A/CDK4 germline variants", "https://pubmed.ncbi.nlm.nih.gov/33910831/"),
             _evidence("PubMed 31270053: CDKN2A methylation and aging", "https://pubmed.ncbi.nlm.nih.gov/31270053/"),
         ],
         "variants": [
             {
                 "variant": "rs11515",
+                "display_name": "rs11515 (c.*29G>C)",
                 "common_name": "CDKN2A 3'UTR regulatory SNP",
+                "position": 21968199,
+                "lookup_keys": [
+                    "rs11515",
+                    "CDKN2A:rs11515",
+                    "9:21968199",
+                    "9:21968199:C>G",
+                ],
                 "region_class": "gene_body",
                 "interpretation_scope": "Research association / regulatory marker",
                 "clinical_interpretation": (
-                    "rs11515 is a 3'UTR CDKN2A polymorphism curated here as a research-level regulatory marker. "
-                    "It has been discussed in melanoma and cancer-risk literature but is not treated as a pathogenic stand-alone allele in this local database."
+                    "rs11515 is a common 3'UTR CDKN2A polymorphism curated here as a regulatory and association-study marker. "
+                    "ClinVar submitters classify the c.*29G>C record as benign in germline contexts, while melanoma studies discuss it as part of 3'UTR haplotype and post-transcriptional regulation research."
                 ),
-                "clinical_significance": "Research-level regulatory association marker.",
+                "clinical_significance": "Common/benign germline ClinVar context with research-level regulatory association literature.",
                 "functional_effects": [
-                    "Likely reflects post-transcriptional regulatory context at the CDKN2A locus.",
+                    "Sits in the 3'UTR and may reflect post-transcriptional regulatory context at the CDKN2A locus.",
                     "Any disease signal is modest relative to rare truncating, deletion, or methylation-mediated CDKN2A loss.",
                 ],
                 "associated_conditions": [
@@ -1332,7 +1349,9 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
                 ),
                 "is_assayable_in_snp_vcf": True,
                 "evidence": [
+                    _evidence("ClinVar RCV001529165: rs11515 / c.*29G>C", "https://www.ncbi.nlm.nih.gov/clinvar/RCV001529165/"),
                     _evidence("PubMed 26557774: CDKN2A 3'UTR sequence variants in melanoma", "https://pubmed.ncbi.nlm.nih.gov/26557774/"),
+                    _evidence("PubMed 33910831: 3'UTR CDKN2A/CDK4 germline variants", "https://pubmed.ncbi.nlm.nih.gov/33910831/"),
                 ],
                 "literature_findings": [
                     {
@@ -1341,24 +1360,221 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
                         "phenotype": "Melanoma-focused sequence-variant analysis",
                         "finding": "The study examined CDKN2A 3'UTR variation including rs11515 as part of melanoma-focused regulatory sequence analysis, reinforcing its use as a research-level rather than high-penetrance marker.",
                         "url": "https://pubmed.ncbi.nlm.nih.gov/26557774/",
+                    },
+                    {
+                        "paper": "Tovar-Parra et al., 2021 (PMID 33910831)",
+                        "genotypes": "CDKN2A 500C>G / rs11515 with rs3088440 haplotypes",
+                        "phenotype": "Cutaneous melanoma susceptibility in a Colombian case-control cohort",
+                        "finding": "The cohort did not find rs11515 alone associated with melanoma risk, but reported haplotype context for 500G/540C, supporting cautious haplotype-level interpretation.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/33910831/",
+                    },
+                ],
+            },
+            {
+                "variant": "rs3088440",
+                "display_name": "rs3088440 (c.*69C>T / 540C>T)",
+                "common_name": "CDKN2A 3'UTR melanoma-risk modifier",
+                "position": 21968159,
+                "lookup_keys": [
+                    "rs3088440",
+                    "CDKN2A:rs3088440",
+                    "9:21968159",
+                    "9:21968159:G>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Common 3'UTR association marker / melanoma-risk modifier",
+                "clinical_interpretation": (
+                    "rs3088440 is a CDKN2A 3'UTR polymorphism described as 540C>T or c.*69C>T depending on transcript orientation. "
+                    "ClinVar submitter summaries list it as benign in germline contexts, while melanoma association studies report cohort-specific risk or haplotype signals."
+                ),
+                "clinical_significance": "Common/benign germline ClinVar context with cohort-specific melanoma association literature.",
+                "functional_effects": [
+                    "Located in the 3'UTR where altered mRNA stability or post-transcriptional regulation has been proposed.",
+                    "Association direction can vary by ancestry, melanoma subtype, and haplotype with rs11515.",
+                ],
+                "associated_conditions": [
+                    "Cutaneous melanoma susceptibility studies",
+                    "9p21 melanoma-risk fine-mapping",
+                    "Post-transcriptional tumor-suppressor regulation",
+                ],
+                "research_context": [
+                    "Use rs3088440 as a common low-effect modifier or haplotype marker, not as a high-penetrance CDKN2A cancer-predisposition call.",
+                    "The strongest local clinical escalation remains reserved for rare pathogenic CDKN2A alleles or clear tumor-suppressor silencing evidence.",
+                ],
+                "usual_variant_note": "Common CDKN2A 3'UTR marker also described as 540C>T.",
+                "methylation_interpretation": (
+                    "Pair rs3088440 with methylation as two regulatory layers at the CDKN2A locus; do not infer promoter silencing from the 3'UTR genotype alone."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 23816148: rs3088440 and 9p21 melanoma risk", "https://pubmed.ncbi.nlm.nih.gov/23816148/"),
+                    _evidence("PubMed 33910831: 3'UTR CDKN2A/CDK4 germline variants", "https://pubmed.ncbi.nlm.nih.gov/33910831/"),
+                    _evidence("ClinVar Miner: rs3088440 benign submitter summary", "https://clinvarminer.genetics.utah.edu/variants-by-gene/CDKN2A/significance/benign"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Ibarrola-Villava et al., 2013 (PMID 23816148)",
+                        "genotypes": "T-allele carriers at rs3088440 / 540C>T",
+                        "phenotype": "Melanoma risk in 9p21 fine-mapping",
+                        "finding": "The study reported association between the rs3088440 T allele and melanoma risk in the Spanish cohort, while noting that prior evidence was inconsistent.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/23816148/",
+                    },
+                    {
+                        "paper": "Tovar-Parra et al., 2021 (PMID 33910831)",
+                        "genotypes": "CDKN2A 540C>T / rs3088440 with rs11515 haplotypes",
+                        "phenotype": "Cutaneous melanoma susceptibility in a Colombian case-control cohort",
+                        "finding": "The study found similar rs3088440 distributions in cases and controls but reported 3'UTR haplotype context, supporting population-specific interpretation.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/33910831/",
+                    },
+                ],
+            },
+            {
+                "variant": "rs3731249",
+                "display_name": "rs3731249 (p.Ala148Thr / A148T)",
+                "common_name": "CDKN2A Ala148Thr benign missense polymorphism",
+                "position": 21970916,
+                "lookup_keys": [
+                    "rs3731249",
+                    "CDKN2A:rs3731249",
+                    "CDKN2A p.Ala148Thr",
+                    "p.A148T",
+                    "9:21970916",
+                    "9:21970916:C>T",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Benign polymorphism / historical melanoma-susceptibility candidate",
+                "clinical_interpretation": (
+                    "rs3731249 encodes p.Ala148Thr in p16INK4A for the MANE transcript and appears as a 3'UTR variant in several alternate CDKN2A transcripts. "
+                    "Current ClinVar curation classifies it as benign with multiple submitters and no conflicts, so this local database keeps it as a historical research marker rather than a cancer-predisposition allele."
+                ),
+                "clinical_significance": "Benign germline ClinVar classification; historical research association marker.",
+                "functional_effects": [
+                    "Missense p.Ala148Thr in p16INK4A with benign ClinVar classification.",
+                    "Should not be upgraded to pathogenic CDKN2A cancer predisposition without additional external evidence.",
+                ],
+                "associated_conditions": [
+                    "Historical familial melanoma and nevus-susceptibility studies",
+                    "Benign ClinVar germline variant interpretation",
+                ],
+                "research_context": [
+                    "Useful mainly as a negative-control style example of why common CDKN2A polymorphisms need separation from rare pathogenic variants.",
+                    "If observed in a VCF, report genotype dosage and benign curation rather than a high-risk cancer thesis.",
+                ],
+                "usual_variant_note": "Ala148Thr / A148T, currently benign in ClinVar.",
+                "methylation_interpretation": (
+                    "Do not infer CDKN2A promoter silencing from rs3731249; methylation and variant interpretation should remain separate."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar RCV000034482: CDKN2A p.Ala148Thr benign", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000034482/"),
+                    _evidence("PubMed 22703879: exome screening secondary variants", "https://pubmed.ncbi.nlm.nih.gov/22703879/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar RCV000034482, current record",
+                        "genotypes": "p.Ala148Thr / rs3731249 carrier states",
+                        "phenotype": "Germline variant classification",
+                        "finding": "ClinVar reports p.Ala148Thr as benign with multiple submitters and no conflicts, making it inappropriate to interpret as a high-penetrance CDKN2A cancer-predisposition allele in this workbench.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000034482/",
+                    },
+                ],
+            },
+            {
+                "variant": "CDKN2A p.Gly101Trp",
+                "display_name": "CDKN2A p.Gly101Trp (c.301G>T / G101W)",
+                "common_name": "Pathogenic CDKN2A G101W melanoma-pancreatic cancer marker",
+                "position": 21971057,
+                "lookup_keys": [
+                    "CDKN2A p.Gly101Trp",
+                    "CDKN2A:p.Gly101Trp",
+                    "CDKN2A G101W",
+                    "p.G101W",
+                    "c.301G>T",
+                    "NM_000077.5:c.301G>T",
+                    "9:21971057:C>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "ClinVar pathogenic rare variant / cancer-predisposition marker",
+                "clinical_interpretation": (
+                    "CDKN2A c.301G>T / p.Gly101Trp is a rare pathogenic p16INK4A missense variant. "
+                    "ClinVar lists pathogenic classifications across melanoma, hereditary cancer-predisposition, and melanoma-pancreatic cancer contexts, with reports in affected families and functional evidence for impaired p16INK4A activity."
+                ),
+                "clinical_significance": "Pathogenic ClinVar germline variant; requires genetics-professional review if observed.",
+                "functional_effects": [
+                    "Missense change in the p16INK4A ankyrin-repeat region that can disrupt CDK4 binding and cell-cycle arrest.",
+                    "Also maps to an alternate p14ARF transcript consequence, so isoform context matters.",
+                ],
+                "associated_conditions": [
+                    "Familial melanoma",
+                    "Melanoma-pancreatic cancer syndrome",
+                    "CDKN2A cancer predisposition",
+                ],
+                "research_context": [
+                    "This marker is intentionally matched by exact GRCh37 REF -> ALT key rather than dbSNP ID alone because the rs104894094 cluster includes other alleles at the same locus.",
+                    "Treat a matched row as a high-priority research and clinical-follow-up flag, not as a diagnosis from this app alone.",
+                ],
+                "usual_variant_note": "Rare pathogenic G101W / c.301G>T marker; exact allele orientation matters.",
+                "methylation_interpretation": (
+                    "If p.Gly101Trp is observed together with high CDKN2A promoter methylation, the sample has both sequence and epigenetic tumor-suppressor context, but external clinical confirmation remains essential."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar VCV000009412: CDKN2A c.301G>T / p.Gly101Trp", "https://www.ncbi.nlm.nih.gov/clinvar/variation/9412/"),
+                    _evidence("ClinVar RCV000196633: p.Gly101Trp familial melanoma", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000196633/"),
+                    _evidence("PubMed 11807902: G101W in Italian melanoma families", "https://pubmed.ncbi.nlm.nih.gov/11807902/"),
+                    _evidence("PubMed 21462282: CDKN2A variant functional classification", "https://pubmed.ncbi.nlm.nih.gov/21462282/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar VCV000009412, current record",
+                        "genotypes": "CDKN2A c.301G>T / p.Gly101Trp carrier states",
+                        "phenotype": "Familial melanoma and CDKN2A cancer-predisposition submissions",
+                        "finding": "ClinVar classifies p.Gly101Trp as pathogenic and places it at chr9:21,971,057 on GRCh37, supporting exact allele-level matching in the local database.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/9412/",
+                    },
+                    {
+                        "paper": "Mantelli et al., 2002 (PMID 11807902)",
+                        "genotypes": "G101W germline mutation carriers",
+                        "phenotype": "Italian malignant melanoma families",
+                        "finding": "The study reported a high prevalence of the G101W germline mutation in Italian malignant melanoma families, supporting rare-founder and familial-risk context.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/11807902/",
                     }
                 ],
             }
         ],
         "population_intro": "Broader population patterns curated from CDKN2A tumor-suppressor, methylation, and senescence literature.",
         "population_coverage_note": (
-            "The bundled CDKN2A population database emphasizes rare-disease and epigenetic patterns because common SNP frequency panels capture only a small part of CDKN2A biology."
+            "The bundled CDKN2A population database emphasizes rare-disease and epigenetic patterns because common SNP frequency panels capture only a small part of CDKN2A biology. Common 3'UTR SNPs are included as low-effect population research markers, while pathogenic CDKN2A findings require allele-specific clinical review."
         ),
         "population_sources": [
             _evidence("NCBI Gene 1029: CDKN2A gene summary", "https://www.ncbi.nlm.nih.gov/gene/1029"),
+            _evidence("GeneReviews: CDKN2A Cancer Predisposition", "https://www.ncbi.nlm.nih.gov/books/NBK616232/"),
+            _evidence("ClinVar VCV000009412: CDKN2A p.Gly101Trp", "https://www.ncbi.nlm.nih.gov/clinvar/variation/9412/"),
+            _evidence("ClinVar RCV000034482: CDKN2A p.Ala148Thr benign", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000034482/"),
             _evidence("PubMed 31270053: CDKN2A methylation and aging", "https://pubmed.ncbi.nlm.nih.gov/31270053/"),
             _evidence("PubMed 26557774: CDKN2A 3'UTR variants in melanoma", "https://pubmed.ncbi.nlm.nih.gov/26557774/"),
+            _evidence("PubMed 23816148: rs3088440 and 9p21 melanoma risk", "https://pubmed.ncbi.nlm.nih.gov/23816148/"),
         ],
         "gene_population_patterns": [
             {
                 "variant": "Rare CDKN2A loss-of-function variants",
                 "location_group": "Rare disease families",
                 "summary": "Across populations, the most clinically important CDKN2A events are rare germline or somatic loss-of-function alterations rather than common low-effect polymorphisms.",
+            },
+            {
+                "variant": "CDKN2A p.Gly101Trp / G101W",
+                "location_group": "Rare disease families",
+                "summary": "G101W is curated as a rare pathogenic CDKN2A familial melanoma and melanoma-pancreatic cancer marker; match it allele-specifically rather than by rsID alone.",
+            },
+            {
+                "variant": "rs11515 and rs3088440",
+                "location_group": "Cancer cohorts",
+                "summary": "Common CDKN2A 3'UTR variants vary by cohort and ancestry and should be read as low-effect melanoma/cancer association context rather than high-penetrance predisposition.",
+            },
+            {
+                "variant": "rs3731249 / p.Ala148Thr",
+                "location_group": "Global pattern",
+                "summary": "Ala148Thr is common enough to appear in population screening and is currently benign in ClinVar, so it helps separate common polymorphism context from pathogenic CDKN2A events.",
             },
             {
                 "variant": "CDKN2A promoter methylation",

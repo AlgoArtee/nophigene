@@ -310,7 +310,12 @@ def test_population_insights_flag_observed_curated_variant() -> None:
                 "pos": 636784,
                 "ref": "C",
                 "alt": "T",
+                "gt_raw": "0/1",
+                "ad": [9, 8],
+                "dp": 17,
+                "gq": 44,
                 "qual": 51.2,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -340,7 +345,12 @@ def test_generate_report_includes_variant_and_methylation_interpretation_section
                 "pos": 636784,
                 "ref": "C",
                 "alt": "T",
+                "gt_raw": "0/1",
+                "ad": [9, 8],
+                "dp": 17,
+                "gq": 44,
                 "qual": 51.2,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -397,7 +407,7 @@ def test_generate_report_includes_variant_and_methylation_interpretation_section
     assert "Variant Prediction" in report_html
     assert "Methylation Prediction" in report_html
     assert "Synthesis" in report_html
-    assert "Sample allele-change thesis" in report_html
+    assert "GT-confirmed allele-dosage thesis" in report_html
     assert "report-table-shell" in report_html
     assert "table-layout: fixed" in report_html
     assert "width: min(98vw, 1800px)" in report_html
@@ -436,7 +446,9 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
                 "pos": 28365618,
                 "ref": "A",
                 "alt": "G",
+                "gt_raw": "0/1",
                 "qual": 88.0,
+                "filter_status": "PASS",
                 "filter_pass": True,
             },
             {
@@ -445,7 +457,9 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
                 "pos": 28356859,
                 "ref": "C",
                 "alt": "T",
+                "gt_raw": "0/1",
                 "qual": 74.0,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -458,7 +472,9 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
                 "pos": 28365618,
                 "ref": "G",
                 "alt": "A",
+                "gt_raw": "0/1",
                 "qual": 91.25,
+                "filter_status": "PASS",
                 "filter_pass": True,
             }
         ]
@@ -474,7 +490,9 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
                         "pos": 28360000,
                         "ref": "T",
                         "alt": "C",
+                        "gt_raw": "0/1",
                         "qual": 82.5,
+                        "filter_status": "PASS",
                         "filter_pass": True,
                     }
                 ]
@@ -504,10 +522,13 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
     assert database.columns.tolist() == GENERAL_ANALYSIS_DATABASE_COLUMNS
     assert len(database) == 2
     assert database.loc[0, "gene"] == "HERC2"
-    assert database.loc[0, "variant key"] == "chr15:28365618:A>G"
+    assert database.loc[0, "variant key"] == "chr15:28365618:A>G:GT=0/1"
     assert database.loc[0, "observed gene variant"] == "rs12913832"
     assert database.loc[0, "gene variant label"] == "rs12913832"
     assert database.loc[0, "change"] == "A -> G"
+    assert database.loc[0, "genotype"] == "A/G"
+    assert database.loc[0, "zygosity"] == "heterozygous"
+    assert database.loc[0, "allele dosage"] == "G:1"
     assert database.loc[0, "chromosome"] == "chr15"
     assert database.loc[0, "position"] == 28365618
     assert database.loc[0, "variant location"] == "chr15:28,365,618"
@@ -523,7 +544,7 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
     assert database.loc[0, "mean beta whitelist"] == 0.71
     assert database.loc[0, "mean beta related to gene"] == 0.62
     assert database.loc[0, "mean beta on found probes in the area (numerical rows)"] == 0.53
-    assert database.loc[1, "variant key"] == "chr15:28356859:C>T"
+    assert database.loc[1, "variant key"] == "chr15:28356859:C>T:GT=0/1"
 
     appended = update_general_analysis_database(
         gene_name="HERC2",
@@ -536,7 +557,7 @@ def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_pat
     database = pd.read_csv(database_path)
     assert appended["action"] == "added"
     assert len(database) == 3
-    assert database.loc[2, "variant key"] == "chr15:28360000:T>C"
+    assert database.loc[2, "variant key"] == "chr15:28360000:T>C:GT=0/1"
 
     overwritten = update_general_analysis_database(
         gene_name="HERC2",
