@@ -1,6 +1,11 @@
 [CmdletBinding()]
 param(
     [int]$Port = 8000,
+    [switch]$UseDocker,
+    [string]$ImageName = "nophigene:latest",
+    [string]$ContainerName = "nophigene-ui",
+    [switch]$SkipBuild,
+    [switch]$EnableLocalExtraction,
     [switch]$NoOpenBrowser,
     [switch]$DryRun
 )
@@ -8,12 +13,34 @@ param(
 $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Resolve-Path (Join-Path $scriptDir "..")).Path
+$dockerStartScript = Join-Path $scriptDir "start_nophigene_ui.ps1"
 $pythonPath = Join-Path $repoRoot ".venv\Scripts\python.exe"
 $dataDir = Join-Path $repoRoot "data"
+$referenceDir = Join-Path $dataDir "reference\hg38"
+$extractedDir = Join-Path $dataDir "extracted"
 $resultsDir = Join-Path $repoRoot "results"
 $pidFile = Join-Path $repoRoot ".nophigene-ui.pid"
 $stdoutLog = Join-Path $repoRoot ".nophigene-ui.log"
 $stderrLog = Join-Path $repoRoot ".nophigene-ui.err.log"
+
+if ($UseDocker) {
+    Write-Host ""
+    Write-Host "NophiGene local launcher is delegating to Docker for Extraction support." -ForegroundColor Green
+    Write-Host "Docker image will include samtools and bcftools when rebuilt from the current Dockerfile."
+    Write-Host ""
+
+    $dockerParams = @{
+        Port = $Port
+        ImageName = $ImageName
+        ContainerName = $ContainerName
+    }
+    if ($SkipBuild) { $dockerParams.SkipBuild = $true }
+    if ($NoOpenBrowser) { $dockerParams.NoOpenBrowser = $true }
+    if ($DryRun) { $dockerParams.DryRun = $true }
+
+    & $dockerStartScript @dockerParams
+    exit $LASTEXITCODE
+}
 
 function Write-Step {
     param([string]$Message)
@@ -21,7 +48,7 @@ function Write-Step {
 }
 
 function Ensure-Directories {
-    foreach ($dir in @($dataDir, $resultsDir)) {
+    foreach ($dir in @($dataDir, $referenceDir, $extractedDir, $resultsDir)) {
         if (-not (Test-Path $dir)) {
             Write-Step "Creating $dir"
             if (-not $DryRun) {
@@ -29,6 +56,33 @@ function Ensure-Directories {
             }
         }
     }
+}
+
+function Test-CommandAvailable {
+    param([string]$Name)
+    return $null -ne (Get-Command $Name -ErrorAction SilentlyContinue)
+}
+
+function Configure-LocalExtraction {
+    $envOverrideEnabled = $env:NOPHIGENE_ENABLE_LOCAL_EXTRACTION -eq "1"
+    if (-not $EnableLocalExtraction -and -not $envOverrideEnabled) {
+        Write-Host "Extraction  : disabled in local mode; use Docker for BAM extraction." -ForegroundColor Yellow
+        return
+    }
+
+    $missingTools = @()
+    foreach ($toolName in @("samtools", "bcftools")) {
+        if (-not (Test-CommandAvailable -Name $toolName)) {
+            $missingTools += $toolName
+        }
+    }
+
+    if ($missingTools.Count -gt 0) {
+        throw "Local extraction was requested, but these tools were not found on PATH: $($missingTools -join ', '). Use the Docker launcher or install the tools locally."
+    }
+
+    $env:NOPHIGENE_ENABLE_LOCAL_EXTRACTION = "1"
+    Write-Host "Extraction  : enabled for this local process via NOPHIGENE_ENABLE_LOCAL_EXTRACTION=1." -ForegroundColor Green
 }
 
 function Test-WebReady {
@@ -90,6 +144,8 @@ Write-Host "NophiGene local launcher" -ForegroundColor Green
 Write-Host "Repository : $repoRoot"
 Write-Host "Python     : $pythonPath"
 Write-Host "Port       : $Port"
+Write-Host "Reference  : $referenceDir"
+Write-Host "Extracted  : $extractedDir"
 Write-Host ""
 
 if (-not (Test-Path $pythonPath)) {
@@ -97,6 +153,7 @@ if (-not (Test-Path $pythonPath)) {
 }
 
 Ensure-Directories
+Configure-LocalExtraction
 
 $existing = Get-TrackedProcess
 if ($existing) {
@@ -158,4 +215,5 @@ if (-not $NoOpenBrowser) {
 Write-Host ""
 Write-Host "Local UI is ready." -ForegroundColor Green
 Write-Host "Open http://127.0.0.1:$Port if the browser did not appear automatically."
+Write-Host "BAM extraction remains Docker-first unless local samtools/bcftools are explicitly enabled."
 Write-Host "Use 'Stop NophiGene UI.cmd' to stop the local server later."

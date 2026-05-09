@@ -32,9 +32,11 @@ ARG USER_GID=1000
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        bcftools \
         libbz2-1.0 \
         libcurl4 \
-        liblzma5 && \
+        liblzma5 \
+        samtools && \
     rm -rf /var/lib/apt/lists/*
 
 RUN groupadd --gid "${USER_GID}" "${USERNAME}" && \

@@ -32,6 +32,16 @@ try:
         normalize_analysis_scope,
         run_analysis,
     )
+    from .bam_extraction import (
+        HG38_FASTA,
+        HG38_REFERENCE_DIR,
+        ExtractionError,
+        default_extracted_vcf_path,
+        extract_region_vcf,
+        get_extraction_tool_status,
+        get_hg38_reference_status,
+        prepare_hg38_reference,
+    )
     from .gene_region_extraction import find_gene_region
     from .helper_functions.filter_manifest_region import (
         sanitize_gene_name_for_filename,
@@ -55,6 +65,16 @@ except ImportError:
         normalize_analysis_scope,
         run_analysis,
     )
+    from bam_extraction import (
+        HG38_FASTA,
+        HG38_REFERENCE_DIR,
+        ExtractionError,
+        default_extracted_vcf_path,
+        extract_region_vcf,
+        get_extraction_tool_status,
+        get_hg38_reference_status,
+        prepare_hg38_reference,
+    )
     from gene_region_extraction import find_gene_region
     from helper_functions.filter_manifest_region import sanitize_gene_name_for_filename, save_filtered_manifest
     from human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
@@ -64,8 +84,32 @@ DATA_DIR = PROJECT_ROOT / "data"
 RESULTS_DIR = PROJECT_ROOT / "results"
 PREPROCESSED_MANIFEST_DIR = Path(__file__).resolve().parent / "gene_data"
 SESSION_PREPROCESS_KEY = "preprocess_state"
+SESSION_EXTRACTION_KEY = "extraction_state"
 VARIANT_RAW_PAGE_SIZE = 25
 GENERAL_ANALYSIS_DATABASE_FILENAME = "general_gene_analysis_database.csv"
+REPORT_HISTORY_SUFFIXES = {".html", ".json", ".csv"}
+GENERIC_PROCESSED_GENE_TOKENS = {
+    "analysis",
+    "catalog",
+    "database",
+    "gene",
+    "genes",
+    "general",
+    "lookup",
+    "manifest",
+    "manifests",
+    "methylation",
+    "output",
+    "preprocessed",
+    "processed",
+    "protein",
+    "proteins",
+    "report",
+    "reports",
+    "result",
+    "results",
+    "summary",
+}
 
 app = Flask(__name__, template_folder=str(Path(__file__).resolve().parent / "templates"))
 app.secret_key = os.environ.get("NOPHIGENE_SECRET_KEY", "nophigene-local-dev")
@@ -312,6 +356,50 @@ def _build_analysis_scope_regions(gene_name: str, selected_gene_region: str) -> 
     }
 
 
+def _knowledge_base_uses_genome_build(gene_name: str, genome_build: str) -> bool:
+    """Return whether a bundled gene knowledge base explicitly matches a build."""
+    knowledge_base = load_gene_interpretation_database(gene_name.strip().upper() or DEFAULT_GENE_NAME)
+    if knowledge_base is None:
+        return False
+    gene_context = knowledge_base.get("gene_context", {})
+    assembly = str(gene_context.get("assembly", "")).lower()
+    normalized_build = str(genome_build or "").lower()
+    if normalized_build in {"hg38", "grch38"}:
+        return "hg38" in assembly or "grch38" in assembly
+    if normalized_build in {"hg19", "grch37"}:
+        return "hg19" in assembly or "grch37" in assembly or not assembly
+    return False
+
+
+def _build_extraction_scope_regions(
+    gene_name: str,
+    selected_gene_region: str,
+    genome_build: str,
+) -> dict[str, str]:
+    """Build extraction scope regions without reusing hg19-only local intervals."""
+    normalized_build = str(genome_build or "hg38").lower()
+    if normalized_build == "hg38" and not _knowledge_base_uses_genome_build(gene_name, "hg38"):
+        promoter_plus_gene = _format_region_with_padding(selected_gene_region)
+        return {
+            "promoter_plus_gene": promoter_plus_gene,
+            "promoter_only": "",
+            "gene_only": selected_gene_region,
+        }
+    return _build_analysis_scope_regions(gene_name, selected_gene_region)
+
+
+def _allows_empty_methylation_subset(gene_name: str) -> bool:
+    """Return whether preprocessing may unlock analysis with a zero-probe subset."""
+    knowledge_base = load_gene_interpretation_database(gene_name.strip().upper() or DEFAULT_GENE_NAME)
+    if knowledge_base is None:
+        return False
+
+    gene_context = knowledge_base.get("gene_context", {})
+    chromosome = str(gene_context.get("chromosome", "")).strip().upper()
+    relevant_probe_ids = gene_context.get("relevant_methylation_probe_ids")
+    return chromosome in {"M", "MT"} or relevant_probe_ids == []
+
+
 def _build_analysis_scope_options(preprocess_state: dict[str, Any]) -> list[dict[str, str]]:
     """Return report-focus options with the current gene's regions attached."""
     scope_regions = dict(preprocess_state.get("scope_regions") or {})
@@ -349,6 +437,98 @@ def discover_vcf_files() -> list[str]:
         return []
     matches = sorted(DATA_DIR.rglob("*.vcf.gz")) + sorted(DATA_DIR.rglob("*.vcf"))
     return [_as_relative_display(path) for path in matches]
+
+
+def discover_bam_files() -> list[str]:
+    """Find BAM candidates under the mounted data directory."""
+    if not DATA_DIR.exists():
+        return []
+    matches = sorted(DATA_DIR.rglob("*.bam"))
+    return [_as_relative_display(path) for path in matches]
+
+
+def _merge_path_options(*groups: list[str]) -> list[str]:
+    """Merge path option lists while preserving order."""
+    merged: list[str] = []
+    seen: set[str] = set()
+    for group in groups:
+        for raw_path in group:
+            path = str(raw_path).strip()
+            if not path or path in seen:
+                continue
+            merged.append(path)
+            seen.add(path)
+    return merged
+
+
+def search_bam_files(search_root: str, *, max_results: int = 200) -> list[str]:
+    """Search a user-selected folder tree for BAM files."""
+    raw_root = Path(str(search_root).strip()).expanduser()
+    root = raw_root if raw_root.is_absolute() else PROJECT_ROOT / raw_root
+    if not root.exists():
+        raise AnalysisError(f"BAM search folder does not exist: {root}")
+    if not root.is_dir():
+        raise AnalysisError(f"BAM search path must be a folder: {root}")
+
+    matches: list[str] = []
+    for current_root, dir_names, file_names in os.walk(root, onerror=lambda _error: None):
+        dir_names[:] = [
+            name
+            for name in dir_names
+            if name not in {".git", ".venv", "__pycache__", ".pytest_cache", ".docker-local"}
+        ]
+        for file_name in file_names:
+            if not file_name.lower().endswith(".bam"):
+                continue
+            matches.append(_as_relative_display(Path(current_root) / file_name))
+            if len(matches) >= max_results:
+                return sorted(matches)
+    return sorted(matches)
+
+
+def browse_bam_file(initial_path: str = "") -> str:
+    """Open a native file picker and return the selected BAM path."""
+    raw_initial_path = Path(str(initial_path or "").strip()).expanduser()
+    if not raw_initial_path:
+        initial_dir = DATA_DIR if DATA_DIR.exists() else PROJECT_ROOT
+    elif raw_initial_path.is_file():
+        initial_dir = raw_initial_path.parent
+    elif raw_initial_path.is_dir():
+        initial_dir = raw_initial_path
+    else:
+        initial_dir = raw_initial_path.parent if raw_initial_path.parent.exists() else PROJECT_ROOT
+
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+    except Exception as exc:
+        raise AnalysisError(
+            "The native BAM file picker is unavailable in this Python runtime. "
+            "Use folder search or enter the BAM path manually."
+        ) from exc
+
+    root = tk.Tk()
+    root.withdraw()
+    try:
+        root.attributes("-topmost", True)
+    except Exception:
+        pass
+    try:
+        selected_path = filedialog.askopenfilename(
+            title="Select GRCh38 BAM file",
+            initialdir=str(initial_dir),
+            filetypes=(("BAM files", "*.bam"), ("All files", "*.*")),
+        )
+    finally:
+        root.destroy()
+
+    if not selected_path:
+        raise AnalysisError("No BAM file was selected.")
+
+    selected = Path(selected_path)
+    if selected.suffix.lower() != ".bam":
+        raise AnalysisError("Select a file ending in .bam.")
+    return _as_relative_display(selected)
 
 
 def discover_population_stats_files() -> list[str]:
@@ -462,6 +642,48 @@ def _infer_report_label(report_path: Path) -> str:
     return stem.replace("_", " ").strip() or report_path.name
 
 
+def _is_report_history_artifact(path: Path) -> bool:
+    """Return whether an artifact should appear in report history."""
+    if not path.is_file():
+        return False
+    if path.suffix.lower() not in REPORT_HISTORY_SUFFIXES:
+        return False
+    if path.name == GENERAL_ANALYSIS_DATABASE_FILENAME:
+        return False
+    if path.name.lower().endswith("_methylation.csv"):
+        return False
+    return True
+
+
+def _normalize_processed_gene_symbol(value: Any) -> str:
+    """Normalize a user- or filename-derived gene symbol for matching."""
+    normalized = re.sub(r"[^A-Za-z0-9.-]+", "", str(value or "").strip()).upper()
+    if not normalized:
+        return ""
+    if normalized.lower() in GENERIC_PROCESSED_GENE_TOKENS:
+        return ""
+    return normalized
+
+
+def _infer_processed_gene_symbol(report_path: Path) -> str:
+    """Infer the processed gene symbol represented by a saved artifact path."""
+    stem = report_path.stem.strip()
+    if not stem:
+        return ""
+
+    stem_lower = stem.lower()
+    for scope_config in ANALYSIS_SCOPE_OPTIONS.values():
+        scope_slug = str(scope_config.get("slug", "")).lower()
+        scope_suffix = f"_{scope_slug}_report"
+        if scope_slug and stem_lower.endswith(scope_suffix):
+            return _normalize_processed_gene_symbol(stem[: -len(scope_suffix)])
+
+    if stem_lower.endswith("_report"):
+        return _normalize_processed_gene_symbol(stem[: -len("_report")])
+
+    return _normalize_processed_gene_symbol(stem.split("_", 1)[0])
+
+
 def _general_analysis_database_path() -> Path:
     """Return the central one-row-per-observed-variant database path used by the UI."""
     return RESULTS_DIR / GENERAL_ANALYSIS_DATABASE_FILENAME
@@ -523,13 +745,7 @@ def discover_report_history() -> list[dict[str, str]]:
 
     sortable_entries: list[tuple[float, dict[str, str]]] = []
     for path in RESULTS_DIR.rglob("*"):
-        if not path.is_file():
-            continue
-        if path.suffix.lower() not in {".html", ".json", ".csv"}:
-            continue
-        if path.name == GENERAL_ANALYSIS_DATABASE_FILENAME:
-            continue
-        if path.name.endswith("_methylation.csv"):
+        if not _is_report_history_artifact(path):
             continue
 
         stats = path.stat()
@@ -543,6 +759,7 @@ def discover_report_history() -> list[dict[str, str]]:
                     "report_path": _as_relative_display(path),
                     "report_url": url_for("result_artifact", artifact_path=path.relative_to(RESULTS_DIR).as_posix()),
                     "report_type": path.suffix.removeprefix(".").upper() or "FILE",
+                    "processed_gene_symbol": _infer_processed_gene_symbol(path),
                     "modified_display": datetime.fromtimestamp(stats.st_mtime).strftime("%Y-%m-%d %H:%M"),
                     "size_display": _format_artifact_size(stats.st_size),
                     "methylation_path": (
@@ -562,6 +779,59 @@ def discover_report_history() -> list[dict[str, str]]:
 
     sortable_entries.sort(key=lambda item: item[0], reverse=True)
     return [entry for _, entry in sortable_entries]
+
+
+def discover_processed_gene_symbols(
+    report_history: list[dict[str, str]] | None = None,
+    general_database: dict[str, Any] | None = None,
+) -> list[str]:
+    """Return gene symbols already represented by generated outputs."""
+    gene_symbols: set[str] = set()
+
+    if report_history is None:
+        if RESULTS_DIR.exists():
+            for path in RESULTS_DIR.rglob("*"):
+                if _is_report_history_artifact(path):
+                    symbol = _infer_processed_gene_symbol(path)
+                    if symbol:
+                        gene_symbols.add(symbol)
+    else:
+        for item in report_history:
+            symbol = _normalize_processed_gene_symbol(item.get("processed_gene_symbol", ""))
+            if not symbol and item.get("report_name"):
+                symbol = _infer_processed_gene_symbol(Path(str(item["report_name"])))
+            if symbol:
+                gene_symbols.add(symbol)
+
+    if general_database is None:
+        database_path = _general_analysis_database_path()
+        if database_path.exists():
+            try:
+                database = pd.read_csv(database_path, dtype=object, keep_default_na=False, usecols=["gene"])
+            except Exception:
+                database = None
+            if database is not None:
+                for value in database["gene"].dropna().unique():
+                    symbol = _normalize_processed_gene_symbol(value)
+                    if symbol:
+                        gene_symbols.add(symbol)
+    else:
+        for row in general_database.get("rows", []):
+            symbol = _normalize_processed_gene_symbol(row.get("gene") if isinstance(row, dict) else "")
+            if symbol:
+                gene_symbols.add(symbol)
+
+    return sorted(gene_symbols)
+
+
+def _protein_matches_processed_gene_symbols(protein: dict[str, Any], processed_gene_symbols: set[str]) -> bool:
+    """Return whether a UniProt card belongs to an already processed gene."""
+    candidates = {_normalize_processed_gene_symbol(protein.get("gene_name", ""))}
+    gene_synonyms = protein.get("gene_synonyms", [])
+    if isinstance(gene_synonyms, (list, tuple, set)):
+        candidates.update(_normalize_processed_gene_symbol(item) for item in gene_synonyms)
+    candidates.discard("")
+    return bool(candidates.intersection(processed_gene_symbols))
 
 
 def _render_table(df: pd.DataFrame, rows: int = 12) -> str:
@@ -653,6 +923,9 @@ def _empty_preprocess_state(manifest_files: list[str]) -> dict[str, Any]:
         "logs": [],
         "region_recently_updated": False,
         "overwrite_filtered_manifest": False,
+        "hg38_extraction_suggested": False,
+        "hg38_extraction_message": "",
+        "hg38_extraction_region": "",
     }
 
 
@@ -695,8 +968,182 @@ def _store_preprocess_state(state: dict[str, Any]) -> None:
         "logs": list(state.get("logs", []))[-160:],
         "region_recently_updated": bool(state.get("region_recently_updated", False)),
         "overwrite_filtered_manifest": bool(state.get("overwrite_filtered_manifest", False)),
+        "hg38_extraction_suggested": bool(state.get("hg38_extraction_suggested", False)),
+        "hg38_extraction_message": str(state.get("hg38_extraction_message", "")),
+        "hg38_extraction_region": str(state.get("hg38_extraction_region", "")),
     }
     session.modified = True
+
+
+def _default_extraction_output_display(
+    gene_name: str,
+    genome_build: str,
+    analysis_scope: str,
+) -> str:
+    """Return the project-relative default extraction output path."""
+    return _as_relative_display(default_extracted_vcf_path(gene_name, genome_build, analysis_scope))
+
+
+def _empty_extraction_state(bam_files: list[str]) -> dict[str, Any]:
+    """Return the default Extraction tab state."""
+    scope_regions = {
+        "promoter_plus_gene": DEFAULT_REGION,
+        "promoter_only": "",
+        "gene_only": DEFAULT_REGION,
+    }
+    return {
+        "gene_name": DEFAULT_GENE_NAME,
+        "genome_build": "hg38",
+        "analysis_scope": DEFAULT_ANALYSIS_SCOPE,
+        "scope_regions": scope_regions,
+        "scope_region_source": "GRCh38 / hg38 extraction default",
+        "region": scope_regions[DEFAULT_ANALYSIS_SCOPE],
+        "bam_path": bam_files[0] if bam_files else "",
+        "bam_search_root": _as_relative_display(DATA_DIR),
+        "bam_search_results": [],
+        "output_vcf": _default_extraction_output_display(DEFAULT_GENE_NAME, "hg38", DEFAULT_ANALYSIS_SCOPE),
+        "reference_dir": _as_relative_display(HG38_REFERENCE_DIR),
+        "region_candidates": [],
+        "selected_sources": [],
+        "region_ready": False,
+        "reference_ready": False,
+        "extraction_ready": False,
+        "logs": [],
+        "notice": "",
+        "last_output_vcf": "",
+        "last_resolved_region": "",
+        "last_commands": {},
+    }
+
+
+def _load_extraction_state(bam_files: list[str]) -> dict[str, Any]:
+    """Load persisted Extraction tab state from the Flask session."""
+    state = _empty_extraction_state(bam_files)
+    saved_state = session.get(SESSION_EXTRACTION_KEY)
+    if isinstance(saved_state, dict):
+        state.update(saved_state)
+    if not state.get("bam_path") and bam_files:
+        state["bam_path"] = bam_files[0]
+    state["bam_search_results"] = _merge_path_options(list(state.get("bam_search_results", [])))
+    if not state.get("scope_regions"):
+        state["scope_regions"] = {
+            "promoter_plus_gene": str(state.get("region", DEFAULT_REGION)),
+            "promoter_only": "",
+            "gene_only": str(state.get("region", DEFAULT_REGION)),
+        }
+    if not state.get("output_vcf"):
+        state["output_vcf"] = _default_extraction_output_display(
+            str(state.get("gene_name", DEFAULT_GENE_NAME)),
+            str(state.get("genome_build", "hg38")),
+            str(state.get("analysis_scope", DEFAULT_ANALYSIS_SCOPE)),
+        )
+    return state
+
+
+def _store_extraction_state(state: dict[str, Any]) -> None:
+    """Persist Extraction tab state back to the Flask session."""
+    session[SESSION_EXTRACTION_KEY] = {
+        "gene_name": str(state.get("gene_name", DEFAULT_GENE_NAME)),
+        "genome_build": str(state.get("genome_build", "hg38")),
+        "analysis_scope": normalize_analysis_scope(str(state.get("analysis_scope", DEFAULT_ANALYSIS_SCOPE))),
+        "scope_regions": dict(state.get("scope_regions") or {}),
+        "scope_region_source": str(state.get("scope_region_source", "")),
+        "region": str(state.get("region", "")),
+        "bam_path": str(state.get("bam_path", "")),
+        "bam_search_root": str(state.get("bam_search_root", _as_relative_display(DATA_DIR))),
+        "bam_search_results": list(state.get("bam_search_results", []))[:200],
+        "output_vcf": str(state.get("output_vcf", "")),
+        "reference_dir": str(state.get("reference_dir", _as_relative_display(HG38_REFERENCE_DIR))),
+        "region_candidates": list(state.get("region_candidates", [])),
+        "selected_sources": list(state.get("selected_sources", [])),
+        "region_ready": bool(state.get("region_ready", False)),
+        "reference_ready": bool(state.get("reference_ready", False)),
+        "extraction_ready": bool(state.get("extraction_ready", False)),
+        "logs": list(state.get("logs", []))[-180:],
+        "notice": str(state.get("notice", "")),
+        "last_output_vcf": str(state.get("last_output_vcf", "")),
+        "last_resolved_region": str(state.get("last_resolved_region", "")),
+        "last_commands": dict(state.get("last_commands") or {}),
+    }
+    session.modified = True
+
+
+def _append_extraction_log(state: dict[str, Any], message: str, *, stream: str = "stdout") -> None:
+    """Append a developer-facing Extraction log line."""
+    normalized = str(message).rstrip()
+    if not normalized:
+        return
+    logs = list(state.get("logs", []))
+    for line in normalized.splitlines():
+        logs.append(f"[{stream}] {line}")
+    state["logs"] = logs[-180:]
+
+
+def _build_extraction_scope_options(extraction_state: dict[str, Any]) -> list[dict[str, str]]:
+    """Return extraction focus options with regions attached."""
+    scope_regions = dict(extraction_state.get("scope_regions") or {})
+    selected_scope = normalize_analysis_scope(str(extraction_state.get("analysis_scope", DEFAULT_ANALYSIS_SCOPE)))
+    options: list[dict[str, str]] = []
+    for scope_key, scope_config in ANALYSIS_SCOPE_OPTIONS.items():
+        region = str(scope_regions.get(scope_key, "")).strip()
+        options.append(
+            {
+                "key": scope_key,
+                "label": scope_config["label"],
+                "description": scope_config["description"],
+                "region": region,
+                "output_vcf": _default_extraction_output_display(
+                    str(extraction_state.get("gene_name", DEFAULT_GENE_NAME)),
+                    str(extraction_state.get("genome_build", "hg38")),
+                    scope_key,
+                ),
+                "selected": "true" if scope_key == selected_scope else "false",
+                "disabled": "true" if not region else "false",
+            }
+        )
+    return options
+
+
+def _gene_needs_hg38_extraction(gene_name: str) -> bool:
+    """Return whether the local gene record is explicitly hg38/GRCh38-only."""
+    knowledge_base = load_gene_interpretation_database(gene_name.strip().upper() or DEFAULT_GENE_NAME)
+    if knowledge_base is None:
+        return False
+    gene_context = knowledge_base.get("gene_context", {})
+    assembly = str(gene_context.get("assembly", "")).lower()
+    if not ("hg38" in assembly or "grch38" in assembly):
+        return False
+    return "hg19" not in assembly and "grch37" not in assembly
+
+
+def _prefill_extraction_state_from_hg38_preprocessing(
+    extraction_state: dict[str, Any],
+    *,
+    gene_name: str,
+    scope_regions: dict[str, str],
+    selected_sources: list[str],
+    region_candidates: list[dict[str, Any]],
+) -> None:
+    """Pre-populate Extraction after preprocessing detects an hg38-only gene."""
+    region = str(scope_regions.get(DEFAULT_ANALYSIS_SCOPE) or scope_regions.get("gene_only") or "").strip()
+    extraction_state.update(
+        {
+            "gene_name": gene_name,
+            "genome_build": "hg38",
+            "analysis_scope": DEFAULT_ANALYSIS_SCOPE,
+            "scope_regions": dict(scope_regions),
+            "scope_region_source": "Local GRCh38 curated promoter/gene intervals",
+            "region": region,
+            "output_vcf": _default_extraction_output_display(gene_name, "hg38", DEFAULT_ANALYSIS_SCOPE),
+            "selected_sources": list(selected_sources),
+            "region_candidates": list(region_candidates),
+            "region_ready": bool(region),
+            "extraction_ready": False,
+            "last_output_vcf": "",
+            "last_resolved_region": "",
+            "last_commands": {},
+        }
+    )
 
 
 def _append_preprocess_log(state: dict[str, Any], message: str, *, stream: str = "stdout") -> None:
@@ -924,6 +1371,9 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
         "preview_html": preview_html,
         "logs": list(preprocess_state.get("logs", [])),
         "region_recently_updated": bool(preprocess_state.get("region_recently_updated", False)),
+        "hg38_extraction_suggested": bool(preprocess_state.get("hg38_extraction_suggested", False)),
+        "hg38_extraction_message": str(preprocess_state.get("hg38_extraction_message", "")),
+        "hg38_extraction_region": str(preprocess_state.get("hg38_extraction_region", "")),
         "progress_percent": (
             100
             if preprocess_state.get("manifest_ready")
@@ -986,8 +1436,10 @@ def human_proteins_api() -> Any:
     longevity_page_raw = request.args.get("longevity_page", "1").strip()
     reviewed_only_raw = request.args.get("reviewed_only", "1").strip().lower()
     longevity_only_raw = request.args.get("longevity_only", "0").strip().lower()
+    exclude_processed_raw = request.args.get("exclude_processed", "0").strip().lower()
     reviewed_only = reviewed_only_raw not in {"0", "false", "no"}
     longevity_only = longevity_only_raw in {"1", "true", "yes"}
+    exclude_processed = exclude_processed_raw in {"1", "true", "yes"}
     try:
         longevity_page = max(1, int(longevity_page_raw))
     except ValueError:
@@ -1000,6 +1452,27 @@ def human_proteins_api() -> Any:
         longevity_only=longevity_only,
         longevity_page=longevity_page,
     )
+
+    processed_gene_symbols = discover_processed_gene_symbols() if exclude_processed else []
+    excluded_processed_count = 0
+    if exclude_processed:
+        processed_gene_symbol_set = set(processed_gene_symbols)
+        proteins = payload.get("proteins", [])
+        if isinstance(proteins, list):
+            filtered_proteins = [
+                protein
+                for protein in proteins
+                if not isinstance(protein, dict)
+                or not _protein_matches_processed_gene_symbols(protein, processed_gene_symbol_set)
+            ]
+            excluded_processed_count = len(proteins) - len(filtered_proteins)
+            payload["proteins"] = filtered_proteins
+            payload["records_returned"] = len(filtered_proteins)
+
+    payload["exclude_processed"] = exclude_processed
+    payload["processed_gene_symbols"] = processed_gene_symbols
+    payload["processed_gene_count"] = len(processed_gene_symbols)
+    payload["excluded_processed_count"] = excluded_processed_count
     return jsonify(payload)
 
 
@@ -1016,18 +1489,30 @@ def index() -> str:
     analysis_error = None
     preprocess_error = None
     preprocess_notice = None
+    extraction_error = None
+    extraction_notice = None
     initial_tab = "overview"
 
     vcf_files = discover_vcf_files()
+    bam_files = discover_bam_files()
     idat_prefixes = discover_idat_prefixes()
     popstats_files = discover_population_stats_files()
     manifest_files = discover_manifest_files()
+    extraction_tool_status = get_extraction_tool_status()
+    extraction_reference_status = get_hg38_reference_status()
 
     if request.method == "GET":
         session.pop(SESSION_PREPROCESS_KEY, None)
+        session.pop(SESSION_EXTRACTION_KEY, None)
         preprocess_state = _empty_preprocess_state(manifest_files)
+        extraction_state = _empty_extraction_state(bam_files)
     else:
         preprocess_state = _load_preprocess_state(manifest_files)
+        extraction_state = _load_extraction_state(bam_files)
+    extraction_state["reference_ready"] = bool(extraction_reference_status.get("ready", False))
+    bam_files = _merge_path_options(bam_files, list(extraction_state.get("bam_search_results", [])))
+    if not extraction_state.get("bam_path") and bam_files:
+        extraction_state["bam_path"] = bam_files[0]
     analysis_unlocked = bool(preprocess_state.get("analysis_ready", False))
 
     form = _empty_form_state()
@@ -1065,6 +1550,9 @@ def index() -> str:
                 preprocess_state["scope_region_source"] = ""
                 preprocess_state["logs"] = []
                 preprocess_state["region_recently_updated"] = False
+                preprocess_state["hg38_extraction_suggested"] = False
+                preprocess_state["hg38_extraction_message"] = ""
+                preprocess_state["hg38_extraction_region"] = ""
             preprocess_action = request.form.get("preprocess_action", "").strip()
 
             try:
@@ -1114,6 +1602,34 @@ def index() -> str:
                     preprocess_notice = (
                         f"Resolved {preprocess_state['gene_name']} to standard promoter+gene region {preprocess_state['region']}."
                     )
+                    if _gene_needs_hg38_extraction(str(preprocess_state["gene_name"])):
+                        hg38_message = (
+                            f"{preprocess_state['gene_name']} is annotated as a GRCh38/hg38 locus in the local "
+                            "knowledge base. Use the Extraction tab with a GRCh38-aligned BAM to create the regional VCF."
+                        )
+                        preprocess_state["hg38_extraction_suggested"] = True
+                        preprocess_state["hg38_extraction_message"] = hg38_message
+                        preprocess_state["hg38_extraction_region"] = str(preprocess_state["region"])
+                        _prefill_extraction_state_from_hg38_preprocessing(
+                            extraction_state,
+                            gene_name=str(preprocess_state["gene_name"]),
+                            scope_regions=scope_regions,
+                            selected_sources=list(preprocess_state["selected_sources"]),
+                            region_candidates=list(preprocess_state["region_candidates"]),
+                        )
+                        _append_preprocess_log(preprocess_state, hg38_message)
+                        _append_extraction_log(
+                            extraction_state,
+                            (
+                                f"Preprocessing detected an hg38-only gene and prefilled Extraction with "
+                                f"{extraction_state.get('region', '')}."
+                            ),
+                        )
+                        preprocess_notice = f"{preprocess_notice} {hg38_message}"
+                    else:
+                        preprocess_state["hg38_extraction_suggested"] = False
+                        preprocess_state["hg38_extraction_message"] = ""
+                        preprocess_state["hg38_extraction_region"] = ""
                 elif preprocess_action == "select_methylation":
                     if not preprocess_state.get("region"):
                         raise AnalysisError(
@@ -1161,6 +1677,9 @@ def index() -> str:
                             region=str(preprocess_state["region"]),
                             genome_build=str(preprocess_state.get("build", "hg19")),
                             output_dir=PREPROCESSED_MANIFEST_DIR,
+                            allow_empty=_allows_empty_methylation_subset(
+                                str(preprocess_state["gene_name"])
+                            ),
                         )
                         _append_preprocess_log(preprocess_state, captured_stdout, stream="stdout")
                         _append_preprocess_log(preprocess_state, captured_stderr, stream="stderr")
@@ -1203,9 +1722,279 @@ def index() -> str:
                 _append_preprocess_log(preprocess_state, traceback.format_exc(), stream="stderr")
 
             _store_preprocess_state(preprocess_state)
+            _store_extraction_state(extraction_state)
             analysis_unlocked = bool(preprocess_state.get("analysis_ready", False))
             form = _empty_form_state()
             _apply_preprocessing_defaults(form, preprocess_state)
+
+        elif workflow == "extraction":
+            initial_tab = "extraction"
+            previous_gene_name = str(extraction_state.get("gene_name", DEFAULT_GENE_NAME)).strip().upper()
+            requested_gene_name = (
+                request.form.get("extraction_gene_name", "").strip() or DEFAULT_GENE_NAME
+            ).upper()
+            requested_scope = normalize_analysis_scope(
+                request.form.get(
+                    "extraction_scope",
+                    str(extraction_state.get("analysis_scope", DEFAULT_ANALYSIS_SCOPE)),
+                )
+            )
+            requested_build = request.form.get("extraction_genome_build", "hg38").strip() or "hg38"
+            extraction_state.update(
+                {
+                    "gene_name": requested_gene_name,
+                    "genome_build": requested_build,
+                    "analysis_scope": requested_scope,
+                    "region": request.form.get("extraction_region", "").strip()
+                    or str(extraction_state.get("region", "")),
+                    "bam_path": request.form.get("bam_path", "").strip()
+                    or str(extraction_state.get("bam_path", "")),
+                    "bam_search_root": request.form.get("bam_search_root", "").strip()
+                    or str(extraction_state.get("bam_search_root", _as_relative_display(DATA_DIR))),
+                    "output_vcf": request.form.get("output_vcf", "").strip()
+                    or _default_extraction_output_display(requested_gene_name, requested_build, requested_scope),
+                    "notice": "",
+                }
+            )
+            if requested_gene_name != previous_gene_name:
+                extraction_state["region_ready"] = False
+                extraction_state["extraction_ready"] = False
+                extraction_state["region_candidates"] = []
+                extraction_state["selected_sources"] = []
+                extraction_state["scope_regions"] = {}
+                extraction_state["scope_region_source"] = ""
+                extraction_state["last_output_vcf"] = ""
+                extraction_state["last_resolved_region"] = ""
+                extraction_state["last_commands"] = {}
+                extraction_state["logs"] = []
+
+            extraction_action = request.form.get("extraction_action", "").strip()
+
+            try:
+                if extraction_action == "search_bam_files":
+                    search_root = str(extraction_state.get("bam_search_root") or DATA_DIR)
+                    _append_extraction_log(
+                        extraction_state,
+                        f"Searching for BAM files under {search_root}.",
+                    )
+                    search_results = search_bam_files(search_root)
+                    extraction_state["bam_search_results"] = search_results
+                    bam_files = _merge_path_options(discover_bam_files(), search_results)
+                    if search_results and (
+                        not extraction_state.get("bam_path")
+                        or str(extraction_state.get("bam_path")) not in bam_files
+                    ):
+                        extraction_state["bam_path"] = search_results[0]
+                    message = (
+                        f"Found {len(search_results)} BAM file(s) under {search_root}."
+                        if search_results
+                        else f"No BAM files were found under {search_root}."
+                    )
+                    _append_extraction_log(extraction_state, message)
+                    extraction_notice = message
+                    extraction_state["notice"] = extraction_notice
+                elif extraction_action == "browse_bam_file":
+                    if extraction_tool_status.get("docker_runtime"):
+                        raise AnalysisError(
+                            "A native Windows BAM picker cannot open from inside Docker. "
+                            "Use folder search inside the mounted data folder, or run the local UI with local extraction enabled."
+                        )
+                    selected_bam = browse_bam_file(
+                        str(extraction_state.get("bam_path") or extraction_state.get("bam_search_root") or DATA_DIR)
+                    )
+                    extraction_state["bam_path"] = selected_bam
+                    selected_parent = Path(selected_bam).parent
+                    extraction_state["bam_search_root"] = selected_parent.as_posix()
+                    extraction_state["bam_search_results"] = _merge_path_options(
+                        [selected_bam],
+                        list(extraction_state.get("bam_search_results", [])),
+                    )
+                    bam_files = _merge_path_options(discover_bam_files(), list(extraction_state["bam_search_results"]))
+                    message = f"Selected BAM file {selected_bam}."
+                    _append_extraction_log(extraction_state, message)
+                    extraction_notice = message
+                    extraction_state["notice"] = extraction_notice
+                elif extraction_action == "find_region":
+                    _append_extraction_log(
+                        extraction_state,
+                        f"Starting GRCh38/hg38 gene-region lookup for {extraction_state['gene_name']}.",
+                    )
+                    lookup, captured_stdout, captured_stderr = _capture_preprocess_call(
+                        find_gene_region,
+                        extraction_state["gene_name"],
+                        genome_build="hg38",
+                    )
+                    _append_extraction_log(extraction_state, captured_stdout, stream="stdout")
+                    _append_extraction_log(extraction_state, captured_stderr, stream="stderr")
+                    extraction_state["gene_name"] = str(lookup["gene_name"])
+                    scope_regions = _build_extraction_scope_regions(
+                        str(lookup["gene_name"]),
+                        str(lookup["selected_region"]),
+                        "hg38",
+                    )
+                    extraction_state["scope_regions"] = scope_regions
+                    extraction_state["scope_region_source"] = (
+                        "Local GRCh38 curated promoter/gene intervals"
+                        if _knowledge_base_uses_genome_build(str(lookup["gene_name"]), "hg38")
+                        and scope_regions.get("promoter_only")
+                        else "GRCh38 public lookup with generic upstream promoter heuristic"
+                    )
+                    extraction_state["analysis_scope"] = DEFAULT_ANALYSIS_SCOPE
+                    extraction_state["region"] = str(
+                        scope_regions.get(DEFAULT_ANALYSIS_SCOPE) or lookup["selected_region"]
+                    )
+                    extraction_state["output_vcf"] = _default_extraction_output_display(
+                        str(extraction_state["gene_name"]),
+                        "hg38",
+                        DEFAULT_ANALYSIS_SCOPE,
+                    )
+                    extraction_state["selected_sources"] = list(lookup["selected_sources"]) + [
+                        extraction_state["scope_region_source"]
+                    ]
+                    extraction_state["region_candidates"] = list(lookup["candidate_regions"])
+                    extraction_state["region_ready"] = True
+                    extraction_state["extraction_ready"] = False
+                    _append_extraction_log(
+                        extraction_state,
+                        (
+                            f"Resolved {extraction_state['gene_name']} to hg38 extraction region "
+                            f"{extraction_state['region']} using {', '.join(extraction_state['selected_sources']) or 'the available sources'}."
+                        ),
+                    )
+                    extraction_notice = (
+                        f"Resolved {extraction_state['gene_name']} to hg38 extraction region {extraction_state['region']}."
+                    )
+                    extraction_state["notice"] = extraction_notice
+                elif extraction_action == "prepare_reference":
+                    if not extraction_tool_status.get("available"):
+                        raise AnalysisError(str(extraction_tool_status.get("message", "")))
+                    _append_extraction_log(
+                        extraction_state,
+                        (
+                            "Preparing UCSC hg38 analysis-set reference under "
+                            f"{_as_relative_display(HG38_REFERENCE_DIR)}."
+                        ),
+                    )
+                    prepared_status, captured_stdout, captured_stderr = _capture_preprocess_call(
+                        prepare_hg38_reference,
+                    )
+                    _append_extraction_log(extraction_state, captured_stdout, stream="stdout")
+                    _append_extraction_log(extraction_state, captured_stderr, stream="stderr")
+                    extraction_reference_status = dict(prepared_status)
+                    extraction_state["reference_ready"] = bool(prepared_status.get("ready", False))
+                    _append_extraction_log(
+                        extraction_state,
+                        str(prepared_status.get("message", "Reference preparation finished.")),
+                    )
+                    extraction_notice = str(prepared_status.get("message", "Reference preparation finished."))
+                    extraction_state["notice"] = extraction_notice
+                elif extraction_action == "extract_vcf":
+                    if not extraction_tool_status.get("available"):
+                        raise AnalysisError(str(extraction_tool_status.get("message", "")))
+                    extraction_reference_status = get_hg38_reference_status()
+                    if not extraction_reference_status.get("ready"):
+                        raise AnalysisError(
+                            "Prepare the hg38 reference before extracting a regional VCF."
+                        )
+                    if not extraction_state.get("bam_path"):
+                        raise AnalysisError("Choose a BAM file from data/ before extracting variants.")
+                    if not extraction_state.get("region"):
+                        raise AnalysisError("Resolve or enter an hg38 region before extracting variants.")
+
+                    bam_path = _resolve_user_path(str(extraction_state["bam_path"]))
+                    output_vcf = _resolve_user_path(str(extraction_state["output_vcf"]))
+                    _append_extraction_log(
+                        extraction_state,
+                        (
+                            f"Extracting {extraction_state['region']} from {bam_path} "
+                            f"to {output_vcf}."
+                        ),
+                    )
+                    extraction_result, captured_stdout, captured_stderr = _capture_preprocess_call(
+                        extract_region_vcf,
+                        bam_path=bam_path,
+                        region=str(extraction_state["region"]),
+                        output_vcf=output_vcf,
+                        reference_fasta=HG38_FASTA,
+                    )
+                    _append_extraction_log(extraction_state, captured_stdout, stream="stdout")
+                    _append_extraction_log(extraction_state, captured_stderr, stream="stderr")
+                    extracted_vcf = Path(extraction_result["output_vcf"])
+                    resolved_region = str(extraction_result["resolved_region"])
+                    extracted_vcf_display = _as_relative_display(extracted_vcf)
+                    extraction_state["output_vcf"] = extracted_vcf_display
+                    extraction_state["last_output_vcf"] = extracted_vcf_display
+                    extraction_state["last_resolved_region"] = resolved_region
+                    extraction_state["last_commands"] = dict(extraction_result.get("commands") or {})
+                    extraction_state["extraction_ready"] = True
+                    extraction_state["region_ready"] = True
+                    _append_extraction_log(
+                        extraction_state,
+                        f"Extracted and indexed regional VCF at {extracted_vcf_display}.",
+                    )
+
+                    previous_preprocess_gene = str(
+                        preprocess_state.get("gene_name", DEFAULT_GENE_NAME)
+                    ).strip().upper()
+                    if previous_preprocess_gene != requested_gene_name:
+                        preprocess_state["manifest_ready"] = False
+                        preprocess_state["filtered_manifest"] = ""
+                        preprocess_state["probe_count"] = 0
+                    scope_regions = dict(extraction_state.get("scope_regions") or {})
+                    scope_regions[requested_scope] = resolved_region
+                    preprocess_state.update(
+                        {
+                            "gene_name": requested_gene_name,
+                            "region": resolved_region,
+                            "analysis_scope": requested_scope,
+                            "scope_regions": scope_regions,
+                            "scope_region_source": "GRCh38 BAM Extraction regional VCF",
+                            "selected_sources": list(extraction_state.get("selected_sources", [])),
+                            "region_candidates": list(extraction_state.get("region_candidates", [])),
+                            "region_ready": True,
+                            "analysis_ready": True,
+                            "build": "hg38",
+                            "region_recently_updated": True,
+                        }
+                    )
+                    _append_preprocess_log(
+                        preprocess_state,
+                        (
+                            f"Extraction populated the Run Analysis VCF with {extracted_vcf_display} "
+                            f"and active hg38 region {resolved_region}."
+                        ),
+                    )
+                    _store_preprocess_state(preprocess_state)
+                    analysis_unlocked = True
+                    vcf_files = discover_vcf_files()
+                    form = _empty_form_state()
+                    _apply_preprocessing_defaults(form, preprocess_state)
+                    form["vcf"] = extracted_vcf_display
+                    form["region"] = resolved_region
+                    form["analysis_scope"] = requested_scope
+                    extraction_notice = (
+                        f"Extracted {requested_gene_name} regional VCF to {extracted_vcf_display}."
+                    )
+                    extraction_state["notice"] = extraction_notice
+                else:
+                    raise AnalysisError("Choose an extraction action before submitting the form.")
+            except (AnalysisError, ExtractionError, ValueError) as exc:
+                extraction_error = str(exc)
+                extraction_state["notice"] = ""
+                _append_extraction_log(extraction_state, str(exc), stream="stderr")
+            except Exception:
+                extraction_error = "Extraction failed unexpectedly. Review the Extraction console."
+                extraction_state["notice"] = ""
+                _append_extraction_log(extraction_state, traceback.format_exc(), stream="stderr")
+
+            extraction_reference_status = get_hg38_reference_status()
+            extraction_state["reference_ready"] = bool(extraction_reference_status.get("ready", False))
+            bam_files = _merge_path_options(discover_bam_files(), list(extraction_state.get("bam_search_results", [])))
+            _store_extraction_state(extraction_state)
+            analysis_unlocked = bool(preprocess_state.get("analysis_ready", False))
+            if not form.get("vcf"):
+                form = _empty_form_state()
+                _apply_preprocessing_defaults(form, preprocess_state)
 
         else:
             if not analysis_unlocked:
@@ -1311,12 +2100,14 @@ def index() -> str:
     preprocess_result = _build_preprocess_result(preprocess_state)
     report_history = discover_report_history()
     general_database = load_general_analysis_database()
+    processed_gene_symbols = discover_processed_gene_symbols(report_history, general_database)
     analysis_scope_options = _build_analysis_scope_options(preprocess_state)
-    available_tabs = ["overview", "preprocessing", "central_database", "history", "proteins", "structure"]
+    extraction_scope_options = _build_extraction_scope_options(extraction_state)
+    available_tabs = ["overview", "preprocessing", "extraction", "central_database", "history", "proteins", "structure"]
     if analysis_unlocked:
-        available_tabs.insert(2, "analysis")
+        available_tabs.insert(3, "analysis")
     if result and result.get("predictive_theses"):
-        available_tabs.insert(3, "predictive_theses")
+        available_tabs.insert(4, "predictive_theses")
     if initial_tab not in available_tabs:
         initial_tab = "preprocessing" if "preprocessing" in available_tabs else "overview"
 
@@ -1326,8 +2117,14 @@ def index() -> str:
         error=analysis_error,
         preprocess_error=preprocess_error,
         preprocess_notice=preprocess_notice,
+        extraction_error=extraction_error,
+        extraction_notice=extraction_notice,
         preprocess_state=preprocess_state,
         preprocess_result=preprocess_result,
+        extraction_state=extraction_state,
+        extraction_scope_options=extraction_scope_options,
+        extraction_tool_status=extraction_tool_status,
+        extraction_reference_status=extraction_reference_status,
         analysis_unlocked=analysis_unlocked,
         result=result,
         initial_tab=initial_tab,
@@ -1345,11 +2142,13 @@ def index() -> str:
         data_dir=_as_relative_display(DATA_DIR),
         results_dir=_as_relative_display(RESULTS_DIR),
         vcf_files=vcf_files,
+        bam_files=bam_files,
         idat_prefixes=idat_prefixes,
         popstats_files=popstats_files,
         manifest_files=manifest_files,
         report_history=report_history,
         general_database=general_database,
+        processed_gene_symbols=processed_gene_symbols,
         analysis_scope_options=analysis_scope_options,
         featured_protein_queries=FEATURED_HUMAN_PROTEIN_QUERIES,
         app_structure_qa_items=_build_app_structure_qa_items(),

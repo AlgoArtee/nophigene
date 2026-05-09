@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.gene_region_extraction import fetch_ucsc_region
+from src.gene_region_extraction import fetch_ucsc_region, find_gene_region
 
 
 class FakeResponse:
@@ -75,3 +75,31 @@ def test_ucsc_lookup_prefers_exact_symbol_matches(monkeypatch) -> None:
     monkeypatch.setattr("src.gene_region_extraction.requests.get", fake_get)
 
     assert fetch_ucsc_region("DRD4") == "11:637269-640706"
+
+
+def test_find_gene_region_can_use_hg38_sources(monkeypatch) -> None:
+    """Build-aware lookups should switch Ensembl and UCSC to GRCh38/hg38."""
+    calls: dict[str, str] = {}
+
+    def fake_ensembl(gene_symbol: str, *, server: str) -> str:
+        calls["ensembl_server"] = server
+        return "15:21405401-21440499"
+
+    def fake_ucsc(gene_symbol: str, genome: str) -> str:
+        calls["ucsc_genome"] = genome
+        return "15:21405401-21441499"
+
+    monkeypatch.setattr("src.gene_region_extraction.fetch_refseq_region", lambda gene_symbol: None)
+    monkeypatch.setattr("src.gene_region_extraction.fetch_ensembl_region", fake_ensembl)
+    monkeypatch.setattr("src.gene_region_extraction.fetch_ucsc_region", fake_ucsc)
+
+    result = find_gene_region("poteb3", genome_build="hg38")
+
+    assert calls == {
+        "ensembl_server": "https://rest.ensembl.org",
+        "ucsc_genome": "hg38",
+    }
+    assert result["gene_name"] == "POTEB3"
+    assert result["genome_build"] == "hg38"
+    assert result["selected_region"] == "15:21405401-21441499"
+    assert result["selected_sources"] == ["UCSC hg38"]

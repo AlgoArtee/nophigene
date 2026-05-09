@@ -11,6 +11,7 @@ from src.analysis import (
     build_variant_interpretations,
     load_gene_interpretation_database,
     load_gene_synthesis_database,
+    load_variants,
 )
 
 
@@ -52,6 +53,44 @@ def test_raw_vcf_sample_overlay_preserves_phased_gt_and_multiple_samples(tmp_pat
 
     assert fields[("1", 100, "A", "G", "s1")]["gt_raw"] == "0|1"
     assert fields[("1", 100, "A", "G", "s2")]["gt_raw"] == "1/1"
+
+
+def test_raw_vcf_sample_overlay_reads_low_coordinate_mt_variants(tmp_path) -> None:
+    """MT-RNR1's standard scope should include low-coordinate mitochondrial calls."""
+    vcf_path = tmp_path / "mt.vcf"
+    vcf_path.write_text(
+        "\n".join(
+            [
+                "##fileformat=VCFv4.2",
+                "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\ts1",
+                "MT\t64\t.\tC\tT\t.\tPASS\tDP=906\tGT:SQ:AD:AF:DP\t0/1:9.4:854,4:0.005:858",
+                "MT\t73\t.\tA\tG\t.\tPASS\tDP=933\tGT:SQ:AD:AF:DP\t1/1:98.13:0,889:1:889",
+                "MT\t143\t.\tG\tA\t.\tPASS\tDP=929\tGT:SQ:AD:AF:DP\t0/1:1.53:926,3:0.003:929",
+                "MT\t146\t.\tT\tC\t.\tPASS\tDP=915\tGT:SQ:AD:AF:DP\t1/1:98.13:0,914:1:914",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    fields = _load_raw_vcf_sample_fields(str(vcf_path), "MT:1-1601")
+
+    assert fields[("MT", 64, "C", "T", "s1")]["gt_raw"] == "0/1"
+    assert fields[("MT", 73, "A", "G", "s1")]["gt_raw"] == "1/1"
+    assert fields[("MT", 143, "G", "A", "s1")]["sample_af"] == "0.003"
+    assert fields[("MT", 146, "T", "C", "s1")]["dp"] == "914"
+
+
+def test_load_variants_returns_empty_table_for_valid_region_without_calls(monkeypatch, tmp_path) -> None:
+    """An empty VCF interval should not abort gene analysis."""
+    vcf_path = tmp_path / "empty_region.vcf.gz"
+    vcf_path.write_bytes(b"placeholder")
+    monkeypatch.setattr("src.analysis.allel.read_vcf", lambda *args, **kwargs: {})
+
+    variants = load_variants(str(vcf_path), "15:21405401-21441499")
+
+    assert variants.empty
+    assert {"chrom", "pos", "id", "gt_raw", "zygosity", "confidence_score"} <= set(variants.columns)
 
 
 def test_qc_keeps_imbalanced_heterozygous_call_as_heterozygous() -> None:

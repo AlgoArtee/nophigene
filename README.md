@@ -77,16 +77,19 @@ What the local start launcher does:
 
 - checks that `.venv\Scripts\python.exe` exists
 - checks that key app dependencies can be imported
-- creates `data/` and `results/` if needed
+- creates `data/`, `data/reference/hg38/`, `data/extracted/`, and `results/` if needed
 - starts the UI from the local environment
 - waits for the server to respond on `http://127.0.0.1:8000`
 - opens the browser automatically
 - tracks the running process in a local PID file
+- keeps BAM extraction disabled unless you explicitly start the PowerShell launcher with `-EnableLocalExtraction` and local `samtools`/`bcftools` are on PATH
+- supports the Extraction tab's native **Browse BAM File** picker when running locally
 
 What the local stop launcher does:
 
 - stops the tracked local UI process
 - removes the PID file
+- leaves reference files and extracted VCFs in `data/`
 - exits cleanly if nothing is running
 
 ### Secondary Docker launchers
@@ -174,6 +177,53 @@ Important:
 - the IDAT argument or form field uses the shared prefix only
 - example: `data/202277800037_R01C01`
 
+## GRCh38 BAM extraction
+
+The UI includes an **Extraction** tab for BAM-to-VCF prep before running analysis. This path is Docker-only by default because it requires command-line genomics tools:
+
+- `samtools`
+- `bcftools`
+
+The Extraction tab can:
+
+- prepare the UCSC hg38 analysis-set reference under `data/reference/hg38/`
+- download `hg38.analysisSet.fa.gz`
+- verify it against UCSC `md5sum.txt`
+- decompress it to `hg38.analysisSet.fa`
+- create `hg38.analysisSet.fa.fai`
+- search a selected folder tree for `.bam` files and add matching paths to the BAM picker
+- open a native **Browse BAM File** picker in local mode; Docker mode cannot open host file windows from inside the container
+- call a regional VCF from a GRCh38/hg38 BAM into `data/extracted/`
+- populate the Run Analysis VCF field with the extracted file
+
+Inputs expected for extraction:
+
+- a coordinate-sorted BAM under `data/`
+- a BAM index, or permission for the app to create one with `samtools index`
+- a BAM aligned to GRCh38/hg38, not hg19
+
+The extractor resolves contig naming automatically for common aliases such as `15` versus `chr15`, and `MT` versus `chrM`.
+
+When preprocessing resolves a gene whose bundled knowledge base is hg38-only, the UI shows a GRCh38 extraction suggestion and pre-fills the Extraction tab for that gene.
+
+For BAM extraction, prefer the Docker launcher so the required tools are present:
+
+```powershell
+.\Start NophiGene UI (Docker).cmd
+```
+
+You can also start the same Docker/samtools/bcftools runtime through the local starter by passing `-UseDocker`:
+
+```powershell
+.\Start NophiGene UI.cmd -UseDocker
+```
+
+If you have `samtools` and `bcftools` installed locally and want to opt into local extraction explicitly:
+
+```powershell
+.\Start NophiGene UI.cmd -EnableLocalExtraction
+```
+
 ## What the UI writes
 
 Each run creates:
@@ -199,6 +249,7 @@ Docker still works, but it is no longer the recommended local default.
 ### What changed to make Docker lighter
 
 - the image now installs from [requirements-app.txt](/C:/Users/Mewxy/Desktop/YouTopy/NophiGene/nophigene-drd4-analysis/requirements-app.txt:1) instead of the full research stack
+- the runtime image installs `samtools` and `bcftools` for the Docker-only Extraction tab
 - [Dockerfile](/C:/Users/Mewxy/Desktop/YouTopy/NophiGene/nophigene-drd4-analysis/Dockerfile:1) now copies only `src/` and the app requirements into the image
 - [.dockerignore](/C:/Users/Mewxy/Desktop/YouTopy/NophiGene/nophigene-drd4-analysis/.dockerignore:1) now excludes:
   - `data/`
@@ -221,6 +272,7 @@ docker build -t nophigene:latest .
 ```bash
 docker run --rm -it \
   -p 8000:8000 \
+  -e NOPHIGENE_IN_DOCKER=1 \
   -v "${PWD}/data":/home/appuser/app/data \
   -v "${PWD}/results":/home/appuser/app/results \
   nophigene:latest

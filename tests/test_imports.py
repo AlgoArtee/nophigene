@@ -1,6 +1,6 @@
 """Import smoke tests for the NophiGene analysis project."""
 
-from src import analysis, app, gene_region_extraction, human_protein_catalog, webapp
+from src import analysis, app, bam_extraction, gene_region_extraction, human_protein_catalog, webapp
 
 
 def test_analysis_module_imports() -> None:
@@ -22,3 +22,8 @@ def test_gene_region_helpers_import() -> None:
 def test_human_protein_helpers_import() -> None:
     """Ensure the human protein catalog helper remains importable."""
     assert callable(human_protein_catalog.get_human_protein_catalog)
+
+
+def test_bam_extraction_helpers_import() -> None:
+    """Ensure the BAM extraction helper module remains importable."""
+    assert callable(bam_extraction.build_extraction_commands)

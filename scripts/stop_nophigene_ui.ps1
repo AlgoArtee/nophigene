@@ -7,6 +7,9 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Resolve-Path (Join-Path $scriptDir "..")).Path
 $dockerConfigDir = Join-Path $repoRoot ".docker-local"
+$dataDir = Join-Path $repoRoot "data"
+$referenceDir = Join-Path $dataDir "reference\hg38"
+$extractedDir = Join-Path $dataDir "extracted"
 $env:DOCKER_CONFIG = $dockerConfigDir
 
 function Test-DockerReady {
@@ -22,6 +25,7 @@ function Test-DockerReady {
 Write-Host ""
 Write-Host "Stopping NophiGene UI" -ForegroundColor Cyan
 Write-Host "Container: $ContainerName"
+Write-Host "Persistent data: $dataDir"
 Write-Host ""
 
 if (-not (Test-DockerReady)) {
@@ -45,3 +49,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Container stopped and removed." -ForegroundColor Green
+Write-Host "Reference files remain in $referenceDir."
+Write-Host "Extracted VCFs remain in $extractedDir."

@@ -158,6 +158,7 @@ def save_filtered_manifest(
     region: str,
     genome_build: str = "hg19",
     output_dir: str | Path = DEFAULT_OUTPUT_DIR,
+    allow_empty: bool = False,
 ) -> dict[str, object]:
     """Filter a manifest to one gene interval and save the resulting CSV subset.
 
@@ -173,6 +174,11 @@ def save_filtered_manifest(
         Genome build used for manifest coordinate matching.
     output_dir : str | Path, optional
         Destination directory for the filtered CSV subset.
+    allow_empty : bool, optional
+        When true, write a zero-row subset instead of raising if the manifest
+        has no probes in the selected interval. This is useful for curated
+        loci such as mitochondrial genes where variant-only analysis should
+        still be available.
 
     Returns
     -------
@@ -188,9 +194,11 @@ def save_filtered_manifest(
     manifest_df = load_manifest(str(manifest_source))
     filtered = filter_probes_by_region(manifest_df, chrom, start, end, genome_build)
     if filtered.empty:
-        raise ValueError(
-            f"No manifest probes were found in {chrom}:{start}-{end} for genome build {genome_build}."
-        )
+        if not allow_empty:
+            raise ValueError(
+                f"No manifest probes were found in {chrom}:{start}-{end} for genome build {genome_build}."
+            )
+        filtered = manifest_df.iloc[0:0].copy()
 
     destination_dir = Path(output_dir)
     destination_dir.mkdir(parents=True, exist_ok=True)

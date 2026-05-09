@@ -25,6 +25,11 @@ TARGET_GENES = [
     "NAMPT",
     "CDKN2A",
     "TERT",
+    "CLRN2",
+    "POTEB3",
+    "BLTP3B",
+    "CIROP",
+    "MT-RNR1",
 ]
 
 METHYLATION_SOURCES = [
@@ -108,6 +113,26 @@ GENE_CONCRETE_VARIANT_PREDICTIONS = {
         "The variant observed in this sample suggests a telomere-maintenance thesis: the individual may carry a modifier of telomere length, replicative lifespan, stem-cell maintenance, promoter activity, or cancer susceptibility because TERT encodes the catalytic telomerase subunit. "
         "This predicts telomere-biology context, not a direct cancer diagnosis."
     ),
+    "CLRN2": (
+        "The variant observed in this sample suggests a CLRN2 stereocilia-maintenance and DFNB117 hearing-loss thesis: the individual may carry a rare clarin-2 marker relevant to auditory hair-bundle maintenance, mechanotransduction, or autosomal recessive nonsyndromic sensorineural hearing-loss review. "
+        "Only biallelic pathogenic or clinically confirmed CLRN2 findings should be escalated toward a DFNB117 disease interpretation; single heterozygous or VUS markers remain carrier or research context."
+    ),
+    "POTEB3": (
+        "The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. "
+        "This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction."
+    ),
+    "BLTP3B": (
+        "The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. "
+        "This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call."
+    ),
+    "CIROP": (
+        "The variant observed in this sample suggests a rare left-right asymmetry and heterotaxy thesis: the individual may carry a CIROP marker that belongs in developmental laterality-disorder review because CIROP is implicated in ciliated left-right organizer biology and autosomal visceral heterotaxy 12. "
+        "This is a rare-disease research flag that depends on zygosity, phase, inheritance, phenotype match, and confirmatory clinical testing, not an app-only diagnosis."
+    ),
+    "MT-RNR1": (
+        "The variant observed in this sample suggests a mitochondrial 12S rRNA pharmacogenetic thesis: the individual may carry an MT-RNR1 genotype that changes aminoglycoside-induced hearing-loss risk classification. "
+        "For m.1555A>G, m.1494C>T, and m.1095T>C, the concrete prediction is increased susceptibility to aminoglycoside cochleotoxicity that requires clinical prescribing review, not an app-only medication decision."
+    ),
 }
 
 VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
@@ -181,6 +206,71 @@ VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
         "CDKN2A p.Gly101Trp": (
             "Observed CDKN2A p.Gly101Trp / G101W suggests a rare pathogenic tumor-suppressor thesis. "
             "If the exact GRCh37 C -> A allele is GT-confirmed, the sample carries a high-priority CDKN2A melanoma and melanoma-pancreatic cancer predisposition marker that warrants external clinical confirmation rather than a stand-alone app diagnosis."
+        ),
+    },
+    "BLTP3B": {
+        "rs7134216": (
+            "Observed BLTP3B/UHRF1BP1L rs7134216 suggests a MYP3 high-grade myopia locus thesis: the sample matched an intronic marker reported in association mapping and replicated for quantitative spherical refractive error in an independent high-grade myopia cohort. "
+            "Keep the prediction cohort-level and research-oriented because the bundled evidence does not establish deterministic myopia risk or a direct BLTP3B protein mechanism."
+        ),
+    },
+    "POTEB3": {
+        "15q11.1-q11.2 CNV including POTEB3": (
+            "Observed 15q11.1-q11.2 copy-number context including POTEB3 suggests a regional structural-variation thesis: the sample matched a broad segmental-duplication CNV context that includes POTEB3 among many genes. "
+            "Keep this interpretation regional and assembly-aware; it is not a POTEB3-specific pathogenic or protective call."
+        ),
+    },
+    "CLRN2": {
+        "CLRN2 c.494C>A": (
+            "Observed CLRN2 c.494C>A / p.Thr165Lys suggests a DFNB117 hearing-loss thesis when genotype dosage and inheritance support a biallelic recessive model. "
+            "The practical prediction is rare hearing-loss follow-up context, especially phase, second-allele, phenotype, audiology, and clinical-grade confirmation review, not an app-only diagnosis."
+        ),
+        "CLRN2 c.236G>T": (
+            "Observed CLRN2 c.236G>T / p.Arg79Leu suggests a CLRN2 VUS hearing-loss review thesis. "
+            "Keep this as candidate rare-variant context unless newer ClinVar, segregation, functional, or phenotype evidence supports reclassification."
+        ),
+    },
+    "CIROP": {
+        "CIROP c.92C>T": (
+            "Observed CIROP c.92C>T / p.Ser31Phe suggests a rare CIROP heterotaxy 12 thesis. "
+            "Treat this as developmental laterality-disorder context that needs ancestry-frequency, zygosity, phase, inheritance, and phenotype review before clinical interpretation."
+        ),
+        "CIROP c.571C>T": (
+            "Observed CIROP c.571C>T / p.Arg191Ter suggests the strongest bundled CIROP loss-of-function thesis: a truncating marker classified in ClinVar for autosomal visceral heterotaxy 12. "
+            "The practical prediction is rare-disease follow-up context, especially second-allele and inheritance review, not an app-only diagnosis."
+        ),
+        "CIROP c.1037G>A": (
+            "Observed CIROP c.1037G>A / p.Trp346Ter suggests a truncating CIROP heterotaxy 12 thesis. "
+            "Prioritize clinical-grade confirmation, phase, and phenotype match because CIROP-associated heterotaxy is interpreted through a recessive developmental-disease model."
+        ),
+        "CIROP c.1151C>T": (
+            "Observed CIROP c.1151C>T / p.Ser384Leu suggests a rare CIROP missense heterotaxy 12 thesis. "
+            "This is a laterality-disorder sequencing flag, not a broad adult-trait prediction."
+        ),
+        "CIROP c.1166G>T": (
+            "Observed CIROP c.1166G>T / p.Arg389Ile suggests a rare CIROP missense heterotaxy 12 thesis. "
+            "Interpretation should center on phenotype consistency, zygosity, and inheritance rather than methylation or common-variant heuristics."
+        ),
+        "CIROP c.1364TCT[1]": (
+            "Observed CIROP c.1364TCT[1] / p.Phe456del suggests an in-frame deletion CIROP heterotaxy 12 thesis. "
+            "Because indel representation can vary, reconcile rsID, transcript HGVS, and normalized coordinates before relying on the match."
+        ),
+    },
+    "MT-RNR1": {
+        "m.1555A>G": (
+            "Observed MT-RNR1 m.1555A>G suggests the strongest bundled aminoglycoside ototoxicity thesis: CPIC assigns this genotype to increased risk of aminoglycoside-induced hearing loss. "
+            "The practical prediction is that systemic aminoglycosides should be avoided unless infection severity and lack of alternatives justify the risk under clinician oversight."
+        ),
+        "m.1494C>T": (
+            "Observed MT-RNR1 m.1494C>T suggests a high-evidence aminoglycoside ototoxicity thesis: CPIC assigns this genotype to increased risk, with ClinVar and hearing-loss literature supporting aminoglycoside-induced deafness relevance."
+        ),
+        "m.1095T>C": (
+            "Observed MT-RNR1 m.1095T>C suggests a CPIC increased-risk aminoglycoside ototoxicity thesis with a more moderate evidence base than m.1555A>G and m.1494C>T. "
+            "Interpret the call with mitochondrial heteroplasmy, depth, and test-method caveats."
+        ),
+        "m.827A>G": (
+            "Observed MT-RNR1 m.827A>G suggests a normal-risk contrast thesis for aminoglycoside-induced hearing loss under current CPIC framing. "
+            "Do not upgrade this allele to an aminoglycoside contraindication without newer expert guidance or additional variant evidence."
         ),
     },
 }
@@ -491,6 +581,78 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
                 ),
                 "basis": "Observed ALT C at rs61330082, interpreted as the contrast state to the TT-focused NAMPT evidence.",
             },
+        ],
+    },
+    "CLRN2": {
+        "CLRN2 c.494C>A": [
+            {
+                "change": "C>A",
+                "alt_allele": "A",
+                "prediction": (
+                    "This sample row reports A as the observed alternate allele at CLRN2 c.494C>A / p.Thr165Lys. "
+                    "If GT, phase, and inheritance support biallelic pathogenic CLRN2 dosage, the sample fits a DFNB117 autosomal recessive nonsyndromic hearing-loss review thesis. "
+                    "If only one ALT copy is present, report this as carrier or recessive-disease context rather than as a deterministic hearing-loss prediction."
+                ),
+                "basis": "Observed A dosage at NM_001079827.2(CLRN2):c.494C>A, the pathogenic CLRN2 DFNB117 allele with missense and splicing evidence.",
+            }
+        ],
+        "CLRN2 c.236G>T": [
+            {
+                "change": "G>T",
+                "alt_allele": "T",
+                "prediction": (
+                    "This sample row reports T as the observed alternate allele at CLRN2 c.236G>T / p.Arg79Leu. "
+                    "Current local curation treats this as a VUS-level CLRN2 hearing-loss candidate, so the prediction should stay in rare-variant review context and should not be upgraded without external evidence."
+                ),
+                "basis": "Observed T dosage at NM_001079827.2(CLRN2):c.236G>T, a ClinVar VUS in DFNB117-related review.",
+            }
+        ],
+    },
+    "MT-RNR1": {
+        "m.1555A>G": [
+            {
+                "change": "A>G",
+                "alt_allele": "G",
+                "prediction": (
+                    "This sample row reports G as the observed alternate allele at MT-RNR1 m.1555A>G. "
+                    "If genotype or heteroplasmy evidence supports the G state, the sample fits the CPIC increased-risk MT-RNR1 phenotype for aminoglycoside-induced hearing loss. "
+                    "Use this as a high-priority pharmacogenetic safety flag requiring clinical confirmation and prescribing review."
+                ),
+                "basis": "Observed G dosage at NC_012920.1:m.1555A>G, a CPIC increased-risk MT-RNR1 aminoglycoside ototoxicity allele.",
+            }
+        ],
+        "m.1494C>T": [
+            {
+                "change": "C>T",
+                "alt_allele": "T",
+                "prediction": (
+                    "This sample row reports T as the observed alternate allele at MT-RNR1 m.1494C>T. "
+                    "If genotype or heteroplasmy evidence supports the T state, the sample fits the CPIC increased-risk MT-RNR1 phenotype for aminoglycoside-induced hearing loss."
+                ),
+                "basis": "Observed T dosage at NC_012920.1:m.1494C>T, a CPIC increased-risk MT-RNR1 aminoglycoside ototoxicity allele.",
+            }
+        ],
+        "m.1095T>C": [
+            {
+                "change": "T>C",
+                "alt_allele": "C",
+                "prediction": (
+                    "This sample row reports C as the observed alternate allele at MT-RNR1 m.1095T>C. "
+                    "If genotype or heteroplasmy evidence supports the C state, the sample fits CPIC's increased-risk MT-RNR1 phenotype, but with a more moderate evidence caveat than m.1555A>G or m.1494C>T."
+                ),
+                "basis": "Observed C dosage at NC_012920.1:m.1095T>C, a CPIC increased-risk MT-RNR1 aminoglycoside ototoxicity allele.",
+            }
+        ],
+        "m.827A>G": [
+            {
+                "change": "A>G",
+                "alt_allele": "G",
+                "prediction": (
+                    "This sample row reports G as the observed alternate allele at MT-RNR1 m.827A>G. "
+                    "Current CPIC recommendations use m.827A>G as a normal-risk example for aminoglycoside-induced hearing loss, so this match should dampen rather than escalate aminoglycoside ototoxicity concern."
+                ),
+                "basis": "Observed G dosage at NC_012920.1:m.827A>G, a CPIC normal-risk example allele.",
+            }
         ],
     },
 }

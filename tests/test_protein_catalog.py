@@ -165,6 +165,54 @@ def test_human_proteins_api_returns_json_payload(monkeypatch) -> None:
     assert payload["proteins"][0]["gene_name"] == "DRD4"
 
 
+def test_human_proteins_api_excludes_processed_history_genes(monkeypatch, tmp_path) -> None:
+    """The processed-gene filter should remove proteins already represented in History."""
+    results_dir = tmp_path / "results"
+    results_dir.mkdir()
+    (results_dir / "drd4_promoter_plus_gene_report.html").write_text("DRD4 report", encoding="utf-8")
+
+    sample_payload = {
+        "query": "",
+        "reviewed_only": True,
+        "cursor": None,
+        "next_cursor": None,
+        "has_next_page": False,
+        "has_previous_page": False,
+        "page_index": None,
+        "next_page_index": None,
+        "previous_page_index": None,
+        "pagination_mode": "cursor",
+        "page_size": 24,
+        "records_returned": 2,
+        "total_results": 2,
+        "catalog_label": "UniProt human UniProtKB catalog",
+        "catalog_scope": "Reviewed human proteins",
+        "catalog_url": "https://rest.uniprot.org/uniprotkb/search",
+        "featured_queries": ["DRD4"],
+        "longevity_only": False,
+        "longevity_source": None,
+        "proteins": [
+            {"gene_name": "DRD4", "gene_synonyms": [], "protein_name": "D(4) dopamine receptor"},
+            {"gene_name": "TP53", "gene_synonyms": [], "protein_name": "Cellular tumor antigen p53"},
+        ],
+        "error": None,
+    }
+
+    monkeypatch.setattr("src.webapp.RESULTS_DIR", results_dir)
+    monkeypatch.setattr("src.webapp.get_human_protein_catalog", lambda **_: dict(sample_payload))
+
+    client = app.test_client()
+    response = client.get("/api/human-proteins?exclude_processed=1")
+
+    assert response.status_code == 200
+    payload = response.get_json()
+    assert payload["exclude_processed"] is True
+    assert payload["processed_gene_symbols"] == ["DRD4"]
+    assert payload["excluded_processed_count"] == 1
+    assert payload["records_returned"] == 1
+    assert [protein["gene_name"] for protein in payload["proteins"]] == ["TP53"]
+
+
 def test_human_proteins_api_accepts_longevity_filter(monkeypatch) -> None:
     """The API should forward the longevity filter flag to the catalog helper."""
     captured: dict[str, object] = {}

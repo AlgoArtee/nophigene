@@ -243,6 +243,12 @@
       font-weight: 800;
       box-shadow: 0 14px 30px rgba(161, 20, 61, 0.22);
     }
+    .cta-button:disabled,
+    .run-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      box-shadow: none;
+    }
     .cta-note {
       display: inline-flex;
       align-items: center;
@@ -1772,6 +1778,7 @@
       <nav class="tab-nav" aria-label="Primary navigation">
         <button type="button" class="tab-button" data-tab-target="overview" aria-selected="false">Overview</button>
         <button type="button" class="tab-button" data-tab-target="preprocessing" aria-selected="false">Preprocessing</button>
+        <button type="button" class="tab-button" data-tab-target="extraction" aria-selected="false">Extraction</button>
         {% if analysis_unlocked %}
         <button type="button" class="tab-button" data-tab-target="analysis" aria-selected="false">Run Analysis</button>
         {% endif %}
@@ -1780,7 +1787,7 @@
         {% endif %}
         <button type="button" class="tab-button" data-tab-target="central_database" aria-selected="false">Central Database</button>
         <button type="button" class="tab-button" data-tab-target="history" aria-selected="false">History</button>
-        <button type="button" class="tab-button" data-tab-target="proteins" aria-selected="false">Human Proteins</button>
+        <button type="button" class="tab-button" data-tab-target="proteins" aria-selected="false">Human Genes & Proteins</button>
         <button type="button" class="tab-button" data-tab-target="structure" aria-selected="false">App Structure</button>
       </nav>
     </header>
@@ -1908,6 +1915,15 @@
 
                 {% if preprocess_error %}
                 <div class="error">{{ preprocess_error }}</div>
+                {% endif %}
+                {% if preprocess_state.hg38_extraction_suggested %}
+                <div class="diagram-note">
+                  <strong>GRCh38 Extraction Suggested</strong>
+                  <span>{{ preprocess_state.hg38_extraction_message }}</span>
+                  <div class="analysis-actions" style="margin-top: 12px;">
+                    <button type="button" class="cta-button" data-go-tab="extraction">Open Extraction</button>
+                  </div>
+                </div>
                 {% endif %}
               </form>
             </div>
@@ -2099,6 +2115,291 @@
         </div>
       </section>
 
+      {% set extraction_progress = 100 if extraction_state.extraction_ready else 66 if extraction_state.reference_ready and extraction_state.region_ready else 33 if extraction_state.reference_ready or extraction_state.region_ready else 0 %}
+      <section class="frame tab-panel preprocess-panel{% if initial_tab == 'extraction' %} is-active{% endif %}" data-tab-panel="extraction"{% if initial_tab != 'extraction' %} hidden{% endif %} style="display:{% if initial_tab == 'extraction' %}block{% else %}none{% endif %};">
+        <div class="preprocess-shell">
+          <section class="analysis-panel-inner preprocess-main-panel">
+            <div class="panel-head">
+              <div>
+                <h2>Extraction</h2>
+                <p>Prepare the UCSC GRCh38 analysis-set reference, call a regional VCF from a GRCh38-aligned BAM, and pass that VCF into Run Analysis.</p>
+              </div>
+              <span class="panel-chip">{{ "Tools ready" if extraction_tool_status.available else "Docker tools unavailable" }}</span>
+            </div>
+
+            <div class="scroll-region">
+              <form method="post" data-extraction-form>
+                <input type="hidden" name="workflow" value="extraction">
+                <div class="field-grid">
+                  <article class="field-card">
+                    <label for="extraction_genome_build">Genome build</label>
+                    <p class="field-example">Default: <code>GRCh38 / hg38</code></p>
+                    <select id="extraction_genome_build" name="extraction_genome_build">
+                      <option value="hg38" selected>GRCh38 / hg38</option>
+                    </select>
+                    <p class="hint">BAM extraction currently targets UCSC hg38 analysis-set contigs such as <code>chr15</code> and <code>chrM</code>.</p>
+                  </article>
+
+                  <article class="field-card">
+                    <label for="extraction_gene_name">Gene symbol</label>
+                    <p class="field-example">Current value: <code>{{ extraction_state.gene_name }}</code></p>
+                    <input id="extraction_gene_name" name="extraction_gene_name" type="text" value="{{ extraction_state.gene_name }}" placeholder="Enter a gene symbol such as POTEB3">
+                    <div class="analysis-actions">
+                      <button type="submit" class="run-button" name="extraction_action" value="find_region">Find hg38 Region</button>
+                    </div>
+                  </article>
+
+                  <article class="field-card">
+                    <label for="extraction_scope">Report scope</label>
+                    <p class="field-example">Default: <code>Promoter + gene</code></p>
+                    <select id="extraction_scope" name="extraction_scope" data-extraction-scope>
+                      {% for scope in extraction_scope_options %}
+                      <option
+                        value="{{ scope.key }}"
+                        data-scope-region="{{ scope.region }}"
+                        data-scope-output="{{ scope.output_vcf }}"
+                        {% if scope.selected == "true" %}selected{% endif %}
+                        {% if scope.disabled == "true" %}disabled{% endif %}
+                      >{{ scope.label }}</option>
+                      {% endfor %}
+                    </select>
+                    <details class="field-details">
+                      <summary>Available extraction regions</summary>
+                      <ul class="insight-list">
+                        {% for scope in extraction_scope_options %}
+                        <li><strong>{{ scope.label }}:</strong> <code>{{ scope.region or "Unavailable until lookup" }}</code>. {{ scope.description }}</li>
+                        {% endfor %}
+                      </ul>
+                    </details>
+                  </article>
+
+                  <article class="field-card">
+                    <label for="extraction_region">Extraction region</label>
+                    <p class="field-example">Current value: <code>{{ extraction_state.region or "Waiting for hg38 lookup" }}</code></p>
+                    <input id="extraction_region" name="extraction_region" value="{{ extraction_state.region }}" placeholder="chr15:21405401-21441499" data-extraction-region-input>
+                    <p class="hint">The extractor automatically resolves <code>15</code> versus <code>chr15</code> against the BAM header before calling variants.</p>
+                  </article>
+
+                  <article class="field-card">
+                    <label for="bam_path">BAM path</label>
+                    <p class="field-example">Discovered under <code>{{ data_dir }}</code></p>
+                    <input id="bam_path" name="bam_path" list="bam-options" value="{{ extraction_state.bam_path }}" placeholder="data/sample.hg38.bam">
+                    <datalist id="bam-options">
+                      {% for item in bam_files %}
+                      <option value="{{ item }}">
+                      {% endfor %}
+                    </datalist>
+                    <div class="analysis-actions">
+                      <button
+                        type="submit"
+                        class="run-button"
+                        name="extraction_action"
+                        value="browse_bam_file"
+                        {% if extraction_tool_status.docker_runtime %}disabled{% endif %}
+                      >Browse BAM File</button>
+                      {% if extraction_tool_status.docker_runtime %}
+                      <span class="subtle">Native file windows are unavailable inside Docker.</span>
+                      {% endif %}
+                    </div>
+                    <p class="hint">Use a coordinate-sorted BAM aligned to GRCh38/hg38 and matching the selected reference contig naming.</p>
+                  </article>
+
+                  <article class="field-card">
+                    <label for="bam_search_root">Search computer for BAM files</label>
+                    <p class="field-example">Current search folder: <code>{{ extraction_state.bam_search_root }}</code></p>
+                    <input id="bam_search_root" name="bam_search_root" value="{{ extraction_state.bam_search_root }}" placeholder="C:\Users\Mewxy\Desktop">
+                    <p class="hint">Enter a folder path and search recursively. Results are added to the BAM path picker above.</p>
+                    <div class="analysis-actions">
+                      <button type="submit" class="run-button" name="extraction_action" value="search_bam_files">Search BAM Files</button>
+                      <span class="subtle">{{ extraction_state.bam_search_results | length }} searched result{{ "" if (extraction_state.bam_search_results | length) == 1 else "s" }}</span>
+                    </div>
+                  </article>
+
+                  <article class="field-card">
+                    <label for="output_vcf">Output VCF path</label>
+                    <p class="field-example">Default: <code>{{ extraction_state.output_vcf }}</code></p>
+                    <input id="output_vcf" name="output_vcf" value="{{ extraction_state.output_vcf }}" placeholder="data/extracted/GENE_hg38_promoter_plus_gene.vcf.gz" data-extraction-output-input>
+                    <p class="hint">The extracted VCF is bgzip-compressed and tabix-indexed with <code>bcftools index -t</code>.</p>
+                  </article>
+
+                  <article class="field-card">
+                    <label>Reference files</label>
+                    <p class="field-example">Directory: <code>{{ extraction_state.reference_dir }}</code></p>
+                    <div class="preprocess-step-details">
+                      <div><strong>FASTA:</strong> <code>{{ extraction_reference_status.fasta }}</code></div>
+                      <div><strong>Index:</strong> <code>{{ extraction_reference_status.fai }}</code></div>
+                      <div><strong>Status:</strong> {{ extraction_reference_status.message }}</div>
+                    </div>
+                    <div class="analysis-actions">
+                      <button
+                        type="submit"
+                        class="run-button"
+                        name="extraction_action"
+                        value="prepare_reference"
+                        {% if not extraction_tool_status.available %}disabled{% endif %}
+                      >Prepare Reference</button>
+                    </div>
+                  </article>
+                </div>
+
+                <div class="analysis-actions">
+                  <button
+                    type="submit"
+                    class="run-button"
+                    name="extraction_action"
+                    value="extract_vcf"
+                    {% if not extraction_tool_status.available or not extraction_reference_status.ready %}disabled{% endif %}
+                  >Extract Regional VCF</button>
+                  {% if extraction_state.extraction_ready and analysis_unlocked %}
+                  <button type="button" class="cta-button" data-go-tab="analysis">Open Run Analysis</button>
+                  {% endif %}
+                </div>
+
+                {% if extraction_error %}
+                <div class="error">{{ extraction_error }}</div>
+                {% endif %}
+                {% if extraction_notice %}
+                <p class="status-note">{{ extraction_notice }}</p>
+                {% endif %}
+              </form>
+            </div>
+          </section>
+
+          <div class="preprocess-sidebar">
+            <section class="analysis-panel-inner preprocess-status-panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Extraction Status</h2>
+                  <p>Reference readiness, hg38 coordinates, and the extracted VCF handoff are tracked here.</p>
+                </div>
+                <span class="panel-chip">{{ "VCF ready" if extraction_state.extraction_ready else "Waiting" }}</span>
+              </div>
+
+              <div class="viewer-stage preprocess-status-stage">
+                <div class="results-stack">
+                  <div class="preprocess-status-grid">
+                    <div class="preprocess-progress-column">
+                      <div class="preprocess-progress-title">Step Flow</div>
+                      <div class="preprocess-vertical-track" aria-hidden="true">
+                        <div class="preprocess-vertical-fill" style="height: {{ extraction_progress }}%;"></div>
+                      </div>
+                      <div class="preprocess-progress-caption">{{ extraction_progress }}%</div>
+                    </div>
+
+                    <div class="preprocess-step-stack">
+                      <article class="preprocess-step-card {% if extraction_state.reference_ready %}is-complete{% endif %}">
+                        <div class="preprocess-step-meta">
+                          <span class="preprocess-step-index">01</span>
+                          <span class="preprocess-step-state">{{ "Complete" if extraction_state.reference_ready else "Pending" }}</span>
+                        </div>
+                        <div class="preprocess-step-copy">
+                          <h4>Prepare Reference</h4>
+                          <p>{{ extraction_reference_status.message }}</p>
+                        </div>
+                      </article>
+
+                      <article class="preprocess-step-card {% if extraction_state.region_ready %}is-complete{% endif %}">
+                        <div class="preprocess-step-meta">
+                          <span class="preprocess-step-index">02</span>
+                          <span class="preprocess-step-state">{{ "Complete" if extraction_state.region_ready else "Pending" }}</span>
+                        </div>
+                        <div class="preprocess-step-copy">
+                          <h4>Select BAM and Region</h4>
+                          <p>Region <code>{{ extraction_state.region or "not selected" }}</code>; BAM <code>{{ extraction_state.bam_path or "not selected" }}</code>.</p>
+                        </div>
+                      </article>
+
+                      <article class="preprocess-step-card {% if extraction_state.extraction_ready %}is-complete{% endif %}">
+                        <div class="preprocess-step-meta">
+                          <span class="preprocess-step-index">03</span>
+                          <span class="preprocess-step-state">{{ "Complete" if extraction_state.extraction_ready else "Pending" }}</span>
+                        </div>
+                        <div class="preprocess-step-copy">
+                          <h4>Extract Regional VCF</h4>
+                          <p>{{ extraction_state.last_output_vcf or "Waiting for a regional VCF." }}</p>
+                        </div>
+                      </article>
+                    </div>
+                  </div>
+
+                  <div class="metrics">
+                    <article class="metric">
+                      <span>Tools</span>
+                      <strong>{{ "Ready" if extraction_tool_status.available else "Unavailable" }}</strong>
+                    </article>
+                    <article class="metric">
+                      <span>Reference</span>
+                      <strong>{{ "Ready" if extraction_reference_status.ready else "Missing" }}</strong>
+                    </article>
+                    <article class="metric">
+                      <span>Resolved region</span>
+                      <strong>{{ extraction_state.last_resolved_region or extraction_state.region or "Pending" }}</strong>
+                    </article>
+                  </div>
+
+                  {% if not extraction_tool_status.available %}
+                  <div class="diagram-note">
+                    <strong>Docker-only extraction</strong>
+                    <span>{{ extraction_tool_status.message }}</span>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="preprocess-detail-grid">
+          <article class="preprocess-detail-card preprocess-results-card">
+            <div class="panel-head">
+              <div>
+                <h3>Extraction Artifacts</h3>
+                <p>Successful extraction populates the VCF field in Run Analysis and keeps the selected hg38 region active.</p>
+              </div>
+              <span class="panel-chip">{{ "Ready for analysis" if extraction_state.extraction_ready else "Waiting for VCF" }}</span>
+            </div>
+            <div class="preprocess-results-body">
+              <div class="preprocess-artifacts">
+                <div class="path-chip">
+                  <strong>Output VCF</strong>
+                  <code>{{ extraction_state.last_output_vcf or extraction_state.output_vcf }}</code>
+                  <span>{{ "Extracted" if extraction_state.extraction_ready else "Planned" }}</span>
+                </div>
+                {% if extraction_state.last_commands %}
+                <details class="field-details" open>
+                  <summary>Extraction commands</summary>
+                  <ul class="insight-list">
+                    {% for name, command in extraction_state.last_commands.items() %}
+                    <li><strong>{{ name }}:</strong> <code>{{ command }}</code></li>
+                    {% endfor %}
+                  </ul>
+                </details>
+                {% endif %}
+              </div>
+            </div>
+          </article>
+
+          <article class="preprocess-detail-card preprocess-console-card">
+            <div class="panel-head">
+              <div>
+                <h3>Extraction Console</h3>
+                <p>Reference preparation and BAM extraction logs appear here after each action.</p>
+              </div>
+              <span class="panel-chip">Debug output</span>
+            </div>
+
+            <div class="preprocess-console-shell">
+              <div class="preprocess-console {% if not extraction_state.logs %}is-empty{% endif %}">
+                <pre>{% if extraction_state.logs %}{% for line in extraction_state.logs %}{{ line }}
+{% endfor %}{% else %}[stdout] Extraction script output will appear here.
+[stderr] Tool errors and tracebacks will appear here if a step fails.
+{% endif %}</pre>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="frame tab-panel database-panel{% if initial_tab == 'central_database' %} is-active{% endif %}" data-tab-panel="central_database"{% if initial_tab != 'central_database' %} hidden{% endif %} style="display:{% if initial_tab == 'central_database' %}block{% else %}none{% endif %};">
         <span class="overview-badge">One row per observed variant</span>
         <h2 class="architecture-title">Central Analysis Database</h2>
@@ -2244,7 +2545,7 @@
           <section class="analysis-panel-inner">
             <div class="panel-head">
               <div>
-                <h2>Human Proteins</h2>
+                <h2>Human Genes & Proteins</h2>
                 <p>Browse the live UniProt human protein catalog, search for gene symbols like <code>DRD4</code>, and expand cards for the returned protein details.</p>
               </div>
               <span class="panel-chip">UniProt-backed catalog</span>
@@ -2254,7 +2555,7 @@
               <form class="field-grid" data-protein-search-form>
                 <div class="protein-search-grid">
                   <div class="field-card">
-                    <label for="protein_query">Search Human Proteins</label>
+                    <label for="protein_query">Search Human Genes & Proteins</label>
                     <p class="field-example">Examples: <code>DRD4</code>, <code>TP53</code>, <code>dopamine receptor</code>, <code>P21917</code></p>
                     <input id="protein_query" data-protein-query type="text" placeholder="Search by gene symbol, protein name, UniProt entry, or accession">
                     <details class="field-details">
@@ -2275,7 +2576,14 @@
                         <input type="checkbox" data-protein-longevity-only>
                         <span>Longevity genes only</span>
                       </label>
+                      <label class="toggle-row" style="margin-top: 10px;">
+                        <input type="checkbox" data-protein-exclude-processed>
+                        <span>Exclude already processed proteins</span>
+                      </label>
                       <p class="hint">This filter uses HAGR LongevityMap and narrows the catalog to genes with at least one reported significant human longevity association.</p>
+                      <p class="hint">
+                        Processed-gene filtering uses {{ processed_gene_symbols | length }} gene{{ "" if (processed_gene_symbols | length) == 1 else "s" }} already represented in History and the central database.
+                      </p>
                       <p class="hint">Turn this off if you want the catalog to include unreviewed or predicted human UniProt entries as well.</p>
                     </div>
                     <div class="analysis-actions">
@@ -2298,7 +2606,7 @@
                 <section class="empty-state">
                   <div class="empty-state-inner">
                     <h3>Protein catalog results will appear here</h3>
-                    <p>Open the Human Proteins tab and load the default catalog to browse reviewed human proteins, or search directly for a symbol like <code>DRD4</code> to pull a focused set of entries.</p>
+                    <p>Open the Human Genes & Proteins tab and load the default catalog to browse reviewed human proteins, or search directly for a symbol like <code>DRD4</code> to pull a focused set of entries.</p>
                     <p>The returned cards are backed by the live UniProt human catalog and link out to UniProt, AlphaFold, and NCBI Gene when those references are available.</p>
                   </div>
                 </section>
@@ -3637,6 +3945,8 @@
     </main>
   </div>
 
+  <script type="application/json" id="processed-gene-symbols">{{ processed_gene_symbols | tojson }}</script>
+
   <script>
     (function () {
       const initialTab = document.body.dataset.initialTab || "overview";
@@ -3654,13 +3964,18 @@
       const analysisScopeSelect = document.querySelector("[data-analysis-scope]");
       const analysisRegionInput = document.querySelector("[data-region-input]");
       const analysisOutputInput = document.querySelector("[data-output-input]");
+      const extractionScopeSelect = document.querySelector("[data-extraction-scope]");
+      const extractionRegionInput = document.querySelector("[data-extraction-region-input]");
+      const extractionOutputInput = document.querySelector("[data-extraction-output-input]");
       const proteinForm = document.querySelector("[data-protein-search-form]");
       const proteinQueryInput = document.querySelector("[data-protein-query]");
       const proteinReviewedOnlyInput = document.querySelector("[data-protein-reviewed-only]");
       const proteinLongevityOnlyInput = document.querySelector("[data-protein-longevity-only]");
+      const proteinExcludeProcessedInput = document.querySelector("[data-protein-exclude-processed]");
       const proteinResults = document.querySelector("[data-protein-results]");
       const proteinRefreshButton = document.querySelector("[data-protein-refresh]");
       const proteinQuickButtons = Array.from(document.querySelectorAll("[data-protein-quick-query]"));
+      const processedGeneSymbolsElement = document.getElementById("processed-gene-symbols");
       const variantRawDataElement = document.getElementById("variant-raw-data");
       const variantRawTable = document.querySelector("[data-variant-raw-table]");
       const variantRawSummary = document.querySelector("[data-variant-raw-summary]");
@@ -3673,6 +3988,13 @@
       const preprocessViewerStage = document.getElementById("preprocess-viewer-stage");
       const analysisViewerStage = document.getElementById("viewer-stage");
       const proteinApiUrl = "/api/human-proteins";
+      let processedGeneSymbols = [];
+      try {
+        const parsedSymbols = JSON.parse(processedGeneSymbolsElement ? processedGeneSymbolsElement.textContent || "[]" : "[]");
+        processedGeneSymbols = Array.isArray(parsedSymbols) ? parsedSymbols : [];
+      } catch (error) {
+        processedGeneSymbols = [];
+      }
       const variantRawState = {
         rows: [],
         pageIndex: 0,
@@ -3684,6 +4006,7 @@
         query: "",
         reviewedOnly: true,
         longevityOnly: false,
+        excludeProcessed: false,
         cursor: null,
         cursorHistory: [],
         nextCursor: null,
@@ -3796,6 +4119,18 @@
           `
           : "";
 
+        const processedFilterNote = data.exclude_processed
+          ? `
+            <div class="diagram-note" style="margin-bottom: 14px;">
+              <strong>Already processed proteins excluded</strong>
+              <div class="hint" style="margin-top: 8px;">
+                ${escapeHtml(data.processed_gene_count || 0)} processed gene${Number(data.processed_gene_count || 0) === 1 ? "" : "s"} checked.
+                ${Number(data.excluded_processed_count || 0) > 0 ? `${escapeHtml(data.excluded_processed_count)} matched protein${Number(data.excluded_processed_count) === 1 ? "" : "s"} hidden on this page.` : "No processed proteins matched this page."}
+              </div>
+            </div>
+          `
+          : "";
+
         const errorMarkup = data.error
           ? `
             <div class="error">
@@ -3891,7 +4226,7 @@
             <section class="empty-state">
               <div class="empty-state-inner">
                 <h3>No proteins matched this query</h3>
-                <p>Try a broader term, a direct gene symbol such as <code>DRD4</code>, or load the default catalog again.</p>
+                <p>${data.exclude_processed ? "The visible matches may already be represented in History. Turn off the processed-protein filter or try another gene symbol." : "Try a broader term, a direct gene symbol such as DRD4, or load the default catalog again."}</p>
               </div>
             </section>
           `;
@@ -3917,6 +4252,7 @@
             </article>
           </div>
           ${longevityNote}
+          ${processedFilterNote}
           <p class="protein-search-summary">${queryLabel}</p>
           ${proteinsMarkup}
           <div class="protein-pagination">
@@ -4036,6 +4372,7 @@
         }
         proteinState.reviewedOnly = proteinReviewedOnlyInput ? proteinReviewedOnlyInput.checked : true;
         proteinState.longevityOnly = proteinLongevityOnlyInput ? proteinLongevityOnlyInput.checked : false;
+        proteinState.excludeProcessed = proteinExcludeProcessedInput ? proteinExcludeProcessedInput.checked : false;
 
         if (resetCursor) {
           proteinState.cursor = null;
@@ -4060,6 +4397,9 @@
           } else if (proteinState.cursor) {
             params.set("cursor", proteinState.cursor);
           }
+          if (proteinState.excludeProcessed) {
+            params.set("exclude_processed", "1");
+          }
 
           const response = await fetch(`${proteinApiUrl}?${params.toString()}`);
           if (!response.ok) {
@@ -4076,6 +4416,9 @@
             query: proteinState.query,
             reviewed_only: proteinState.reviewedOnly,
             longevity_only: proteinState.longevityOnly,
+            exclude_processed: proteinState.excludeProcessed,
+            processed_gene_count: proteinState.excludeProcessed ? processedGeneSymbols.length : 0,
+            excluded_processed_count: 0,
             records_returned: 0,
             total_results: null,
             has_next_page: false,
@@ -4141,6 +4484,24 @@
         }
         if (analysisOutputInput && nextOutput) {
           analysisOutputInput.value = nextOutput;
+        }
+      }
+
+      function updateExtractionScopeFields() {
+        if (!extractionScopeSelect) {
+          return;
+        }
+        const selectedOption = extractionScopeSelect.selectedOptions[0];
+        if (!selectedOption) {
+          return;
+        }
+        const nextRegion = selectedOption.dataset.scopeRegion || "";
+        const nextOutput = selectedOption.dataset.scopeOutput || "";
+        if (extractionRegionInput && nextRegion) {
+          extractionRegionInput.value = nextRegion;
+        }
+        if (extractionOutputInput && nextOutput) {
+          extractionOutputInput.value = nextOutput;
         }
       }
 
@@ -4291,6 +4652,10 @@
         analysisScopeSelect.addEventListener("change", updateAnalysisScopeFields);
       }
 
+      if (extractionScopeSelect) {
+        extractionScopeSelect.addEventListener("change", updateExtractionScopeFields);
+      }
+
       subtabButtons.forEach((button) => {
         button.addEventListener("click", () => activateSubtab(button.dataset.subtabTarget));
       });
@@ -4320,8 +4685,19 @@
           if (proteinLongevityOnlyInput) {
             proteinLongevityOnlyInput.checked = false;
           }
+          if (proteinExcludeProcessedInput) {
+            proteinExcludeProcessedInput.checked = false;
+          }
           activateTab("proteins");
           loadProteinCatalog({ resetCursor: true });
+        });
+      }
+
+      if (proteinExcludeProcessedInput) {
+        proteinExcludeProcessedInput.addEventListener("change", () => {
+          if (proteinState.initialized) {
+            loadProteinCatalog({ resetCursor: true });
+          }
         });
       }
 

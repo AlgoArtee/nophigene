@@ -13,6 +13,8 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Resolve-Path (Join-Path $scriptDir "..")).Path
 $dockerConfigDir = Join-Path $repoRoot ".docker-local"
 $dataDir = Join-Path $repoRoot "data"
+$referenceDir = Join-Path $dataDir "reference\hg38"
+$extractedDir = Join-Path $dataDir "extracted"
 $resultsDir = Join-Path $repoRoot "results"
 $dockerDesktopCandidates = @(
     "C:\Program Files\Docker\Docker\Docker Desktop.exe",
@@ -80,7 +82,7 @@ function Ensure-DockerDesktop {
 }
 
 function Ensure-Directories {
-    foreach ($dir in @($dockerConfigDir, $dataDir, $resultsDir)) {
+    foreach ($dir in @($dockerConfigDir, $dataDir, $referenceDir, $extractedDir, $resultsDir)) {
         if (-not (Test-Path $dir)) {
             Write-Step "Creating $dir"
             if (-not $DryRun) {
@@ -88,6 +90,21 @@ function Ensure-Directories {
             }
         }
     }
+}
+
+function Test-DockerImageHasExtractionTools {
+    if ($DryRun) {
+        Write-Step "Would verify samtools and bcftools inside $ImageName"
+        return $true
+    }
+
+    docker image inspect $ImageName *> $null
+    if ($LASTEXITCODE -ne 0) {
+        return $false
+    }
+
+    docker run --rm --entrypoint sh $ImageName -c "command -v samtools >/dev/null 2>&1 && command -v bcftools >/dev/null 2>&1" *> $null
+    return $LASTEXITCODE -eq 0
 }
 
 function Remove-ExistingContainer {
@@ -141,6 +158,8 @@ Write-Host "Repository : $repoRoot"
 Write-Host "Image      : $ImageName"
 Write-Host "Container  : $ContainerName"
 Write-Host "Port       : $Port"
+Write-Host "Reference  : $referenceDir"
+Write-Host "Extracted  : $extractedDir"
 Write-Host ""
 
 Ensure-Directories
@@ -155,12 +174,17 @@ else {
     Write-Step "Skipping image build"
 }
 
+if (-not (Test-DockerImageHasExtractionTools)) {
+    throw "Docker image $ImageName does not include samtools and bcftools. Re-run this launcher without -SkipBuild so the updated Extraction-capable image is built."
+}
+
 Remove-ExistingContainer
 
 Invoke-Checked -Description "Starting container $ContainerName" -Command {
     docker run -d `
         --name $ContainerName `
         -p "${Port}:8000" `
+        -e "NOPHIGENE_IN_DOCKER=1" `
         -v "${dataDir}:/home/appuser/app/data" `
         -v "${resultsDir}:/home/appuser/app/results" `
         $ImageName | Out-Null
@@ -179,4 +203,5 @@ if (-not $NoOpenBrowser) {
 Write-Host ""
 Write-Host "UI is ready." -ForegroundColor Green
 Write-Host "Open http://127.0.0.1:$Port if the browser did not appear automatically."
+Write-Host "The Extraction tab is enabled in Docker and writes reference/VCF files under data\reference\hg38 and data\extracted."
 Write-Host "Use 'Stop NophiGene UI (Docker).cmd' to stop the container later."

@@ -95,6 +95,15 @@ def test_reverse_strand_scope_regions_use_valid_promoter_gene_union() -> None:
     assert scope_regions["promoter_plus_gene"] == "19:4174106-4183560"
 
 
+def test_mt_rnr1_scope_regions_include_low_coordinate_mitochondrial_calls() -> None:
+    """MT-RNR1 promoter+gene scope should include low-coordinate MT VCF calls."""
+    scope_regions = _build_analysis_scope_regions("MT-RNR1", "MT:648-1601")
+
+    assert scope_regions["gene_only"] == "MT:648-1601"
+    assert scope_regions["promoter_only"] == "MT:1-647"
+    assert scope_regions["promoter_plus_gene"] == "MT:1-1601"
+
+
 def test_all_local_interpretation_databases_have_valid_combined_regions() -> None:
     """Every bundled promoter+gene recommendation should cover promoter and gene body."""
     gene_data_dir = Path(__file__).resolve().parents[1] / "src" / "gene_data"

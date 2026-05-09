@@ -37,6 +37,18 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert "Predictive Theses" in template_text
     assert 'data-tab-target="predictive_theses"' in template_text
     assert 'data-tab-target="central_database"' in template_text
+    assert 'data-tab-target="extraction"' in template_text
+    assert 'data-tab-panel="extraction"' in template_text
+    assert "Extract Regional VCF" in template_text
+    assert "Prepare Reference" in template_text
+    assert "Search computer for BAM files" in template_text
+    assert 'name="bam_search_root"' in template_text
+    assert 'value="search_bam_files"' in template_text
+    assert "Browse BAM File" in template_text
+    assert 'value="browse_bam_file"' in template_text
+    assert "GRCh38 Extraction Suggested" in template_text
+    assert "data-extraction-scope" in template_text
+    assert "function updateExtractionScopeFields()" in template_text
     assert "Central Analysis Database" in template_text
     assert "central-database-table" in template_text
     assert "One row per observed variant" in template_text
@@ -134,6 +146,117 @@ def test_preprocess_find_region_submission_updates_session(monkeypatch) -> None:
     assert preprocess_state["selected_sources"] == ["NCBI RefSeq", "Local curated promoter/gene intervals"]
 
 
+def test_preprocess_hg38_only_gene_suggests_extraction(monkeypatch) -> None:
+    """Finding an hg38-only gene should prefill Extraction and guide the user there."""
+
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr(
+        "src.webapp.find_gene_region",
+        lambda gene_symbol: {
+            "gene_name": "POTEB3",
+            "selected_region": "15:21405401-21440499",
+            "selected_sources": ["NCBI RefSeq"],
+            "candidate_regions": [{"source": "NCBI RefSeq", "region": "15:21405401-21440499"}],
+        },
+    )
+
+    client = app.test_client()
+    response = client.post(
+        "/",
+        data={
+            "workflow": "preprocess",
+            "gene_name": "POTEB3",
+            "preprocess_action": "find_region",
+        },
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "GRCh38 Extraction Suggested" in page
+    assert "Use the Extraction tab with a GRCh38-aligned BAM" in page
+
+    with client.session_transaction() as session_state:
+        preprocess_state = session_state["preprocess_state"]
+        extraction_state = session_state["extraction_state"]
+
+    assert preprocess_state["hg38_extraction_suggested"] is True
+    assert preprocess_state["hg38_extraction_region"] == "15:21405401-21441499"
+    assert extraction_state["gene_name"] == "POTEB3"
+    assert extraction_state["region"] == "15:21405401-21441499"
+    assert extraction_state["output_vcf"] == "data/extracted/POTEB3_hg38_promoter_plus_gene.vcf.gz"
+
+
+def test_mt_rnr1_zero_probe_preprocessing_unlocks_analysis(monkeypatch, tmp_path: Path) -> None:
+    """Curated mitochondrial genes should unlock analysis even with a zero-row EPIC subset."""
+    manifest_path = tmp_path / "manifest.csv"
+    manifest_path.write_text("IlmnID,CHR,MAPINFO,UCSC_RefGene_Name\n", encoding="utf-8")
+    output_path = tmp_path / "MT-RNR1_epigenetics_hg19.csv"
+    captured_call: dict[str, object] = {}
+
+    def fake_save_filtered_manifest(**kwargs: object) -> dict[str, object]:
+        captured_call.update(kwargs)
+        output_path.write_text("IlmnID,CHR,MAPINFO,UCSC_RefGene_Name\n", encoding="utf-8")
+        return {"output_path": output_path, "probe_count": 0}
+
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.save_filtered_manifest", fake_save_filtered_manifest)
+
+    client = app.test_client()
+    with client.session_transaction() as session_state:
+        session_state["preprocess_state"] = {
+            "gene_name": "MT-RNR1",
+            "region": "MT:1-1601",
+            "analysis_scope": "promoter_plus_gene",
+            "scope_regions": {
+                "promoter_plus_gene": "MT:1-1601",
+                "promoter_only": "MT:1-647",
+                "gene_only": "MT:648-1601",
+            },
+            "scope_region_source": "Local curated promoter/gene intervals",
+            "manifest_source": str(manifest_path),
+            "filtered_manifest": "",
+            "region_candidates": [],
+            "selected_sources": [],
+            "region_ready": True,
+            "manifest_ready": False,
+            "analysis_ready": False,
+            "probe_count": 0,
+            "build": "hg19",
+            "logs": [],
+            "region_recently_updated": False,
+            "overwrite_filtered_manifest": True,
+        }
+
+    response = client.post(
+        "/",
+        data={
+            "workflow": "preprocess",
+            "gene_name": "MT-RNR1",
+            "preprocess_region": "MT:1-1601",
+            "manifest_source": str(manifest_path),
+            "overwrite_filtered_manifest": "1",
+            "preprocess_action": "select_methylation",
+        },
+    )
+
+    assert response.status_code == 200
+    assert captured_call["allow_empty"] is True
+
+    with client.session_transaction() as session_state:
+        preprocess_state = session_state["preprocess_state"]
+
+    assert preprocess_state["manifest_ready"] is True
+    assert preprocess_state["analysis_ready"] is True
+    assert preprocess_state["probe_count"] == 0
+
+
 def test_get_request_resets_preprocessing_workspace(monkeypatch) -> None:
     """A fresh page load should not keep the previous gene unlocked in the UI."""
     monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
@@ -171,6 +294,236 @@ def test_get_request_resets_preprocessing_workspace(monkeypatch) -> None:
 
     with client.session_transaction() as session_state:
         assert "preprocess_state" not in session_state
+
+
+def test_extraction_tab_renders_with_disabled_tool_state(monkeypatch) -> None:
+    """The Extraction tab should show a clear unavailable state outside Docker tooling."""
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: ["data/sample.hg38.bam"])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+    monkeypatch.setattr(
+        "src.webapp.get_extraction_tool_status",
+        lambda: {
+            "available": False,
+            "docker_runtime": False,
+            "local_override": False,
+            "tools": {"samtools": None, "bcftools": None},
+            "missing_tools": ["samtools", "bcftools"],
+            "message": "Extraction is unavailable because samtools/bcftools are not on PATH.",
+        },
+    )
+    monkeypatch.setattr(
+        "src.webapp.get_hg38_reference_status",
+        lambda: {
+            "ready": False,
+            "fasta": "data/reference/hg38/hg38.analysisSet.fa",
+            "fai": "data/reference/hg38/hg38.analysisSet.fa.fai",
+            "message": "Reference is not ready.",
+        },
+    )
+
+    client = app.test_client()
+    response = client.get("/")
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'data-tab-target="extraction"' in page
+    assert "Docker-only extraction" in page
+    assert "Extraction is unavailable because samtools/bcftools are not on PATH." in page
+    assert "data/sample.hg38.bam" in page
+
+
+def test_extraction_bam_search_adds_computer_paths(monkeypatch, tmp_path: Path) -> None:
+    """Extraction should search a chosen folder and add BAMs to the picker."""
+    bam_path = tmp_path / "nested" / "sample.hg38.bam"
+    bam_path.parent.mkdir()
+    bam_path.write_bytes(b"BAM placeholder")
+    expected_path = bam_path.as_posix()
+
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+    monkeypatch.setattr(
+        "src.webapp.get_extraction_tool_status",
+        lambda: {
+            "available": False,
+            "docker_runtime": False,
+            "local_override": False,
+            "tools": {"samtools": None, "bcftools": None},
+            "missing_tools": ["samtools", "bcftools"],
+            "message": "Extraction is unavailable because samtools/bcftools are not on PATH.",
+        },
+    )
+    monkeypatch.setattr(
+        "src.webapp.get_hg38_reference_status",
+        lambda: {
+            "ready": False,
+            "fasta": "data/reference/hg38/hg38.analysisSet.fa",
+            "fai": "data/reference/hg38/hg38.analysisSet.fa.fai",
+            "message": "Reference is not ready.",
+        },
+    )
+
+    client = app.test_client()
+    response = client.post(
+        "/",
+        data={
+            "workflow": "extraction",
+            "extraction_gene_name": "POTEB3",
+            "extraction_genome_build": "hg38",
+            "extraction_scope": "promoter_plus_gene",
+            "extraction_region": "15:21405401-21441499",
+            "bam_search_root": str(tmp_path),
+            "output_vcf": "data/extracted/POTEB3_hg38_promoter_plus_gene.vcf.gz",
+            "extraction_action": "search_bam_files",
+        },
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Found 1 BAM file" in page
+    assert expected_path in page
+
+    with client.session_transaction() as session_state:
+        extraction_state = session_state["extraction_state"]
+
+    assert extraction_state["bam_path"] == expected_path
+    assert extraction_state["bam_search_results"] == [expected_path]
+
+
+def test_extraction_browse_bam_file_updates_selected_path(monkeypatch, tmp_path: Path) -> None:
+    """The local native file picker action should populate the BAM path."""
+    bam_path = tmp_path / "picked.hg38.bam"
+    bam_path.write_bytes(b"BAM placeholder")
+    expected_path = bam_path.as_posix()
+
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+    monkeypatch.setattr("src.webapp.browse_bam_file", lambda initial_path="": expected_path)
+    monkeypatch.setattr(
+        "src.webapp.get_extraction_tool_status",
+        lambda: {
+            "available": False,
+            "docker_runtime": False,
+            "local_override": False,
+            "tools": {"samtools": None, "bcftools": None},
+            "missing_tools": ["samtools", "bcftools"],
+            "message": "Extraction is unavailable because samtools/bcftools are not on PATH.",
+        },
+    )
+    monkeypatch.setattr(
+        "src.webapp.get_hg38_reference_status",
+        lambda: {
+            "ready": False,
+            "fasta": "data/reference/hg38/hg38.analysisSet.fa",
+            "fai": "data/reference/hg38/hg38.analysisSet.fa.fai",
+            "message": "Reference is not ready.",
+        },
+    )
+
+    client = app.test_client()
+    response = client.post(
+        "/",
+        data={
+            "workflow": "extraction",
+            "extraction_gene_name": "POTEB3",
+            "extraction_genome_build": "hg38",
+            "extraction_scope": "promoter_plus_gene",
+            "extraction_region": "15:21405401-21441499",
+            "bam_search_root": "data",
+            "output_vcf": "data/extracted/POTEB3_hg38_promoter_plus_gene.vcf.gz",
+            "extraction_action": "browse_bam_file",
+        },
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert f"Selected BAM file {expected_path}." in page
+
+    with client.session_transaction() as session_state:
+        extraction_state = session_state["extraction_state"]
+
+    assert extraction_state["bam_path"] == expected_path
+    assert extraction_state["bam_search_results"] == [expected_path]
+
+
+def test_successful_extraction_updates_run_analysis_defaults(monkeypatch) -> None:
+    """A completed extraction should unlock analysis with the new regional VCF path."""
+    output_path = Path(__file__).resolve().parent.parent / "data" / "extracted" / "POTEB3_hg38_promoter_plus_gene.vcf.gz"
+
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: ["data/sample.hg38.bam"])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+    monkeypatch.setattr(
+        "src.webapp.get_extraction_tool_status",
+        lambda: {
+            "available": True,
+            "docker_runtime": True,
+            "local_override": False,
+            "tools": {"samtools": "/usr/bin/samtools", "bcftools": "/usr/bin/bcftools"},
+            "missing_tools": [],
+            "message": "Extraction tools are available.",
+        },
+    )
+    monkeypatch.setattr(
+        "src.webapp.get_hg38_reference_status",
+        lambda: {
+            "ready": True,
+            "fasta": "data/reference/hg38/hg38.analysisSet.fa",
+            "fai": "data/reference/hg38/hg38.analysisSet.fa.fai",
+            "message": "Reference FASTA and index are ready.",
+        },
+    )
+    monkeypatch.setattr(
+        "src.webapp.extract_region_vcf",
+        lambda **kwargs: {
+            "output_vcf": output_path,
+            "resolved_region": "chr15:21405401-21441499",
+            "commands": {"mpileup": "bcftools mpileup ...", "call": "bcftools call ..."},
+        },
+    )
+
+    client = app.test_client()
+    response = client.post(
+        "/",
+        data={
+            "workflow": "extraction",
+            "extraction_gene_name": "POTEB3",
+            "extraction_genome_build": "hg38",
+            "extraction_scope": "promoter_plus_gene",
+            "extraction_region": "15:21405401-21441499",
+            "bam_path": "data/sample.hg38.bam",
+            "output_vcf": "data/extracted/POTEB3_hg38_promoter_plus_gene.vcf.gz",
+            "extraction_action": "extract_vcf",
+        },
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'data-tab-target="analysis"' in page
+    assert 'value="data/extracted/POTEB3_hg38_promoter_plus_gene.vcf.gz"' in page
+    assert 'value="chr15:21405401-21441499"' in page
+
+    with client.session_transaction() as session_state:
+        preprocess_state = session_state["preprocess_state"]
+
+    assert preprocess_state["gene_name"] == "POTEB3"
+    assert preprocess_state["analysis_ready"] is True
+    assert preprocess_state["build"] == "hg38"
+    assert preprocess_state["region"] == "chr15:21405401-21441499"
 
 
 def test_app_structure_page_includes_general_probe_mapping_qa(monkeypatch) -> None:
@@ -217,6 +570,10 @@ def test_history_tab_lists_saved_reports_and_serves_artifacts(monkeypatch, tmp_p
 
     assert response.status_code == 200
     assert 'data-tab-target="history"' in page
+    assert "Human Genes & Proteins" in page
+    assert 'data-protein-exclude-processed' in page
+    assert "Exclude already processed proteins" in page
+    assert '["IGF1R"]' in page
     assert "igf1r_report.html" in page
     assert "/results/igf1r_report.html" in page
     assert "/results/igf1r_report_methylation.csv" in page

@@ -21,6 +21,17 @@ GENE_DATA_DIR = PROJECT_ROOT / "src" / "gene_data"
 MANIFEST_PATH = PROJECT_ROOT / "data" / "infinium-methylationepic-v-1-0-b5-manifest-file.csv"
 ASSEMBLY = "GRCh37 / hg19"
 VERSION = "2026-04-15"
+EMPTY_MANIFEST_COLUMNS = [
+    "IlmnID",
+    "CHR",
+    "MAPINFO",
+    "CHR_hg38",
+    "Start_hg38",
+    "End_hg38",
+    "UCSC_RefGene_Name",
+    "UCSC_RefGene_Group",
+    "Relation_to_UCSC_CpG_Island",
+]
 
 COMMON_POPULATION_CATEGORIES = [
     {"key": "Global pattern", "label": "Global pattern"},
@@ -1722,10 +1733,1203 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
             },
         ],
     },
+    {
+        "gene_name": "CLRN2",
+        "cytoband": "4p15.32",
+        "chromosome": "4",
+        "start": 17516788,
+        "end": 17528727,
+        "strand": "+",
+        "coordinate_source": (
+            "NCBI Gene 645104 reports CLRN2 on GRCh37.p13 at NC_000004.11:17516788..17528727 "
+            "and on GRCh38.p14 at NC_000004.12:17515165..17527104"
+        ),
+        "manifest_filter_region": "4:17515788-17528727",
+        "curated_methylation_probe_ids": [
+            "cg02953545",
+            "cg06791107",
+            "cg00389446",
+            "cg09099893",
+            "cg24197763",
+            "cg01802294",
+            "cg03685063",
+            "cg03553245",
+            "cg15130342",
+        ],
+        "gene_summary": (
+            "CLRN2 encodes clarin-2, a small clarin-family membrane protein with four predicted transmembrane domains. "
+            "Human, mouse, and zebrafish evidence places clarin-2 in inner-ear hair-cell stereocilia biology, where it supports mechanotransduction and maintenance of auditory hair bundles."
+        ),
+        "clinical_context": (
+            "The local CLRN2 knowledge base is rare hearing-loss and stereocilia-maintenance oriented. "
+            "Biallelic pathogenic CLRN2 variation causes autosomal recessive nonsyndromic hearing loss 117 (DFNB117), while isolated heterozygous or VUS findings should remain carrier or research context unless phase, phenotype, and external clinical review support a stronger interpretation."
+        ),
+        "variant_effect_overview": [
+            "The best-supported human CLRN2 disease signal is the pathogenic c.494C>A / p.Thr165Lys allele, which also disrupts splicing in vitro and can produce a frameshifted transcript.",
+            "Clarin-2-deficient mouse models show progressive hearing loss driven by stereocilia and mechanotransduction defects, with no overt retinal phenotype in the main mouse study.",
+            "Current CLRN2 interpretation is rare-variant and recessive-model focused; common SNP or methylation-only findings should not be converted into hearing-loss predictions.",
+        ],
+        "condition_research_overview": [
+            "Autosomal recessive nonsyndromic sensorineural hearing loss 117 (DFNB117).",
+            "Auditory hair-cell stereocilia maintenance, mechanoelectrical transduction, and cochlear synaptic function.",
+            "Preclinical AAV gene-supplementation research for clarin-2-associated progressive hearing loss.",
+        ],
+        "methylation_interpretation": (
+            "CLRN2 has a bundled promoter-plus-gene EPIC slice with several TSS200, TSS1500, 5'UTR, and first-exon probes. "
+            "Use CLRN2 methylation as local regulatory context around a compact hearing-loss gene, not as a validated DFNB117 diagnostic biomarker."
+        ),
+        "methylation_effects": [
+            "The CLRN2 whitelist prioritizes promoter-proximal and 5'UTR/first-exon probes around the GRCh37 transcription start.",
+            "No source-backed CLRN2 methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, expression, and sequence evidence.",
+        ],
+        "methylation_condition_research": [
+            "Use CLRN2 methylation as supportive regulatory context when investigating cochlear hair-cell, sensory-neuron, or rare hearing-loss hypotheses.",
+            "Do not use peripheral EPIC methylation alone to infer CLRN2-related hearing-loss risk.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 645104: CLRN2 gene summary, coordinates, and DFNB117 link", "https://www.ncbi.nlm.nih.gov/gene/645104"),
+            _evidence("UniProt A0PK11: CLRN2 / CLRN2_HUMAN protein entry", "https://www.uniprot.org/uniprotkb/A0PK11/entry"),
+            _evidence("PubMed 33496845: biallelic CLRN2 variant causes nonsyndromic hearing loss", "https://pubmed.ncbi.nlm.nih.gov/33496845/"),
+            _evidence("PubMed 31448880: clarin-2 is essential for hearing and stereocilia integrity", "https://pubmed.ncbi.nlm.nih.gov/31448880/"),
+            _evidence("PubMed 38243601: clarin-2 gene supplementation preserves hearing in mice", "https://pubmed.ncbi.nlm.nih.gov/38243601/"),
+        ],
+        "variants": [
+            {
+                "variant": "CLRN2 c.494C>A",
+                "display_name": "CLRN2 c.494C>A / p.Thr165Lys",
+                "common_name": "T165K DFNB117 pathogenic allele with splicing effect",
+                "position": 17528500,
+                "lookup_keys": [
+                    "CLRN2 c.494C>A",
+                    "NM_001079827.2:c.494C>A",
+                    "NM_001079827.2(CLRN2):c.494C>A",
+                    "p.Thr165Lys",
+                    "T165K",
+                    "rs1711990645",
+                    "4:17528500",
+                    "4:17528500:C>A",
+                    "4:17526877",
+                    "4:17526877:C>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic DFNB117 marker / recessive hearing-loss context",
+                "clinical_interpretation": (
+                    "CLRN2 c.494C>A / p.Thr165Lys segregated as a homozygous biallelic variant in a consanguineous family with prelingual moderate-to-profound autosomal recessive sensorineural hearing loss. "
+                    "The reported mechanism includes both the T165K missense change and aberrant splicing with intron retention that can create p.Gly146Lysfs*26."
+                ),
+                "clinical_significance": "Pathogenic ClinVar/OMIM DFNB117 variant; interpret under an autosomal-recessive hearing-loss model.",
+                "functional_effects": [
+                    "Missense change at a conserved clarin-2 residue.",
+                    "In vitro splicing evidence supports an additional aberrant transcript with premature termination.",
+                    "Patient-mutated CLRN2 forms failed to rescue hearing in the cited mouse gene-supplementation study.",
+                ],
+                "associated_conditions": [
+                    "Hearing loss, autosomal recessive 117",
+                    "Nonsyndromic sensorineural hearing loss",
+                    "Auditory hair-bundle maintenance research",
+                ],
+                "research_context": [
+                    "Prioritize zygosity, phase, family history, hearing phenotype, and clinical-grade confirmation before individual interpretation.",
+                    "A single heterozygous call is most defensibly framed as carrier or recessive-disease context rather than as a deterministic hearing-loss prediction.",
+                ],
+                "usual_variant_note": "Pathogenic CLRN2 DFNB117 marker reported as c.494C>A / p.Thr165Lys with a splicing effect.",
+                "methylation_interpretation": (
+                    "Local CLRN2 methylation can provide regulatory context, but it does not change the need for variant-level recessive-disease review."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CLRN2 c.494C>A / p.Thr165Lys", "https://www.ncbi.nlm.nih.gov/clinvar/variation/996040/"),
+                    _evidence("PubMed 33496845: human CLRN2 DFNB117 family and splicing assay", "https://pubmed.ncbi.nlm.nih.gov/33496845/"),
+                    _evidence("PubMed 38243601: mutant CLRN2 forms fail rescue in mouse gene supplementation", "https://pubmed.ncbi.nlm.nih.gov/38243601/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Vona et al., 2021 (PMID 33496845)",
+                        "genotypes": "Homozygous CLRN2 c.494C>A / p.Thr165Lys in an extended consanguineous family",
+                        "phenotype": "Prelingual moderate-to-profound autosomal recessive sensorineural hearing loss",
+                        "finding": "The study reported segregation of CLRN2 c.494C>A with nonsyndromic hearing loss and showed that the variant can alter both the amino acid and splicing outcome.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/33496845/",
+                    },
+                    {
+                        "paper": "Mendia et al., 2024 (PMID 38243601)",
+                        "genotypes": "Human CLRN2 wild-type and patient-mutated CLRN2 forms in Clrn2-deficient mice",
+                        "phenotype": "Progressive hearing-loss rescue after AAV gene supplementation",
+                        "finding": "Wild-type CLRN2 preserved hearing in treated mice, while patient-mutated CLRN2 forms failed to prevent hearing loss.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/38243601/",
+                    },
+                ],
+            },
+            {
+                "variant": "CLRN2 c.236G>T",
+                "display_name": "CLRN2 c.236G>T / p.Arg79Leu",
+                "common_name": "R79L CLRN2 VUS hearing-loss marker",
+                "position": 17517125,
+                "lookup_keys": [
+                    "CLRN2 c.236G>T",
+                    "NM_001079827.2:c.236G>T",
+                    "NM_001079827.2(CLRN2):c.236G>T",
+                    "p.Arg79Leu",
+                    "R79L",
+                    "rs200144103",
+                    "4:17517125",
+                    "4:17517125:G>T",
+                    "4:17515502",
+                    "4:17515502:G>T",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "ClinVar VUS / recessive hearing-loss review context",
+                "clinical_interpretation": (
+                    "CLRN2 c.236G>T / p.Arg79Leu is included as a ClinVar variant of uncertain significance for DFNB117-related review. "
+                    "A matched exploratory VCF row should be treated as a rare hearing-loss candidate marker, not as a pathogenic call without updated ClinVar, population-frequency, segregation, and phenotype evidence."
+                ),
+                "clinical_significance": "ClinVar variant of uncertain significance for hearing loss, autosomal recessive 117.",
+                "functional_effects": [
+                    "Missense change in CLRN2; no deterministic functional effect is bundled.",
+                    "Requires external evidence review before use in disease interpretation.",
+                ],
+                "associated_conditions": [
+                    "Hearing loss, autosomal recessive 117",
+                    "Rare-variant hearing-loss panel review",
+                ],
+                "research_context": [
+                    "Keep this marker below the pathogenic c.494C>A evidence tier unless newer submissions change classification.",
+                    "Interpret through zygosity, phase, ancestry frequency, and phenotype match.",
+                ],
+                "usual_variant_note": "CLRN2 VUS reported as c.236G>T / p.Arg79Leu.",
+                "methylation_interpretation": (
+                    "Methylation near CLRN2 does not resolve the variant's VUS classification."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CLRN2 c.236G>T / p.Arg79Leu", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1333538/"),
+                    _evidence("NCBI Gene 645104: CLRN2 and DFNB117 condition link", "https://www.ncbi.nlm.nih.gov/gene/645104"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar CLRN2 c.236G>T submission",
+                        "genotypes": "NM_001079827.2:c.236G>T / p.Arg79Leu",
+                        "phenotype": "Hearing loss, autosomal recessive 117 review context",
+                        "finding": "The variant is curated locally as a VUS-level marker, so it should remain a candidate finding until external evidence supports reclassification.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1333538/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from CLRN2 hearing-loss, stereocilia, and gene-supplementation literature.",
+        "population_coverage_note": (
+            "The bundled CLRN2 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Rare-variant interpretation should be checked against current ClinVar, gnomAD, ancestry background, zygosity, phase, and the patient's hearing phenotype before clinical use."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 645104: CLRN2 gene summary and DFNB117 association", "https://www.ncbi.nlm.nih.gov/gene/645104"),
+            _evidence("PubMed 33496845: biallelic CLRN2 human hearing-loss evidence", "https://pubmed.ncbi.nlm.nih.gov/33496845/"),
+            _evidence("PubMed 31448880: mouse CLRN2 stereocilia and progressive hearing-loss evidence", "https://pubmed.ncbi.nlm.nih.gov/31448880/"),
+            _evidence("PubMed 38243601: CLRN2 gene supplementation in mouse model", "https://pubmed.ncbi.nlm.nih.gov/38243601/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "CLRN2 c.494C>A",
+                "location_group": "Rare disease families",
+                "summary": "The strongest human evidence is a homozygous c.494C>A allele segregating with autosomal recessive nonsyndromic hearing loss in a consanguineous Iranian family.",
+            },
+            {
+                "variant": "CLRN2 rare missense variants",
+                "location_group": "Disease cohorts",
+                "summary": "Other CLRN2 missense findings should be interpreted through rare hearing-loss panel evidence, current ClinVar classification, ancestry frequency, zygosity, and phenotype consistency.",
+            },
+            {
+                "variant": "CLRN2 stereocilia function",
+                "location_group": "Functional biology",
+                "summary": "Mouse and zebrafish work supports clarin-2 as a hair-cell stereocilia maintenance and mechanotransduction gene, strengthening rare-variant biological plausibility.",
+            },
+            {
+                "variant": "CLRN2 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "The bundled EPIC probes provide local promoter and early-gene-body regulatory context, but no population methylation threshold is bundled for DFNB117 interpretation.",
+            },
+        ],
+    },
+    {
+        "gene_name": "POTEB3",
+        "cytoband": "15q11.2",
+        "chromosome": "15",
+        "start": 21405401,
+        "end": 21440499,
+        "strand": "-",
+        "assembly": "GRCh38 / hg38",
+        "coordinate_source": (
+            "NCBI Gene 102724631 and Ensembl ENSG00000278522 report POTEB3 on GRCh38 at "
+            "NC_000015.10/chr15:21405401..21440499, complement; Ensembl assembly mapping returned no direct GRCh37 projection for this primary interval"
+        ),
+        "skip_manifest_subset": True,
+        "curated_methylation_probe_ids": [],
+        "promoter_review_region": {
+            "label": "GRCh38 POTEB3 reverse-strand promoter review window",
+            "start": 21440500,
+            "end": 21441499,
+            "definition": (
+                "A practical 1 kb upstream window relative to the GRCh38 reverse-strand POTEB3 transcription start. "
+                "This app stores it as context only because the bundled hg19 EPIC manifest has no POTEB3-specific probe slice."
+            ),
+        },
+        "promoter_hotspot_region": {
+            "label": "No bundled POTEB3 EPIC methylation probe hotspot",
+            "start": 21440500,
+            "end": 21441499,
+            "definition": (
+                "No POTEB3-specific EPIC probes are bundled from the local hg19 manifest. "
+                "Methylation interpretation should use custom GRCh38-aware probe annotation or orthogonal expression data."
+            ),
+        },
+        "gene_summary": (
+            "POTEB3 encodes POTE ankyrin domain family member B3, a POTE-family intracellular protein with ankyrin-repeat domains and a supported MANE/RefSeq coding transcript. "
+            "POTE genes are recent, highly paralogous cancer-testis/reproductive-tissue genes; current POTEB3 expression resources emphasize testis-enriched or restricted expression and careful paralog-aware interpretation."
+        ),
+        "clinical_context": (
+            "The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. "
+            "POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene."
+        ),
+        "variant_effect_overview": [
+            "Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+            "Short-read variant interpretation can be confounded by close POTE paralogs, mapping ambiguity, and the absence of a direct GRCh37 primary-locus mapping for the current POTEB3 annotation.",
+            "ClinVar copy-number records spanning the 15q11.1-q11.2 region include POTEB3 among many genes and are not POTEB3-specific pathogenic alleles.",
+        ],
+        "condition_research_overview": [
+            "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+            "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+            "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38.",
+        ],
+        "methylation_interpretation": (
+            "No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. "
+            "Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays."
+        ),
+        "methylation_effects": [
+            "The bundled POTEB3 whitelist is intentionally empty.",
+            "Do not infer POTEB3 promoter methylation from neighboring POTEB/POTEB2 or other POTE-family probes without paralog-aware remapping.",
+        ],
+        "methylation_condition_research": [
+            "Use custom GRCh38 probe annotation, long-read mapping, RNA expression, or copy-number assays if POTEB3 regulation is the research question.",
+            "Keep POTEB3 methylation separate from broader POTE-family methylation until probe uniqueness has been validated.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 102724631: POTEB3 gene summary and GRCh38 coordinates", "https://www.ncbi.nlm.nih.gov/gene/102724631"),
+            _evidence("Ensembl ENSG00000278522: POTEB3 GRCh38 gene model", "https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000278522"),
+            _evidence("UniProt A0JP26: POTEB3 / POTB3_HUMAN protein entry", "https://www.uniprot.org/uniprotkb/A0JP26/entry"),
+            _evidence("Human Protein Atlas: POTEB3 tissue-enriched testis expression context", "https://www.proteinatlas.org/ENSG00000278522-POTEB3/tissue"),
+            _evidence("PMCID PMC139254: foundational POTE family expression and paralog study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC139254/"),
+            _evidence("ClinVar RCV000136295: benign 15q11.1-q11.2 CNV including POTEB3", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"),
+        ],
+        "variants": [
+            {
+                "variant": "15q11.1-q11.2 CNV including POTEB3",
+                "display_name": "15q11.1-q11.2 copy-number region including POTEB3",
+                "common_name": "Benign ClinVar regional CNV context",
+                "position": None,
+                "lookup_keys": [
+                    "RCV000136295",
+                    "nsv533590",
+                    "nssv707330",
+                    "15q11.1-q11.2 CNV",
+                    "POTEB3 copy-number region",
+                ],
+                "region_class": "structural_region",
+                "interpretation_scope": "Regional copy-number context / not POTEB3-specific",
+                "clinical_interpretation": (
+                    "ClinVar RCV000136295 describes a copy-number loss spanning a broad 15q11.1-q11.2 interval that includes POTEB3 and many neighboring genes, with a benign germline classification from one submission. "
+                    "Use this as regional CNV context only; it is not evidence that POTEB3 point variants or POTEB3 dosage alone are clinically benign or pathogenic."
+                ),
+                "clinical_significance": "Benign ClinVar regional CNV; not a POTEB3-specific pathogenic or protective variant.",
+                "functional_effects": [
+                    "Large regional copy-number event rather than a single POTEB3 coding or regulatory variant.",
+                    "Interpretation is dominated by 15q11.2 segmental-duplication structure and multi-gene CNV context.",
+                ],
+                "associated_conditions": [
+                    "15q11.1-q11.2 copy-number variation",
+                    "Segmental-duplication and paralog-aware structural-variant interpretation",
+                ],
+                "research_context": [
+                    "Confirm assembly, breakpoints, and copy-number method before making any POTEB3-specific claim.",
+                    "Short-read SNV rows should not be promoted to POTEB3-specific findings without uniqueness and mapping checks.",
+                ],
+                "usual_variant_note": "Regional CNV context that includes POTEB3 among many 15q11.2 genes.",
+                "methylation_interpretation": (
+                    "Regional copy-number context does not provide a POTEB3 methylation biomarker, especially without GRCh38-aware probe uniqueness checks."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("ClinVar RCV000136295: benign copy-number loss spanning POTEB3", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"),
+                    _evidence("NCBI Gene 102724631: POTEB3 gene identity", "https://www.ncbi.nlm.nih.gov/gene/102724631"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar RCV000136295 / ISCA submission",
+                        "genotypes": "15q11.1-q11.2 regional copy-number loss",
+                        "phenotype": "See-cases regional CNV submission",
+                        "finding": "The CNV spans POTEB3 and many other genes and is classified as benign in the cited ClinVar record; it should be used as broad regional context rather than a POTEB3-specific variant interpretation.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from POTEB3/POTE-family expression, paralogy, and 15q11.2 copy-number literature.",
+        "population_coverage_note": (
+            "The bundled POTEB3 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because POTEB3 is highly paralogous and lacks a direct GRCh37 primary-locus mapping in the checked Ensembl assembly-map result, population interpretation should prioritize assembly, copy-number, and mapping-method caveats."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 102724631: POTEB3 gene identity and expression note", "https://www.ncbi.nlm.nih.gov/gene/102724631"),
+            _evidence("Human Protein Atlas: POTEB3 testis-enriched RNA expression", "https://www.proteinatlas.org/ENSG00000278522-POTEB3/tissue"),
+            _evidence("PMCID PMC139254: POTE family expression and paralogy", "https://pmc.ncbi.nlm.nih.gov/articles/PMC139254/"),
+            _evidence("ClinVar RCV000136295: regional CNV including POTEB3", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "POTE-family paralogy",
+                "location_group": "Global pattern",
+                "summary": "POTEB3 interpretation should preserve POTE-family paralogy and mapping ambiguity, especially for short-read or hg19-oriented datasets.",
+            },
+            {
+                "variant": "POTEB3 expression",
+                "location_group": "Functional biology",
+                "summary": "Current expression resources frame POTEB3 as testis-enriched or restricted, matching the broader POTE-family cancer-testis and reproductive-tissue literature.",
+            },
+            {
+                "variant": "15q11.2 regional CNV",
+                "location_group": "Structural variation",
+                "summary": "ClinVar regional 15q11.1-q11.2 CNVs can include POTEB3, but they should be interpreted as multi-gene structural events rather than POTEB3-specific SNV evidence.",
+            },
+        ],
+    },
+    {
+        "gene_name": "BLTP3B",
+        "cytoband": "12q23.1",
+        "chromosome": "12",
+        "start": 100430850,
+        "end": 100536652,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 23074 reports BLTP3B, formerly UHRF1BP1L/SHIP164, on GRCh37.p13 at "
+            "NC_000012.11:100430850..100536652, complement"
+        ),
+        "manifest_filter_region": "12:100430850-100537652",
+        "gene_summary": (
+            "BLTP3B, historically known as UHRF1BP1L or SHIP164, encodes bridge-like lipid transfer protein family member 3B. "
+            "The protein is a large chorein-motif lipid-transfer factor linked to early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, "
+            "and intermembrane lipid transfer biology."
+        ),
+        "clinical_context": (
+            "The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. "
+            "It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, "
+            "not on a validated high-penetrance diagnostic BLTP3B variant panel."
+        ),
+        "variant_effect_overview": [
+            "Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+            "Functional interpretation centers on bridge-like lipid transfer, early endosome-to-Golgi trafficking, and syntaxin-6/GARP-associated sorting biology.",
+            "MYP3 locus markers near or within BLTP3B/UHRF1BP1L should remain cohort-level high-grade myopia context unless independent clinical evidence is added.",
+        ],
+        "condition_research_overview": [
+            "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+            "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+            "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research.",
+        ],
+        "methylation_interpretation": (
+            "BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. "
+            "Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. "
+            "Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay."
+        ),
+        "methylation_effects": [
+            "The bundled BLTP3B whitelist prioritizes TSS200/TSS1500 and 5'UTR/first-exon EPIC probes around the reverse-strand TSS at 100536652.",
+            "No source-backed BLTP3B methylation threshold is bundled; high or low beta values should be interpreted alongside tissue, cell composition, expression, and variant evidence.",
+        ],
+        "methylation_condition_research": [
+            "Use BLTP3B methylation as a local regulatory layer when investigating membrane-trafficking, ocular-development, or MYP3-locus hypotheses.",
+            "Because vendor annotations often use UHRF1BP1L, probe-ID whitelist matching is preferred over gene-name-only matching for this locus.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 23074: BLTP3B gene summary and GRCh37 coordinates", "https://www.ncbi.nlm.nih.gov/gene/23074"),
+            _evidence("UniProt A0JNW5: BLTP3B / SHIP164 protein entry", "https://www.uniprot.org/uniprotkb/A0JNW5/entry"),
+            _evidence("PMCID PMC9067936: SHIP164 lipid-transfer and endosome-Golgi traffic study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9067936/"),
+            _evidence("PMCID PMC3621505: high-grade myopia MYP3 association mapping", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"),
+        ],
+        "variants": [
+            {
+                "variant": "rs7134216",
+                "display_name": "rs7134216 (BLTP3B/UHRF1BP1L MYP3-region marker)",
+                "common_name": "UHRF1BP1L intronic MYP3 high-grade myopia association marker",
+                "position": 100430850,
+                "lookup_keys": [
+                    "rs7134216",
+                    "12:100430850",
+                    "12:100430850:C>T",
+                    "12:100430850:T>C",
+                    "BLTP3B rs7134216",
+                    "UHRF1BP1L rs7134216",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Research association / MYP3 high-grade myopia locus marker",
+                "clinical_interpretation": (
+                    "rs7134216 was reported as an intronic UHRF1BP1L marker in the MYP3 high-grade myopia association-mapping study and replicated for the quantitative sphere trait in an independent high-grade myopia cohort. "
+                    "The local database treats a match as ocular-development and MYP3-locus research context, not as a diagnostic or deterministic myopia-risk call."
+                ),
+                "clinical_significance": "Research association marker; not a pathogenic clinical BLTP3B allele.",
+                "functional_effects": [
+                    "Intronic marker in the legacy UHRF1BP1L/BLTP3B locus used in high-grade myopia association mapping.",
+                    "No bundled functional mechanism directly assigns this SNP to altered BLTP3B protein function.",
+                ],
+                "associated_conditions": [
+                    "High-grade myopia / MYP3 locus research",
+                    "Quantitative spherical refractive error association studies",
+                ],
+                "research_context": [
+                    "Interpret through cohort, ancestry, linkage, and local LD context rather than as a monogenic BLTP3B result.",
+                    "Use current dbSNP/gnomAD/clinical databases before escalating this marker beyond exploratory research context.",
+                ],
+                "usual_variant_note": "MYP3 high-grade myopia association marker in the legacy UHRF1BP1L locus.",
+                "methylation_interpretation": (
+                    "Nearby BLTP3B/UHRF1BP1L TSS methylation can provide local regulatory context but does not establish the effect direction of rs7134216."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PMCID PMC3621505: rs7134216 in UHRF1BP1L and MYP3 association mapping", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"),
+                    _evidence("NCBI Gene 23074: BLTP3B coordinates and aliases", "https://www.ncbi.nlm.nih.gov/gene/23074"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Hawthorne et al., 2013 (PMCID PMC3621505)",
+                        "genotypes": "rs7134216 in the UHRF1BP1L/BLTP3B locus",
+                        "phenotype": "High-grade myopia and quantitative spherical refractive error",
+                        "finding": "The study reported rs7134216 as an intronic UHRF1BP1L marker in the MYP3 locus and observed replication for the quantitative sphere trait in an independent high-grade myopia cohort.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus literature.",
+        "population_coverage_note": (
+            "The bundled BLTP3B population database is literature oriented. "
+            "It does not embed a complete allele-frequency panel, and rs7134216 interpretation should be checked against current population and phenotype-specific resources before individual-level use."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 23074: BLTP3B gene summary", "https://www.ncbi.nlm.nih.gov/gene/23074"),
+            _evidence("PMCID PMC9067936: SHIP164 lipid-transfer and endosome-Golgi traffic", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9067936/"),
+            _evidence("PMCID PMC3621505: MYP3 high-grade myopia association mapping", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "BLTP3B lipid-transfer biology",
+                "location_group": "Functional biology",
+                "summary": "BLTP3B population interpretation should start from a conservative functional lane: the protein is best supported as a bridge-like lipid-transfer factor in early endosome-to-Golgi traffic.",
+            },
+            {
+                "variant": "rs7134216 / MYP3 locus",
+                "location_group": "Disease cohorts",
+                "summary": "rs7134216 belongs in a cohort-level high-grade myopia/MYP3 research frame, especially for quantitative refractive-error association rather than monogenic diagnosis.",
+            },
+            {
+                "variant": "BLTP3B TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "The bundled promoter/TSS EPIC probes provide local regulatory context for BLTP3B/UHRF1BP1L, but no disease-specific methylation threshold is bundled.",
+            },
+        ],
+    },
+    {
+        "gene_name": "CIROP",
+        "cytoband": "14q11.2",
+        "chromosome": "14",
+        "start": 23568271,
+        "end": 23574198,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 100128908 reports CIROP on GRCh37.p13 at NC_000014.8:23568271..23574198, complement."
+        ),
+        "curated_methylation_probe_ids": ["cg19577365", "cg11790074"],
+        "promoter_hotspot_region": {
+            "label": "CIROP TSS-proximal EPIC probe window",
+            "start": 23573850,
+            "end": 23574175,
+            "definition": (
+                "Two bundled EPIC manifest probes fall within the reverse-strand CIROP transcribed interval near the transcription start. "
+                "They are treated as local regulatory context rather than as a validated diagnostic methylation assay."
+            ),
+        },
+        "gene_summary": (
+            "CIROP, previously known as LMLN2, encodes ciliated left-right organizer metallopeptidase. "
+            "The gene is implicated in ciliated left-right organizer biology, vertebrate left-right axis specification, and autosomal visceral heterotaxy 12."
+        ),
+        "clinical_context": (
+            "The local CIROP knowledge base is developmental-genetics oriented. "
+            "It focuses on rare heterotaxy 12 variants and left-right asymmetry biology rather than common adult trait prediction."
+        ),
+        "variant_effect_overview": [
+            "Loss-of-function and selected missense CIROP variants have been reported in recessive situs anomalies and visceral heterotaxy 12.",
+            "CIROP interpretation should be handled as rare developmental-disease context, with zygosity, phase, inheritance, and phenotype matching central to any clinical follow-up.",
+            "A single heterozygous CIROP marker in an exploratory VCF should not be promoted to a diagnosis without external clinical confirmation.",
+        ],
+        "condition_research_overview": [
+            "Autosomal visceral heterotaxy 12 and situs anomaly cohorts.",
+            "Ciliated left-right organizer signaling upstream of asymmetric developmental patterning.",
+            "Rare variant interpretation in congenital heart and laterality-disorder sequencing.",
+        ],
+        "methylation_interpretation": (
+            "CIROP has two bundled EPIC probes close to the reverse-strand transcription start, but vendor gene annotations may not name CIROP on those rows. "
+            "Use CIROP methylation as local regulatory context only, and keep rare coding-variant interpretation separate from CpG beta summaries."
+        ),
+        "methylation_effects": [
+            "The curated CIROP whitelist includes cg19577365 and cg11790074 because they sit near the GRCh37 CIROP TSS.",
+            "No source-backed CIROP methylation biomarker is bundled; beta values should not be interpreted as heterotaxy risk by themselves.",
+        ],
+        "methylation_condition_research": [
+            "If CIROP regulation is the research question, use dedicated developmental tissue, expression, or functional data rather than relying on peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 100128908: CIROP gene summary and GRCh37 coordinates", "https://www.ncbi.nlm.nih.gov/gene/100128908"),
+            _evidence("PubMed 34903892: CIROP and vertebrate left-right asymmetry", "https://pubmed.ncbi.nlm.nih.gov/34903892/"),
+            _evidence("ClinVar Miner: pathogenic CIROP variants for heterotaxy 12", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+            _evidence("ClinVar: CIROP c.571C>T / p.Arg191Ter", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344495/"),
+        ],
+        "variants": [
+            {
+                "variant": "CIROP c.92C>T",
+                "display_name": "CIROP c.92C>T / p.Ser31Phe",
+                "common_name": "S31F heterotaxy 12 missense marker",
+                "position": 23574038,
+                "lookup_keys": [
+                    "CIROP c.92C>T",
+                    "NM_001354640.2:c.92C>T",
+                    "NM_001354640.2(CIROP):c.92C>T",
+                    "p.Ser31Phe",
+                    "S31F",
+                    "rs553352307",
+                    "14:23574038",
+                    "14:23574038:G>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "ClinVar heterotaxy 12 marker / recessive developmental-disease context",
+                "clinical_interpretation": (
+                    "CIROP c.92C>T / p.Ser31Phe is listed among pathogenic CIROP variants for autosomal visceral heterotaxy 12. "
+                    "Because CIROP disease interpretation is recessive and phenotype dependent, use this marker as a rare laterality-disorder flag that needs phase, inheritance, and clinical correlation."
+                ),
+                "clinical_significance": "ClinVar pathogenic for heterotaxy, visceral, 12, autosomal; conflicting broader-condition assertions may exist.",
+                "functional_effects": [
+                    "Missense change near the N terminus of CIROP.",
+                    "Reported in CIROP heterotaxy 12 variant catalogs.",
+                ],
+                "associated_conditions": [
+                    "Heterotaxy, visceral, 12, autosomal",
+                    "Situs anomaly and left-right patterning research",
+                ],
+                "research_context": [
+                    "Interpret as rare developmental-disease evidence, not as a common trait marker.",
+                    "Confirm ancestry-frequency, phase, and phenotype match before clinical use.",
+                ],
+                "usual_variant_note": "Pathogenic CIROP heterotaxy 12 missense marker with interpretation caveats.",
+                "methylation_interpretation": (
+                    "Methylation values near the CIROP TSS do not establish pathogenicity for this coding variant."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CIROP c.92C>T / p.Ser31Phe", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335920/"),
+                    _evidence("ClinVar Miner: pathogenic CIROP heterotaxy 12 variants", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+                        "genotypes": "NM_001354640.2:c.92C>T",
+                        "phenotype": "Autosomal visceral heterotaxy 12",
+                        "finding": "The variant is curated as a CIROP heterotaxy 12 marker, but interpretation should retain recessive-inheritance and phenotype-match caveats.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335920/",
+                    }
+                ],
+            },
+            {
+                "variant": "CIROP c.571C>T",
+                "display_name": "CIROP c.571C>T / p.Arg191Ter",
+                "common_name": "R191* truncating heterotaxy 12 marker",
+                "position": 23572916,
+                "lookup_keys": [
+                    "CIROP c.571C>T",
+                    "NM_001354640.2:c.571C>T",
+                    "NM_001354640.2(CIROP):c.571C>T",
+                    "p.Arg191Ter",
+                    "R191*",
+                    "rs764530848",
+                    "14:23572916",
+                    "14:23572916:G>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic ClinVar truncating variant / recessive heterotaxy 12 context",
+                "clinical_interpretation": (
+                    "CIROP c.571C>T / p.Arg191Ter creates a premature stop in the CIROP coding sequence and is classified in ClinVar as pathogenic for autosomal visceral heterotaxy 12. "
+                    "In an exploratory run, this should trigger rare-variant review rather than an app-only clinical conclusion."
+                ),
+                "clinical_significance": "Pathogenic ClinVar germline variant for heterotaxy, visceral, 12, autosomal.",
+                "functional_effects": [
+                    "Nonsense variant expected to truncate CIROP.",
+                    "Reported in the CIROP left-right asymmetry and heterotaxy evidence stream.",
+                ],
+                "associated_conditions": [
+                    "Heterotaxy, visceral, 12, autosomal",
+                    "Recessive situs anomaly research",
+                ],
+                "research_context": [
+                    "Check whether another CIROP pathogenic allele is present in trans before inferring recessive disease context.",
+                    "Clinical interpretation requires phenotype, inheritance, and confirmatory testing.",
+                ],
+                "usual_variant_note": "Truncating CIROP heterotaxy 12 marker.",
+                "methylation_interpretation": (
+                    "Methylation beta values can provide local regulatory context but should not dilute the variant-level pathogenicity review."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CIROP c.571C>T / p.Arg191Ter", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344495/"),
+                    _evidence("PubMed 34903892: CIROP and human recessive situs anomalies", "https://pubmed.ncbi.nlm.nih.gov/34903892/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Szenker-Ravi et al., Nature Genetics 2022",
+                        "genotypes": "Loss-of-function CIROP variants",
+                        "phenotype": "Recessive situs anomalies and heterotaxy",
+                        "finding": "The study identified human patients with loss-of-function CIROP mutations and recessive situs anomalies, supporting CIROP as essential for human left-right patterning.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/34903892/",
+                    }
+                ],
+            },
+            {
+                "variant": "CIROP c.1037G>A",
+                "display_name": "CIROP c.1037G>A / p.Trp346Ter",
+                "common_name": "W346* truncating heterotaxy 12 marker",
+                "position": 23571650,
+                "lookup_keys": [
+                    "CIROP c.1037G>A",
+                    "NM_001354640.2:c.1037G>A",
+                    "NM_001354640.2(CIROP):c.1037G>A",
+                    "p.Trp346Ter",
+                    "W346*",
+                    "rs1014082266",
+                    "14:23571650",
+                    "14:23571650:C>T",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic ClinVar truncating variant / recessive heterotaxy 12 context",
+                "clinical_interpretation": (
+                    "CIROP c.1037G>A / p.Trp346Ter is a truncating CIROP variant listed as pathogenic for autosomal visceral heterotaxy 12. "
+                    "Treat a matched sample row as high-priority rare developmental-disease context that needs clinical-grade confirmation."
+                ),
+                "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+                "functional_effects": [
+                    "Nonsense variant expected to truncate CIROP.",
+                    "Supports a loss-of-function CIROP thesis when paired with inheritance and phenotype evidence.",
+                ],
+                "associated_conditions": [
+                    "Heterotaxy, visceral, 12, autosomal",
+                    "Left-right axis specification disorders",
+                ],
+                "research_context": [
+                    "Prioritize phase and second-allele review because CIROP heterotaxy is recessive.",
+                ],
+                "usual_variant_note": "Truncating CIROP heterotaxy 12 marker.",
+                "methylation_interpretation": "Nearby CIROP methylation probes do not replace variant-level confirmation.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CIROP c.1037G>A / p.Trp346Ter", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344490/"),
+                    _evidence("ClinVar Miner: pathogenic CIROP heterotaxy 12 variants", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+                        "genotypes": "NM_001354640.2:c.1037G>A",
+                        "phenotype": "Autosomal visceral heterotaxy 12",
+                        "finding": "The variant is cataloged as a pathogenic CIROP truncating marker for heterotaxy 12.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344490/",
+                    }
+                ],
+            },
+            {
+                "variant": "CIROP c.1151C>T",
+                "display_name": "CIROP c.1151C>T / p.Ser384Leu",
+                "common_name": "S384L heterotaxy 12 missense marker",
+                "position": 23571459,
+                "lookup_keys": [
+                    "CIROP c.1151C>T",
+                    "NM_001354640.2:c.1151C>T",
+                    "NM_001354640.2(CIROP):c.1151C>T",
+                    "p.Ser384Leu",
+                    "S384L",
+                    "rs183023758",
+                    "14:23571459",
+                    "14:23571459:G>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic ClinVar missense variant / recessive heterotaxy 12 context",
+                "clinical_interpretation": (
+                    "CIROP c.1151C>T / p.Ser384Leu is listed as pathogenic for autosomal visceral heterotaxy 12. "
+                    "A matched exploratory VCF call should be interpreted through rare laterality-disorder genetics, not as a broad adult phenotype predictor."
+                ),
+                "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+                "functional_effects": [
+                    "Missense variant in the CIROP coding sequence.",
+                    "Reported in the pathogenic CIROP heterotaxy 12 variant set.",
+                ],
+                "associated_conditions": [
+                    "Heterotaxy, visceral, 12, autosomal",
+                    "Situs anomaly sequencing studies",
+                ],
+                "research_context": [
+                    "Confirm zygosity and phase before elevating the finding beyond a local research flag.",
+                ],
+                "usual_variant_note": "Pathogenic CIROP heterotaxy 12 missense marker.",
+                "methylation_interpretation": "Nearby CIROP methylation is regulatory context, not a pathogenicity modifier in this bundle.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CIROP c.1151C>T / p.Ser384Leu", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344488/"),
+                    _evidence("ClinVar Miner: pathogenic CIROP heterotaxy 12 variants", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+                        "genotypes": "NM_001354640.2:c.1151C>T",
+                        "phenotype": "Autosomal visceral heterotaxy 12",
+                        "finding": "The variant is cataloged as a pathogenic CIROP missense marker for heterotaxy 12.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344488/",
+                    }
+                ],
+            },
+            {
+                "variant": "CIROP c.1166G>T",
+                "display_name": "CIROP c.1166G>T / p.Arg389Ile",
+                "common_name": "R389I heterotaxy 12 missense marker",
+                "position": 23571444,
+                "lookup_keys": [
+                    "CIROP c.1166G>T",
+                    "NM_001354640.2:c.1166G>T",
+                    "NM_001354640.2(CIROP):c.1166G>T",
+                    "p.Arg389Ile",
+                    "R389I",
+                    "rs2140282332",
+                    "14:23571444",
+                    "14:23571444:C>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic ClinVar missense variant / recessive heterotaxy 12 context",
+                "clinical_interpretation": (
+                    "CIROP c.1166G>T / p.Arg389Ile is listed as pathogenic for autosomal visceral heterotaxy 12. "
+                    "The strongest interpretation is a rare developmental-disease marker that needs clinical confirmation and inheritance review."
+                ),
+                "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+                "functional_effects": [
+                    "Missense variant in the CIROP coding sequence.",
+                    "Reported in the pathogenic CIROP heterotaxy 12 variant set.",
+                ],
+                "associated_conditions": [
+                    "Heterotaxy, visceral, 12, autosomal",
+                    "Left-right patterning disorder research",
+                ],
+                "research_context": [
+                    "Interpret with rare-disease quality controls, phenotype review, and parental testing when relevant.",
+                ],
+                "usual_variant_note": "Pathogenic CIROP heterotaxy 12 missense marker.",
+                "methylation_interpretation": "Nearby CIROP methylation does not establish clinical significance for this missense variant.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CIROP c.1166G>T / p.Arg389Ile", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344493/"),
+                    _evidence("ClinVar Miner: pathogenic CIROP heterotaxy 12 variants", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+                        "genotypes": "NM_001354640.2:c.1166G>T",
+                        "phenotype": "Autosomal visceral heterotaxy 12",
+                        "finding": "The variant is cataloged as a pathogenic CIROP missense marker for heterotaxy 12.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344493/",
+                    }
+                ],
+            },
+            {
+                "variant": "CIROP c.1364TCT[1]",
+                "display_name": "CIROP c.1364TCT[1] / p.Phe456del",
+                "common_name": "F456del heterotaxy 12 in-frame deletion",
+                "position": 23571061,
+                "lookup_keys": [
+                    "CIROP c.1364TCT[1]",
+                    "NM_001354640.2:c.1364TCT[1]",
+                    "NM_001354640.2(CIROP):c.1364TCT[1]",
+                    "p.Phe456del",
+                    "F456del",
+                    "rs1392604380",
+                    "14:23571061",
+                    "14:23571061:CAGA>C",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic ClinVar in-frame deletion / recessive heterotaxy 12 context",
+                "clinical_interpretation": (
+                    "CIROP c.1364TCT[1] / p.Phe456del is an in-frame deletion listed as pathogenic for autosomal visceral heterotaxy 12. "
+                    "Because deletion representation can vary across VCF normalizers, rsID, transcript HGVS, and coordinate evidence should be reconciled during review."
+                ),
+                "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+                "functional_effects": [
+                    "In-frame deletion affecting the CIROP coding sequence.",
+                    "Reported in the pathogenic CIROP heterotaxy 12 variant set.",
+                ],
+                "associated_conditions": [
+                    "Heterotaxy, visceral, 12, autosomal",
+                    "Recessive situs anomaly research",
+                ],
+                "research_context": [
+                    "Normalize indel representation before relying on coordinate-only matching.",
+                    "Confirm phase and second-allele status in suspected recessive disease contexts.",
+                ],
+                "usual_variant_note": "Pathogenic CIROP heterotaxy 12 in-frame deletion marker.",
+                "methylation_interpretation": "Nearby CIROP methylation values are separate regulatory context.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: CIROP c.1364TCT[1] / p.Phe456del", "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335922/"),
+                    _evidence("ClinVar Miner: pathogenic CIROP heterotaxy 12 variants", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+                        "genotypes": "NM_001354640.2:c.1364TCT[1]",
+                        "phenotype": "Autosomal visceral heterotaxy 12",
+                        "finding": "The variant is cataloged as a pathogenic CIROP in-frame deletion marker for heterotaxy 12.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335922/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from CIROP heterotaxy, left-right asymmetry, and rare-variant interpretation literature.",
+        "population_coverage_note": (
+            "The bundled CIROP population database is gene- and literature-oriented. "
+            "It is not a complete allele-frequency panel, and rare heterotaxy-marker interpretation should be checked against current ClinVar, gnomAD, inheritance, and phenotype data."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 100128908: CIROP gene summary and related phenotype", "https://www.ncbi.nlm.nih.gov/gene/100128908"),
+            _evidence("PubMed 34903892: CIROP and human left-right asymmetry", "https://pubmed.ncbi.nlm.nih.gov/34903892/"),
+            _evidence("ClinVar Miner: pathogenic CIROP variants for heterotaxy 12", "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "CIROP rare pathogenic variants",
+                "location_group": "Heterotaxy cohorts",
+                "summary": "The most interpretable CIROP signals are rare variants reported in heterotaxy or situs anomaly contexts, especially when inheritance supports a recessive model.",
+            },
+            {
+                "variant": "CIROP left-right asymmetry module",
+                "location_group": "Functional biology",
+                "summary": "CIROP is best interpreted through developmental left-right organizer biology rather than through common-variant population trait screens.",
+            },
+            {
+                "variant": "CIROP EPIC methylation probes",
+                "location_group": "Local regulatory context",
+                "summary": "The two bundled CIROP-proximal EPIC probes can summarize local methylation in a sample, but no population methylation threshold is bundled for heterotaxy interpretation.",
+            },
+        ],
+    },
+    {
+        "gene_name": "MT-RNR1",
+        "cytoband": "mitochondrial genome",
+        "chromosome": "MT",
+        "start": 648,
+        "end": 1601,
+        "strand": "+",
+        "coordinate_source": (
+            "NCBI Gene 4549 reports MT-RNR1 on the mitochondrial reference sequence NC_012920.1 at positions 648..1601 for both GRCh37 and GRCh38."
+        ),
+        "skip_manifest_subset": True,
+        "curated_methylation_probe_ids": [],
+        "promoter_review_region": {
+            "label": "Mitochondrial control-region and upstream transcription-control review window",
+            "start": 1,
+            "end": 647,
+            "definition": (
+                "Operational mitochondrial review span before MT-RNR1 on NC_012920.1. "
+                "It includes the start of the circular mitochondrial reference so low-coordinate MT VCF calls, such as positions 64, 73, 143, and 146, are surfaced alongside the MT-RNR1 interval."
+            ),
+        },
+        "promoter_hotspot_region": {
+            "label": "No EPIC methylation probe hotspot",
+            "start": 1,
+            "end": 647,
+            "definition": (
+                "MT-RNR1 is a mitochondrial rRNA gene and the bundled EPIC manifest workflow does not provide a validated CpG methylation hotspot for this locus. "
+                "This placeholder span preserves variant review across the low-coordinate mitochondrial control region."
+            ),
+        },
+        "gene_summary": (
+            "MT-RNR1 encodes the mitochondrially encoded 12S ribosomal RNA, the small-subunit rRNA of the human mitochondrial ribosome. "
+            "Its sequence is clinically important because selected MT-RNR1 variants make the mitochondrial ribosomal decoding site more bacterial-like, increasing susceptibility to aminoglycoside cochleotoxicity."
+        ),
+        "clinical_context": (
+            "The local MT-RNR1 knowledge base is pharmacogenetic and mitochondrial-hearing-loss oriented. "
+            "It focuses on MT-RNR1 variants used by CPIC to assign aminoglycoside-induced hearing-loss risk, especially m.1555A>G, m.1494C>T, and m.1095T>C."
+        ),
+        "variant_effect_overview": [
+            "High-risk MT-RNR1 variants can predispose carriers to severe, bilateral, often irreversible sensorineural hearing loss after aminoglycoside exposure.",
+            "MT-RNR1 is maternally inherited and mitochondrial variant interpretation should consider heteroplasmy, tissue sampling, maternal family history, and test design.",
+            "The strongest local interpretations are pharmacogenetic risk categories rather than generic mitochondrial disease calls.",
+        ],
+        "condition_research_overview": [
+            "Aminoglycoside-induced hearing loss and ototoxicity pharmacogenetics.",
+            "Mitochondrial nonsyndromic sensorineural hearing loss.",
+            "Population screening and maternal-lineage studies of MT-RNR1 risk alleles.",
+        ],
+        "methylation_interpretation": (
+            "MT-RNR1 methylation should not be inferred from the standard nuclear EPIC CpG manifest. "
+            "The bundled methylation whitelist is intentionally empty; use dedicated mitochondrial assays or expression/ribosome-context data if MT-RNR1 regulation is the research question."
+        ),
+        "methylation_effects": [
+            "No validated app-bundled EPIC CpG methylation probes are assigned to MT-RNR1.",
+            "Variant interpretation should usually dominate MT-RNR1 synthesis unless custom mitochondrial methylation or expression data are supplied.",
+        ],
+        "methylation_condition_research": [
+            "Dedicated mitochondrial DNA methylation or RNA-expression assays, when available, should be interpreted separately from nuclear EPIC methylation summaries.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 4549: MT-RNR1 gene summary and coordinates", "https://www.ncbi.nlm.nih.gov/gene/4549"),
+            _evidence("NCBI Bookshelf: CPIC recommendations for aminoglycosides and MT-RNR1", "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/"),
+            _evidence("CPIC guideline page for aminoglycosides and MT-RNR1", "https://cpicpgx.org/guidelines/cpic-guideline-for-aminoglycosides-and-mt-rnr1/"),
+            _evidence("PharmGKB VIP summary for MT-RNR1", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5083147/"),
+        ],
+        "variants": [
+            {
+                "variant": "m.1555A>G",
+                "display_name": "MT-RNR1 m.1555A>G",
+                "common_name": "A1555G aminoglycoside ototoxicity risk allele",
+                "position": 1555,
+                "lookup_keys": [
+                    "m.1555A>G",
+                    "MT-RNR1:m.1555A>G",
+                    "NC_012920.1:m.1555A>G",
+                    "rs267606617",
+                    "MT:1555",
+                    "MT:1555:A>G",
+                    "M:1555:A>G",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "CPIC increased-risk pharmacogenetic allele",
+                "clinical_interpretation": (
+                    "MT-RNR1 m.1555A>G is the best-established aminoglycoside-induced hearing-loss risk allele in this gene. "
+                    "CPIC assigns it to the increased-risk phenotype, and ClinVar/Medical Genetics Summaries link it to aminoglycoside-induced deafness and mitochondrial nonsyndromic sensorineural hearing loss."
+                ),
+                "clinical_significance": "CPIC increased-risk allele; ClinVar/OMIM pathogenic hearing-loss pharmacogenetic marker.",
+                "functional_effects": [
+                    "Alters mitochondrial 12S rRNA in a way that increases similarity to the bacterial aminoglycoside-binding target.",
+                    "Can confer high susceptibility to cochleotoxicity after systemic aminoglycoside exposure.",
+                ],
+                "associated_conditions": [
+                    "Aminoglycoside-induced deafness",
+                    "Mitochondrial nonsyndromic sensorineural hearing loss",
+                    "Gentamicin, streptomycin, kanamycin, amikacin, tobramycin, and related aminoglycoside toxicity contexts",
+                ],
+                "research_context": [
+                    "Interpret alongside heteroplasmy level and maternal inheritance.",
+                    "Medication decisions require clinical review and current prescribing guidance.",
+                ],
+                "usual_variant_note": "Best-studied MT-RNR1 aminoglycoside ototoxicity risk allele.",
+                "methylation_interpretation": (
+                    "No EPIC methylation whitelist is assigned; the pharmacogenetic variant evidence is the primary interpretive layer."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: MT-RNR1 m.1555A>G", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000505667.11/"),
+                    _evidence("NCBI Bookshelf: Gentamicin therapy and MT-RNR1 genotype", "https://www.ncbi.nlm.nih.gov/books/NBK285956/"),
+                    _evidence("PharmGKB VIP summary for MT-RNR1", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5083147/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "CPIC guideline / NCBI Medical Genetics Summaries",
+                        "genotypes": "NC_012920.1:m.1555A>G",
+                        "phenotype": "Aminoglycoside-induced hearing-loss risk",
+                        "finding": "CPIC assigns m.1555A>G to the MT-RNR1 increased-risk phenotype and recommends avoiding aminoglycosides unless infection severity and lack of alternatives justify the risk.",
+                        "url": "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/",
+                    }
+                ],
+            },
+            {
+                "variant": "m.1494C>T",
+                "display_name": "MT-RNR1 m.1494C>T",
+                "common_name": "C1494T aminoglycoside ototoxicity risk allele",
+                "position": 1494,
+                "lookup_keys": [
+                    "m.1494C>T",
+                    "MT-RNR1:m.1494C>T",
+                    "NC_012920.1:m.1494C>T",
+                    "rs267606619",
+                    "MT:1494",
+                    "MT:1494:C>T",
+                    "M:1494:C>T",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "CPIC increased-risk pharmacogenetic allele",
+                "clinical_interpretation": (
+                    "MT-RNR1 m.1494C>T is a high-evidence CPIC increased-risk allele for aminoglycoside-induced hearing loss. "
+                    "ClinVar links it to aminoglycoside-induced deafness and mitochondrial nonsyndromic sensorineural hearing loss."
+                ),
+                "clinical_significance": "CPIC increased-risk allele; ClinVar pathogenic or likely pathogenic hearing-loss marker depending on condition/submission.",
+                "functional_effects": [
+                    "Changes mitochondrial 12S rRNA near the aminoglycoside-sensitive decoding region.",
+                    "Reported in aminoglycoside-induced and nonsyndromic hearing-loss cohorts.",
+                ],
+                "associated_conditions": [
+                    "Aminoglycoside-induced deafness",
+                    "Mitochondrial nonsyndromic sensorineural hearing loss",
+                ],
+                "research_context": [
+                    "Evidence base is smaller than m.1555A>G but strong enough for CPIC increased-risk classification.",
+                    "Population distribution is uneven, with many early reports from Chinese families and hearing-loss cohorts.",
+                ],
+                "usual_variant_note": "High-evidence MT-RNR1 aminoglycoside ototoxicity risk allele.",
+                "methylation_interpretation": "No EPIC methylation whitelist is assigned for MT-RNR1.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: MT-RNR1 m.1494C>T", "https://www.ncbi.nlm.nih.gov/clinvar/298330196/"),
+                    _evidence("NCBI Bookshelf: CPIC recommendations for MT-RNR1", "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "CPIC guideline / NCBI Medical Genetics Summaries",
+                        "genotypes": "NC_012920.1:m.1494C>T",
+                        "phenotype": "Aminoglycoside-induced hearing-loss risk",
+                        "finding": "CPIC assigns m.1494C>T to the increased-risk phenotype for aminoglycoside-induced hearing loss.",
+                        "url": "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/",
+                    }
+                ],
+            },
+            {
+                "variant": "m.1095T>C",
+                "display_name": "MT-RNR1 m.1095T>C",
+                "common_name": "T1095C aminoglycoside ototoxicity risk allele",
+                "position": 1095,
+                "lookup_keys": [
+                    "m.1095T>C",
+                    "MT-RNR1:m.1095T>C",
+                    "NC_012920.1:m.1095T>C",
+                    "rs267606618",
+                    "MT:1095",
+                    "MT:1095:T>C",
+                    "M:1095:T>C",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "CPIC increased-risk pharmacogenetic allele",
+                "clinical_interpretation": (
+                    "MT-RNR1 m.1095T>C is included by CPIC as an increased-risk genotype for aminoglycoside-induced hearing loss, with a more moderate evidence base than m.1555A>G and m.1494C>T."
+                ),
+                "clinical_significance": "CPIC increased-risk allele; ClinVar/OMIM pathogenic aminoglycoside-induced deafness marker.",
+                "functional_effects": [
+                    "Mitochondrial 12S rRNA variant associated with aminoglycoside ototoxicity susceptibility.",
+                    "Evidence should be interpreted with more caution than the two high-evidence MT-RNR1 risk alleles.",
+                ],
+                "associated_conditions": [
+                    "Aminoglycoside-induced deafness",
+                    "Mitochondrial nonsyndromic sensorineural hearing loss research",
+                ],
+                "research_context": [
+                    "Use as a CPIC increased-risk pharmacogenetic flag while preserving evidence-strength caveats.",
+                ],
+                "usual_variant_note": "Moderate-evidence CPIC increased-risk MT-RNR1 allele.",
+                "methylation_interpretation": "No EPIC methylation whitelist is assigned for MT-RNR1.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar: MT-RNR1 m.1095T>C", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000010259/"),
+                    _evidence("NCBI Bookshelf: CPIC recommendations for MT-RNR1", "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "CPIC guideline / NCBI Medical Genetics Summaries",
+                        "genotypes": "NC_012920.1:m.1095T>C",
+                        "phenotype": "Aminoglycoside-induced hearing-loss risk",
+                        "finding": "CPIC includes m.1095T>C among MT-RNR1 increased-risk genotypes for aminoglycoside-induced hearing loss.",
+                        "url": "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/",
+                    }
+                ],
+            },
+            {
+                "variant": "m.827A>G",
+                "display_name": "MT-RNR1 m.827A>G",
+                "common_name": "A827G CPIC normal-risk example allele",
+                "position": 827,
+                "lookup_keys": [
+                    "m.827A>G",
+                    "MT-RNR1:m.827A>G",
+                    "NC_012920.1:m.827A>G",
+                    "MT:827",
+                    "MT:827:A>G",
+                    "M:827:A>G",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "CPIC normal-risk example allele / hearing-loss literature caveat",
+                "clinical_interpretation": (
+                    "MT-RNR1 m.827A>G has appeared in nonsyndromic hearing-loss literature, but CPIC uses it as an example of a normal-risk MT-RNR1 genotype for aminoglycoside-induced hearing loss. "
+                    "The local database includes it to prevent overcalling every MT-RNR1 change as an aminoglycoside contraindication."
+                ),
+                "clinical_significance": "CPIC normal-risk example for aminoglycoside-induced hearing loss.",
+                "functional_effects": [
+                    "Reported in hearing-loss families and cohorts, but CPIC does not classify it as increased AIHL risk.",
+                ],
+                "associated_conditions": [
+                    "Mitochondrial nonsyndromic sensorineural hearing-loss research",
+                    "Aminoglycoside risk classification contrast allele",
+                ],
+                "research_context": [
+                    "Do not treat m.827A>G as a CPIC increased-risk aminoglycoside allele without newer expert guidance.",
+                ],
+                "usual_variant_note": "Normal-risk contrast allele in CPIC aminoglycoside recommendations.",
+                "methylation_interpretation": "No EPIC methylation whitelist is assigned for MT-RNR1.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("NCBI Bookshelf: CPIC recommendations for MT-RNR1", "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/"),
+                    _evidence("NCBI Gene 4549: related MT-RNR1 hearing-loss literature", "https://www.ncbi.nlm.nih.gov/gene/4549"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "CPIC guideline / NCBI Medical Genetics Summaries",
+                        "genotypes": "NC_012920.1:m.827A>G",
+                        "phenotype": "Aminoglycoside-induced hearing-loss risk classification",
+                        "finding": "CPIC uses m.827A>G as a normal-risk example for aminoglycoside-induced hearing loss while still recommending standard aminoglycoside precautions.",
+                        "url": "https://www.ncbi.nlm.nih.gov/books/NBK285956/table/gentamicin.T.the_cpic_recommendations_fo/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from MT-RNR1 pharmacogenetic, hearing-loss, and maternal-lineage literature.",
+        "population_coverage_note": (
+            "The bundled MT-RNR1 population database is literature and guideline oriented. "
+            "Mitochondrial variants are not represented like diploid nuclear variants in many exome/genome population panels, and interpretation should consider heteroplasmy, haplogroup background, and maternal inheritance."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 4549: MT-RNR1 gene summary and literature links", "https://www.ncbi.nlm.nih.gov/gene/4549"),
+            _evidence("NCBI Bookshelf: Gentamicin therapy and MT-RNR1 genotype", "https://www.ncbi.nlm.nih.gov/books/NBK285956/"),
+            _evidence("PharmGKB VIP summary for MT-RNR1", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5083147/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "m.1555A>G",
+                "location_group": "Global pattern",
+                "summary": "m.1555A>G is the most widely reported MT-RNR1 aminoglycoside ototoxicity allele, with prevalence and penetrance shaped by population background, aminoglycoside exposure, heteroplasmy, and modifying variants.",
+            },
+            {
+                "variant": "m.1494C>T",
+                "location_group": "Disease cohorts",
+                "summary": "m.1494C>T is rarer than m.1555A>G but has strong guideline support as an increased-risk allele; many reported families and cohorts are East Asian, especially Chinese, though it is not exclusive to that ancestry.",
+            },
+            {
+                "variant": "m.1095T>C",
+                "location_group": "Disease cohorts",
+                "summary": "m.1095T>C is curated as a CPIC increased-risk allele with more moderate evidence, so population interpretation should preserve uncertainty around penetrance and study size.",
+            },
+            {
+                "variant": "m.827A>G",
+                "location_group": "Global pattern",
+                "summary": "m.827A>G is included as a normal-risk contrast allele in CPIC aminoglycoside recommendations; this helps separate hearing-loss literature signals from expert pharmacogenetic risk categories.",
+            },
+        ],
+    },
 ]
 
 
 def _build_promoter_region(meta: dict[str, Any]) -> dict[str, int | str]:
+    if meta.get("promoter_review_region"):
+        return dict(meta["promoter_review_region"])
+
     chrom = str(meta["chromosome"])
     start = int(meta["start"])
     end = int(meta["end"])
@@ -1753,6 +2957,11 @@ def _build_promoter_region(meta: dict[str, Any]) -> dict[str, int | str]:
 
 
 def _select_relevant_probe_ids(subset_df: pd.DataFrame, meta: dict[str, Any]) -> list[str]:
+    if meta.get("curated_methylation_probe_ids") is not None:
+        return list(meta["curated_methylation_probe_ids"])
+    if subset_df.empty or "MAPINFO" not in subset_df.columns or "IlmnID" not in subset_df.columns:
+        return []
+
     tss_coordinate = int(meta["end"] if meta["strand"] == "-" else meta["start"])
     prioritized = subset_df.copy()
     prioritized["distance_to_tss"] = (prioritized["MAPINFO"] - tss_coordinate).abs()
@@ -1775,6 +2984,18 @@ def _select_relevant_probe_ids(subset_df: pd.DataFrame, meta: dict[str, Any]) ->
 
 
 def _build_hotspot_region(subset_df: pd.DataFrame, meta: dict[str, Any], promoter_region: dict[str, Any]) -> dict[str, Any]:
+    if meta.get("promoter_hotspot_region"):
+        return dict(meta["promoter_hotspot_region"])
+    if subset_df.empty or "MAPINFO" not in subset_df.columns:
+        return {
+            "label": "No EPIC methylation probe window",
+            "start": int(promoter_region["start"]),
+            "end": int(promoter_region["end"]),
+            "definition": (
+                "No bundled EPIC methylation probes are available for this gene; methylation review should use a custom assay rather than the nuclear CpG manifest subset."
+            ),
+        }
+
     candidate = subset_df.copy()
     if "UCSC_RefGene_Group" in candidate.columns:
         group_text = candidate["UCSC_RefGene_Group"].fillna("").astype(str)
@@ -1810,6 +3031,7 @@ def _build_hotspot_region(subset_df: pd.DataFrame, meta: dict[str, Any], promote
 
 
 def _build_interpretation_database(meta: dict[str, Any], subset_df: pd.DataFrame) -> dict[str, Any]:
+    assembly = str(meta.get("assembly") or ASSEMBLY)
     promoter_region = _build_promoter_region(meta)
     hotspot_region = _build_hotspot_region(subset_df, meta, promoter_region)
     probe_ids = _select_relevant_probe_ids(subset_df, meta)
@@ -1829,14 +3051,14 @@ def _build_interpretation_database(meta: dict[str, Any], subset_df: pd.DataFrame
     recommended_region = f"{meta['chromosome']}:{combined_start}-{combined_end}"
     gene_context = {
         "gene_name": meta["gene_name"],
-        "assembly": ASSEMBLY,
+        "assembly": assembly,
         "cytoband": meta["cytoband"],
         "chromosome": meta["chromosome"],
         "gene_region": {
             "label": f"{meta['gene_name']} transcribed interval",
             "start": int(meta["start"]),
             "end": int(meta["end"]),
-            "definition": f"Canonical {meta['gene_name']} genomic interval on {ASSEMBLY} from {meta.get('coordinate_source', 'NCBI Gene')}.",
+            "definition": f"Canonical {meta['gene_name']} genomic interval on {assembly} from {meta.get('coordinate_source', 'NCBI Gene')}.",
         },
         "promoter_review_region": promoter_region,
         "promoter_hotspot_region": hotspot_region,
@@ -1888,6 +3110,14 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
+def _write_empty_manifest_subset(meta: dict[str, Any]) -> tuple[Path, pd.DataFrame]:
+    """Write an empty manifest subset for genes without EPIC probe coverage."""
+    subset_path = GENE_DATA_DIR / f"{meta['gene_name']}_epigenetics_hg19.csv"
+    subset_df = pd.DataFrame(columns=EMPTY_MANIFEST_COLUMNS)
+    subset_df.to_csv(subset_path, index=False)
+    return subset_path, subset_df
+
+
 def main() -> None:
     if not MANIFEST_PATH.exists():
         raise FileNotFoundError(f"Required manifest not found: {MANIFEST_PATH}")
@@ -1896,16 +3126,19 @@ def main() -> None:
 
     generated: list[str] = []
     for meta in GENE_DEFINITIONS:
-        region = f"{meta['chromosome']}:{meta['start']}-{meta['end']}"
-        selection = save_filtered_manifest(
-            gene_name=meta["gene_name"],
-            manifest_path=str(MANIFEST_PATH),
-            region=region,
-            genome_build="hg19",
-            output_dir=GENE_DATA_DIR,
-        )
-        subset_path = Path(selection["output_path"])
-        subset_df = pd.read_csv(subset_path)
+        if meta.get("skip_manifest_subset"):
+            subset_path, subset_df = _write_empty_manifest_subset(meta)
+        else:
+            region = str(meta.get("manifest_filter_region") or f"{meta['chromosome']}:{meta['start']}-{meta['end']}")
+            selection = save_filtered_manifest(
+                gene_name=meta["gene_name"],
+                manifest_path=str(MANIFEST_PATH),
+                region=region,
+                genome_build="hg19",
+                output_dir=GENE_DATA_DIR,
+            )
+            subset_path = Path(selection["output_path"])
+            subset_df = pd.read_csv(subset_path)
 
         interpretation_path = GENE_DATA_DIR / f"{meta['gene_name'].lower()}_interpretation_db.json"
         population_path = GENE_DATA_DIR / f"{meta['gene_name'].lower()}_population_db.json"

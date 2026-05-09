@@ -5,9 +5,13 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = (Resolve-Path (Join-Path $scriptDir "..")).Path
 $pidFile = Join-Path $repoRoot ".nophigene-ui.pid"
+$dataDir = Join-Path $repoRoot "data"
+$referenceDir = Join-Path $dataDir "reference\hg38"
+$extractedDir = Join-Path $dataDir "extracted"
 
 Write-Host ""
 Write-Host "Stopping NophiGene local UI" -ForegroundColor Cyan
+Write-Host "Persistent data: $dataDir"
 Write-Host ""
 
 if (-not (Test-Path $pidFile)) {
@@ -32,3 +36,5 @@ catch {
 }
 
 Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
+Write-Host "Reference files remain in $referenceDir."
+Write-Host "Extracted VCFs remain in $extractedDir."

@@ -115,6 +115,10 @@ _UCSC_PREFERRED_TRACKS = [
     "ncbiRefSeqCurated",
     "knownGene",
     "refGene",
+    "wgEncodeGencodeBasicV49",
+    "wgEncodeGencodeBasicV48",
+    "wgEncodeGencodeCompV49",
+    "wgEncodeGencodeCompV48",
     "wgEncodeGencodeBasicV49lift37",
     "wgEncodeGencodeBasicV48lift37",
     "wgEncodeGencodeCompV49lift37",
@@ -217,7 +221,17 @@ def _validate_gene_symbol(gene_symbol: str) -> str:
     return cleaned
 
 
-def find_gene_region(gene_symbol: str = "DRD4") -> dict[str, object]:
+def _normalize_genome_build(genome_build: str) -> str:
+    """Normalize user-facing build labels to the app's internal keys."""
+    cleaned = str(genome_build or "hg19").strip().lower().replace(" ", "")
+    if cleaned in {"hg38", "grch38", "grch38/hg38", "hg38/grch38"}:
+        return "hg38"
+    if cleaned in {"hg19", "grch37", "grch37/hg19", "hg19/grch37"}:
+        return "hg19"
+    raise ValueError("Genome build must be hg19/GRCh37 or hg38/GRCh38.")
+
+
+def find_gene_region(gene_symbol: str = "DRD4", genome_build: str = "hg19") -> dict[str, object]:
     """Resolve a gene symbol to the widest candidate interval across public sources.
 
     Parameters
@@ -238,10 +252,22 @@ def find_gene_region(gene_symbol: str = "DRD4") -> dict[str, object]:
         returns a usable interval.
     """
     cleaned_symbol = _validate_gene_symbol(gene_symbol)
+    normalized_build = _normalize_genome_build(genome_build)
+    if normalized_build == "hg38":
+        ensembl_label = "Ensembl GRCh38"
+        ensembl_server = "https://rest.ensembl.org"
+        ucsc_label = "UCSC hg38"
+        ucsc_genome = "hg38"
+    else:
+        ensembl_label = "Ensembl GRCh37"
+        ensembl_server = "https://grch37.rest.ensembl.org"
+        ucsc_label = "UCSC knownGene"
+        ucsc_genome = "hg19"
+
     source_candidates = [
         ("NCBI RefSeq", fetch_refseq_region(cleaned_symbol)),
-        ("Ensembl GRCh37", fetch_ensembl_region(cleaned_symbol)),
-        ("UCSC knownGene", fetch_ucsc_region(cleaned_symbol)),
+        (ensembl_label, fetch_ensembl_region(cleaned_symbol, server=ensembl_server)),
+        (ucsc_label, fetch_ucsc_region(cleaned_symbol, genome=ucsc_genome)),
     ]
     candidates = [
         {"source": source_name, "region": region}
@@ -259,6 +285,7 @@ def find_gene_region(gene_symbol: str = "DRD4") -> dict[str, object]:
     ]
     return {
         "gene_name": cleaned_symbol.upper(),
+        "genome_build": normalized_build,
         "selected_region": selected_region,
         "selected_sources": selected_sources,
         "candidate_regions": candidates,

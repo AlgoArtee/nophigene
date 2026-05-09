@@ -139,6 +139,18 @@ GENOTYPE_OUTPUT_COLUMNS = [
     "confidence_score",
     "confidence_explanation",
 ]
+BASE_VARIANT_COLUMNS = [
+    "sample",
+    "chrom",
+    "id",
+    "pos",
+    "ref",
+    "alt",
+    "alt_alleles",
+    "qual",
+    "filter_pass",
+    "filter_status",
+]
 
 # Configure the root logger once so both CLI and web runs stream progress.
 logging.basicConfig(
@@ -1012,6 +1024,22 @@ def _ensure_variant_genotype_annotations(variants: pd.DataFrame) -> pd.DataFrame
     for column in GENOTYPE_OUTPUT_COLUMNS:
         annotated[column] = [genotype.get(column) for genotype in genotype_rows]
     return annotated
+
+
+def _empty_variant_dataframe() -> pd.DataFrame:
+    """Return an empty variant table with the columns downstream reports expect."""
+    dtype_by_column = {
+        "pos": "int64",
+        "qual": "float64",
+        "filter_pass": "bool",
+    }
+    df = pd.DataFrame(
+        {
+            column: pd.Series(dtype=dtype_by_column.get(column, "object"))
+            for column in BASE_VARIANT_COLUMNS
+        }
+    )
+    return _ensure_variant_genotype_annotations(df)
 
 
 def _open_text_or_gzip(path: str | Path):
@@ -4102,8 +4130,9 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
     Raises
     ------
     AnalysisError
-        Raised when the VCF cannot be found, parsed, or read for any regional
-        calls in the requested interval.
+        Raised when the VCF cannot be found or parsed. A valid region with no
+        calls returns an empty table so the rest of the report can still explain
+        the no-variant result.
     """
     if not os.path.exists(vcf_path):
         raise AnalysisError(f"VCF not found: {vcf_path}")
@@ -4137,7 +4166,8 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
         raise AnalysisError(f"Failed to read VCF '{vcf_path}' for region '{region}': {exc}") from exc
 
     if not callset or "variants/CHROM" not in callset:
-        raise AnalysisError(f"No variants could be read from {vcf_path} in region {region}")
+        logger.info("No VCF calls were present in %s for region %s", vcf_path, region)
+        return _empty_variant_dataframe()
 
     sample_names = [_decode_scalar(sample) for sample in callset.get("samples", [])]
     if not sample_names:
@@ -4209,7 +4239,8 @@ def load_variants(vcf_path: str, region: str) -> pd.DataFrame:
 
     df = _ensure_variant_genotype_annotations(pd.DataFrame(rows))
     if df.empty:
-        raise AnalysisError(f"No variants found in {region} for {vcf_path}")
+        logger.info("No VCF sample calls were present in %s for region %s", vcf_path, region)
+        return _empty_variant_dataframe()
 
     named_id_count = int(df["id"].notna().sum())
     pass_count = int(df["filter_pass"].fillna(False).sum()) if "filter_pass" in df else 0
@@ -4234,6 +4265,18 @@ def _gene_manifest_filename(gene_name: str, genome_build: str = "hg19") -> str:
     return f"{sanitize_gene_name_for_filename(gene_name)}_epigenetics_{genome_build}.csv"
 
 
+def _allows_empty_methylation_subset(gene_name: str) -> bool:
+    """Return whether a curated gene can use a zero-row methylation subset."""
+    knowledge_base = load_gene_interpretation_database(gene_name.strip().upper() or DEFAULT_GENE_NAME)
+    if knowledge_base is None:
+        return False
+
+    gene_context = knowledge_base.get("gene_context", {})
+    chromosome = str(gene_context.get("chromosome", "")).strip().upper()
+    relevant_probe_ids = gene_context.get("relevant_methylation_probe_ids")
+    return chromosome in {"M", "MT"} or relevant_probe_ids == []
+
+
 def _prepare_gene_manifest_subset(
     *,
     manifest_filepath: str,
@@ -4254,6 +4297,7 @@ def _prepare_gene_manifest_subset(
             region=region,
             genome_build=genome_build,
             output_dir=GENE_DATA_DIR,
+            allow_empty=_allows_empty_methylation_subset(gene_name),
         )
     except Exception as exc:
         raise AnalysisError(
