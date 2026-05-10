@@ -33,6 +33,8 @@ CURATED_GENES = {
     "TERT": 1253282,
     "CLRN2": 17516788,
     "ARHGAP10": 148653239,
+    "FAM170A": 118965253,
+    "SYCE3": 50989541,
     "BLTP3B": 100430850,
     "CIROP": 23568271,
 }
@@ -514,6 +516,184 @@ def test_arhgap10_bundle_covers_schizophrenia_rhogap_and_tss_probes() -> None:
     assert predictive_theses["matched_case_count"] >= 1
     assert any(
         "rare ARHGAP10 RhoGAP-domain missense review thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_fam170a_bundle_covers_spermiogenesis_transcription_and_tss_probes() -> None:
+    """FAM170A should load as a male-fertility transcription-factor research bundle."""
+    knowledge_base = load_gene_interpretation_database("FAM170A")
+    population_database = load_gene_population_database("FAM170A")
+    synthesis_database = load_gene_synthesis_database("FAM170A")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "5"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 118965253
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 118971517
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "5:118964253-118971517"
+    assert "nuclear zinc-finger and spermiogenesis thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg01229506",
+        "cg24537512",
+        "cg23314948",
+        "cg14144850",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "FAM170A loss-of-function/deletion model" in variant_ids
+
+    lof_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "FAM170A loss-of-function/deletion model"
+    )
+    assert "FAM170A deletion" in lof_record["lookup_keys"]
+    assert "Mouse model and expression-supported male-fertility research marker" in lof_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "5",
+                "id": "FAM170A deletion",
+                "pos": 118965253,
+                "ref": "N",
+                "alt": "<DEL>",
+                "gt_raw": "0/1",
+                "ad": [12, 10],
+                "dp": 22,
+                "gq": 55,
+                "qual": 86.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg01229506",
+                "beta": 0.69,
+                "chrom": "5",
+                "pos": 118965233,
+                "GencodeBasicV12_NAME": "FAM170A",
+                "UCSC_RefGene_Group": "TSS200",
+                "Relation_to_UCSC_CpG_Island": "",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="5:118964253-118971517",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "FAM170A loss-of-function or deletion model"
+    assert "male-fertility research marker" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.69
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "sperm chromatin-remodeling thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_syce3_bundle_covers_meiotic_synapsis_and_tss_probes() -> None:
+    """SYCE3 should load as a synaptonemal-complex meiotic-synapsis research bundle."""
+    knowledge_base = load_gene_interpretation_database("SYCE3")
+    population_database = load_gene_population_database("SYCE3")
+    synthesis_database = load_gene_synthesis_database("SYCE3")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "22"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 50989541
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 51001348
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "22:50989541-51002348"
+    assert "synaptonemal-complex central-element thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg12119715",
+        "cg05722611",
+        "cg00349050",
+        "cg25309564",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "SYCE3 loss-of-function/deletion model" in variant_ids
+
+    lof_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "SYCE3 loss-of-function/deletion model"
+    )
+    assert "SYCE3 deletion" in lof_record["lookup_keys"]
+    assert "Mouse model-supported meiotic-arrest" in lof_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "22",
+                "id": "SYCE3 deletion",
+                "pos": 51001348,
+                "ref": "N",
+                "alt": "<DEL>",
+                "gt_raw": "0/1",
+                "ad": [11, 9],
+                "dp": 20,
+                "gq": 57,
+                "qual": 88.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg12119715",
+                "beta": 0.71,
+                "chrom": "22",
+                "pos": 51001351,
+                "GencodeBasicV12_NAME": "SYCE3",
+                "UCSC_RefGene_Group": "TSS200",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="22:50989541-51002348",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "SYCE3 loss-of-function or deletion model"
+    assert "meiotic-arrest" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.71
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "synaptonemal-complex central-element thesis" in row["prediction"]
         for row in predictive_theses["variant_prediction_rows"]
     )
 

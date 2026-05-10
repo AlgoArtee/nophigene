@@ -27,6 +27,8 @@ TARGET_GENES = [
     "TERT",
     "CLRN2",
     "ARHGAP10",
+    "FAM170A",
+    "SYCE3",
     "POTEB3",
     "BLTP3B",
     "CIROP",
@@ -121,6 +123,14 @@ GENE_CONCRETE_VARIANT_PREDICTIONS = {
     "ARHGAP10": (
         "The variant observed in this sample suggests an ARHGAP10 RhoGAP and neuronal-morphology thesis: the individual may carry a research-grade signal relevant to RhoA/Cdc42 signaling, cytoskeletal organization, exonic CNV schizophrenia literature, or cancer-cell migration biology. "
         "This is rare-variant and pathway context, not a schizophrenia diagnosis, cancer prediction, or stand-alone clinical classification."
+    ),
+    "FAM170A": (
+        "The variant observed in this sample suggests a FAM170A/ZNFD nuclear zinc-finger and spermiogenesis thesis: the individual may carry a research-grade signal relevant to testis-enriched transcription-factor biology, AP1 or heat-shock-element regulation, sperm chromatin remodeling, or histone-to-protamine exchange. "
+        "This is male-fertility and transcriptional-regulation context, not a diagnostic infertility prediction or validated monogenic disease call."
+    ),
+    "SYCE3": (
+        "The variant observed in this sample suggests a SYCE3 synaptonemal-complex central-element thesis: the individual may carry a research-grade signal relevant to meiotic prophase I homolog synapsis, central-element assembly, recombination progression, crossover formation, or spermatocyte/oocyte meiotic-arrest biology. "
+        "This is fertility and meiotic-structure context, not a diagnostic infertility, non-obstructive azoospermia, or premature ovarian insufficiency prediction."
     ),
     "POTEB3": (
         "The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. "
@@ -243,6 +253,18 @@ VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
         "ARHGAP10 p.Ser490Pro": (
             "Observed ARHGAP10 p.Ser490Pro / rs483352828 suggests a rare RhoGAP-domain missense thesis. "
             "The strongest bundled evidence is the reported double-hit context with an exonic ARHGAP10 deletion on the other allele, so a single heterozygous VCF row should remain rare-variant research context unless CNV, phase, phenotype, and external review support stronger interpretation."
+        ),
+    },
+    "FAM170A": {
+        "FAM170A loss-of-function/deletion model": (
+            "Observed FAM170A loss-of-function or deletion context suggests a male-fertility and sperm chromatin-remodeling thesis: the sample matched a model-system marker class tied to Fam170a-deficient mouse infertility, sperm-head abnormality, and impaired histone-to-protamine exchange. "
+            "Keep this interpretation research-grade and phenotype-aware because ClinGen has not published a FAM170A clinical gene-disease or dosage curation."
+        ),
+    },
+    "SYCE3": {
+        "SYCE3 loss-of-function/deletion model": (
+            "Observed SYCE3 loss-of-function or deletion context suggests a meiotic-arrest and synaptonemal-complex central-element thesis: the sample matched a model-system marker class tied to Syce3 knockout infertility, failed synapsis initiation, absent MLH1 crossover foci, and impaired recombination progression. "
+            "Keep this interpretation research-grade and phenotype-aware because confirmed human SYCE3 pathogenic mutations have not yet been established in the bundled review evidence."
         ),
     },
     "CIROP": {

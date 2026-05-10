@@ -2155,6 +2155,295 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "gene_name": "FAM170A",
+        "cytoband": "5q23.1",
+        "chromosome": "5",
+        "start": 118965253,
+        "end": 118971517,
+        "strand": "+",
+        "coordinate_source": (
+            "NCBI Gene 340069 reports FAM170A on GRCh37.p13 at NC_000005.9:118965253..118971517 "
+            "and on GRCh38.p14 at NC_000005.10:119629558..119635822; Ensembl ENSG00000164334 reports "
+            "the current GRCh38 gene on chr5:119629558-119635822 on the forward strand"
+        ),
+        "manifest_filter_region": "5:118964253-118971517",
+        "gene_summary": (
+            "FAM170A, also known as ZNFD, encodes protein FAM170A, a nuclear zinc-finger domain protein with DNA-, metal-, and zinc-binding annotations. "
+            "Human ZNFD/FAM170A was characterized as a C2H2 zinc-finger transcriptional activator with nuclear localization and AP1(PMA)-responsive transcriptional activity; UniProt and ClinGen gene facts also frame it as a nuclear transcription factor that binds heat-shock promoter elements."
+        ),
+        "clinical_context": (
+            "The local FAM170A knowledge base is male-fertility, spermiogenesis, and transcription-factor research oriented. "
+            "Current ClinGen gene facts list no published FAM170A gene-disease validity, dosage, actionability, or variant-pathogenicity assertions, so FAM170A findings should remain exploratory unless external clinical review adds stronger evidence."
+        ),
+        "variant_effect_overview": [
+            "The strongest functional disease-model evidence is mouse Fam170a deficiency, which causes male infertility and impaired sperm chromatin remodeling during histone-to-protamine exchange.",
+            "A 2025 Nucleic Acids Research study reported very low FAM170A transcription in sperm from infertile men with teratozoospermia, supporting human relevance but not establishing a validated monogenic diagnostic rule.",
+            "Human ZNFD/FAM170A overexpression activates AP1(PMA)-responsive transcription in COS7 cells, while mouse Znfd evidence supports heat-shock-element transcriptional activity and testis-specific expression.",
+        ],
+        "condition_research_overview": [
+            "Male infertility, teratozoospermia, sperm-head morphology, and spermiogenesis chromatin remodeling.",
+            "Histone-to-protamine exchange, transition-protein timing, protamine incorporation, and USP7-linked histone deubiquitination in germ-cell models.",
+            "Nuclear zinc-finger transcription-factor biology, AP1(PMA) response, heat-shock-element regulation, and testis-enriched expression.",
+        ],
+        "methylation_interpretation": (
+            "FAM170A has a compact promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use FAM170A methylation as local regulatory context around a testis-enriched nuclear transcription-factor gene, not as a validated male-infertility or teratozoospermia biomarker."
+        ),
+        "methylation_effects": [
+            "Promoter and early-gene-body methylation may help frame local transcriptional accessibility for FAM170A.",
+            "No source-backed FAM170A methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, expression, sperm phenotype, and sequence/CNV evidence.",
+        ],
+        "methylation_condition_research": [
+            "Use FAM170A methylation as supportive regulatory context in male-fertility, spermiogenesis, testis-expression, or transcription-factor research.",
+            "Do not infer sperm chromatin remodeling defects from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 340069: FAM170A gene summary, coordinates, expression, RefSeq, and GO context", "https://www.ncbi.nlm.nih.gov/gene/340069"),
+            _evidence("Ensembl ENSG00000164334: FAM170A current gene model and forward-strand coordinates", "https://www.ensembl.org/id/ENSG00000164334"),
+            _evidence("UniProt A1A519: FAM170A / F170A_HUMAN protein entry", "https://www.uniprot.org/uniprotkb/A1A519/entry"),
+            _evidence("ClinGen Gene Facts HGNC:27963: coordinates, MANE transcript, and no published curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27963"),
+            _evidence("Human Protein Atlas ENSG00000164334: FAM170A testis expression context", "https://www.proteinatlas.org/ENSG00000164334-FAM170A"),
+            _evidence("PubMed 20162441: human ZNFD/FAM170A zinc-finger AP1(PMA) transcriptional activity", "https://pubmed.ncbi.nlm.nih.gov/20162441/"),
+            _evidence("PubMed 22231842: mouse Znfd heat-shock-element transcriptional activity and testis expression", "https://pubmed.ncbi.nlm.nih.gov/22231842/"),
+            _evidence("PMCID PMC11760970: Fam170a deficiency and male infertility in mouse spermiogenesis", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11760970/"),
+        ],
+        "variants": [
+            {
+                "variant": "FAM170A loss-of-function/deletion model",
+                "display_name": "FAM170A loss-of-function or deletion model",
+                "common_name": "Fam170a deficiency male-infertility model",
+                "position": None,
+                "lookup_keys": [
+                    "FAM170A loss-of-function",
+                    "FAM170A loss of function",
+                    "FAM170A deletion",
+                    "FAM170A LOF",
+                    "Fam170a knockout",
+                    "Fam170a deficiency",
+                    "FAM170A deficiency",
+                ],
+                "region_class": "structural_region",
+                "interpretation_scope": "Preclinical loss-of-function model / male-fertility research context",
+                "clinical_interpretation": (
+                    "Fam170a loss-of-function is included as a model-system marker because complete mouse Fam170a deletion caused male infertility, abnormal sperm head morphology, impaired histone-to-protamine exchange, and altered USP7-linked histone deubiquitination during spermiogenesis. "
+                    "Human translation remains research-grade: the same study reported very low FAM170A transcription in sperm from infertile men with teratozoospermia, but ClinGen has not published a FAM170A gene-disease validity or dosage curation."
+                ),
+                "clinical_significance": "Mouse model and expression-supported male-fertility research marker; not a curated human pathogenic variant.",
+                "functional_effects": [
+                    "Loss of Fam170a in mice impaired sperm chromatin remodeling and protamine incorporation during spermiogenesis.",
+                    "Fam170a promoted USP7 nuclear translocation and deubiquitination of testis-specific H2A/H2B variants in the cited mouse study.",
+                    "Low FAM170A transcription was observed in sperm from infertile men with teratozoospermia in the same study.",
+                ],
+                "associated_conditions": [
+                    "Male infertility research",
+                    "Teratozoospermia and abnormal sperm-head morphology",
+                    "Spermiogenesis chromatin remodeling",
+                    "Histone-to-protamine exchange",
+                ],
+                "research_context": [
+                    "Prioritize germline assay type, CNV breakpoints or LoF consequence, tissue context, semen phenotype, and orthogonal confirmation.",
+                    "Do not use a single generic FAM170A VCF signal as a diagnostic male-infertility call.",
+                ],
+                "usual_variant_note": "Model-system FAM170A/Fam170a deficiency marker rather than a specific curated human SNV.",
+                "methylation_interpretation": (
+                    "FAM170A methylation can provide local regulatory context, but it does not establish loss-of-function, sperm expression, or male-infertility causality."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PMCID PMC11760970: Fam170a deficiency causes male infertility in mouse spermiogenesis", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11760970/"),
+                    _evidence("ClinGen Gene Facts HGNC:27963: no published FAM170A clinical curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27963"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Cheng et al., 2025 (PMID 39868537)",
+                        "genotypes": "Fam170a complete knockout/deletion model in mice; low human FAM170A sperm transcription in teratozoospermia",
+                        "phenotype": "Male infertility, abnormal sperm-head morphology, and impaired histone-to-protamine exchange",
+                        "finding": "The study reported complete infertility in Fam170a-deleted male mice and implicated FAM170A/Fam170a in USP7-linked histone deubiquitination and sperm chromatin remodeling.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11760970/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from FAM170A/ZNFD testis expression, transcription-factor, and male-fertility model literature.",
+        "population_coverage_note": (
+            "The bundled FAM170A population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because ClinGen has not published FAM170A clinical curations, population interpretation should prioritize current ClinVar/gnomAD status, predicted consequence, tissue context, semen phenotype, and independent confirmation."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 340069: FAM170A expression and GO context", "https://www.ncbi.nlm.nih.gov/gene/340069"),
+            _evidence("ClinGen Gene Facts HGNC:27963: clinical curation status", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27963"),
+            _evidence("Human Protein Atlas: FAM170A testis protein/RNA context", "https://www.proteinatlas.org/ENSG00000164334-FAM170A"),
+            _evidence("PubMed 20162441: human ZNFD/FAM170A transcriptional activation study", "https://pubmed.ncbi.nlm.nih.gov/20162441/"),
+            _evidence("PMCID PMC11760970: Fam170a male-infertility model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC11760970/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "FAM170A testis-enriched expression",
+                "location_group": "Global pattern",
+                "summary": "NCBI and Human Protein Atlas resources frame FAM170A as testis-enriched or testis-relevant, matching the sperm and spermiogenesis literature focus.",
+            },
+            {
+                "variant": "FAM170A deficiency model",
+                "location_group": "Functional biology",
+                "summary": "Mouse Fam170a deficiency supports a male-fertility and sperm chromatin-remodeling research thesis, but it should not be treated as a validated human diagnostic gene-disease rule.",
+            },
+            {
+                "variant": "ZNFD transcription-factor activity",
+                "location_group": "Functional biology",
+                "summary": "Human and mouse ZNFD/FAM170A studies support nuclear zinc-finger transcription-factor behavior, including AP1(PMA) and heat-shock-element reporter activity.",
+            },
+            {
+                "variant": "FAM170A TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body methylation context, but no population methylation threshold is bundled for fertility or transcriptional activity.",
+            },
+        ],
+    },
+    {
+        "gene_name": "SYCE3",
+        "cytoband": "22q13.33",
+        "chromosome": "22",
+        "start": 50989541,
+        "end": 51001348,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 644186 reports SYCE3 on GRCh37.p13 at NC_000022.10:50989541..51001348, "
+            "complement, and on GRCh38.p14 at NC_000022.11:50551112..50562919, complement"
+        ),
+        "manifest_filter_region": "22:50989541-51002348",
+        "gene_summary": (
+            "SYCE3 encodes synaptonemal complex central element protein 3, a small coiled-coil component of the synaptonemal complex central element. "
+            "UniProt and structural studies frame SYCE3 as a major meiotic prophase I component that helps assemble central-element lattice structures, recruit other central-element complexes, and initiate synapsis between homologous chromosomes."
+        ),
+        "clinical_context": (
+            "The local SYCE3 knowledge base is meiotic synapsis, recombination, and fertility research oriented. "
+            "Mouse Syce3 knockout causes infertility in both sexes through synapsis initiation failure and meiotic arrest, but recent NOA reviews note that confirmed human SYCE3 pathogenic mutations are not yet established; app findings should therefore remain exploratory."
+        ),
+        "variant_effect_overview": [
+            "The strongest functional evidence is the Syce3 knockout mouse model, where loss of SYCE3 blocks central-element assembly, prevents synapsis initiation, abolishes MLH1 crossover foci, and causes infertility in both sexes.",
+            "Protein-structure work supports SYCE3 self-assembly and coiled-coil behavior, providing a mechanistic basis for central-element lattice formation.",
+            "Human interpretation is model-informed rather than variant-confirmed: current reviews discuss SYCE3 as biologically plausible for non-obstructive azoospermia and premature ovarian insufficiency contexts, while noting the absence of confirmed human SYCE3 mutations.",
+        ],
+        "condition_research_overview": [
+            "Synaptonemal complex central-element assembly, homologous chromosome synapsis, and meiotic recombination.",
+            "Non-obstructive azoospermia, meiotic arrest, premature ovarian insufficiency, and recurrent pregnancy-loss research involving synaptonemal-complex genes.",
+            "Testis-enriched expression and spermatocyte meiotic division/transition cell-type context.",
+        ],
+        "methylation_interpretation": (
+            "SYCE3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use SYCE3 methylation as local regulatory context around a compact reverse-strand meiotic central-element gene, not as a validated infertility, NOA, POI, or recurrent-pregnancy-loss biomarker."
+        ),
+        "methylation_effects": [
+            "The SYCE3 methylation view can summarize promoter-proximal and early-gene-body CpGs around the reverse-strand transcription start.",
+            "No source-backed SYCE3 methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, meiotic-cell expression, sequence/CNV evidence, and reproductive phenotype.",
+        ],
+        "methylation_condition_research": [
+            "Use SYCE3 methylation as supportive regulatory context in meiotic synapsis, synaptonemal-complex, spermatogenesis, or fertility research.",
+            "Do not infer meiotic arrest or reproductive risk from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 644186: SYCE3 gene summary, coordinates, RefSeq, expression, and GO context", "https://www.ncbi.nlm.nih.gov/gene/644186"),
+            _evidence("Ensembl ENSG00000217442: SYCE3 current gene model", "https://www.ensembl.org/id/ENSG00000217442"),
+            _evidence("UniProt A1L190: SYCE3 / SYCE3_HUMAN protein entry", "https://www.uniprot.org/uniprotkb/A1L190/entry"),
+            _evidence("Human Protein Atlas ENSG00000217442: SYCE3 testis-enriched expression context", "https://www.proteinatlas.org/ENSG00000217442-SYCE3"),
+            _evidence("ClinGen Gene Facts HGNC:35245: SYCE3 gene facts and constraint metrics", "https://search.clinicalgenome.org/kb/genes/HGNC%3A35245"),
+            _evidence("PMCID PMC3102746: Syce3 knockout mouse central-element loading, recombination, and fertility evidence", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/"),
+            _evidence("PMCID PMC6556580: molecular model for SYCE3 self-assembly", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6556580/"),
+            _evidence("PMCID PMC12676892: NOA review noting SYCE3 mouse phenotype and no confirmed human mutations", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12676892/"),
+        ],
+        "variants": [
+            {
+                "variant": "SYCE3 loss-of-function/deletion model",
+                "display_name": "SYCE3 loss-of-function or deletion model",
+                "common_name": "Syce3 knockout meiotic-arrest fertility model",
+                "position": None,
+                "lookup_keys": [
+                    "SYCE3 loss-of-function",
+                    "SYCE3 loss of function",
+                    "SYCE3 deletion",
+                    "SYCE3 LOF",
+                    "Syce3 knockout",
+                    "Syce3 deficiency",
+                    "SYCE3 deficiency",
+                ],
+                "region_class": "structural_region",
+                "interpretation_scope": "Preclinical loss-of-function model / meiotic synapsis and fertility research context",
+                "clinical_interpretation": (
+                    "Syce3 loss-of-function is included as a model-system marker because knockout mice are infertile in both sexes, fail to initiate homologous chromosome synapsis, and lack MLH1 crossover foci despite apparently normal initiation of recombination. "
+                    "Human translation remains research-grade because current reviews state that confirmed human SYCE3 mutations have not yet been established."
+                ),
+                "clinical_significance": "Mouse model-supported meiotic-arrest and fertility research marker; not a curated human pathogenic variant.",
+                "functional_effects": [
+                    "Loss of Syce3 blocks loading of synaptonemal-complex central-element proteins in mouse meiocytes.",
+                    "Knockout meiocytes show synapsis initiation failure, severely impaired recombination progression, and absence of MLH1 crossover foci.",
+                    "SYCE3 self-assembly and coiled-coil structure support a structural central-element mechanism.",
+                ],
+                "associated_conditions": [
+                    "Male infertility and non-obstructive azoospermia research",
+                    "Premature ovarian insufficiency and meiotic-arrest research",
+                    "Synaptonemal-complex assembly and homologous chromosome synapsis",
+                    "Crossover formation and meiotic recombination",
+                ],
+                "research_context": [
+                    "Prioritize CNV breakpoint, predicted LoF consequence, zygosity, reproductive phenotype, meiotic-arrest histology, and orthogonal confirmation.",
+                    "Do not use a generic SYCE3 VCF or methylation signal as a diagnostic infertility or POI call.",
+                ],
+                "usual_variant_note": "Model-system SYCE3/Syce3 deficiency marker rather than a specific curated human SNV.",
+                "methylation_interpretation": (
+                    "SYCE3 methylation can provide local regulatory context, but it does not establish loss-of-function, meiotic synapsis failure, or reproductive phenotype causality."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PMCID PMC3102746: Syce3 knockout infertility, synapsis initiation failure, and absent MLH1 foci", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/"),
+                    _evidence("PMCID PMC12676892: SYCE3 NOA review context and no confirmed human mutations", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12676892/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Schramm et al., 2011 (PMID 21637789)",
+                        "genotypes": "Syce3 knockout/deletion mouse model",
+                        "phenotype": "Infertility in both sexes, synapsis initiation failure, meiotic arrest, and absent crossover markers",
+                        "finding": "The study reported that SYCE3 is a mammalian synaptonemal-complex central-element component required for central-element protein loading, recombination progression, and fertility.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from SYCE3 synaptonemal-complex, testis-expression, and meiotic-infertility model literature.",
+        "population_coverage_note": (
+            "The bundled SYCE3 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because confirmed human SYCE3 pathogenic mutations have not yet been established in the cited reviews, interpretation should prioritize current ClinVar/gnomAD status, predicted consequence, reproductive phenotype, and independent confirmation."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 644186: SYCE3 expression and meiotic GO context", "https://www.ncbi.nlm.nih.gov/gene/644186"),
+            _evidence("Human Protein Atlas: SYCE3 testis and spermatocyte expression context", "https://www.proteinatlas.org/ENSG00000217442-SYCE3"),
+            _evidence("PMCID PMC3102746: Syce3 knockout mouse fertility model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/"),
+            _evidence("PMCID PMC6556580: SYCE3 structural self-assembly model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6556580/"),
+            _evidence("PMCID PMC12676892: NOA review covering SYCE2/SYCE3 model phenotypes", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12676892/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "SYCE3 testis-enriched expression",
+                "location_group": "Global pattern",
+                "summary": "NCBI and Human Protein Atlas resources frame SYCE3 as testis-enriched, especially in spermatocyte and spermatid meiotic cell states.",
+            },
+            {
+                "variant": "SYCE3 deficiency model",
+                "location_group": "Functional biology",
+                "summary": "Mouse Syce3 deficiency supports a meiotic-arrest and fertility research thesis, but it should not be treated as a validated human diagnostic gene-disease rule.",
+            },
+            {
+                "variant": "SYCE3 central-element structure",
+                "location_group": "Functional biology",
+                "summary": "Structural work supports SYCE3 coiled-coil self-assembly as a mechanistic layer for synaptonemal-complex central-element lattice formation.",
+            },
+            {
+                "variant": "SYCE3 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body methylation context, but no population methylation threshold is bundled for meiotic arrest, NOA, POI, or recurrent pregnancy loss.",
+            },
+        ],
+    },
+    {
         "gene_name": "POTEB3",
         "cytoband": "15q11.2",
         "chromosome": "15",
