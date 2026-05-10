@@ -32,6 +32,7 @@ CURATED_GENES = {
     "CDKN2A": 21967751,
     "TERT": 1253282,
     "CLRN2": 17516788,
+    "ARHGAP10": 148653239,
     "BLTP3B": 100430850,
     "CIROP": 23568271,
 }
@@ -39,18 +40,25 @@ CURATED_GENES = {
 
 @pytest.mark.parametrize("gene_name,gene_start", CURATED_GENES.items())
 def test_curated_gene_bundle_loads_with_manifest_subset(gene_name: str, gene_start: int) -> None:
-    """Each requested curated gene should ship interpretation, population, and probe data."""
+    """Each requested curated gene should ship interpretation, population, synthesis, and probe data."""
     knowledge_base = load_gene_interpretation_database(gene_name)
     population_database = load_gene_population_database(gene_name)
+    synthesis_database = load_gene_synthesis_database(gene_name)
 
     assert knowledge_base is not None
     assert population_database is not None
+    assert synthesis_database is not None
     assert knowledge_base["gene_context"]["gene_name"] == gene_name
     assert knowledge_base["gene_context"]["gene_region"]["start"] == gene_start
     assert knowledge_base["gene_context"]["variant_effect_overview"]
     assert knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
     assert population_database["database_name"].startswith(f"NophiGene {gene_name} Population")
     assert population_database["gene_population_patterns"]
+    assert synthesis_database["database_name"].startswith(f"NophiGene {gene_name} Predictive")
+    assert synthesis_database["case_count"] == 10
+    assert synthesis_database["concrete_variant_prediction"]
+    if knowledge_base["variant_records"]:
+        assert synthesis_database["variant_prediction_rules"]
 
     subset_path = Path("src/gene_data") / f"{gene_name}_epigenetics_hg19.csv"
     assert subset_path.exists()
@@ -418,6 +426,94 @@ def test_clrn2_bundle_covers_dfnb117_marker_and_tss_probes() -> None:
     assert predictive_theses["matched_case_count"] >= 1
     assert any(
         "DFNB117 autosomal recessive nonsyndromic hearing-loss review thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_arhgap10_bundle_covers_schizophrenia_rhogap_and_tss_probes() -> None:
+    """ARHGAP10 should load as a RhoGAP research bundle with CNV and S490P marker context."""
+    knowledge_base = load_gene_interpretation_database("ARHGAP10")
+    population_database = load_gene_population_database("ARHGAP10")
+    synthesis_database = load_gene_synthesis_database("ARHGAP10")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "4"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 148653239
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 148993927
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "4:148652239-148993927"
+    assert "RhoGAP and neuronal-morphology thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg09777578",
+        "cg17876581",
+        "cg06802374",
+        "cg24243429",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert {"ARHGAP10 exonic CNV", "ARHGAP10 p.Ser490Pro"} <= variant_ids
+
+    s490p_record = next(
+        record for record in knowledge_base["variant_records"] if record["variant"] == "ARHGAP10 p.Ser490Pro"
+    )
+    assert "rs483352828" in s490p_record["lookup_keys"]
+    assert "NM_024605.4(ARHGAP10):c.1468T>C" in s490p_record["lookup_keys"]
+    assert "Research-level rare missense marker" in s490p_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "4",
+                "id": "rs483352828",
+                "pos": 148800000,
+                "ref": "T",
+                "alt": "C",
+                "gt_raw": "0/1",
+                "ad": [13, 11],
+                "dp": 24,
+                "gq": 60,
+                "qual": 99.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg09777578",
+                "beta": 0.72,
+                "chrom": "4",
+                "pos": 148653439,
+                "GencodeBasicV12_NAME": "ARHGAP10",
+                "UCSC_RefGene_Group": "5'UTR;1stExon",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="4:148652239-148993927",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "ARHGAP10 c.1468T>C / p.Ser490Pro"
+    assert "Research-level rare missense marker" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.72
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "rare ARHGAP10 RhoGAP-domain missense review thesis" in row["prediction"]
         for row in predictive_theses["variant_prediction_rows"]
     )
 

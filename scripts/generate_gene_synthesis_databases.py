@@ -26,6 +26,7 @@ TARGET_GENES = [
     "CDKN2A",
     "TERT",
     "CLRN2",
+    "ARHGAP10",
     "POTEB3",
     "BLTP3B",
     "CIROP",
@@ -116,6 +117,10 @@ GENE_CONCRETE_VARIANT_PREDICTIONS = {
     "CLRN2": (
         "The variant observed in this sample suggests a CLRN2 stereocilia-maintenance and DFNB117 hearing-loss thesis: the individual may carry a rare clarin-2 marker relevant to auditory hair-bundle maintenance, mechanotransduction, or autosomal recessive nonsyndromic sensorineural hearing-loss review. "
         "Only biallelic pathogenic or clinically confirmed CLRN2 findings should be escalated toward a DFNB117 disease interpretation; single heterozygous or VUS markers remain carrier or research context."
+    ),
+    "ARHGAP10": (
+        "The variant observed in this sample suggests an ARHGAP10 RhoGAP and neuronal-morphology thesis: the individual may carry a research-grade signal relevant to RhoA/Cdc42 signaling, cytoskeletal organization, exonic CNV schizophrenia literature, or cancer-cell migration biology. "
+        "This is rare-variant and pathway context, not a schizophrenia diagnosis, cancer prediction, or stand-alone clinical classification."
     ),
     "POTEB3": (
         "The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. "
@@ -228,6 +233,16 @@ VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
         "CLRN2 c.236G>T": (
             "Observed CLRN2 c.236G>T / p.Arg79Leu suggests a CLRN2 VUS hearing-loss review thesis. "
             "Keep this as candidate rare-variant context unless newer ClinVar, segregation, functional, or phenotype evidence supports reclassification."
+        ),
+    },
+    "ARHGAP10": {
+        "ARHGAP10 exonic CNV": (
+            "Observed ARHGAP10 exonic CNV context suggests a rare structural-variant schizophrenia-research thesis: the sample matched a copy-number marker class reported in a Japanese case-control study and biologically tied to RhoGAP/RhoA neuronal-morphology mechanisms. "
+            "Keep this interpretation breakpoint-, assay-, and ancestry-aware; it is not a deterministic ARHGAP10 or schizophrenia diagnosis."
+        ),
+        "ARHGAP10 p.Ser490Pro": (
+            "Observed ARHGAP10 p.Ser490Pro / rs483352828 suggests a rare RhoGAP-domain missense thesis. "
+            "The strongest bundled evidence is the reported double-hit context with an exonic ARHGAP10 deletion on the other allele, so a single heterozygous VCF row should remain rare-variant research context unless CNV, phase, phenotype, and external review support stronger interpretation."
         ),
     },
     "CIROP": {
@@ -583,6 +598,20 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
             },
         ],
     },
+    "ARHGAP10": {
+        "ARHGAP10 p.Ser490Pro": [
+            {
+                "change": "T>C",
+                "alt_allele": "C",
+                "prediction": (
+                    "This sample row reports C as the observed alternate allele for ARHGAP10 c.1468T>C / p.Ser490Pro. "
+                    "If GT and QC support non-reference dosage, the sample fits a rare ARHGAP10 RhoGAP-domain missense review thesis. "
+                    "The strongest bundled evidence requires checking for a second ARHGAP10 hit such as an exonic deletion, so report this as research context unless CNV, phase, phenotype, and external clinical review support escalation."
+                ),
+                "basis": "Observed C dosage at NM_024605.4(ARHGAP10):c.1468T>C / p.Ser490Pro, a rare missense marker highlighted in ARHGAP10 schizophrenia double-hit model literature.",
+            }
+        ],
+    },
     "CLRN2": {
         "CLRN2 c.494C>A": [
             {
@@ -703,6 +732,25 @@ def _load_interpretation_database(gene_name: str) -> dict[str, Any]:
         if path.exists():
             return json.loads(path.read_text(encoding="utf-8"))
     raise FileNotFoundError(f"No interpretation database found for {gene_name}")
+
+
+def _discover_interpretation_genes() -> list[str]:
+    """Return gene names for interpretation databases present in the local bundle directory."""
+    discovered: list[str] = []
+    for path in sorted(GENE_DATA_DIR.glob("*_interpretation_db.json")):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        gene_name = _clean_text(payload.get("gene_context", {}).get("gene_name"))
+        if gene_name:
+            discovered.append(gene_name)
+    return _dedupe_text_items(discovered)
+
+
+def _iter_synthesis_gene_names() -> list[str]:
+    """Return curated targets plus any available interpretation-only bundles."""
+    return _dedupe_text_items([*TARGET_GENES, *_discover_interpretation_genes()])
 
 
 def _build_seeded_markers(knowledge_base: dict[str, Any]) -> list[str]:
@@ -987,8 +1035,13 @@ def build_synthesis_database(knowledge_base: dict[str, Any]) -> dict[str, Any]:
 def main() -> int:
     """Generate one synthesis JSON file per target gene."""
     GENE_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    for gene_name in TARGET_GENES:
-        knowledge_base = _load_interpretation_database(gene_name)
+    skipped: list[str] = []
+    for gene_name in _iter_synthesis_gene_names():
+        try:
+            knowledge_base = _load_interpretation_database(gene_name)
+        except FileNotFoundError:
+            skipped.append(gene_name)
+            continue
         synthesis_database = build_synthesis_database(knowledge_base)
         output_path = GENE_DATA_DIR / f"{gene_name.lower()}_synthesis.json"
         output_path.write_text(
@@ -996,6 +1049,10 @@ def main() -> int:
             encoding="utf-8",
         )
         print(f"Wrote {output_path}")
+    if skipped:
+        print("Skipped missing interpretation databases:")
+        for gene_name in skipped:
+            print(f" - {gene_name}")
     return 0
 
 
