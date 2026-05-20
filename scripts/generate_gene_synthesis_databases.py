@@ -27,12 +27,37 @@ TARGET_GENES = [
     "TERT",
     "CLRN2",
     "ARHGAP10",
+    "CCDC66",
+    "TYW5",
+    "ELOVL7",
+    "SH3PXD2B",
+    "FRMD3",
+    "TMEM218",
     "FAM170A",
     "SYCE3",
     "POTEB3",
     "BLTP3B",
     "CIROP",
     "MT-RNR1",
+    "IL33",
+    "IL1RL1",
+    "ORMDL3",
+    "GSDMB",
+    "HLA-DQA1",
+    "HLA-DQB1",
+    "TSLP",
+    "IL4R",
+    "STAT6",
+    "IL13",
+    "IL4",
+    "FLG",
+    "TLR10",
+    "TNFRSF8",
+    "CD30",
+    "MUC5AC",
+    "SMAD3",
+    "IL18R1",
+    "IL18RAP",
 ]
 
 METHYLATION_SOURCES = [
@@ -123,6 +148,30 @@ GENE_CONCRETE_VARIANT_PREDICTIONS = {
     "ARHGAP10": (
         "The variant observed in this sample suggests an ARHGAP10 RhoGAP and neuronal-morphology thesis: the individual may carry a research-grade signal relevant to RhoA/Cdc42 signaling, cytoskeletal organization, exonic CNV schizophrenia literature, or cancer-cell migration biology. "
         "This is rare-variant and pathway context, not a schizophrenia diagnosis, cancer prediction, or stand-alone clinical classification."
+    ),
+    "CCDC66": (
+        "The variant observed in this sample suggests a CCDC66 microtubule, ciliary-transition-zone, and retinal-development thesis: the individual may carry a research-grade signal relevant to photoreceptor inner-segment biology, retinal degeneration model systems, high-myopia sequencing literature, centrosome or centriolar-satellite trafficking, CEP290/PCM1 interaction, cilium length and signaling, or mitotic/cytokinetic microtubule organization. "
+        "Because ClinGen has not published a CCDC66 clinical curation, CCDC66 findings should stay phenotype-, variant-classification-, zygosity-, and assay-aware rather than being treated as deterministic retinal-disease, myopia, cancer, or ciliopathy diagnoses."
+    ),
+    "TYW5": (
+        "The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. "
+        "Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions."
+    ),
+    "ELOVL7": (
+        "The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. "
+        "This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction."
+    ),
+    "SH3PXD2B": (
+        "The variant observed in this sample suggests a SH3PXD2B/TKS4 podosome-adaptor and Frank-ter Haar syndrome thesis: the individual may carry a research-grade or clinical-review signal relevant to autosomal-recessive skeletal, ocular, cardiac, craniofacial, dermal, collagen-remodeling, or podosome/invadopodia biology. "
+        "Only biallelic pathogenic, likely pathogenic, or well-supported loss-of-function SH3PXD2B findings should be escalated toward a Frank-ter Haar or Borrone dermato-cardio-skeletal syndrome interpretation; single heterozygous, benign, or VUS findings remain carrier or research context."
+    ),
+    "FRMD3": (
+        "The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. "
+        "This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction."
+    ),
+    "TMEM218": (
+        "The variant observed in this sample suggests a TMEM218 ciliary-transition-zone and Joubert-Meckel ciliopathy thesis: the individual may carry a research-grade or clinical-review signal relevant to autosomal-recessive primary-cilium diffusion-barrier biology, Joubert syndrome 39, Meckel syndrome, retinal dystrophy, cystic kidney disease, polydactyly, encephalocele, or NPHP-module interaction studies. "
+        "Only biallelic pathogenic, likely pathogenic, or strongly supported TMEM218 loss/reduced-function findings should be escalated toward a ciliopathy interpretation; single heterozygous, benign, or VUS findings remain carrier or research context."
     ),
     "FAM170A": (
         "The variant observed in this sample suggests a FAM170A/ZNFD nuclear zinc-finger and spermiogenesis thesis: the individual may carry a research-grade signal relevant to testis-enriched transcription-factor biology, AP1 or heat-shock-element regulation, sperm chromatin remodeling, or histone-to-protamine exchange. "
@@ -253,6 +302,70 @@ VARIANT_CONCRETE_PREDICTION_OVERRIDES = {
         "ARHGAP10 p.Ser490Pro": (
             "Observed ARHGAP10 p.Ser490Pro / rs483352828 suggests a rare RhoGAP-domain missense thesis. "
             "The strongest bundled evidence is the reported double-hit context with an exonic ARHGAP10 deletion on the other allele, so a single heterozygous VCF row should remain rare-variant research context unless CNV, phase, phenotype, and external review support stronger interpretation."
+        ),
+    },
+    "CCDC66": {
+        "CCDC66 c.C172T / p.Q58X": (
+            "Observed CCDC66 c.C172T / p.Q58X suggests a high-myopia and retinal-development thesis because this suspected nonsense variant was reported to co-segregate with high myopia in a family, with additional rare CCDC66 variants observed in sporadic high-myopia cases. "
+            "Keep this interpretation research-grade and ophthalmology-review oriented because the evidence is emerging, ClinGen has not published a CCDC66 curation, and variant dosage, transcript, segregation, retinal phenotype, and current clinical databases matter."
+        ),
+        "CCDC66 retinal degeneration/ciliary loss model": (
+            "Observed CCDC66 loss, frameshift, deletion, or ciliary functional context suggests a retinal-ciliopathy model thesis: the sample matched a marker class tied to photoreceptor inner-segment expression, canine and mouse retinal degeneration, CEP290/PCM1 centriolar-satellite trafficking, cilium length/signaling, Hedgehog/Wnt pathway response, and mitotic/cytokinetic microtubule organization. "
+            "Treat this as model-system and pathway context unless a clinically reviewed human pathogenic CCDC66 allele, zygosity, segregation, and phenotype fit are available."
+        ),
+    },
+    "TYW5": {
+        "rs796364 / rs281759": (
+            "Observed TYW5-linked rs796364 or rs281759 suggests a 2q33.1 schizophrenia regulatory-expression thesis: the sample matched a functional regulatory marker pair reported to disrupt CTCF/RAD21/FOXP2 binding, physically interact with TYW5, associate with brain TYW5 expression, and affect TYW5 expression after CRISPR deletion of nearby regulatory sequence. "
+            "Keep this interpretation cohort-level and non-diagnostic because schizophrenia risk is polygenic, the markers are noncoding and LD-dependent, and individual interpretation depends on ancestry, genotype dosage, brain-expression context, phenotype, and current GWAS/eQTL evidence."
+        ),
+        "rs203772": (
+            "Observed TYW5 rs203772 suggests an integrative schizophrenia eQTL and neuroimaging thesis: the sample matched a marker whose risk allele was associated with higher TYW5 transcription in prefrontal cortex, stronger schizophrenia association in Sherlock/SMR analyses, higher TYW5 expression in schizophrenia brain or induced-neuron data, and gray-matter volume differences in first-episode antipsychotic-naive schizophrenia MRI analyses. "
+            "Treat this as research-grade neurogenetic context rather than a diagnostic psychiatric prediction."
+        ),
+        "TYW5 enzymatic wybutosine-hydroxylase model": (
+            "Observed TYW5 enzymatic, loss-of-function, overexpression, or RNA-modification context suggests a JmjC RNA-hydroxylase thesis: the sample matched a model class tied to Fe(II)/2-oxoglutarate-dependent hydroxylation of yW-72 to OHyW* in tRNA(Phe), tRNA-binding Arg residues, homodimer structure, translational reading-frame fidelity, neurodevelopmental expression effects, and dendritic spine morphology. "
+            "Keep this as pathway and expression biology unless a clinically reviewed human TYW5 variant, RNA-modification assay, or disease model supports stronger interpretation."
+        ),
+    },
+    "ELOVL7": {
+        "rs7715147": (
+            "Observed ELOVL7 rs7715147 suggests an MSA GWAS-interest lipid-dyshomeostasis locus thesis: the sample matched an intronic marker retained for neurogenetic research context around ELOVL7 and very-long-chain fatty-acid biology. "
+            "Keep this locus-level and non-diagnostic because follow-up sequencing and copy-number work did not support rare ELOVL7 coding variants or CNV as a major MSA risk driver."
+        ),
+        "ELOVL7 functional lipid-elongation model": (
+            "Observed ELOVL7 functional or expression context suggests a VLCFA-remodeling thesis: the sample matched a model class tied to ER fatty-acid elongation, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane disruption, or liver-fibrosis expression studies. "
+            "Treat this as pathway and regulatory biology rather than a specific inherited variant or stand-alone disease prediction."
+        ),
+    },
+    "SH3PXD2B": {
+        "SH3PXD2B c.76-2A>C": (
+            "Observed SH3PXD2B c.76-2A>C / rs775217258 suggests a high-priority Frank-ter Haar syndrome splice-acceptor thesis because ClinVar/OMIM literature curates this germline variant as pathogenic in an affected homozygous patient. "
+            "Interpret dosage and phase carefully: a single heterozygous call is carrier context, while biallelic pathogenic SH3PXD2B findings warrant clinical genetics review for the autosomal-recessive FTHS/BDCS spectrum."
+        ),
+        "SH3PXD2B loss-of-function/deletion model": (
+            "Observed SH3PXD2B loss-of-function or exon-deletion context suggests a TKS4 podosome-loss thesis: the sample matched the established autosomal-recessive mechanism for Frank-ter Haar syndrome and overlapping Borrone dermato-cardio-skeletal syndrome, with skeletal, ocular, cardiac, craniofacial, dermal, fibrosis, and collagen-remodeling relevance. "
+            "Keep interpretation zygosity-, breakpoint-, transcript-, and phenotype-aware, because heterozygous carrier findings and broad CNV calls should not be treated as diagnostic without confirmatory review."
+        ),
+    },
+    "FRMD3": {
+        "rs1888747": (
+            "Observed FRMD3 rs1888747 suggests a diabetic-kidney-disease regulatory-locus thesis: the sample matched a promoter-proximal marker reported as the strongest FRMD3-region signal in type 1 diabetes nephropathy GWAS and replicated or re-evaluated in several type 2 diabetes kidney cohorts. "
+            "Keep this as probabilistic complex-trait context because the literature is cohort-dependent, C/C has been reported as protective in one T2D DKD cohort, and kidney expression studies did not show a direct rs1888747 genotype effect on FRMD3 mRNA or protein."
+        ),
+        "FRMD3 tumor-suppressor/cytoskeletal model": (
+            "Observed FRMD3 functional or expression context suggests a protein 4.1O cytoskeletal and tumor-suppressor thesis: the sample matched a model class tied to FERM-domain membrane/cytoskeletal organization, NSCLC tumor-suppressor candidate evidence, breast-cancer vimentin degradation, focal-adhesion impairment, and migration or invasion biology. "
+            "Treat this as pathway and expression-model context, not a germline cancer-risk or therapy-selection prediction."
+        ),
+    },
+    "TMEM218": {
+        "TMEM218 c.111G>T / p.Arg37Ser": (
+            "Observed TMEM218 c.111G>T / p.Arg37Ser suggests a high-priority Joubert syndrome 39 and syndromic-ciliopathy thesis because the homozygous missense variant was reported in an affected individual with JBTS/BBS-like ciliopathy features and ClinVar curates the variant as likely pathogenic for JBTS39. "
+            "Interpret dosage and phase carefully: a single heterozygous call is carrier context, while biallelic pathogenic or likely pathogenic TMEM218 findings warrant clinical genetics review for the Joubert-Meckel ciliopathy spectrum."
+        ),
+        "TMEM218 biallelic Joubert-Meckel ciliopathy model": (
+            "Observed TMEM218 biallelic loss, reduced-function, or transition-zone variant context suggests a ciliary diffusion-barrier thesis: the sample matched a model class tied to TMEM218/MKS-module biology, TMEM67 interaction, ARL13B/GPR161 ciliary membrane localization, and Joubert-Meckel phenotypes including retinal dystrophy, molar-tooth sign, encephalocele, cystic kidneys, polydactyly, and perinatal lethality at the severe end. "
+            "Keep this interpretation transcript-, zygosity-, phase-, phenotype-, and variant-classification-aware because TMEM218 genotype-phenotype severity is variant-specific and heterozygous findings alone do not establish disease."
         ),
     },
     "FAM170A": {
@@ -707,6 +820,88 @@ VARIANT_ALLELE_CHANGE_PREDICTION_OVERRIDES = {
         ],
     },
 }
+
+
+ALLERGIC_INFLAMMATION_CONCRETE_PREDICTIONS = {
+    "IL33": (
+        "The variant observed in this sample suggests an epithelial alarmin thesis: the individual may carry a research-grade modifier of IL-33 release, IL1RL1/ST2 signaling, type 2 inflammation, asthma, allergy, or atopic dermatitis context. "
+        "This is allergic-airway susceptibility context, not a deterministic diagnosis."
+    ),
+    "IL1RL1": (
+        "The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. "
+        "Interpret it with the broader 2q12 IL1 receptor-cluster LD context."
+    ),
+    "ORMDL3": (
+        "The variant observed in this sample suggests a 17q12-q21 asthma-locus thesis: the individual may carry a regulatory haplotype relevant to ORMDL3, GSDMB, sphingolipid homeostasis, childhood asthma, or allergic airway inflammation. "
+        "This is locus-level context rather than a single-gene causal assignment."
+    ),
+    "GSDMB": (
+        "The variant observed in this sample suggests a GSDMB/17q12-q21 thesis: the individual may carry a research-grade marker relevant to gasdermin B, epithelial immune biology, asthma, or linked ORMDL3/GSDMB regulatory haplotypes. "
+        "Separate direct GSDMB protein hypotheses from linked-locus expression effects."
+    ),
+    "HLA-DQA1": (
+        "The variant observed in this sample suggests an HLA-DQ antigen-presentation thesis: the individual may carry MHC class II haplotype context relevant to immune, autoimmune, allergic, or asthma association studies. "
+        "HLA interpretation usually requires haplotype-aware review, not isolated SNP overcalling."
+    ),
+    "HLA-DQB1": (
+        "The variant observed in this sample suggests an HLA-DQ antigen-presentation thesis: the individual may carry MHC class II haplotype context relevant to immune, autoimmune, allergic, or asthma association studies. "
+        "HLA interpretation usually requires haplotype-aware review, not isolated SNP overcalling."
+    ),
+    "TSLP": (
+        "The variant observed in this sample suggests an epithelial TSLP alarmin thesis: the individual may carry a research-grade modifier of TSLP expression, dendritic-cell priming, type 2 inflammation, asthma, atopic dermatitis, or allergic disease context. "
+        "This does not create a medication-response rule."
+    ),
+    "IL4R": (
+        "The variant observed in this sample suggests an IL-4/IL-13 receptor signaling thesis: the individual may carry a research-grade modifier of type 2 cytokine signaling, IgE biology, asthma, atopy, or eczema context. "
+        "Do not use this alone for biologic therapy selection."
+    ),
+    "STAT6": (
+        "The variant observed in this sample suggests a STAT6 type 2 transcriptional signaling thesis: the individual may carry a research-grade modifier of IL-4/IL-13 pathway output, allergic sensitization, eosinophilia, asthma, or epithelial remodeling. "
+        "This is pathway tuning context."
+    ),
+    "IL13": (
+        "The variant observed in this sample suggests an IL-13 type 2 cytokine thesis: the individual may carry a research-grade modifier of mucus biology, airway remodeling, IgE, asthma, eczema, or allergic inflammation. "
+        "Interpret it with IL4/IL13 5q31 cytokine-cluster context."
+    ),
+    "IL4": (
+        "The variant observed in this sample suggests an IL-4 Th2 cytokine thesis: the individual may carry a research-grade modifier of Th2 differentiation, IgE biology, asthma, atopy, or allergic sensitization. "
+        "Interpret it with IL4/IL13 5q31 cytokine-cluster context."
+    ),
+    "FLG": (
+        "The variant observed in this sample suggests a filaggrin epithelial-barrier thesis: the individual may carry a barrier-function signal relevant to atopic dermatitis, ichthyosis vulgaris, allergic sensitization, or atopic asthma context. "
+        "Loss-of-function markers need zygosity and clinical-grade confirmation before escalation."
+    ),
+    "TLR10": (
+        "The variant observed in this sample suggests a TLR10 innate-immune thesis: the individual may carry a research-grade modifier of toll-like receptor cluster signaling, microbial exposure response, asthma, allergy, or immune regulation. "
+        "Interpret it with nearby TLR1/TLR6/TLR10 LD context."
+    ),
+    "TNFRSF8": (
+        "The variant observed in this sample suggests a TNFRSF8/CD30 immune-activation thesis: the individual may carry research context relevant to activated lymphocytes, CD30 expression, inflammatory immune tone, or CD30-positive lymphoproliferative biology. "
+        "Expression and phenotype context matter more than common-SNP determinism."
+    ),
+    "CD30": (
+        "The variant observed in this sample suggests a CD30/TNFRSF8 immune-activation thesis: the individual may carry research context relevant to activated lymphocytes, CD30 expression, inflammatory immune tone, or CD30-positive lymphoproliferative biology. "
+        "This alias bundle uses TNFRSF8 coordinates and evidence."
+    ),
+    "MUC5AC": (
+        "The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. "
+        "Methylation and tissue-specific expression context are especially important."
+    ),
+    "SMAD3": (
+        "The variant observed in this sample suggests a SMAD3/TGF-beta remodeling thesis: the individual may carry a research-grade modifier of airway remodeling, fibrosis, immune regulation, asthma, or inflammatory disease context. "
+        "Common association markers should not be confused with rare high-impact SMAD3 clinical variants."
+    ),
+    "IL18R1": (
+        "The variant observed in this sample suggests an IL-18 receptor alpha thesis: the individual may carry a research-grade modifier of IL-18 signaling, Th1/NK-cell inflammation, eosinophil traits, asthma, or inflammatory disease context. "
+        "Interpret it with the 2q12 IL1 receptor-cluster LD context."
+    ),
+    "IL18RAP": (
+        "The variant observed in this sample suggests an IL-18 receptor accessory-protein thesis: the individual may carry a research-grade modifier of IL-18 receptor-complex signaling, inflammatory disease, asthma, or immune activation context. "
+        "Interpret it with IL18R1 and IL1RL1 cluster context."
+    ),
+}
+
+GENE_CONCRETE_VARIANT_PREDICTIONS.update(ALLERGIC_INFLAMMATION_CONCRETE_PREDICTIONS)
 
 
 def _clean_text(value: Any) -> str:

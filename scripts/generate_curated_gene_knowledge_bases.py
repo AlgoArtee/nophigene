@@ -15,7 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.helper_functions.filter_manifest_region import save_filtered_manifest
+from src.helper_functions.filter_manifest_region import filter_probes_by_region, load_manifest, parse_region_string
 
 GENE_DATA_DIR = PROJECT_ROOT / "src" / "gene_data"
 MANIFEST_PATH = PROJECT_ROOT / "data" / "infinium-methylationepic-v-1-0-b5-manifest-file.csv"
@@ -2155,6 +2155,1495 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "gene_name": "CCDC66",
+        "cytoband": "3p14.3",
+        "chromosome": "3",
+        "start": 56591184,
+        "end": 56655865,
+        "strand": "+",
+        "coordinate_source": (
+            "NCBI Gene 285331 reports CCDC66 on GRCh37.p13 at NC_000003.11:56591184..56655865 "
+            "and on GRCh38.p14 at NC_000003.12:56557156..56621837; ClinGen Gene Facts HGNC:27709 "
+            "reports GRCh37 chr3:56591184-56655865 and GRCh38 chr3:56557156-56621837"
+        ),
+        "manifest_filter_region": "3:56590184-56655865",
+        "gene_summary": (
+            "CCDC66 encodes coiled-coil domain-containing protein 66, a microtubule-binding protein with centrosome, centriolar-satellite, ciliary axoneme, ciliary transition-zone, midbody, and photoreceptor inner-segment evidence. "
+            "NCBI, UniProt, ClinGen Gene Facts, Human Protein Atlas, and cell-biology literature frame CCDC66 as a ciliogenesis and microtubule-organization protein that interacts with CEP290 and PCM1, supports ciliary protein trafficking, and participates in cilium length, signaling, stability, mitotic progression, and cytokinesis."
+        ),
+        "clinical_context": (
+            "The local CCDC66 knowledge base is retinal degeneration model, high myopia, photoreceptor/cilium, centrosome, mitotic microtubule, and epithelial-cilium signaling research oriented. "
+            "Canine and mouse CCDC66 loss models support retinal degeneration biology, and one human study reported a suspected nonsense variant co-segregating with high myopia, but ClinGen has not published a CCDC66 gene-disease validity or dosage curation; app findings should remain research-grade unless external clinical review supplies stronger variant-level evidence."
+        ),
+        "variant_effect_overview": [
+            "Canine Schapendoes and Portuguese Water Dog studies reported recessive CCDC66 frameshift/insertion variants in generalized or early-onset progressive retinal atrophy, and mouse Ccdc66 null models show early, slow progressive rod-cone dysplasia and retinal dysfunction.",
+            "Human high-myopia sequencing reported a suspected nonsense CCDC66 c.C172T / p.Q58X variant co-segregating with high myopia in a family and additional rare CCDC66 variants in sporadic high-myopia cases, with functional evidence for altered cell proliferation, microtubule polymerization, acetylated tubulin, and mitotic tubulin-system synchronization.",
+            "Cellular studies place CCDC66 at centrosomes, centriolar satellites, microtubules, and cilia, with CEP290/PCM1 interaction, BBS4 ciliary trafficking, transition-zone/IFT-B recruitment, cilium length and signaling, Hedgehog/Wnt response, and epithelial organization evidence.",
+            "Mitotic literature shows CCDC66 depletion can disrupt spindle assembly/orientation, kinetochore fiber stability, chromosome alignment, central spindle and midbody organization, and cytokinesis, supporting a cytoskeletal mechanism that may intersect retinal growth and ciliopathy biology.",
+        ],
+        "condition_research_overview": [
+            "Inherited retinal degeneration model systems, canine progressive retinal atrophy, mouse rod-cone dysplasia, photoreceptor inner-segment expression, and retinitis-pigmentosa-like retinal dysfunction research.",
+            "High myopia, embryonic retinal development, retinal cell proliferation, mitotic microtubule organization, and ophthalmic rare-variant sequencing.",
+            "Ciliogenesis, centriolar satellites, CEP290/PCM1 interaction, BBS4 trafficking, transition-zone and IFT-B recruitment, cilium length/stability/disassembly, Hedgehog/Wnt signaling, epithelial polarity, and broader ciliopathy model biology.",
+        ],
+        "methylation_interpretation": (
+            "CCDC66 has a promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use CCDC66 methylation as local regulatory context around a forward-strand ciliary microtubule and retinal-development gene, not as a validated retinal degeneration, high myopia, ciliopathy, cancer, or mitotic-defect biomarker."
+        ),
+        "methylation_effects": [
+            "Promoter-proximal and gene-body methylation may help frame local CCDC66 transcriptional accessibility in samples where sequence, expression, retinal phenotype, or cilium biology evidence is also available.",
+            "No source-backed CCDC66 methylation threshold is bundled; beta values should be interpreted alongside tissue, developmental timing, cell composition, expression, sequence/CNV evidence, variant classification, and ophthalmic phenotype.",
+        ],
+        "methylation_condition_research": [
+            "Use CCDC66 methylation as supportive local regulatory context in retinal degeneration, high myopia, ciliogenesis, ciliary signaling, epithelial organization, mitosis/cytokinesis, or circCCDC66 expression research.",
+            "Do not infer retinal degeneration, high myopia, ciliary transport failure, Hedgehog/Wnt impairment, epithelial polarity defects, or cancer behavior from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 285331: CCDC66 gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, GO, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/285331"),
+            _evidence("Ensembl GRCh37 ENSG00000180376: CCDC66 gene model and hg19 coordinates", "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000180376"),
+            _evidence("UniProt A2RUB6: CCDC66 / coiled-coil domain-containing protein 66 entry", "https://www.uniprot.org/uniprotkb/A2RUB6/entry"),
+            _evidence("Human Protein Atlas ENSG00000180376-CCDC66: expression, protein, and structure context", "https://www.proteinatlas.org/ENSG00000180376-CCDC66"),
+            _evidence("ClinGen Gene Facts HGNC:27709: CCDC66 coordinates, MANE transcript, function, constraint, and no published ClinGen curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27709"),
+            _evidence("PubMed 19777273: CCDC66 mutation in Schapendoes canine progressive retinal atrophy", "https://pubmed.ncbi.nlm.nih.gov/19777273/"),
+            _evidence("PubMed 21680557: Ccdc66 null mutation causes retinal degeneration and dysfunction in mouse", "https://pubmed.ncbi.nlm.nih.gov/21680557/"),
+            _evidence("PubMed 28235840 / PMCID PMC5399785: CCDC66 interacts with CEP290 and functions in cilium formation and trafficking", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5399785/"),
+            _evidence("PubMed 31582766 / PMCID PMC6776500: CCDC66 centrosomal/ciliary targeting and centriolar satellite dynamics", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6776500/"),
+            _evidence("PubMed 33273526: Portuguese Water Dog CCDC66 frameshift variant in early-onset progressive retinal atrophy", "https://pubmed.ncbi.nlm.nih.gov/33273526/"),
+            _evidence("PubMed 36606424: CCDC66 regulates primary cilium length and signaling via transition-zone and axonemal interactions", "https://pubmed.ncbi.nlm.nih.gov/36606424/"),
+            _evidence("PLOS Biology 2022: CCDC66 controls mitotic progression and cytokinesis through microtubule nucleation and organization", "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001708"),
+            _evidence("PubMed 37852749: CCDC66 mutations associated with high myopia through affected cell mitosis", "https://pubmed.ncbi.nlm.nih.gov/37852749/"),
+            _evidence("PMCID PMC12324684: CCDC66 regulation of cytoskeleton and cilia stability in signaling and epithelial organization", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12324684/"),
+        ],
+        "variants": [
+            {
+                "variant": "CCDC66 c.C172T / p.Q58X",
+                "display_name": "CCDC66 c.C172T / p.Q58X",
+                "common_name": "CCDC66 Q58X high-myopia research marker",
+                "position": None,
+                "lookup_keys": [
+                    "CCDC66 c.C172T",
+                    "CCDC66 c.172C>T",
+                    "CCDC66 p.Q58X",
+                    "CCDC66 p.Gln58Ter",
+                    "CCDC66 Q58X",
+                    "CCDC66 Q58*",
+                    "CCDC66 Gln58Ter",
+                    "NM_001141947.3:c.172C>T",
+                    "CCDC66 nonsense high myopia",
+                    "CCDC66 high myopia c.C172T",
+                    "CCDC66 high myopia p.Q58X",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Emerging high-myopia sequencing marker / retinal-development and mitotic microtubule research context",
+                "clinical_interpretation": (
+                    "CCDC66 c.C172T / p.Q58X is included as an emerging human ophthalmic research marker because Chen et al. reported the suspected nonsense variant co-segregating with high myopia in a family and identified additional rare CCDC66 variants in 200 sporadic high-myopia cases. "
+                    "Functional follow-up connected CCDC66 deficiency and mutation context to retinal developmental expression, lower cell proliferation, lower microtubule polymerization rate, altered acetylated tubulin, and failure of mutated CCDC66 to synchronize with the tubulin system during mitosis."
+                ),
+                "clinical_significance": "Research-level high-myopia marker; not a ClinGen-curated diagnostic CCDC66 variant and not a stand-alone retinal-disease prediction.",
+                "functional_effects": [
+                    "Reported as a suspected nonsense CCDC66 variant co-segregating with high myopia in one family.",
+                    "CCDC66 was consistently expressed in embryonic human and mouse retina in the cited study.",
+                    "CCDC66-deficient cells had reduced proliferation, microtubule polymerization, and acetylated tubulin levels, and mutated CCDC66 failed to align with the tubulin system during mitosis.",
+                ],
+                "associated_conditions": [
+                    "High myopia research",
+                    "Retinal development and retinal growth biology",
+                    "Mitotic microtubule organization and cell-proliferation studies",
+                ],
+                "research_context": [
+                    "Interpret this marker with transcript version, variant normalization, zygosity, segregation, family history, refraction severity, retinal phenotype, and current ClinVar/gnomAD evidence.",
+                    "Do not treat a single CCDC66 Q58X-like row as a deterministic high-myopia diagnosis without clinical-grade confirmation and ophthalmic context.",
+                    "Because ClinGen has no published CCDC66 curation, use this as a research flag rather than a pathogenic assertion.",
+                ],
+                "usual_variant_note": "Emerging CCDC66 high-myopia nonsense marker from one family and sporadic-case follow-up; clinical validity remains unsettled.",
+                "methylation_interpretation": (
+                    "CCDC66 methylation can provide local regulatory context, but it does not establish Q58X variant dosage, CCDC66 protein truncation, retinal expression, or high-myopia causality."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 37852749: CCDC66 c.C172T / p.Q58X in high myopia and mitotic functional follow-up", "https://pubmed.ncbi.nlm.nih.gov/37852749/"),
+                    _evidence("ClinGen Gene Facts HGNC:27709: no published CCDC66 clinical curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27709"),
+                    _evidence("NCBI Gene 285331: CCDC66 coordinates and bibliography", "https://www.ncbi.nlm.nih.gov/gene/285331"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Chen et al., 2024 (PMID 37852749)",
+                        "genotypes": "CCDC66 c.C172T / p.Q58X co-segregating with high myopia in one family; six additional rare variants in 200 sporadic high-myopia cases",
+                        "phenotype": "High myopia, retinal developmental expression, cell proliferation, microtubule polymerization, and mitotic tubulin-system alignment",
+                        "finding": "The study reported an association between the CCDC66 nonsense marker and high myopia and proposed a mechanism involving altered mitotic cell behavior during retinal growth.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/37852749/",
+                    }
+                ],
+            },
+            {
+                "variant": "CCDC66 retinal degeneration/ciliary loss model",
+                "display_name": "CCDC66 loss-of-function retinal degeneration and ciliary trafficking model",
+                "common_name": "CCDC66 photoreceptor-cilium loss model",
+                "position": None,
+                "lookup_keys": [
+                    "CCDC66 loss-of-function",
+                    "CCDC66 loss of function",
+                    "CCDC66 LOF",
+                    "CCDC66 deletion",
+                    "CCDC66 frameshift",
+                    "Ccdc66 null",
+                    "Ccdc66 knockout",
+                    "CCDC66 retinal degeneration",
+                    "CCDC66 progressive retinal atrophy",
+                    "CCDC66 PRA",
+                    "CCDC66 gPRA",
+                    "CCDC66 EOPRA",
+                    "CCDC66 c.2262_c.2263insA",
+                    "CCDC66 p.Val747SerfsTer8",
+                    "CCDC66 Schapendoes insertion",
+                    "CCDC66 Portuguese Water Dog frameshift",
+                    "CCDC66 CEP290",
+                    "CCDC66 PCM1",
+                    "CCDC66 cilium length",
+                    "CCDC66 transition zone",
+                    "CCDC66 Hedgehog Wnt",
+                ],
+                "region_class": "structural_region",
+                "interpretation_scope": "Model-system loss-of-function and ciliary trafficking mechanism / retinal degeneration and ciliopathy research context",
+                "clinical_interpretation": (
+                    "CCDC66 loss-of-function and frameshift/deletion contexts are curated as retinal-cilium model evidence rather than as a validated human diagnostic rule. "
+                    "Schapendoes and Portuguese Water Dog studies linked recessive CCDC66 insertion/frameshift variants to progressive retinal atrophy, while mouse Ccdc66 null animals lack retinal Ccdc66 RNA/protein and develop early slow progressive rod-cone dysplasia with retinal dysfunction."
+                ),
+                "clinical_significance": "Strong animal-model retinal degeneration and ciliary trafficking mechanism; human clinical interpretation remains research-grade without variant-level clinical review.",
+                "functional_effects": [
+                    "Canine CCDC66 mutations support recessive progressive retinal atrophy models with photoreceptor degeneration and loss or mislocalization of CCDC66 protein.",
+                    "Mouse Ccdc66 null models show early photoreceptor degeneration, reduced scotopic and photopic electroretinography responses, and postnatal photoreceptor outer/inner-segment expression relevance.",
+                    "CCDC66 localizes to centrosomes, cilia, centriolar satellites, microtubules, spindle structures, and midbody, and interacts with CEP290, PCM1, and other ciliopathy/cytoskeletal proteins.",
+                    "CCDC66 regulates cilium formation, BBS4 trafficking, transition-zone assembly, IFT-B recruitment, cilium length/stability/disassembly, Hedgehog/Wnt signaling, epithelial organization, mitotic progression, and cytokinesis in cited cell models.",
+                ],
+                "associated_conditions": [
+                    "Canine progressive retinal atrophy and early-onset progressive retinal atrophy",
+                    "Mouse retinal degeneration / rod-cone dysplasia model",
+                    "Photoreceptor inner-segment and ciliary trafficking biology",
+                    "Ciliogenesis, transition-zone, Hedgehog/Wnt signaling, mitosis, and cytokinesis research",
+                ],
+                "research_context": [
+                    "Use this broad model for loss-of-function, frameshift, deletion, or curated functional annotations rather than generic benign or VUS SNP rows.",
+                    "Human translation should be checked against current ClinVar, gnomAD, ClinGen, OMIM, ophthalmic phenotype, segregation, and assay context before any clinical escalation.",
+                    "Animal-model and cell-model evidence can support mechanistic hypotheses but should not be used alone as a deterministic human retinal disease prediction.",
+                ],
+                "usual_variant_note": "Model-system CCDC66 loss/ciliary trafficking marker rather than a single clinically curated human pathogenic variant.",
+                "methylation_interpretation": (
+                    "CCDC66 methylation can support local regulatory review, but it does not prove loss-of-function, photoreceptor degeneration, ciliary trafficking failure, or epithelial signaling defects."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PubMed 19777273: Schapendoes CCDC66 insertion and generalized progressive retinal atrophy", "https://pubmed.ncbi.nlm.nih.gov/19777273/"),
+                    _evidence("PubMed 21680557: mouse Ccdc66 null retinal degeneration and dysfunction", "https://pubmed.ncbi.nlm.nih.gov/21680557/"),
+                    _evidence("PubMed 33273526: Portuguese Water Dog CCDC66 frameshift and early-onset progressive retinal atrophy", "https://pubmed.ncbi.nlm.nih.gov/33273526/"),
+                    _evidence("PMCID PMC5399785: CCDC66 interaction with CEP290 and ciliary trafficking", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5399785/"),
+                    _evidence("PubMed 36606424: CCDC66 cilium length/signaling and transition-zone/axonemal interactions", "https://pubmed.ncbi.nlm.nih.gov/36606424/"),
+                    _evidence("PLOS Biology 2022: CCDC66 mitotic/cytokinetic microtubule organization", "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001708"),
+                    _evidence("PMCID PMC12324684: CCDC66 cilia stability, signaling, and epithelial organization", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12324684/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Dekomien et al., 2010 (PMID 19777273)",
+                        "genotypes": "Homozygous CCDC66 1-bp insertion in affected Schapendoes dogs; heterozygous obligatory carriers",
+                        "phenotype": "Autosomal-recessive generalized progressive retinal atrophy in dogs",
+                        "finding": "The study identified CCDC66 as the causal locus in Schapendoes gPRA and reported photoreceptor inner-segment CCDC66 protein localization in mouse, dog, and human retina.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/19777273/",
+                    },
+                    {
+                        "paper": "Gerding et al., 2011 (PMID 21680557)",
+                        "genotypes": "Homozygous Ccdc66 null/gene-trap mouse model",
+                        "phenotype": "Retinal degeneration, rod-cone dysplasia, and electroretinography dysfunction",
+                        "finding": "The study showed that loss of Ccdc66 RNA/protein in mouse retina causes early, slow progressive photoreceptor degeneration and functional retinal deficits.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/21680557/",
+                    },
+                    {
+                        "paper": "Conkar et al., 2017 (PMID 28235840)",
+                        "genotypes": "CCDC66 depletion and rescue in ciliated cell models",
+                        "phenotype": "Cilium formation, BBS4 trafficking, CEP290 interaction, and centriolar-satellite organization",
+                        "finding": "The study identified CCDC66 as a microtubule-associated centriolar-satellite/ciliary protein that interacts with CEP290 and supports ciliogenesis and ciliary trafficking.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5399785/",
+                    },
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from CCDC66 gene, ClinGen, Human Protein Atlas, high-myopia sequencing, retinal degeneration model, ciliogenesis, cilium-stability, and mitotic microtubule literature.",
+        "population_coverage_note": (
+            "The bundled CCDC66 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because CCDC66 human clinical validity is still emerging, interpretation should prioritize current ClinVar/gnomAD status, transcript, variant consequence, zygosity, segregation, ophthalmic phenotype, retinal expression, assay type, and model-system versus human evidence boundaries."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 285331: CCDC66 expression, GO context, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/285331"),
+            _evidence("ClinGen Gene Facts HGNC:27709: CCDC66 coordinates, function, constraint, and no published curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27709"),
+            _evidence("Human Protein Atlas: CCDC66 protein and expression context", "https://www.proteinatlas.org/ENSG00000180376-CCDC66"),
+            _evidence("PubMed 37852749: CCDC66 high-myopia sequencing and mitosis evidence", "https://pubmed.ncbi.nlm.nih.gov/37852749/"),
+            _evidence("PubMed 21680557: Ccdc66 null retinal degeneration mouse model", "https://pubmed.ncbi.nlm.nih.gov/21680557/"),
+            _evidence("PMCID PMC5399785: CCDC66 CEP290/ciliary trafficking study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC5399785/"),
+            _evidence("PMCID PMC12324684: CCDC66 cilia stability and epithelial organization", "https://pmc.ncbi.nlm.nih.gov/articles/PMC12324684/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "CCDC66 expression and protein context",
+                "location_group": "Global pattern",
+                "summary": "NCBI reports ubiquitous expression including testis and endometrium, while ClinGen/HPA/UniProt resources frame CCDC66 as a microtubule-binding ciliogenesis protein with centriolar-satellite, ciliary, cytoskeletal, photoreceptor, and mitotic annotations.",
+            },
+            {
+                "variant": "CCDC66 c.C172T / p.Q58X",
+                "location_group": "Human high-myopia sequencing",
+                "summary": "A 2024 high-myopia study reported a suspected CCDC66 nonsense variant co-segregating with disease in one family and proposed a retinal-growth mechanism through affected mitosis and microtubule biology.",
+            },
+            {
+                "variant": "CCDC66 loss-of-function retinal degeneration model",
+                "location_group": "Animal retinal models",
+                "summary": "Canine CCDC66 frameshift/insertion and mouse Ccdc66 null data support a photoreceptor degeneration and retinal dysfunction mechanism, but translation to human clinical diagnosis remains variant- and evidence-dependent.",
+            },
+            {
+                "variant": "CCDC66 ciliary trafficking and signaling",
+                "location_group": "Functional biology",
+                "summary": "Cell studies support CCDC66 roles in CEP290/PCM1 satellite biology, BBS4 trafficking, transition-zone/IFT-B recruitment, cilium length/stability/disassembly, Hedgehog/Wnt signaling, and epithelial organization.",
+            },
+            {
+                "variant": "CCDC66 mitotic/cytokinetic microtubules",
+                "location_group": "Functional biology",
+                "summary": "CCDC66 depletion disrupts spindle assembly, chromosome alignment, central spindle and midbody organization, and cytokinesis, providing a cytoskeletal mechanism relevant to retinal growth and broader cell-biology interpretation.",
+            },
+            {
+                "variant": "CCDC66 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for high myopia, retinal degeneration, ciliopathy, mitotic, epithelial, or cancer interpretation.",
+            },
+        ],
+    },
+    {
+        "gene_name": "TYW5",
+        "cytoband": "2q33.1",
+        "chromosome": "2",
+        "start": 200793636,
+        "end": 200820214,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 129450 reports TYW5 on GRCh37.p13 at NC_000002.11:200793636..200820214, "
+            "complement, and on GRCh38.p14 at NC_000002.12:199928913..199955491, complement; "
+            "ClinGen Gene Facts HGNC:26754 reports GRCh37 chr2:200793636-200820214 and GRCh38 chr2:199928913-199955491"
+        ),
+        "manifest_filter_region": "2:200793636-200821214",
+        "gene_summary": (
+            "TYW5, also known as C2orf60 or hTYW5, encodes tRNA-yW synthesizing protein 5, a JmjC-domain Fe(II)/2-oxoglutarate-dependent RNA hydroxylase. "
+            "NCBI, UniProt, ClinGen Gene Facts, Human Protein Atlas, and structural enzymology literature frame TYW5 as a tRNA(Phe) wybutosine-pathway enzyme that hydroxylates yW-72 into undermodified hydroxywybutosine, supports tRNA modification biology, binds iron, homodimerizes, and has broad human expression including brain and retina-related single-cell contexts."
+        ),
+        "clinical_context": (
+            "The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. "
+            "ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence."
+        ),
+        "variant_effect_overview": [
+            "Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+            "The strongest human genetics evidence is schizophrenia regulatory-expression literature at 2q33.1: rs796364 and rs281759 disrupt CTCF/RAD21/FOXP2 binding, physically interact with TYW5, associate with brain TYW5 expression, and were functionally validated with reporter, EMSA, CRISPR-deletion, expression, and neural-cell assays.",
+            "An independent integrative schizophrenia study prioritized TYW5 with Sherlock and SMR analyses, reported rs203772 association with higher prefrontal-cortex TYW5 expression, found higher TYW5 expression in schizophrenia brain and induced-neuron datasets, and linked rs203772 to gray-matter volume differences in right middle frontal gyrus and left precuneus.",
+            "Functional schizophrenia studies remain cohort- and expression-context dependent: TYW5 overexpression altered neural stem cell proliferation/differentiation and dendritic spine density, but these data support a research mechanism rather than a deterministic psychiatric diagnosis.",
+        ],
+        "condition_research_overview": [
+            "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+            "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+            "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context.",
+        ],
+        "methylation_interpretation": (
+            "TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker."
+        ),
+        "methylation_effects": [
+            "Promoter-proximal and gene-body methylation may help frame local TYW5 regulatory context in samples where sequence, expression, brain-eQTL, or RNA-modification evidence is also available.",
+            "No source-backed TYW5 methylation threshold is bundled; beta values should be interpreted alongside tissue, developmental timing, cell composition, genotype dosage, ancestry, brain-expression evidence, psychiatric phenotype, and current GWAS/eQTL evidence.",
+        ],
+        "methylation_condition_research": [
+            "Use TYW5 methylation as supportive local regulatory context in tRNA modification, schizophrenia genetics, brain expression, neurodevelopment, dendritic spine, structural-MRI, retinal expression, or cancer-expression research.",
+            "Do not infer schizophrenia, neurodevelopmental disorder status, tRNA hydroxywybutosine activity, translation fidelity, gray-matter volume, retinal function, or liver cancer prognosis from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 129450: TYW5 gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, GO, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/129450"),
+            _evidence("Ensembl GRCh37 ENSG00000162971: TYW5 gene model and reverse-strand coordinates", "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000162971"),
+            _evidence("UniProt A2RUC4: TYW5 / tRNA wybutosine-synthesizing protein 5 entry", "https://www.uniprot.org/uniprotkb/A2RUC4/entry"),
+            _evidence("Human Protein Atlas ENSG00000162971-TYW5: expression, subcellular localization, protein class, and UniProt function context", "https://www.proteinatlas.org/ENSG00000162971-TYW5"),
+            _evidence("ClinGen Gene Facts HGNC:26754: TYW5 coordinates, MANE transcript, constraint, function, and no published ClinGen curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A26754"),
+            _evidence("PubMed 20739293: TYW5 as a JmjC RNA hydroxylase in hydroxywybutosine biosynthesis", "https://pubmed.ncbi.nlm.nih.gov/20739293/"),
+            _evidence("PubMed 20972222 / PMCID PMC3045595: human TYW5 crystal structure, Fe(II)/2-OG JmjC fold, dimer, and tRNA-binding residues", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3045595/"),
+            _evidence("PubMed 34581804 / PMCID PMC9014752: rs796364 and rs281759 regulate distal TYW5 expression and schizophrenia risk at 2q33.1", "https://pubmed.ncbi.nlm.nih.gov/34581804/"),
+            _evidence("PubMed 35527273 / PMCID PMC9082878: integrative analyses identify TYW5 as a schizophrenia risk gene and rs203772 expression/MRI marker", "https://pubmed.ncbi.nlm.nih.gov/35527273/"),
+        ],
+        "variants": [
+            {
+                "variant": "rs796364 / rs281759",
+                "display_name": "rs796364 / rs281759 (TYW5 2q33.1 regulatory schizophrenia locus)",
+                "common_name": "TYW5 distal enhancer schizophrenia eQTL marker pair",
+                "position": None,
+                "lookup_keys": [
+                    "rs796364",
+                    "TYW5 rs796364",
+                    "TYW5:rs796364",
+                    "rs281759",
+                    "TYW5 rs281759",
+                    "TYW5:rs281759",
+                    "chr2_200825237_I",
+                    "2q33.1 TYW5 schizophrenia locus",
+                    "TYW5 schizophrenia regulatory locus",
+                    "TYW5 distal enhancer",
+                ],
+                "region_class": "distal_regulatory",
+                "interpretation_scope": "Schizophrenia GWAS/eQTL regulatory marker pair / TYW5 brain-expression and neurodevelopment research context",
+                "clinical_interpretation": (
+                    "rs796364 and rs281759 are curated as a functional 2q33.1 regulatory marker pair for TYW5 schizophrenia research. "
+                    "Li et al. reported that the two linked noncoding variants disrupt CTCF/RAD21/FOXP2 binding, show enhancer activity, physically interact with TYW5, associate with TYW5 expression in human brain eQTL datasets, alter TYW5 expression after CRISPR deletion of surrounding regulatory sequence, and place TYW5 upregulation in schizophrenia brain expression context."
+                ),
+                "clinical_significance": "Research-level schizophrenia regulatory-expression markers; not diagnostic psychiatric variants and not ClinGen-curated pathogenic alleles.",
+                "functional_effects": [
+                    "rs796364 disrupted CTCF and RAD21 binding in the cited functional genomics study.",
+                    "rs281759 disrupted FOXP2 binding in the cited functional genomics study.",
+                    "Both variants physically interacted with TYW5, showed strong brain eQTL association with TYW5 expression, and regulatory-region deletion decreased TYW5 expression in cell models.",
+                    "TYW5 overexpression in neural stem cells and rat primary neurons altered proliferation, differentiation, and dendritic spine density in the cited work.",
+                ],
+                "associated_conditions": [
+                    "Schizophrenia GWAS and eQTL research",
+                    "Neurodevelopment and neural stem cell differentiation",
+                    "Dendritic spine morphogenesis and maturity",
+                    "2q33.1 regulatory genomics",
+                ],
+                "research_context": [
+                    "Interpret rs796364/rs281759 as noncoding regulatory and LD-dependent markers, not as deterministic disease variants.",
+                    "Prioritize ancestry, genotype dosage, imputation quality, brain-expression direction, local haplotype context, psychiatric phenotype, and current GWAS/eQTL resources.",
+                    "Because TYW5 has no published ClinGen disease curation, use this record for research synthesis and external review only.",
+                ],
+                "usual_variant_note": "Linked 2q33.1 schizophrenia regulatory marker pair that modulates distal TYW5 expression in brain-eQTL and cell-model studies.",
+                "methylation_interpretation": (
+                    "TYW5 methylation may add local regulatory context but does not establish rs796364/rs281759 enhancer activity, brain TYW5 expression, schizophrenia risk, or dendritic-spine phenotypes in an individual sample."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 34581804: rs796364 and rs281759 regulatory mechanism for TYW5 and schizophrenia", "https://pubmed.ncbi.nlm.nih.gov/34581804/"),
+                    _evidence("PMCID PMC9014752: full text functional genomics and TYW5 neurodevelopment/spine evidence", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9014752/"),
+                    _evidence("ClinGen Gene Facts HGNC:26754: no published TYW5 clinical curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A26754"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Li et al., 2022 (PMID 34581804)",
+                        "genotypes": "rs796364 and rs281759 at 2q33.1, in high linkage disequilibrium and downstream of TYW5",
+                        "phenotype": "Schizophrenia risk, brain TYW5 expression, neurodevelopment, and dendritic spine morphology",
+                        "finding": "The study reported that rs796364 and rs281759 regulate TYW5 expression through transcription-factor binding and chromatin interaction, and that TYW5 dysregulation affects neurodevelopmental and dendritic-spine phenotypes.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/34581804/",
+                    }
+                ],
+            },
+            {
+                "variant": "rs203772",
+                "display_name": "rs203772 (TYW5 schizophrenia eQTL/MRI marker)",
+                "common_name": "TYW5 prefrontal-expression schizophrenia marker",
+                "position": None,
+                "lookup_keys": [
+                    "rs203772",
+                    "TYW5 rs203772",
+                    "TYW5:rs203772",
+                    "rs203772 TYW5 expression",
+                    "rs203772 schizophrenia",
+                    "rs203772 gray matter volume",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Schizophrenia integrative GWAS/eQTL and structural-MRI marker / brain-expression research context",
+                "clinical_interpretation": (
+                    "rs203772 is included as an integrative schizophrenia genetics marker because Zhang et al. reported that the risk allele was associated with higher TYW5 mRNA expression in prefrontal cortex, that TYW5 expression/protein evidence associated with schizophrenia risk in Sherlock and SMR analyses, and that rs203772 associated with gray-matter volume in right middle frontal gyrus and left precuneus in first-episode antipsychotic-naive schizophrenia patients. "
+                    "This remains a research-level association signal rather than a psychiatric diagnosis."
+                ),
+                "clinical_significance": "Research-level schizophrenia eQTL and structural-MRI marker; not a diagnostic psychiatric variant.",
+                "functional_effects": [
+                    "Risk allele associated with higher TYW5 transcriptional level in prefrontal cortex in the cited study.",
+                    "TYW5 expression was higher in schizophrenia brain tissues and induced-neuron datasets compared with controls in the cited work.",
+                    "rs203772 genotype was associated with gray-matter volume differences in right middle frontal gyrus and left precuneus in a structural-MRI analysis.",
+                ],
+                "associated_conditions": [
+                    "Schizophrenia GWAS/eQTL integration",
+                    "Prefrontal cortex TYW5 expression",
+                    "Gray-matter volume and neuroimaging genetics",
+                    "Brain expression and induced-neuron research",
+                ],
+                "research_context": [
+                    "Use rs203772 as a cohort-level brain eQTL and MRI marker rather than a deterministic disease rule.",
+                    "Interpret with ancestry, genotype dosage, expression dataset, psychiatric phenotype, medication status, MRI phenotype, and current GWAS resources.",
+                ],
+                "usual_variant_note": "TYW5 schizophrenia eQTL/MRI marker from integrative GWAS, brain-expression, proteomic, and imaging analyses.",
+                "methylation_interpretation": (
+                    "TYW5 methylation can provide local regulatory context, but it does not substitute for rs203772 genotype, DLPFC expression, protein abundance, or MRI phenotype data."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 35527273: rs203772, TYW5 expression, schizophrenia risk, and structural MRI", "https://pubmed.ncbi.nlm.nih.gov/35527273/"),
+                    _evidence("PMCID PMC9082878: full text integrative TYW5 schizophrenia risk-gene analysis", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9082878/"),
+                    _evidence("NCBI Gene 129450: TYW5 gene and bibliography context", "https://www.ncbi.nlm.nih.gov/gene/129450"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Zhang et al., 2022 (PMID 35527273)",
+                        "genotypes": "rs203772 risk allele and TYW5 expression in brain eQTL/integrative schizophrenia analyses",
+                        "phenotype": "Schizophrenia risk, prefrontal-cortex expression, induced-neuron expression, protein abundance, and gray-matter volume",
+                        "finding": "The study prioritized TYW5 as a schizophrenia risk gene and linked rs203772 to higher TYW5 expression and gray-matter volume differences in first-episode schizophrenia MRI data.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/35527273/",
+                    }
+                ],
+            },
+            {
+                "variant": "TYW5 enzymatic wybutosine-hydroxylase model",
+                "display_name": "TYW5 JmjC tRNA(Phe) hydroxywybutosine model",
+                "common_name": "TYW5 Fe(II)/2-OG RNA hydroxylase model",
+                "position": None,
+                "lookup_keys": [
+                    "TYW5 enzymatic model",
+                    "TYW5 loss-of-function",
+                    "TYW5 loss of function",
+                    "TYW5 LOF",
+                    "TYW5 overexpression",
+                    "TYW5 knockdown",
+                    "TYW5 JmjC",
+                    "TYW5 RNA hydroxylase",
+                    "TYW5 tRNA hydroxylase",
+                    "TYW5 wybutosine",
+                    "TYW5 hydroxywybutosine",
+                    "TYW5 OHyW",
+                    "TYW5 yW-72",
+                    "TYW5 Fe(II)",
+                    "TYW5 2-oxoglutarate",
+                    "TYW5 tRNA(Phe)",
+                ],
+                "region_class": "functional_model",
+                "interpretation_scope": "RNA-modification enzyme and expression model / tRNA(Phe) wybutosine pathway, translation-fidelity, and neurodevelopment research context",
+                "clinical_interpretation": (
+                    "TYW5 enzymatic evidence is curated as pathway and functional biology rather than a specific pathogenic allele. "
+                    "Noma et al. identified human TYW5 as a JmjC-domain RNA hydroxylase that catalyzes hydroxywybutosine biosynthesis in tRNA(Phe), and Kato et al. solved human TYW5 structures showing the Fe(II)/2-oxoglutarate JmjC fold, dimerization, and positively charged tRNA-binding surface with essential Arg residues."
+                ),
+                "clinical_significance": "Functional tRNA-modification and RNA-hydroxylase research model; not a diagnostic germline variant.",
+                "functional_effects": [
+                    "Catalyzes hydroxylation of 7-(alpha-amino-alpha-carboxypropyl)wyosine into the hydroxywybutosine-pathway intermediate OHyW*.",
+                    "Requires Fe(II) and 2-oxoglutarate as cofactors in the JmjC oxygenase mechanism.",
+                    "Human TYW5 forms a homodimer and presents a positively charged tRNA-binding surface; structure-based Arg mutants implicated specific residues in tRNA recognition.",
+                    "Wybutosine-family tRNA(Phe) modifications help suppress reading-frame errors, tying the enzyme to translational fidelity research.",
+                ],
+                "associated_conditions": [
+                    "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis",
+                    "RNA hydroxylase and JmjC oxygenase biology",
+                    "Translational fidelity and codon-frame maintenance",
+                    "Neurodevelopment and schizophrenia expression-model research",
+                ],
+                "research_context": [
+                    "Use this record for enzymatic, expression, RNA-modification, or curated functional annotations rather than generic benign SNP rows.",
+                    "Pair sequence or methylation signals with expression, tRNA-modification assays, protein function, brain context, and phenotype evidence before drawing biological conclusions.",
+                ],
+                "usual_variant_note": "Functional TYW5 RNA-hydroxylase model rather than a specific inherited pathogenic variant.",
+                "methylation_interpretation": (
+                    "TYW5 methylation can support local regulatory review, but it does not directly measure TYW5 protein, Fe(II)/2-OG hydroxylase activity, tRNA(Phe) OHyW status, or translational fidelity."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PubMed 20739293: TYW5 as JmjC RNA hydroxylase for hydroxywybutosine biosynthesis", "https://pubmed.ncbi.nlm.nih.gov/20739293/"),
+                    _evidence("PMCID PMC3045595: human TYW5 crystal structure, cofactor binding, dimerization, and tRNA-recognition residues", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3045595/"),
+                    _evidence("UniProt A2RUC4: TYW5 enzymatic function and cofactor annotations", "https://www.uniprot.org/uniprotkb/A2RUC4/entry"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Noma et al., 2010 (PMID 20739293)",
+                        "genotypes": "Human TYW5/Tyw5p enzymatic model",
+                        "phenotype": "Hydroxywybutosine biosynthesis in tRNA(Phe)",
+                        "finding": "The study identified TYW5 as a JmjC-domain RNA hydroxylase that catalyzes hydroxywybutosine formation in the tRNA(Phe) wybutosine pathway.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/20739293/",
+                    },
+                    {
+                        "paper": "Kato et al., 2011 (PMID 20972222)",
+                        "genotypes": "Human TYW5 structural and mutant enzyme analyses",
+                        "phenotype": "JmjC fold, Fe(II)/2-OG cofactor context, homodimerization, and tRNA recognition",
+                        "finding": "The study solved human TYW5 structures and used structure-based mutants to identify Arg residues important for tRNA recognition.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3045595/",
+                    },
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from TYW5 gene, ClinGen, Human Protein Atlas, tRNA-modification enzymology, schizophrenia GWAS/eQTL, neurodevelopment, dendritic-spine, and structural-MRI literature.",
+        "population_coverage_note": (
+            "The bundled TYW5 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because TYW5 has no published ClinGen clinical curation and schizophrenia risk is highly polygenic, interpretation should prioritize current GWAS/eQTL evidence, ancestry, genotype dosage, tissue expression, psychiatric phenotype, brain or RNA-modification context, and model-system versus human evidence boundaries."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 129450: TYW5 expression, genomic context, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/129450"),
+            _evidence("ClinGen Gene Facts HGNC:26754: no published TYW5 clinical curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A26754"),
+            _evidence("Human Protein Atlas: TYW5 protein class, mitochondria localization, broad RNA expression, and photoreceptor-enriched single-cell context", "https://www.proteinatlas.org/ENSG00000162971-TYW5"),
+            _evidence("PMCID PMC3045595: TYW5 JmjC structure and tRNA-modification mechanism", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3045595/"),
+            _evidence("PubMed 34581804: rs796364/rs281759 TYW5 regulatory schizophrenia study", "https://pubmed.ncbi.nlm.nih.gov/34581804/"),
+            _evidence("PubMed 35527273: TYW5 schizophrenia integrative expression and MRI study", "https://pubmed.ncbi.nlm.nih.gov/35527273/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "TYW5 expression and protein context",
+                "location_group": "Global pattern",
+                "summary": "NCBI reports ubiquitous expression and cytoplasmic prediction, while Human Protein Atlas frames TYW5 as an intracellular enzyme with protein evidence, mitochondria subcellular localization, low tissue specificity, and single-cell enrichment in cone and rod photoreceptor cells.",
+            },
+            {
+                "variant": "TYW5 enzymatic hydroxywybutosine model",
+                "location_group": "Functional biology",
+                "summary": "Structural and biochemical literature supports TYW5 as a homodimeric JmjC Fe(II)/2-oxoglutarate RNA hydroxylase that modifies tRNA(Phe) in the hydroxywybutosine pathway.",
+            },
+            {
+                "variant": "rs796364 / rs281759",
+                "location_group": "Schizophrenia regulatory genetics",
+                "summary": "The linked rs796364/rs281759 marker pair is a functional 2q33.1 schizophrenia regulatory signal that alters transcription-factor binding, interacts with TYW5, and modulates brain TYW5 expression in the cited studies.",
+            },
+            {
+                "variant": "rs203772",
+                "location_group": "Schizophrenia eQTL and imaging genetics",
+                "summary": "rs203772 is an integrative schizophrenia marker associated with TYW5 expression and structural-MRI phenotypes in the cited BMC Medicine study, but it remains a cohort-level research marker.",
+            },
+            {
+                "variant": "TYW5 neurodevelopment and dendritic spine expression model",
+                "location_group": "Functional biology",
+                "summary": "TYW5 overexpression altered neural stem cell proliferation/differentiation and dendritic spine density in schizophrenia-motivated model systems, supporting a pathway mechanism rather than deterministic individual prediction.",
+            },
+            {
+                "variant": "TYW5 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for schizophrenia, RNA modification, neurodevelopment, retina, MRI, or cancer-expression interpretation.",
+            },
+        ],
+    },
+    {
+        "gene_name": "ELOVL7",
+        "cytoband": "5q12.1",
+        "chromosome": "5",
+        "start": 60047618,
+        "end": 60140096,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 79993 reports ELOVL7 on GRCh37.p13 at NC_000005.9:60047618..60140096, "
+            "complement, and on GRCh38.p14 at NC_000005.10:60751791..60844269, complement; "
+            "Ensembl GRCh37 reports ENSG00000164181 at chr5:60047618-60140216 on the reverse strand"
+        ),
+        "manifest_filter_region": "5:60047618-60141096",
+        "gene_summary": (
+            "ELOVL7 encodes elongation of very long chain fatty acids protein 7, an endoplasmic-reticulum membrane elongase in the ELOVL family. "
+            "It catalyzes the first, rate-limiting condensation step of the long-chain and very-long-chain fatty-acid elongation cycle and has high activity toward C18 acyl-CoA substrates, supporting saturated and polyunsaturated VLCFA production for membrane lipids, sphingolipids, and lipid signaling contexts."
+        ),
+        "clinical_context": (
+            "The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. "
+            "ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk."
+        ),
+        "variant_effect_overview": [
+            "Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+            "In prostate-cancer studies, ELOVL7 is androgen/SREBP1-regulated, overexpressed in tumor contexts, and linked to saturated very-long-chain fatty acid metabolism, cholesterol ester biology, and castration-resistant prostate-cancer growth.",
+            "HCMV and necroptosis studies show that ELOVL7-driven VLCFA remodeling can affect virion infectivity, membrane permeabilization, and cell-death biology, while liver-fibrosis work frames ELOVL7 as a hepatic stellate-cell and advanced-fibrosis expression marker.",
+            "The intronic rs7715147 locus is retained as an MSA GWAS-interest marker, but follow-up work found ELOVL7 coding variants to be extremely rare and not significantly associated with MSA risk.",
+        ],
+        "condition_research_overview": [
+            "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+            "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+            "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research.",
+        ],
+        "methylation_interpretation": (
+            "ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker."
+        ),
+        "methylation_effects": [
+            "The ELOVL7 methylation view can summarize promoter-proximal and early-gene-body CpGs around the reverse-strand transcription start.",
+            "No source-backed ELOVL7 methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, lipidomic readouts, expression, sequence/CNV evidence, and disease context.",
+        ],
+        "methylation_condition_research": [
+            "Use ELOVL7 methylation as supportive regulatory context in lipid-metabolism, prostate-cancer, viral-replication, liver-fibrosis, necroptosis, or neurogenetic locus research.",
+            "Do not infer VLCFA flux, tumor behavior, HCMV replication capacity, fibrosis stage, or MSA risk from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 79993: ELOVL7 gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, and GO context", "https://www.ncbi.nlm.nih.gov/gene/79993"),
+            _evidence("Ensembl GRCh37 ENSG00000164181: ELOVL7 gene model and reverse-strand coordinates", "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000164181"),
+            _evidence("UniProt A1L3X0: ELOVL7 / ELOV7_HUMAN protein entry", "https://www.uniprot.org/uniprotkb/A1L3X0/entry"),
+            _evidence("Human Protein Atlas ENSG00000164181: ELOVL7 protein expression and membrane/metabolic context", "https://www.proteinatlas.org/ENSG00000164181"),
+            _evidence("PubMed 19826053: ELOVL7 in prostate-cancer growth and saturated long-chain fatty-acid metabolism", "https://pubmed.ncbi.nlm.nih.gov/19826053/"),
+            _evidence("Oncogene 2018: AR-regulated lipid biosynthesis and ELOVL7 in castration-resistant prostate cancer", "https://www.nature.com/articles/onc2017385"),
+            _evidence("PMCID PMC4354725: ELOVL7 lipidome remodeling essential for HCMV replication", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4354725/"),
+            _evidence("PubMed 31490656: ELOVL7, VLCFA accumulation, necroptosis, and membrane permeabilization", "https://pubmed.ncbi.nlm.nih.gov/31490656/"),
+            _evidence("PubMed 36930494: ELOVL7 and advanced liver fibrosis in chronic hepatitis B", "https://pubmed.ncbi.nlm.nih.gov/36930494/"),
+            _evidence("PMCID PMC7983070: ELOVL7 coding variants in multiple system atrophy", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983070/"),
+        ],
+        "variants": [
+            {
+                "variant": "rs7715147",
+                "display_name": "rs7715147 (ELOVL7 intronic MSA locus marker)",
+                "common_name": "ELOVL7 MSA GWAS-interest intronic marker",
+                "position": None,
+                "lookup_keys": [
+                    "rs7715147",
+                    "ELOVL7:rs7715147",
+                    "ELOVL7 rs7715147",
+                    "MSA ELOVL7 rs7715147",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Intronic GWAS-interest marker / synucleinopathy lipid-metabolism research context",
+                "clinical_interpretation": (
+                    "rs7715147 is curated as an ELOVL7 intronic marker highlighted by prior MSA GWAS-interest evidence. "
+                    "A follow-up study sequencing ELOVL7 exons and assessing exon 7 copy number in pathologically confirmed MSA cases found coding variants to be extremely rare and did not observe a significant association between ELOVL7 coding variants or CNV and MSA risk."
+                ),
+                "clinical_significance": "Research-level MSA locus marker; not a diagnostic MSA, Parkinson disease, or spinocerebellar ataxia allele.",
+                "functional_effects": [
+                    "Intronic locus marker; no direct coding effect is bundled.",
+                    "Interpretation is driven by lipid-dyshomeostasis plausibility and GWAS/locus context rather than by a proven ELOVL7 protein-altering mechanism.",
+                ],
+                "associated_conditions": [
+                    "Multiple system atrophy locus research",
+                    "Synucleinopathy and lipid-dyshomeostasis studies",
+                    "Very-long-chain fatty acid metabolism",
+                ],
+                "research_context": [
+                    "Use this marker as locus context only; do not infer ELOVL7 coding dysfunction without additional variant, expression, or lipidomic evidence.",
+                    "The bundled follow-up evidence argues against rare ELOVL7 coding variants or copy-number mutation as a major MSA driver in the studied cohorts.",
+                ],
+                "usual_variant_note": "Intronic ELOVL7 MSA GWAS-interest marker from locus-level neurogenetics literature.",
+                "methylation_interpretation": (
+                    "ELOVL7 methylation may add regulatory context but does not turn rs7715147 into a protein-function or disease-prediction result."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PMCID PMC7983070: ELOVL7 coding variants in MSA follow-up study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983070/"),
+                    _evidence("NCBI Gene 79993: ELOVL7 locus and variation resources", "https://www.ncbi.nlm.nih.gov/gene/79993"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Wernick et al., 2021 (PMID 33600908)",
+                        "genotypes": "ELOVL7 intronic rs7715147 GWAS-interest context plus coding-exon and copy-number follow-up",
+                        "phenotype": "Multiple system atrophy and synucleinopathy genetics",
+                        "finding": "The study reported that ELOVL7 coding variants were extremely rare and did not significantly associate with MSA risk, keeping rs7715147 in locus-level research context rather than diagnostic interpretation.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983070/",
+                    }
+                ],
+            },
+            {
+                "variant": "ELOVL7 functional lipid-elongation model",
+                "display_name": "ELOVL7 expression or knockdown lipid-elongation model",
+                "common_name": "ELOVL7 VLCFA remodeling functional model",
+                "position": None,
+                "lookup_keys": [
+                    "ELOVL7 functional model",
+                    "ELOVL7 knockdown",
+                    "ELOVL7 overexpression",
+                    "ELOVL7 upregulation",
+                    "ELOVL7 lipid elongation",
+                    "ELOVL7 VLCFA remodeling",
+                    "ELOVL7 prostate cancer",
+                    "ELOVL7 HCMV",
+                    "ELOVL7 liver fibrosis",
+                    "ELOVL7 necroptosis",
+                ],
+                "region_class": "functional_model",
+                "interpretation_scope": "Expression/functional model / VLCFA metabolism, cancer, infection, fibrosis, and cell-death research context",
+                "clinical_interpretation": (
+                    "ELOVL7 functional evidence is strong at the pathway level: biochemical work shows C18 acyl-CoA elongase activity, prostate-cancer studies connect ELOVL7 to androgen/SREBP1-regulated saturated VLCFA metabolism and tumor growth, HCMV induces ELOVL7 to remodel virion lipids, and necroptosis studies connect ELOVL7-dependent VLCFA accumulation to membrane permeabilization. "
+                    "This record is not a specific human pathogenic allele and should be matched only to expression, model, or curated functional annotations."
+                ),
+                "clinical_significance": "Functional lipid-metabolism research model; not a diagnostic germline variant.",
+                "functional_effects": [
+                    "Purified ELOVL7 shows high activity toward C18 acyl-CoA substrates in VLCFA elongation assays.",
+                    "Knockdown attenuates prostate-cancer cell growth and impairs HCMV lipid elongation, particle release, and infectivity in cited studies.",
+                    "ELOVL7-driven VLCFA accumulation can promote necroptotic membrane permeabilization in cell models.",
+                    "Expression was associated with hepatic stellate-cell activation and advanced liver-fibrosis prediction in a chronic hepatitis B study.",
+                ],
+                "associated_conditions": [
+                    "Prostate cancer and castration-resistant prostate cancer lipid metabolism",
+                    "Human cytomegalovirus replication",
+                    "Necroptosis and membrane permeabilization",
+                    "Advanced liver fibrosis in chronic hepatitis B",
+                    "Very-long-chain fatty acid and sphingolipid metabolism",
+                ],
+                "research_context": [
+                    "Use this marker for model-level or expression-level evidence, not generic SNP rows.",
+                    "Pair sequence calls with expression, lipidomics, tumor context, infection model, fibrosis stage, or cell-death phenotype before drawing conclusions.",
+                ],
+                "usual_variant_note": "Functional ELOVL7 expression/knockdown model for VLCFA remodeling rather than a specific inherited variant.",
+                "methylation_interpretation": (
+                    "ELOVL7 methylation can support local regulatory review, but it does not directly quantify VLCFA elongase activity."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PubMed 19826053: ELOVL7 prostate-cancer saturated lipid metabolism", "https://pubmed.ncbi.nlm.nih.gov/19826053/"),
+                    _evidence("Oncogene 2018: ELOVL7 silencing and CRPC xenograft regression context", "https://www.nature.com/articles/onc2017385"),
+                    _evidence("PMCID PMC4354725: ELOVL7 and HCMV lipidome remodeling", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4354725/"),
+                    _evidence("PubMed 31490656: ELOVL7 and necroptotic membrane disruption", "https://pubmed.ncbi.nlm.nih.gov/31490656/"),
+                    _evidence("PubMed 36930494: ELOVL7 as advanced liver fibrosis marker", "https://pubmed.ncbi.nlm.nih.gov/36930494/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Tamura et al., 2009 (PMID 19826053)",
+                        "genotypes": "ELOVL7 overexpression or knockdown in prostate-cancer models",
+                        "phenotype": "Prostate cancer growth, saturated VLCFA metabolism, and androgen-related lipid biology",
+                        "finding": "The study reported ELOVL7 overexpression in prostate cancer and growth attenuation after ELOVL7 knockdown, linking the enzyme to saturated long-chain fatty-acid metabolism and tumor growth.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/19826053/",
+                    },
+                    {
+                        "paper": "Purdy et al., 2015 (PMID 25732827)",
+                        "genotypes": "ELOVL7 induction, knockdown, and overexpression in HCMV infection models",
+                        "phenotype": "HCMV lipidome remodeling, particle release, and infectivity",
+                        "finding": "The study reported strong HCMV-induced ELOVL7 expression and showed that ELOVL7 knockdown impaired fatty-acid elongation, particle release, and infectivity per particle.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4354725/",
+                    },
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from ELOVL7 fatty-acid elongase, prostate-cancer, HCMV, liver-fibrosis, necroptosis, and MSA-locus literature.",
+        "population_coverage_note": (
+            "The bundled ELOVL7 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Interpretation should prioritize current ClinVar/gnomAD status for sequence calls, tissue expression, lipidomics, tumor or infection context, fibrosis phenotype, and the negative coding-variant/CNV follow-up evidence in MSA."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 79993: ELOVL7 expression, GO context, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/79993"),
+            _evidence("Human Protein Atlas: ELOVL7 expression and protein-function context", "https://www.proteinatlas.org/ENSG00000164181"),
+            _evidence("PubMed 19826053: ELOVL7 prostate-cancer lipid metabolism", "https://pubmed.ncbi.nlm.nih.gov/19826053/"),
+            _evidence("PMCID PMC4354725: ELOVL7 HCMV lipid remodeling", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4354725/"),
+            _evidence("PMCID PMC7983070: ELOVL7 MSA coding-variant follow-up", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983070/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "ELOVL7 expression",
+                "location_group": "Global pattern",
+                "summary": "NCBI and Human Protein Atlas resources frame ELOVL7 as broadly expressed with prostate and skin expression in NCBI, membrane/metabolic protein annotations, and vessel-prominent cytoplasmic protein staining.",
+            },
+            {
+                "variant": "ELOVL7 prostate-cancer lipid metabolism",
+                "location_group": "Cancer cohorts",
+                "summary": "Prostate-cancer studies support a lipid-biosynthesis thesis in which ELOVL7 participates in saturated VLCFA metabolism, androgen/SREBP1 pathways, and tumor-growth models.",
+            },
+            {
+                "variant": "ELOVL7 HCMV/necroptosis VLCFA remodeling",
+                "location_group": "Functional biology",
+                "summary": "Cell-model evidence supports ELOVL7 as a VLCFA remodeling node for HCMV replication and necroptotic membrane permeabilization.",
+            },
+            {
+                "variant": "rs7715147 and rare coding variants",
+                "location_group": "Disease cohorts",
+                "summary": "ELOVL7 rs7715147 remains an intronic MSA locus-context marker, but follow-up coding-variant and copy-number work did not support ELOVL7 coding variants or CNV as a major MSA risk driver.",
+            },
+            {
+                "variant": "ELOVL7 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body methylation context, but no population methylation threshold is bundled for VLCFA flux, prostate cancer, HCMV replication, fibrosis, necroptosis, or MSA interpretation.",
+            },
+        ],
+    },
+    {
+        "gene_name": "SH3PXD2B",
+        "cytoband": "5q35.1",
+        "chromosome": "5",
+        "start": 171752185,
+        "end": 171881529,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 285590 reports SH3PXD2B on GRCh37.p13 at NC_000005.9:171752185..171881529, "
+            "complement, and on GRCh38.p14 at NC_000005.10:172325181..172454525, complement; "
+            "Ensembl GRCh37 reports ENSG00000174705 at chr5:171752185-171881527 on the reverse strand"
+        ),
+        "manifest_filter_region": "5:171752185-171882529",
+        "gene_summary": (
+            "SH3PXD2B, also known as TKS4, encodes SH3 and PX domain-containing protein 2B, a Src-phosphorylated adaptor with one PX domain and four SH3 domains. "
+            "The protein organizes podosome and invadopodia biology, binds phosphoinositides, matrix-remodeling proteins, and NADPH oxidase components, and helps coordinate extracellular-matrix degradation, cell adhesion, migration, ROS localization, and developmental tissue remodeling."
+        ),
+        "clinical_context": (
+            "The local SH3PXD2B knowledge base is rare autosomal-recessive Frank-ter Haar syndrome and overlapping Borrone dermato-cardio-skeletal syndrome oriented, with supporting podosome, collagen-remodeling, ocular, skeletal, cardiac, craniofacial, dermal, fibrosis, and cancer-cell-migration biology. "
+            "ClinGen lists a definitive autosomal-recessive SH3PXD2B-Frank-ter Haar syndrome gene-disease validity curation, but app-level findings still require zygosity, phase, variant classification, breakpoint, phenotype, and clinical-grade confirmation review."
+        ),
+        "variant_effect_overview": [
+            "Biallelic SH3PXD2B loss-of-function, splice, or deletion variants disrupt the TKS4 podosome adaptor mechanism and are an established cause of Frank-ter Haar syndrome, including skeletal, ocular, cardiac, craniofacial, and connective-tissue findings.",
+            "SH3PXD2B-related Borrone dermato-cardio-skeletal syndrome is best treated as an overlapping FTHS-spectrum phenotype rather than a separate deterministic entity; the cited linkage and fibroblast work showed complete loss of SH3PXD2B in mutation-positive families.",
+            "Functional studies support TKS4 as required for full podosome formation, MT1-MMP recruitment, extracellular-matrix degradation, collagen remodeling, and cell migration; animal models support skeletal, ocular, cardiac, dermal fibrosis, and contracture biology.",
+            "Single heterozygous, benign, or VUS SH3PXD2B findings should not be upgraded to a rare-disease prediction without a second pathogenic allele, phase/inheritance support, and phenotype consistency.",
+        ],
+        "condition_research_overview": [
+            "Autosomal-recessive Frank-ter Haar syndrome / Ter Haar syndrome and overlapping Borrone dermato-cardio-skeletal syndrome.",
+            "Podosome and invadopodia formation, extracellular-matrix degradation, collagen remodeling, developmental skeletal and connective-tissue biology, ocular pressure/glaucoma, and cardiac/craniofacial development.",
+            "Cancer-cell migration, EMT-like epithelial plasticity, Src signaling, NADPH oxidase/ROS localization, adipocyte differentiation, and broader cell-adhesion research contexts.",
+        ],
+        "methylation_interpretation": (
+            "SH3PXD2B has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use SH3PXD2B methylation as local regulatory context around a reverse-strand podosome-adaptor gene, not as a validated FTHS, BDCS, glaucoma, fibrosis, cancer-invasion, or collagen-remodeling biomarker."
+        ),
+        "methylation_effects": [
+            "The SH3PXD2B methylation view can summarize promoter-proximal and gene-body CpGs around the reverse-strand transcription start.",
+            "No source-backed SH3PXD2B methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, expression, sequence/CNV evidence, inheritance, and phenotype.",
+        ],
+        "methylation_condition_research": [
+            "Use SH3PXD2B methylation as supportive regulatory context in podosome, collagen-remodeling, connective-tissue, ocular, skeletal, cardiac, or cancer-cell-migration research.",
+            "Do not infer biallelic SH3PXD2B loss, Frank-ter Haar syndrome, Borrone dermato-cardio-skeletal syndrome, glaucoma, fibrosis, or invasive cancer behavior from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 285590: SH3PXD2B gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, GO, and phenotype context", "https://www.ncbi.nlm.nih.gov/gene/285590"),
+            _evidence("Ensembl GRCh37 ENSG00000174705: SH3PXD2B gene model and reverse-strand coordinates", "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000174705"),
+            _evidence("UniProt A1X283: SH3PXD2B / SPD2B_HUMAN protein entry", "https://www.uniprot.org/uniprotkb/A1X283/entry"),
+            _evidence("Human Protein Atlas ENSG00000174705-SH3PXD2B: expression and subcellular localization context", "https://www.proteinatlas.org/ENSG00000174705-SH3PXD2B"),
+            _evidence("ClinGen Gene Facts HGNC:29242: definitive SH3PXD2B-Frank-ter Haar syndrome gene-disease validity curation", "https://search.clinicalgenome.org/kb/genes/HGNC%3A29242"),
+            _evidence("ClinVar RCV000000214: SH3PXD2B c.76-2A>C / rs775217258 pathogenic splice-acceptor variant", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000000214/"),
+            _evidence("PMCID PMC2820172: SH3PXD2B disruption causes skeletal, eye, and cardiac abnormalities of Frank-ter Haar syndrome", "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"),
+            _evidence("PubMed 19144821: Tks4/SH3PXD2B is required for functional podosome formation", "https://pubmed.ncbi.nlm.nih.gov/19144821/"),
+            _evidence("PMCID PMC3532175: SH3PXD2B exon 13 deletion in FTHS with craniosynostosis and raised intracranial pressure", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3532175/"),
+            _evidence("European Journal of Human Genetics 2014: SH3PXD2B mutations cause Borrone dermato-cardio-skeletal syndrome", "https://www.nature.com/articles/ejhg2013229"),
+            _evidence("PMCID PMC7790187: sh3pxd2b zebrafish model and collagen-remodeling/fibrosis biology", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7790187/"),
+        ],
+        "variants": [
+            {
+                "variant": "SH3PXD2B c.76-2A>C",
+                "display_name": "SH3PXD2B c.76-2A>C splice acceptor",
+                "common_name": "rs775217258 / FTHS splice-acceptor variant",
+                "position": 171849502,
+                "lookup_keys": [
+                    "rs775217258",
+                    "SH3PXD2B c.76-2A>C",
+                    "NM_001017995.3:c.76-2A>C",
+                    "NM_001017995.2:c.76-2A>C",
+                    "NC_000005.9:g.171849502T>G",
+                    "5:171849502",
+                    "5:171849502:T>G",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Pathogenic splice-acceptor marker / autosomal-recessive Frank-ter Haar syndrome context",
+                "clinical_interpretation": (
+                    "ClinVar/OMIM literature curates SH3PXD2B c.76-2A>C / rs775217258 as a pathogenic splice-acceptor variant for Frank-ter Haar syndrome. "
+                    "Iqbal et al. reported homozygosity for this splice-site change in an affected male patient; unaffected parents were heterozygous and the variant was absent from 210 control chromosomes in that report."
+                ),
+                "clinical_significance": "Pathogenic Frank-ter Haar syndrome splice-acceptor variant; autosomal-recessive interpretation depends on biallelic dosage, phase, and phenotype.",
+                "functional_effects": [
+                    "Splice-acceptor disruption at the conserved intronic c.76-2 position is expected to disrupt SH3PXD2B/TKS4 transcript processing.",
+                    "The TKS4 disease mechanism centers on impaired podosome/invadopodia organization and extracellular-matrix remodeling.",
+                ],
+                "associated_conditions": [
+                    "Frank-ter Haar syndrome / Ter Haar syndrome",
+                    "Borrone dermato-cardio-skeletal syndrome spectrum",
+                    "Skeletal dysplasia, ocular anomalies, cardiac findings, craniofacial anomalies, and connective-tissue remodeling",
+                ],
+                "research_context": [
+                    "A single heterozygous call should be treated as carrier context unless a second pathogenic allele is found in trans.",
+                    "Check transcript, strand, HGVS normalization, phase, depth, and phenotype before any clinical interpretation.",
+                ],
+                "usual_variant_note": "Known pathogenic SH3PXD2B splice-acceptor marker in the FTHS/BDCS autosomal-recessive spectrum.",
+                "methylation_interpretation": (
+                    "SH3PXD2B methylation can provide local regulatory context, but it does not determine whether this splice variant is present, biallelic, or pathogenic in the sample."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar RCV000000214: SH3PXD2B c.76-2A>C / rs775217258 pathogenic classification and GRCh37 coordinate", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000000214/"),
+                    _evidence("PMCID PMC2820172: original FTHS SH3PXD2B mutation report", "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"),
+                    _evidence("ClinGen Gene Facts HGNC:29242: definitive SH3PXD2B-FTHS curation", "https://search.clinicalgenome.org/kb/genes/HGNC%3A29242"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Iqbal et al., 2010 (PMID 20137777)",
+                        "genotypes": "Homozygous SH3PXD2B c.76-2A>C splice-acceptor variant; heterozygous carrier parents",
+                        "phenotype": "Frank-ter Haar syndrome with skeletal, eye, and cardiac abnormalities",
+                        "finding": "The study identified SH3PXD2B disruption as a cause of FTHS and reported this splice-acceptor change as homozygous in an affected patient.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/",
+                    }
+                ],
+            },
+            {
+                "variant": "SH3PXD2B loss-of-function/deletion model",
+                "display_name": "SH3PXD2B exon deletion or biallelic loss-of-function model",
+                "common_name": "TKS4 podosome-loss FTHS/BDCS model",
+                "position": None,
+                "lookup_keys": [
+                    "SH3PXD2B loss-of-function",
+                    "SH3PXD2B loss of function",
+                    "SH3PXD2B LOF",
+                    "SH3PXD2B deletion",
+                    "SH3PXD2B exon 13 deletion",
+                    "TKS4 exon 13 deletion",
+                    "FTHS SH3PXD2B deletion",
+                    "BDCS SH3PXD2B mutation",
+                ],
+                "region_class": "structural_region",
+                "interpretation_scope": "Biallelic loss-of-function / exon-deletion rare-disease mechanism",
+                "clinical_interpretation": (
+                    "Biallelic SH3PXD2B loss-of-function and deletion evidence supports an established autosomal-recessive FTHS/BDCS mechanism. "
+                    "The 2010 FTHS report identified multiple homozygous SH3PXD2B mutations and a homozygous deletion in mutation-positive families; an exon 13 deletion was later reported in siblings with FTHS and craniosynostosis; the BDCS study reported homozygous SH3PXD2B mutations with complete protein loss in patient fibroblasts."
+                ),
+                "clinical_significance": "Clinically established autosomal-recessive SH3PXD2B loss-of-function mechanism; zygosity, phase, and breakpoint confirmation are essential.",
+                "functional_effects": [
+                    "TKS4 loss impairs functional podosome formation, MT1-MMP recruitment, and extracellular-matrix degradation.",
+                    "Disease-model work connects SH3PXD2B loss to defective collagen remodeling, dermal fibrosis, contractures, skeletal abnormalities, ocular findings, and cardiac/craniofacial development.",
+                ],
+                "associated_conditions": [
+                    "Frank-ter Haar syndrome / Ter Haar syndrome",
+                    "Borrone dermato-cardio-skeletal syndrome spectrum",
+                    "Defective collagen remodeling spectrum, dermal fibrosis, contractures, glaucoma/ocular hypertension, skeletal dysplasia, craniosynostosis, and cardiac valve/septal findings",
+                ],
+                "research_context": [
+                    "Use this marker for confirmed or strongly suspected loss-of-function, exon deletion, or structural loss records rather than generic SH3PXD2B SNPs.",
+                    "Breakpoints, transcript effect, copy number, phase, family segregation, phenotype, and clinical confirmation drive interpretation.",
+                ],
+                "usual_variant_note": "Mechanism-level biallelic SH3PXD2B/TKS4 loss marker rather than one specific SNV.",
+                "methylation_interpretation": (
+                    "SH3PXD2B methylation can provide local regulatory context, but it does not establish a deletion, loss-of-function allele, or biallelic disease state."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PMCID PMC2820172: multiple SH3PXD2B mutations/deletion and FTHS mechanism", "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"),
+                    _evidence("PMCID PMC3532175: SH3PXD2B exon 13 deletion in FTHS siblings", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3532175/"),
+                    _evidence("European Journal of Human Genetics 2014: SH3PXD2B mutations and protein loss in BDCS", "https://www.nature.com/articles/ejhg2013229"),
+                    _evidence("PubMed 19144821: Tks4 loss and defective podosome/ECM degradation biology", "https://pubmed.ncbi.nlm.nih.gov/19144821/"),
+                    _evidence("PMCID PMC7790187: sh3pxd2b model and collagen-remodeling/fibrosis biology", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7790187/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Bendon et al., 2012 (PMID 23140272)",
+                        "genotypes": "Homozygous SH3PXD2B exon 13 deletion in three affected siblings",
+                        "phenotype": "Frank-ter Haar syndrome with sagittal craniosynostosis and raised intracranial pressure",
+                        "finding": "The report expanded the FTHS phenotype and tied exon-level SH3PXD2B deletion to craniosynostosis and raised intracranial pressure in affected siblings.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3532175/",
+                    },
+                    {
+                        "paper": "Wilson et al., 2014 (PMID 24105371)",
+                        "genotypes": "Homozygous SH3PXD2B mutations with loss of SH3PXD2B protein in fibroblasts",
+                        "phenotype": "Borrone dermato-cardio-skeletal syndrome",
+                        "finding": "The study showed that a subset of BDCS and FTHS cases are allelic and connected SH3PXD2B mutation-positive BDCS to complete TKS4 protein loss.",
+                        "url": "https://www.nature.com/articles/ejhg2013229",
+                    },
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from SH3PXD2B/TKS4 rare-disease, podosome, extracellular-matrix, collagen-remodeling, expression, and cancer-cell-migration literature.",
+        "population_coverage_note": (
+            "The bundled SH3PXD2B population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Interpretation should prioritize current ClinVar/gnomAD status, zygosity, phase, segregation, copy-number breakpoint, transcript effect, phenotype match, and the definitive autosomal-recessive ClinGen curation."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 285590: SH3PXD2B expression, GO context, bibliography, and phenotype links", "https://www.ncbi.nlm.nih.gov/gene/285590"),
+            _evidence("Human Protein Atlas: SH3PXD2B low tissue specificity, cytoplasmic expression, and plasma-membrane/nucleoplasm/cytosol localization", "https://www.proteinatlas.org/ENSG00000174705-SH3PXD2B"),
+            _evidence("ClinGen Gene Facts: definitive AR Frank-ter Haar syndrome gene-disease validity", "https://search.clinicalgenome.org/kb/genes/HGNC%3A29242"),
+            _evidence("ClinVar RCV000000214: pathogenic splice-acceptor example", "https://www.ncbi.nlm.nih.gov/clinvar/RCV000000214/"),
+            _evidence("PMCID PMC2820172: SH3PXD2B FTHS mutation spectrum and developmental model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"),
+            _evidence("PMCID PMC7790187: sh3pxd2b collagen-remodeling/fibrosis model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC7790187/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "SH3PXD2B expression",
+                "location_group": "Global pattern",
+                "summary": "NCBI and Human Protein Atlas resources frame SH3PXD2B as broadly expressed or low tissue specificity, with cytoplasmic expression in many cell types including fibroblasts and plasma-membrane/nucleoplasm/cytosol localization context.",
+            },
+            {
+                "variant": "Biallelic SH3PXD2B pathogenic variants",
+                "location_group": "Rare-disease cohorts",
+                "summary": "ClinGen curates SH3PXD2B-Frank-ter Haar syndrome as definitive with autosomal-recessive mode of inheritance; pathogenic interpretation therefore depends strongly on biallelic pathogenic dosage and phenotype fit.",
+            },
+            {
+                "variant": "SH3PXD2B c.76-2A>C / rs775217258",
+                "location_group": "ClinVar and literature marker",
+                "summary": "This splice-acceptor variant is a pathogenic FTHS marker in ClinVar/OMIM literature, with GRCh37 coordinate chr5:171849502 and transcript-level c.76-2A>C notation.",
+            },
+            {
+                "variant": "SH3PXD2B loss-of-function/deletion",
+                "location_group": "Structural and functional mechanism",
+                "summary": "Reported homozygous SH3PXD2B mutations, deletions, and exon 13 deletion support a TKS4 loss mechanism affecting podosome function, ECM degradation, collagen remodeling, skeletal/ocular/cardiac features, dermal fibrosis, and contractures.",
+            },
+            {
+                "variant": "SH3PXD2B cancer-cell migration biology",
+                "location_group": "Functional biology",
+                "summary": "TKS4 participates in podosome/invadopodia formation and ECM degradation, so cancer and epithelial-plasticity literature is useful for pathway context but should not be treated as a germline cancer-risk prediction.",
+            },
+            {
+                "variant": "SH3PXD2B TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for FTHS, BDCS, collagen remodeling, ocular disease, fibrosis, or cancer migration.",
+            },
+        ],
+    },
+    {
+        "gene_name": "FRMD3",
+        "cytoband": "9q21.32",
+        "chromosome": "9",
+        "start": 85857907,
+        "end": 86153316,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 257019 reports FRMD3 on GRCh37.p13 at NC_000009.11:85857907..86153316, "
+            "complement, and on GRCh38.p14 at NC_000009.12:83242992..83585794, complement; "
+            "ClinGen Gene Facts HGNC:24125 reports GRCh37 chr9:85857907-86153316 and GRCh38 chr9:83242992-83585794"
+        ),
+        "manifest_filter_region": "9:85857907-86154316",
+        "gene_summary": (
+            "FRMD3 encodes FERM domain-containing protein 3, also known as protein 4.1O, a band-4.1-family membrane/cytoskeletal protein with FERM, FERM-adjacent, and PH-like domain annotations. "
+            "NCBI and UniProt/HPA resources frame FRMD3 as a predicted membrane and cytoskeletal protein with broad expression including kidney, heart, skeletal muscle, and other tissues; experimental literature links it to diabetic kidney disease regulatory biology and tumor-suppressor or focal-adhesion pathways."
+        ),
+        "clinical_context": (
+            "The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. "
+            "ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence."
+        ),
+        "variant_effect_overview": [
+            "The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+            "Regulatory modeling work proposed that rs1888747 may alter transcription-factor binding in an extended FRMD3 promoter framework connected to BMP signaling, with FRMD3 expression decreased in more advanced diabetic nephropathy tissue data.",
+            "Replication evidence is mixed and cohort dependent: one Brazilian T2D cohort reported the rs1888747 C/C genotype as protective for DKD, while other populations and clinical settings reported different or null findings.",
+            "Cancer literature frames FRMD3 as a putative tumor suppressor in NSCLC and breast cancer models, including vimentin degradation and focal-adhesion impairment, but this is expression/model biology rather than a germline cancer-risk prediction.",
+        ],
+        "condition_research_overview": [
+            "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+            "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+            "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology.",
+        ],
+        "methylation_interpretation": (
+            "FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker."
+        ),
+        "methylation_effects": [
+            "The FRMD3 methylation view can summarize promoter-proximal and gene-body CpGs around the reverse-strand transcription start.",
+            "No source-backed FRMD3 methylation threshold is bundled; beta values should be interpreted alongside tissue, renal cell composition, kidney phenotype, diabetes status, expression, sequence evidence, and cohort ancestry.",
+        ],
+        "methylation_condition_research": [
+            "Use FRMD3 methylation as supportive regulatory context in kidney, diabetic nephropathy, BMP signaling, cytoskeletal, focal-adhesion, or cancer-expression research.",
+            "Do not infer diabetic kidney disease, nondiabetic renal disease, diabetic retinopathy, tumor suppression, focal-adhesion state, or BMP-pathway activity from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 257019: FRMD3 gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, GO, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/257019"),
+            _evidence("Ensembl GRCh37 ENSG00000172159: FRMD3 gene model and reverse-strand coordinates", "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000172159"),
+            _evidence("UniProt A2A2Y4: FRMD3 / FERM domain-containing protein 3 entry", "https://www.uniprot.org/uniprotkb/A2A2Y4/entry"),
+            _evidence("Human Protein Atlas ENSG00000172159-FRMD3: expression, localization, and protein-structure context", "https://www.proteinatlas.org/ENSG00000172159-FRMD3"),
+            _evidence("ClinGen Gene Facts HGNC:24125: FRMD3 coordinates, constraint, and no published ClinGen curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A24125"),
+            _evidence("PubMed 19252134: GWAS identifying FRMD3-region diabetic nephropathy susceptibility signal in type 1 diabetes", "https://pubmed.ncbi.nlm.nih.gov/19252134/"),
+            _evidence("PMCID PMC3712052: rs1888747 promoter/BMP-pathway regulatory model for FRMD3 in diabetic nephropathy", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3712052/"),
+            _evidence("PMCID PMC4706705: rs1888747, FRMD3 kidney expression, and DKD in a type 2 diabetes cohort", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4706705/"),
+            _evidence("PMCID PMC4696171: narrative review of FRMD3 in diabetic kidney disease and mixed replication evidence", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4696171/"),
+            _evidence("PubMed 34162050: rs1888747 in diabetic kidney disease, retinopathy, and nondiabetic renal disease biopsy context", "https://pubmed.ncbi.nlm.nih.gov/34162050/"),
+            _evidence("Oncogene 2007: FRMD3 as a putative tumor suppressor in NSCLC", "https://www.nature.com/articles/1210225"),
+            _evidence("PMCID PMC9834407: FRMD3 inhibits breast-cancer growth/metastasis through vimentin degradation and focal-adhesion impairment", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834407/"),
+        ],
+        "variants": [
+            {
+                "variant": "rs1888747",
+                "display_name": "rs1888747 (FRMD3 diabetic kidney disease regulatory locus marker)",
+                "common_name": "FRMD3 promoter-proximal DKD GWAS marker",
+                "position": None,
+                "lookup_keys": [
+                    "rs1888747",
+                    "FRMD3 rs1888747",
+                    "FRMD3:rs1888747",
+                    "rs10868025",
+                    "FRMD3 rs10868025",
+                    "FRMD3 DKD locus",
+                    "FRMD3 diabetic nephropathy locus",
+                ],
+                "region_class": "upstream_regulatory",
+                "interpretation_scope": "Complex-trait regulatory marker / diabetic kidney disease association context",
+                "clinical_interpretation": (
+                    "rs1888747 is curated as a FRMD3-region noncoding marker for diabetic kidney disease research. "
+                    "The original type 1 diabetes GWAS reported the strongest association at the FRMD3 locus and later work modeled rs1888747 as a promoter-proximal regulatory SNP that could affect transcription-factor binding and BMP-pathway coregulation. "
+                    "A Brazilian T2D cohort reported C/C as protective for DKD, but FRMD3 mRNA and protein expression did not differ by rs1888747 genotype in that kidney-expression study, and review literature emphasizes mixed replication across populations."
+                ),
+                "clinical_significance": "Research-level diabetic kidney disease association marker; not a diagnostic DKD, diabetes, retinopathy, or monogenic kidney-disease allele.",
+                "functional_effects": [
+                    "Noncoding FRMD3-region marker with proposed transcription-factor binding and BMP-pathway regulatory effects.",
+                    "The rs1888747 C/C genotype was associated with lower DKD odds in one T2D cohort, while G-containing genotypes carried the contrast state in that analysis.",
+                    "No direct rs1888747 genotype effect on FRMD3 mRNA or protein expression was demonstrated in the cited kidney-expression study.",
+                ],
+                "associated_conditions": [
+                    "Diabetic kidney disease / diabetic nephropathy",
+                    "Albuminuria, macroalbuminuria, ESRD, and kidney-function progression in diabetes cohorts",
+                    "BMP-pathway and renal transcriptional-regulation research",
+                ],
+                "research_context": [
+                    "Interpret rs1888747 in a cohort-, ancestry-, diabetes-type-, renal-phenotype-, and genotype-dosage-aware way.",
+                    "Do not convert a single rs1888747 VCF row into a clinical kidney-disease prediction without phenotype, ancestry, glycemic exposure, blood-pressure, kidney-biopsy, and current association evidence review.",
+                    "The linked rs10868025 marker is retained as regional LD context rather than an independent causal rule.",
+                ],
+                "usual_variant_note": "Promoter-proximal FRMD3 diabetic nephropathy GWAS marker; C/G direction and effect size are cohort dependent.",
+                "methylation_interpretation": (
+                    "FRMD3 methylation may add local regulatory context but does not establish rs1888747 mechanism, BMP-pathway state, or DKD risk in an individual sample."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 19252134: original type 1 diabetes nephropathy GWAS FRMD3 signal", "https://pubmed.ncbi.nlm.nih.gov/19252134/"),
+                    _evidence("PMCID PMC3712052: rs1888747 promoter/BMP-pathway model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3712052/"),
+                    _evidence("PMCID PMC4706705: rs1888747 and FRMD3 expression in T2D DKD cohort", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4706705/"),
+                    _evidence("PMCID PMC4696171: review of mixed FRMD3/DKD replication", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4696171/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Pezzolesi et al., 2009 (PMID 19252134)",
+                        "genotypes": "FRMD3-region GWAS markers including rs1888747 and linked variants",
+                        "phenotype": "Diabetic nephropathy susceptibility in type 1 diabetes, with DCCT/EDIC support",
+                        "finding": "The study reported the strongest GWAS association at the FRMD3 locus and supported the signal in a prospective diabetes-complication cohort.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/19252134/",
+                    },
+                    {
+                        "paper": "Buffon et al., 2016 (PMID 26753002)",
+                        "genotypes": "rs1888747 C/C versus G-carrier genotypes in type 2 diabetes",
+                        "phenotype": "Diabetic kidney disease and FRMD3 expression in human kidney tissue",
+                        "finding": "The study reported C/C as protective for DKD in the cohort but found no rs1888747 genotype effect on FRMD3 mRNA or protein expression.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4706705/",
+                    },
+                ],
+            },
+            {
+                "variant": "FRMD3 tumor-suppressor/cytoskeletal model",
+                "display_name": "FRMD3 protein 4.1O tumor-suppressor and focal-adhesion model",
+                "common_name": "FRMD3 vimentin/focal-adhesion functional model",
+                "position": None,
+                "lookup_keys": [
+                    "FRMD3 tumor suppressor",
+                    "FRMD3 NSCLC",
+                    "FRMD3 breast cancer",
+                    "FRMD3 vimentin",
+                    "FRMD3 focal adhesion",
+                    "FRMD3 metastasis",
+                    "FRMD3 cytoskeletal model",
+                    "protein 4.1O tumor suppressor",
+                ],
+                "region_class": "functional_model",
+                "interpretation_scope": "Expression/functional model / tumor suppressor, cytoskeleton, focal adhesion, and migration biology",
+                "clinical_interpretation": (
+                    "FRMD3 functional evidence supports a pathway-level tumor-suppressor and cytoskeletal model rather than a specific inherited cancer allele. "
+                    "NSCLC work identified FRMD3 as a putative tumor suppressor candidate, while breast-cancer model work reported that FRMD3 inhibits proliferation, migration, invasion, xenograft growth, and metastasis through ubiquitination-mediated vimentin degradation and focal-adhesion pathway impairment."
+                ),
+                "clinical_significance": "Functional tumor-suppressor/cytoskeletal research model; not a diagnostic germline cancer-risk variant.",
+                "functional_effects": [
+                    "FERM-domain protein 4.1O biology supports membrane/cytoskeletal organization and actomyosin-structure context.",
+                    "Breast-cancer functional work linked FRMD3 to vimentin degradation, lower focal-adhesion complex signaling, altered cell morphology, and reduced migration/invasion.",
+                    "NCBI and HPA resources support broad tissue expression and membrane/cytoskeleton-related annotations.",
+                ],
+                "associated_conditions": [
+                    "Non-small-cell lung cancer expression research",
+                    "Breast cancer growth, migration, invasion, recurrence, and metastasis model research",
+                    "Cytoskeletal organization, focal adhesion, vimentin biology, and membrane-associated FERM-domain signaling",
+                ],
+                "research_context": [
+                    "Use this marker for expression, model-system, or curated functional annotations rather than generic SNP rows.",
+                    "Pair sequence calls with tumor expression, methylation, copy-number, proteomics, cell context, and functional data before drawing cancer-biology conclusions.",
+                ],
+                "usual_variant_note": "Functional FRMD3/protein 4.1O expression model rather than a specific inherited variant.",
+                "methylation_interpretation": (
+                    "FRMD3 methylation can support local regulatory review, but it does not quantify FRMD3 protein, vimentin degradation, focal-adhesion signaling, or tumor behavior."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("Oncogene 2007: FRMD3 as putative NSCLC tumor suppressor", "https://www.nature.com/articles/1210225"),
+                    _evidence("PMCID PMC9834407: FRMD3, vimentin degradation, focal adhesion, and breast-cancer metastasis model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834407/"),
+                    _evidence("NCBI Gene 257019: FRMD3 GO, expression, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/257019"),
+                    _evidence("Human Protein Atlas: FRMD3 tissue and subcellular expression", "https://www.proteinatlas.org/ENSG00000172159-FRMD3"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Haase et al., 2007 (PMID 17260017)",
+                        "genotypes": "FRMD3 differential expression in NSCLC research context",
+                        "phenotype": "Non-small-cell lung cancer tumor-suppressor candidate biology",
+                        "finding": "The study identified FRMD3 as a novel putative tumor suppressor in NSCLC expression analyses.",
+                        "url": "https://www.nature.com/articles/1210225",
+                    },
+                    {
+                        "paper": "Shao et al., 2023 (PMID 36631457)",
+                        "genotypes": "FRMD3 overexpression and knockdown in breast-cancer model systems",
+                        "phenotype": "Breast-cancer growth, migration, invasion, focal adhesion, and metastasis",
+                        "finding": "The study reported FRMD3-mediated vimentin ubiquitination/degradation and reduced focal-adhesion signaling as a mechanism for lower breast-cancer growth and metastasis in models.",
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834407/",
+                    },
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from FRMD3 diabetic kidney disease association, kidney-expression, BMP-regulatory, tumor-suppressor, cytoskeletal, and methylation-context literature.",
+        "population_coverage_note": (
+            "The bundled FRMD3 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because FRMD3 is not a ClinGen-curated monogenic disease gene, interpretation should prioritize current GWAS/ClinVar/gnomAD status, diabetes type, kidney phenotype definition, ancestry, renal expression, tissue context, and independent clinical evidence."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 257019: FRMD3 expression, GO context, and bibliography", "https://www.ncbi.nlm.nih.gov/gene/257019"),
+            _evidence("Human Protein Atlas: FRMD3 tissue-enhanced and subcellular expression context", "https://www.proteinatlas.org/ENSG00000172159-FRMD3"),
+            _evidence("ClinGen Gene Facts: no published FRMD3 clinical curations", "https://search.clinicalgenome.org/kb/genes/HGNC%3A24125"),
+            _evidence("PubMed 19252134: T1D diabetic nephropathy GWAS", "https://pubmed.ncbi.nlm.nih.gov/19252134/"),
+            _evidence("PMCID PMC3712052: FRMD3 rs1888747 BMP regulatory model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC3712052/"),
+            _evidence("PMCID PMC4706705: T2D rs1888747 and FRMD3 kidney expression study", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4706705/"),
+            _evidence("PMCID PMC9834407: FRMD3 breast-cancer functional model", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834407/"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "FRMD3 expression",
+                "location_group": "Global pattern",
+                "summary": "NCBI reports broad expression including heart and kidney, while Human Protein Atlas frames FRMD3 as tissue-enhanced in heart muscle, skeletal muscle, and tongue with Golgi-apparatus and plasma-membrane localization.",
+            },
+            {
+                "variant": "rs1888747 diabetic nephropathy locus",
+                "location_group": "Diabetes kidney cohorts",
+                "summary": "The rs1888747/FRMD3-region marker is a recurrent DKD association candidate from T1D GWAS and T2D follow-up cohorts, but effect direction and strength are cohort dependent and should not be treated as deterministic.",
+            },
+            {
+                "variant": "rs1888747 C/C genotype",
+                "location_group": "Genotype-specific cohort context",
+                "summary": "One Brazilian T2D cohort reported C/C as protective for DKD and found no direct genotype effect on FRMD3 mRNA or protein, while a Thai biopsy cohort associated C allele/CC with nondiabetic renal disease context among overt proteinuria cases.",
+            },
+            {
+                "variant": "FRMD3 BMP regulatory model",
+                "location_group": "Functional genomics",
+                "summary": "A promoter-modeling study proposed that rs1888747 may alter transcription-factor binding and link FRMD3 to BMP-pathway regulation in diabetic nephropathy, providing a hypothesis-generating rather than clinically validated mechanism.",
+            },
+            {
+                "variant": "FRMD3 tumor-suppressor and focal-adhesion biology",
+                "location_group": "Cancer model biology",
+                "summary": "NSCLC and breast-cancer studies support tumor-suppressor and focal-adhesion/vimentin model biology, but these data are expression and model-system context rather than germline cancer-risk rules.",
+            },
+            {
+                "variant": "FRMD3 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for DKD, retinopathy, diabetes, BMP signaling, or cancer-migration interpretation.",
+            },
+        ],
+    },
+    {
+        "gene_name": "TMEM218",
+        "cytoband": "11q24.2",
+        "chromosome": "11",
+        "start": 124964285,
+        "end": 124981522,
+        "strand": "-",
+        "coordinate_source": (
+            "NCBI Gene 219854 reports TMEM218 on GRCh37.p13 at NC_000011.9:124964285..124981522, "
+            "complement, and on GRCh38.p14 at NC_000011.10:125094389..125111626, complement; "
+            "ClinGen Gene Facts HGNC:27344 reports GRCh37 chr11:124964285-124981522 and GRCh38 chr11:125094389-125111626"
+        ),
+        "manifest_filter_region": "11:124964285-124982522",
+        "gene_summary": (
+            "TMEM218 encodes transmembrane protein 218, a small multi-pass membrane protein linked to ciliary transition-zone biology. "
+            "NCBI, UniProt, Human Protein Atlas, and ciliary-disease studies frame TMEM218 as a cilium/membrane protein that participates in transition-zone function, MKS-module biology, and ciliary membrane diffusion-barrier control."
+        ),
+        "clinical_context": (
+            "The local TMEM218 knowledge base is Joubert syndrome 39, Meckel syndrome, and broader syndromic-ciliopathy research oriented. "
+            "Reported human disease is autosomal recessive: TMEM218 findings should be interpreted with phase, zygosity, variant classification, phenotype, and transcript context, and a single heterozygous finding should generally be treated as carrier or research context."
+        ),
+        "variant_effect_overview": [
+            "Biallelic rare deleterious TMEM218 variants have been reported in families with Joubert-Meckel spectrum phenotypes including molar tooth sign, retinal dystrophy, occipital encephalocele, polycystic kidneys, and polydactyly.",
+            "Epting et al. reported biallelic missense and nonsense TMEM218 variants in Bardet-Biedl-like, Joubert, and Meckel-Gruber phenotypes and showed that p.Arg37Ser reduced interaction with the MKS-module protein TMEM67/Meckelin.",
+            "Functional work supports TMEM218 as a ciliary transition-zone and diffusion-barrier component: TMEM218-knockout cells mislocalize ciliary membrane proteins, and MKS-associated variants can fail to restore transition-zone integrity.",
+            "Genotype-phenotype severity appears variant specific: truncating or severe transition-zone-disruptive alleles are enriched toward lethal Meckel syndrome, while some missense combinations are reported in Joubert-spectrum presentations.",
+        ],
+        "condition_research_overview": [
+            "Joubert syndrome 39, Meckel syndrome, Bardet-Biedl-like ciliopathy features, and Joubert-Meckel-nephronophthisis spectrum research.",
+            "Ciliary transition-zone assembly, MKS and NPHP module interaction, TMEM67/Meckelin interaction, ARL13B/GPR161 ciliary membrane localization, and ciliary diffusion-barrier function.",
+            "Retinal dystrophy, molar tooth sign, occipital encephalocele, cystic or polycystic kidneys, polydactyly, nephronophthisis-like kidney and retina model phenotypes, and severe fetal ciliopathy context.",
+        ],
+        "methylation_interpretation": (
+            "TMEM218 has a promoter-plus-gene EPIC slice from the local hg19 manifest. "
+            "Use TMEM218 methylation as local regulatory context around a reverse-strand ciliary transition-zone gene, not as a validated Joubert syndrome, Meckel syndrome, retinal dystrophy, renal ciliopathy, or diffusion-barrier biomarker."
+        ),
+        "methylation_effects": [
+            "Promoter-proximal and gene-body methylation may help frame local TMEM218 regulatory context in samples where sequence, expression, or ciliary phenotype evidence is also available.",
+            "No source-backed TMEM218 methylation threshold is bundled; beta values should be interpreted alongside tissue, developmental timing, cell composition, variant phase, zygosity, consequence, and current ClinVar/gnomAD evidence.",
+        ],
+        "methylation_condition_research": [
+            "Use TMEM218 methylation as supportive local regulatory context in ciliopathy, transition-zone, retina, kidney, fetal-development, or ciliary membrane trafficking research.",
+            "Do not infer Joubert syndrome, Meckel syndrome, nephronophthisis, retinal dystrophy, polydactyly, encephalocele, or ciliary diffusion-barrier failure from peripheral EPIC methylation alone.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 219854: TMEM218 gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, associated Joubert syndrome 39 context", "https://www.ncbi.nlm.nih.gov/gene/219854"),
+            _evidence("Ensembl ENSG00000150433: TMEM218 current gene model and reverse-strand coordinates", "https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000150433"),
+            _evidence("UniProt A2RU14: TMEM218 / transmembrane protein 218 entry", "https://www.uniprot.org/uniprotkb/A2RU14/entry"),
+            _evidence("Human Protein Atlas ENSG00000150433-TMEM218: expression, predicted location, and protein-structure context", "https://www.proteinatlas.org/ENSG00000150433-TMEM218"),
+            _evidence("ClinGen Gene Facts HGNC:27344: TMEM218 coordinates, MANE transcript, constraint, and GenCC classification", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27344/external-resources"),
+            _evidence("ClinVar RCV002223152: NM_001258244.2(TMEM218):c.111G>T (p.Arg37Ser) likely pathogenic for Joubert syndrome 39", "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/"),
+            _evidence("PubMed 33791682: TMEM218 dysfunction causes ciliopathies, including Joubert and Meckel syndromes", "https://pubmed.ncbi.nlm.nih.gov/33791682/"),
+            _evidence("PubMed 35137054: TMEM218 transition-zone protein, NPHP-module interaction, and syndromic ciliopathies", "https://pubmed.ncbi.nlm.nih.gov/35137054/"),
+            _evidence("Human Molecular Genetics 2024: TMEM218 ciliopathy variants disrupt ciliary transition-zone diffusion-barrier function", "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982"),
+            _evidence("PubMed 26982032: MKS5/CEP290 transition-zone assembly pathway identifies TMEM-218 as an MKS-module-associated transition-zone protein", "https://pubmed.ncbi.nlm.nih.gov/26982032/"),
+        ],
+        "variants": [
+            {
+                "variant": "TMEM218 c.111G>T / p.Arg37Ser",
+                "display_name": "TMEM218 c.111G>T / p.Arg37Ser",
+                "common_name": "TMEM218 R37S likely pathogenic JBTS39 marker",
+                "position": 124971199,
+                "lookup_keys": [
+                    "TMEM218 c.111G>T",
+                    "TMEM218 p.Arg37Ser",
+                    "TMEM218 Arg37Ser",
+                    "TMEM218 R37S",
+                    "NM_001080546.3:c.111G>T",
+                    "NM_001258244.2:c.111G>T",
+                    "NP_001074015.1:p.Arg37Ser",
+                    "rs1248550491",
+                    "11:124971199",
+                    "11:124971199:C>A",
+                    "NC_000011.9:g.124971199C>A",
+                ],
+                "region_class": "gene_body",
+                "interpretation_scope": "Likely pathogenic autosomal-recessive Joubert syndrome 39 marker / ciliary transition-zone research context",
+                "clinical_interpretation": (
+                    "TMEM218 c.111G>T / p.Arg37Ser is included because ClinVar curates it as likely pathogenic for Joubert syndrome 39 and Epting et al. reported the homozygous missense variant in a patient with syndromic ciliopathy features. "
+                    "Functional evidence showed reduced interaction of p.Arg37Ser TMEM218 with TMEM67/MKS3/Meckelin, supporting an MKS-module transition-zone mechanism."
+                ),
+                "clinical_significance": "Likely pathogenic Joubert syndrome 39 marker; autosomal-recessive interpretation depends on biallelic dosage, phase, phenotype, and current clinical review.",
+                "functional_effects": [
+                    "Missense variant at a conserved TMEM218 arginine residue reported in a homozygous affected individual with Bardet-Biedl-like/Joubert-spectrum features.",
+                    "Co-immunoprecipitation evidence showed reduced interaction between p.Arg37Ser TMEM218 and TMEM67/MKS3/Meckelin.",
+                    "ClinVar lists the GRCh37 coordinate as chr11:124971199 and the HGVS as NM_001258244.2:c.111G>T / p.Arg37Ser with likely pathogenic classification for JBTS39.",
+                ],
+                "associated_conditions": [
+                    "Joubert syndrome 39",
+                    "Bardet-Biedl-like and Joubert-Meckel syndromic ciliopathy features",
+                    "Ciliary transition-zone and MKS-module interaction research",
+                ],
+                "research_context": [
+                    "Prioritize homozygous or compound-heterozygous TMEM218 context, parental segregation, transcript version, phenotype fit, and current variant classification.",
+                    "A single heterozygous observation should generally be reported as carrier or research context unless paired with another pathogenic TMEM218 allele.",
+                    "Interpret alongside neurological imaging, retinal, renal, polydactyly, encephalocele, and fetal or perinatal phenotype data when available.",
+                ],
+                "usual_variant_note": "Likely pathogenic JBTS39 missense marker; disease interpretation requires biallelic autosomal-recessive context.",
+                "methylation_interpretation": (
+                    "TMEM218 methylation can provide local regulatory context, but it does not establish p.Arg37Ser dosage, phase, pathogenicity, TMEM67 interaction, or ciliary transition-zone function."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("ClinVar RCV002223152: p.Arg37Ser likely pathogenic for Joubert syndrome 39", "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/"),
+                    _evidence("PubMed 35137054: p.Arg37Ser TMEM218 in syndromic ciliopathy and reduced MKS3/TMEM67 interaction", "https://pubmed.ncbi.nlm.nih.gov/35137054/"),
+                    _evidence("NCBI Gene 219854: TMEM218 coordinates and JBTS39 context", "https://www.ncbi.nlm.nih.gov/gene/219854"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Epting et al., 2022 (PMID 35137054)",
+                        "genotypes": "Homozygous TMEM218 c.111G>T / p.Arg37Ser in an affected individual; heterozygous carrier parents",
+                        "phenotype": "Bardet-Biedl-like, Joubert, and syndromic ciliopathy features including molar tooth sign and polydactyly context",
+                        "finding": "The study reported p.Arg37Ser as a TMEM218 disease variant and showed reduced interaction with the MKS-module protein TMEM67/MKS3/Meckelin.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/",
+                    },
+                    {
+                        "paper": "ClinVar RCV002223152",
+                        "genotypes": "NM_001258244.2(TMEM218):c.111G>T / p.Arg37Ser",
+                        "phenotype": "Joubert syndrome 39",
+                        "finding": "ClinVar classifies the variant as likely pathogenic for JBTS39 with single-submitter criteria-provided review status.",
+                        "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/",
+                    },
+                ],
+            },
+            {
+                "variant": "TMEM218 biallelic Joubert-Meckel ciliopathy model",
+                "display_name": "TMEM218 biallelic loss or reduced-function ciliopathy model",
+                "common_name": "TMEM218 transition-zone Joubert-Meckel model",
+                "position": None,
+                "lookup_keys": [
+                    "TMEM218 loss-of-function",
+                    "TMEM218 loss of function",
+                    "TMEM218 LOF",
+                    "TMEM218 deletion",
+                    "TMEM218 biallelic",
+                    "TMEM218 Joubert syndrome",
+                    "TMEM218 Meckel syndrome",
+                    "TMEM218 Joubert-Meckel",
+                    "TMEM218 transition zone",
+                    "TMEM218 diffusion barrier",
+                    "TMEM218 c.175C>T",
+                    "TMEM218 p.Arg59Ter",
+                    "TMEM218 p.Arg59*",
+                    "TMEM218 R59*",
+                    "TMEM218 p.Gly44Val",
+                    "TMEM218 G44V",
+                    "TMEM218 p.Arg94Ter",
+                    "TMEM218 p.Arg94*",
+                    "TMEM218 R94*",
+                    "TMEM218 p.Arg115Cys",
+                    "TMEM218 R115C",
+                    "TMEM218 p.Arg115His",
+                    "TMEM218 R115H",
+                ],
+                "region_class": "structural_region",
+                "interpretation_scope": "Autosomal-recessive disease mechanism / ciliary transition-zone diffusion-barrier model",
+                "clinical_interpretation": (
+                    "TMEM218 biallelic loss, reduced-function, and transition-zone-disruptive variants are curated as a Joubert-Meckel ciliopathy mechanism because human genetic reports and functional studies link TMEM218 dysfunction to primary cilium transition-zone biology. "
+                    "Reported phenotypes span Joubert syndrome with retinal dystrophy, Meckel syndrome, severe fetal or perinatal presentations, cystic kidney disease, encephalocele, polydactyly, and Bardet-Biedl-like overlap."
+                ),
+                "clinical_significance": "Strong autosomal-recessive Joubert-Meckel ciliopathy model; variant-level classification, phase, and phenotype fit are required before clinical escalation.",
+                "functional_effects": [
+                    "Biallelic rare deleterious variants were reported across six families with Joubert-Meckel spectrum phenotypes in the 2021 gene-discovery study.",
+                    "The p.Arg59Ter truncating variant and related severe alleles were associated with fetal or perinatal Meckel-Gruber presentations in later TMEM218 reports.",
+                    "TMEM218 participates in ciliary transition-zone biology and interacts genetically or physically with MKS/NPHP-module components including TMEM67/MKS3 and Nphp4.",
+                    "TMEM218-knockout cell work showed impaired ciliary membrane protein localization, with MKS-associated variants such as R94* and R115C failing to restore barrier function in the cited model.",
+                ],
+                "associated_conditions": [
+                    "Joubert syndrome 39",
+                    "Meckel syndrome / Meckel-Gruber syndrome",
+                    "Joubert-Meckel-nephronophthisis spectrum ciliopathy",
+                    "Retinal dystrophy, cystic kidney disease, polydactyly, and occipital encephalocele research context",
+                ],
+                "research_context": [
+                    "Use this broad model for biallelic pathogenic, likely pathogenic, or strongly supported TMEM218 loss/reduced-function evidence rather than isolated benign or VUS calls.",
+                    "Pair variant calls with segregation, copy-number or transcript evidence, phenotype fit, neuroimaging, renal and retinal assessment, and updated clinical variant resources.",
+                    "Variant severity should be assessed cautiously because R115C/R115H and other residue-level observations suggest cellular rescue and clinical severity can differ by amino-acid substitution.",
+                ],
+                "usual_variant_note": "Autosomal-recessive TMEM218 ciliopathy mechanism; not directly assayable as a single SNP unless a specific pathogenic allele is observed.",
+                "methylation_interpretation": (
+                    "TMEM218 methylation can support local regulatory review, but it does not prove biallelic loss, transition-zone diffusion-barrier failure, or Joubert-Meckel disease causality."
+                ),
+                "is_assayable_in_snp_vcf": False,
+                "evidence": [
+                    _evidence("PubMed 33791682: biallelic TMEM218 variants in Joubert-Meckel spectrum ciliopathies", "https://pubmed.ncbi.nlm.nih.gov/33791682/"),
+                    _evidence("PubMed 35137054: biallelic missense/nonsense TMEM218 variants and NPHP-module interaction", "https://pubmed.ncbi.nlm.nih.gov/35137054/"),
+                    _evidence("Human Molecular Genetics 2024: TMEM218 variant severity and transition-zone diffusion-barrier defects", "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982"),
+                    _evidence("PubMed 26982032: TMEM-218 as a transition-zone MKS-module-associated protein", "https://pubmed.ncbi.nlm.nih.gov/26982032/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Van De Weghe et al., 2021 (PMID 33791682)",
+                        "genotypes": "Biallelic rare deleterious TMEM218 variants across Joubert-Meckel spectrum families",
+                        "phenotype": "Joubert syndrome with retinal dystrophy and Meckel syndrome, including molar tooth sign, encephalocele, retinal dystrophy, polycystic kidneys, and polydactyly",
+                        "finding": "The study made a strong human-genetic case that TMEM218 dysfunction causes ciliopathy phenotypes in the Joubert-Meckel spectrum.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/33791682/",
+                    },
+                    {
+                        "paper": "Epting et al., 2022 (PMID 35137054)",
+                        "genotypes": "Biallelic missense and nonsense TMEM218 variants including c.111G>T / p.Arg37Ser and c.175C>T / p.Arg59Ter",
+                        "phenotype": "Bardet-Biedl-like, Joubert, and Meckel-Gruber syndromic ciliopathy presentations",
+                        "finding": "The study characterized TMEM218 as a ciliary transition-zone protein interacting with the NPHP module and TMEM67/MKS3 biology.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/",
+                    },
+                    {
+                        "paper": "Fujii et al., 2024 (DOI 10.1093/hmg/ddae083)",
+                        "genotypes": "TMEM218(G44V), TMEM218(R94*), TMEM218(R115C), and TMEM218(R115H) cellular rescue models",
+                        "phenotype": "Ciliary transition-zone integrity and membrane-protein diffusion-barrier function",
+                        "finding": "The study linked cellular diffusion-barrier rescue severity to the clinical severity of TMEM218-associated MKS and JBTS variants.",
+                        "url": "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982",
+                    },
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from TMEM218 gene, ClinVar, Joubert-Meckel, transition-zone, and ciliary diffusion-barrier literature.",
+        "population_coverage_note": (
+            "The bundled TMEM218 population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Because TMEM218-associated disease is autosomal recessive and variant-specific, interpretation should prioritize current ClinVar/gnomAD frequency, consequence, transcript, phase, biallelic dosage, segregation, and phenotype fit."
+        ),
+        "population_sources": [
+            _evidence("NCBI Gene 219854: TMEM218 expression, coordinates, and Joubert syndrome context", "https://www.ncbi.nlm.nih.gov/gene/219854"),
+            _evidence("ClinGen Gene Facts HGNC:27344: coordinates, MANE transcript, constraint, and GenCC context", "https://search.clinicalgenome.org/kb/genes/HGNC%3A27344/external-resources"),
+            _evidence("Human Protein Atlas: TMEM218 protein class, expression, predicted location, and UniProt mapping", "https://www.proteinatlas.org/ENSG00000150433-TMEM218"),
+            _evidence("ClinVar RCV002223152: TMEM218 p.Arg37Ser likely pathogenic JBTS39 marker", "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/"),
+            _evidence("PubMed 33791682: TMEM218 biallelic variants in Joubert-Meckel spectrum families", "https://pubmed.ncbi.nlm.nih.gov/33791682/"),
+            _evidence("PubMed 35137054: TMEM218 reduced dosage and syndromic ciliopathy spectrum", "https://pubmed.ncbi.nlm.nih.gov/35137054/"),
+            _evidence("Human Molecular Genetics 2024: TMEM218 variant effects on ciliary transition-zone diffusion barrier", "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982"),
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "TMEM218 expression and protein context",
+                "location_group": "Global pattern",
+                "summary": "NCBI reports ubiquitous expression and a cilium/membrane location prediction, while Human Protein Atlas maps TMEM218 to predicted intracellular/membrane location and UniProt A2RU14 protein evidence.",
+            },
+            {
+                "variant": "TMEM218 p.Arg37Ser",
+                "location_group": "ClinVar and literature marker",
+                "summary": "ClinVar classifies NM_001258244.2:c.111G>T / p.Arg37Ser as likely pathogenic for Joubert syndrome 39, and Epting et al. reported reduced interaction with TMEM67/MKS3/Meckelin.",
+            },
+            {
+                "variant": "Biallelic TMEM218 disease mechanism",
+                "location_group": "Rare-disease families",
+                "summary": "Human genetic reports support biallelic TMEM218 dysfunction as a Joubert-Meckel spectrum ciliopathy cause, with phenotypes including retinal dystrophy, molar tooth sign, encephalocele, cystic kidneys, and polydactyly.",
+            },
+            {
+                "variant": "TMEM218 transition-zone diffusion barrier",
+                "location_group": "Functional biology",
+                "summary": "Functional studies place TMEM218 in ciliary transition-zone biology, MKS/NPHP-module interaction, TMEM67 interaction, and ciliary membrane protein diffusion-barrier control.",
+            },
+            {
+                "variant": "Variant-specific severity",
+                "location_group": "Functional and clinical gradient",
+                "summary": "Cellular rescue and patient reports suggest that truncating or severe TMEM218 variants can align with Meckel syndrome while some missense contexts align with Joubert-spectrum disease, so variant class and phase matter.",
+            },
+            {
+                "variant": "TMEM218 TSS methylation",
+                "location_group": "Local regulatory context",
+                "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for TMEM218-associated ciliopathy, renal, retinal, fetal, or diffusion-barrier interpretation.",
+            },
+        ],
+    },
+    {
         "gene_name": "FAM170A",
         "cytoband": "5q23.1",
         "chromosome": "5",
@@ -3420,6 +4909,639 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
 ]
 
 
+def _build_allergic_inflammation_evidence(config: dict[str, Any]) -> list[dict[str, str]]:
+    gene_name = str(config["gene_name"])
+    canonical_symbol = str(config.get("canonical_symbol") or gene_name)
+    ensembl_id = str(config["ensembl_id"])
+    evidence = [
+        _evidence(
+            f"NCBI Gene {config['ncbi_id']}: {canonical_symbol} gene summary",
+            f"https://www.ncbi.nlm.nih.gov/gene/{config['ncbi_id']}",
+        ),
+        _evidence(
+            f"Ensembl GRCh37 {ensembl_id}: {canonical_symbol} coordinates and transcripts",
+            f"https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g={ensembl_id}",
+        ),
+    ]
+    if config.get("uniprot_id"):
+        evidence.append(
+            _evidence(
+                f"UniProt {config['uniprot_id']}: {canonical_symbol} protein entry",
+                f"https://www.uniprot.org/uniprotkb/{config['uniprot_id']}/entry",
+            )
+        )
+    evidence.append(
+        _evidence(
+            f"GWAS Catalog gene page: {canonical_symbol}",
+            f"https://www.ebi.ac.uk/gwas/genes/{canonical_symbol}",
+        )
+    )
+    evidence.extend(config.get("extra_evidence", []))
+    return evidence
+
+
+def _build_allergic_inflammation_variant(
+    config: dict[str, Any],
+    variant: dict[str, Any],
+) -> dict[str, Any]:
+    gene_name = str(config["gene_name"])
+    canonical_symbol = str(config.get("canonical_symbol") or gene_name)
+    variant_name = str(variant["variant"])
+    display_name = str(variant.get("display_name") or variant_name)
+    common_name = str(
+        variant.get("common_name")
+        or f"{gene_name} allergic-inflammation research marker"
+    )
+    position = variant.get("position")
+
+    lookup_keys = list(
+        dict.fromkeys(
+            [
+                variant_name,
+                display_name,
+                common_name,
+                f"{gene_name}:{variant_name}",
+                f"{canonical_symbol}:{variant_name}",
+                *variant.get("lookup_keys", []),
+            ]
+        )
+    )
+    if position is not None:
+        lookup_keys.append(f"{config['chromosome']}:{position}")
+
+    associated_conditions = list(config["conditions"])
+    marker_context = str(
+        variant.get("marker_context")
+        or "allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature"
+    )
+
+    return {
+        "variant": variant_name,
+        "display_name": display_name,
+        "common_name": common_name,
+        "position": position,
+        "lookup_keys": lookup_keys,
+        "region_class": variant.get("region_class", "regulatory_locus"),
+        "interpretation_scope": variant.get(
+            "interpretation_scope",
+            "Research association / immune-airway regulatory context",
+        ),
+        "clinical_interpretation": (
+            f"{display_name} is bundled as a {gene_name} research marker for {marker_context}. "
+            "Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele."
+        ),
+        "clinical_significance": variant.get(
+            "clinical_significance",
+            "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+        ),
+        "functional_effects": variant.get(
+            "functional_effects",
+            [
+                f"May tag regulatory, expression, coding, haplotype, or linked-locus variation around {gene_name}.",
+                "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind.",
+            ],
+        ),
+        "associated_conditions": associated_conditions,
+        "research_context": variant.get(
+            "research_context",
+            [
+                "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+                "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+                "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions.",
+            ],
+        ),
+        "usual_variant_note": variant.get(
+            "usual_variant_note",
+            f"{gene_name} marker used for allergic-inflammation research context.",
+        ),
+        "methylation_interpretation": (
+            f"{gene_name} methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for {display_name}."
+        ),
+        "is_assayable_in_snp_vcf": bool(variant.get("is_assayable_in_snp_vcf", True)),
+        "evidence": variant.get("evidence", _build_allergic_inflammation_evidence(config)),
+        "literature_findings": variant.get(
+            "literature_findings",
+            [
+                {
+                    "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+                    "genotypes": f"{display_name} or linked {gene_name} locus genotype states",
+                    "phenotype": ", ".join(associated_conditions[:3]),
+                    "finding": (
+                        f"The local curation treats {display_name} as a research-grade {gene_name} signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology."
+                    ),
+                    "url": f"https://www.ebi.ac.uk/gwas/genes/{canonical_symbol}",
+                }
+            ],
+        ),
+    }
+
+
+def _build_allergic_inflammation_gene_definition(config: dict[str, Any]) -> dict[str, Any]:
+    gene_name = str(config["gene_name"])
+    canonical_symbol = str(config.get("canonical_symbol") or gene_name)
+    display_label = gene_name if gene_name == canonical_symbol else f"{gene_name} / {canonical_symbol}"
+    evidence = _build_allergic_inflammation_evidence(config)
+    variants = [
+        _build_allergic_inflammation_variant(config, variant)
+        for variant in config.get("variants", [])
+    ]
+
+    strand = str(config["strand"])
+    start = int(config["start"])
+    end = int(config["end"])
+    if strand == "-":
+        manifest_start = start
+        manifest_end = end + 1000
+    else:
+        manifest_start = max(1, start - 1000)
+        manifest_end = end
+
+    return {
+        "gene_name": gene_name,
+        "cytoband": config["cytoband"],
+        "chromosome": str(config["chromosome"]),
+        "start": start,
+        "end": end,
+        "strand": strand,
+        "coordinate_source": (
+            f"Ensembl GRCh37 lookup for {config['ensembl_id']} on the primary assembly, aligned to the hg19 coordinate system used by this app"
+        ),
+        "manifest_filter_region": config.get(
+            "manifest_filter_region",
+            f"{config['chromosome']}:{manifest_start}-{manifest_end}",
+        ),
+        "gene_summary": config["gene_summary"],
+        "clinical_context": config.get(
+            "clinical_context",
+            (
+                f"The bundled {display_label} knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. "
+                "Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation."
+            ),
+        ),
+        "variant_effect_overview": config["variant_effect_overview"],
+        "condition_research_overview": config["conditions"],
+        "methylation_interpretation": config.get(
+            "methylation_interpretation",
+            (
+                f"{gene_name} methylation should be read as local regulatory context around an allergic-inflammation gene. "
+                "Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response."
+            ),
+        ),
+        "methylation_effects": config.get(
+            "methylation_effects",
+            [
+                f"Promoter-proximal methylation may suggest a more restrained or permissive local regulatory state for {gene_name} expression potential.",
+                "Interpret methylation with tissue, cell composition, environmental exposure, disease state, medication history, and genotype context.",
+            ],
+        ),
+        "methylation_condition_research": config.get(
+            "methylation_condition_research",
+            [
+                "Asthma, allergy, atopic dermatitis, eosinophilic inflammation, and airway epithelial studies.",
+                "Immune-cell, epithelial-barrier, cytokine-signaling, and inflammatory-disease epigenetic research.",
+            ],
+        ),
+        "evidence": evidence,
+        "variants": variants,
+        "population_intro": (
+            f"Broader population patterns curated from {display_label} asthma, atopy, airway, epithelial-barrier, and immune-inflammatory literature."
+        ),
+        "population_coverage_note": (
+            f"The bundled {display_label} population database is literature oriented and does not include a complete allele-frequency panel. "
+            "Interpretation should remain ancestry-, phenotype-, tissue-, assay-, and LD-aware."
+        ),
+        "population_sources": evidence,
+        "gene_population_patterns": config.get(
+            "gene_population_patterns",
+            [
+                {
+                    "variant": variant.get("display_name", variant["variant"]),
+                    "location_group": variant.get("location_group", "Disease cohorts"),
+                    "summary": (
+                        f"{variant.get('display_name', variant['variant'])} is curated as a low-penetrance research signal in {gene_name} or a linked locus; cohort design, ancestry, LD, and phenotype definition matter."
+                    ),
+                }
+                for variant in config.get("variants", [])
+            ]
+            + [
+                {
+                    "variant": f"{gene_name} regulatory context",
+                    "location_group": "Global pattern",
+                    "summary": (
+                        f"{gene_name} interpretation is most useful when sequence, methylation, expression, tissue, and allergic-immune phenotype evidence are integrated rather than treated as a single deterministic SNP call."
+                    ),
+                }
+            ],
+        ),
+    }
+
+
+ALLERGIC_INFLAMMATION_GENE_CONFIGS: list[dict[str, Any]] = [
+    {
+        "gene_name": "IL33",
+        "ensembl_id": "ENSG00000137033",
+        "ncbi_id": "90865",
+        "uniprot_id": "O95760",
+        "cytoband": "9p24.1",
+        "chromosome": "9",
+        "start": 6215805,
+        "end": 6257983,
+        "strand": "+",
+        "gene_summary": "IL33 encodes interleukin-33, an IL-1-family alarmin released from stressed epithelial, endothelial, and barrier tissues and sensed through the IL1RL1/ST2 receptor axis.",
+        "variant_effect_overview": [
+            "IL33 variants are usually interpreted as regulatory or linked-locus modifiers of epithelial alarmin expression and type 2 inflammatory priming.",
+            "Asthma and allergy GWAS signals near IL33 should be read as low-penetrance susceptibility context, not as monogenic disease alleles.",
+        ],
+        "conditions": ["Asthma susceptibility", "Atopic dermatitis and allergic disease", "Airway epithelial alarmin and type 2 inflammation research"],
+        "variants": [
+            {"variant": "rs1342326", "position": 6190076, "common_name": "IL33 asthma GWAS regulatory-locus marker"},
+            {"variant": "rs2381416", "position": 6193455, "common_name": "IL33 asthma/allergy linked regulatory marker"},
+        ],
+    },
+    {
+        "gene_name": "IL1RL1",
+        "ensembl_id": "ENSG00000115602",
+        "ncbi_id": "9173",
+        "uniprot_id": "Q01638",
+        "cytoband": "2q12.1",
+        "chromosome": "2",
+        "start": 102927962,
+        "end": 102968497,
+        "strand": "+",
+        "gene_summary": "IL1RL1 encodes the ST2 receptor chain for IL-33 and produces membrane and soluble isoforms that shape type 2 inflammation, mast-cell biology, eosinophilia, airway remodeling, and allergic immune tone.",
+        "variant_effect_overview": [
+            "IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+            "Variant interpretation should preserve IL1RL1, IL18R1, and IL18RAP cluster LD instead of assuming a single causal gene from one SNP.",
+        ],
+        "conditions": ["Asthma and eosinophilic airway inflammation", "Atopy and allergic disease", "IL-33/ST2 signaling and soluble ST2 biomarker research"],
+        "variants": [
+            {"variant": "rs3771180", "position": 102953617, "common_name": "IL1RL1 asthma and type 2 inflammation locus marker"},
+            {"variant": "rs13408661", "position": 102955082, "common_name": "IL1RL1/IL18R1 cluster asthma marker"},
+        ],
+    },
+    {
+        "gene_name": "ORMDL3",
+        "ensembl_id": "ENSG00000172057",
+        "ncbi_id": "94103",
+        "uniprot_id": "Q8N138",
+        "cytoband": "17q12-q21.1",
+        "chromosome": "17",
+        "start": 38077294,
+        "end": 38083854,
+        "strand": "-",
+        "gene_summary": "ORMDL3 encodes an endoplasmic-reticulum membrane protein that regulates sphingolipid homeostasis and is embedded in the chromosome 17q12-q21 asthma locus with GSDMB and neighboring regulatory elements.",
+        "variant_effect_overview": [
+            "ORMDL3 locus markers often reflect 17q12-q21 regulatory haplotypes that influence ORMDL3, GSDMB, and neighboring gene expression.",
+            "Reported effects are strongest in childhood asthma and allergic-airway GWAS but remain LD-, ancestry-, and tissue-context dependent.",
+        ],
+        "conditions": ["Childhood asthma susceptibility", "Allergic airway inflammation", "17q12-q21 regulatory haplotype and sphingolipid biology"],
+        "variants": [
+            {"variant": "rs7216389", "position": 38069949, "common_name": "17q12-q21 ORMDL3/GSDMB asthma haplotype marker"},
+            {"variant": "rs4794820", "position": 38089344, "common_name": "ORMDL3 linked asthma regulatory marker"},
+        ],
+    },
+    {
+        "gene_name": "GSDMB",
+        "ensembl_id": "ENSG00000073605",
+        "ncbi_id": "55876",
+        "uniprot_id": "Q8TAX9",
+        "cytoband": "17q12-q21.1",
+        "chromosome": "17",
+        "start": 38060848,
+        "end": 38076107,
+        "strand": "-",
+        "gene_summary": "GSDMB encodes gasdermin B, a gasdermin-family protein at the 17q12-q21 asthma locus with airway, epithelial, immune, and pyroptosis-related research relevance.",
+        "variant_effect_overview": [
+            "GSDMB variants can tag coding, splicing, and expression effects within the ORMDL3/GSDMB asthma haplotype block.",
+            "Interpretation should separate GSDMB protein-function hypotheses from linked 17q12-q21 regulatory effects on neighboring genes.",
+        ],
+        "conditions": ["Asthma susceptibility", "Airway epithelial and immune-cell inflammation", "17q12-q21 GSDMB/ORMDL3 locus research"],
+        "variants": [
+            {"variant": "rs11078927", "position": 38064405, "common_name": "GSDMB splice/coding asthma-locus marker"},
+            {"variant": "rs7216389", "position": 38069949, "common_name": "17q12-q21 GSDMB/ORMDL3 asthma haplotype marker"},
+        ],
+    },
+    {
+        "gene_name": "HLA-DQA1",
+        "ensembl_id": "ENSG00000196735",
+        "ncbi_id": "3117",
+        "uniprot_id": "P01909",
+        "cytoband": "6p21.32",
+        "chromosome": "6",
+        "start": 32595956,
+        "end": 32614839,
+        "strand": "+",
+        "gene_summary": "HLA-DQA1 encodes the alpha chain of HLA-DQ, an MHC class II antigen-presentation molecule whose haplotypes influence adaptive immune recognition and many autoimmune, allergic, and inflammatory association studies.",
+        "variant_effect_overview": [
+            "HLA-DQA1 interpretation is usually haplotype and allele based rather than single-SNP deterministic.",
+            "Nearby HLA-DQ GWAS SNPs can tag complex MHC LD and should not be treated as HLA-DQA1-specific functional alleles without HLA typing or fine mapping.",
+        ],
+        "conditions": ["HLA-DQ antigen presentation", "Autoimmune and allergic disease association research", "Asthma and immune-trait MHC locus context"],
+        "variants": [
+            {"variant": "rs9273349", "position": 32625869, "common_name": "HLA-DQ asthma and immune-trait MHC marker"},
+            {"variant": "HLA-DQ haplotype model", "common_name": "HLA-DQA1 haplotype and antigen-presentation model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "HLA-DQB1",
+        "ensembl_id": "ENSG00000179344",
+        "ncbi_id": "3119",
+        "uniprot_id": "P01920",
+        "cytoband": "6p21.32",
+        "chromosome": "6",
+        "start": 32627244,
+        "end": 32636160,
+        "strand": "-",
+        "gene_summary": "HLA-DQB1 encodes the beta chain of HLA-DQ, an MHC class II antigen-presentation molecule with strong haplotype-level relevance to immune, autoimmune, allergy, and asthma association studies.",
+        "variant_effect_overview": [
+            "HLA-DQB1 should be interpreted through HLA allele, haplotype, and MHC LD context rather than through isolated SNP rows.",
+            "HLA-DQ region SNPs can be useful research tags but require fine mapping before assigning causality to HLA-DQB1.",
+        ],
+        "conditions": ["HLA-DQ antigen presentation", "Autoimmune and allergic disease association research", "Asthma and immune-trait MHC locus context"],
+        "variants": [
+            {"variant": "rs9273349", "position": 32625869, "common_name": "HLA-DQ asthma and immune-trait MHC marker"},
+            {"variant": "HLA-DQ haplotype model", "common_name": "HLA-DQB1 haplotype and antigen-presentation model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "TSLP",
+        "ensembl_id": "ENSG00000145777",
+        "ncbi_id": "85480",
+        "uniprot_id": "Q969D9",
+        "cytoband": "5q22.1",
+        "chromosome": "5",
+        "start": 110405760,
+        "end": 110413722,
+        "strand": "+",
+        "gene_summary": "TSLP encodes thymic stromal lymphopoietin, an epithelial cytokine that primes dendritic cells and type 2 inflammation and is a therapeutic target in asthma.",
+        "variant_effect_overview": [
+            "TSLP markers are usually interpreted as regulatory modifiers of epithelial cytokine tone and allergic-airway susceptibility.",
+            "Because TSLP is medication-relevant, the local bundle keeps variants as research context rather than drug-response rules.",
+        ],
+        "conditions": ["Asthma susceptibility", "Atopic dermatitis and allergic disease", "Epithelial alarmin and type 2 inflammation research"],
+        "variants": [
+            {"variant": "rs1837253", "position": 110401872, "common_name": "TSLP asthma and allergic-disease regulatory marker"},
+        ],
+    },
+    {
+        "gene_name": "IL4R",
+        "ensembl_id": "ENSG00000077238",
+        "ncbi_id": "3566",
+        "uniprot_id": "P24394",
+        "cytoband": "16p12.1",
+        "chromosome": "16",
+        "start": 27324989,
+        "end": 27376099,
+        "strand": "+",
+        "gene_summary": "IL4R encodes the interleukin-4 receptor alpha chain shared by IL-4 and IL-13 receptor complexes, linking JAK-STAT6 signaling to type 2 inflammation, asthma, eczema, and allergy biology.",
+        "variant_effect_overview": [
+            "IL4R missense and regulatory polymorphisms are studied as modifiers of atopy, asthma, IgE biology, and type 2 cytokine signaling.",
+            "Variant effects are context dependent and should not be used alone for biologic therapy selection.",
+        ],
+        "conditions": ["Asthma and atopy", "Atopic dermatitis and IgE biology", "IL-4/IL-13 receptor and STAT6 signaling research"],
+        "variants": [
+            {"variant": "rs1801275", "display_name": "rs1801275 (IL4R Ile50Val)", "common_name": "IL4R missense atopy/asthma marker"},
+            {"variant": "rs1805010", "display_name": "rs1805010 (IL4R Gln576Arg)", "common_name": "IL4R missense type 2 signaling marker"},
+        ],
+    },
+    {
+        "gene_name": "STAT6",
+        "ensembl_id": "ENSG00000166888",
+        "ncbi_id": "6778",
+        "uniprot_id": "P42226",
+        "cytoband": "12q13.3",
+        "chromosome": "12",
+        "start": 57489191,
+        "end": 57525922,
+        "strand": "-",
+        "gene_summary": "STAT6 encodes the transcription factor activated downstream of IL-4 and IL-13 signaling, regulating type 2 immune differentiation, IgE-related programs, epithelial remodeling, and allergic inflammation.",
+        "variant_effect_overview": [
+            "STAT6 variants are studied as modifiers of IL-4/IL-13 transcriptional signaling, asthma, atopy, and allergic sensitization.",
+            "Interpretation should focus on pathway tuning rather than high-penetrance disease prediction.",
+        ],
+        "conditions": ["Asthma and allergic sensitization", "Type 2 cytokine signaling", "IgE, eosinophilia, and epithelial remodeling research"],
+        "variants": [
+            {"variant": "rs324011", "common_name": "STAT6 regulatory asthma/atopy marker"},
+            {"variant": "rs3024974", "common_name": "STAT6 allergic-disease association marker"},
+        ],
+    },
+    {
+        "gene_name": "IL13",
+        "ensembl_id": "ENSG00000169194",
+        "ncbi_id": "3596",
+        "uniprot_id": "P35225",
+        "cytoband": "5q31.1",
+        "chromosome": "5",
+        "start": 131991955,
+        "end": 131996802,
+        "strand": "+",
+        "gene_summary": "IL13 encodes interleukin-13, a type 2 cytokine that drives mucus production, airway remodeling, eosinophilic inflammation, IgE biology, and epithelial barrier changes.",
+        "variant_effect_overview": [
+            "IL13 variants can modify type 2 cytokine signaling, atopy, asthma, IgE traits, and eczema susceptibility.",
+            "Coding and promoter markers should be interpreted as low-penetrance pathway modifiers.",
+        ],
+        "conditions": ["Asthma and airway remodeling", "Atopy, IgE, and allergic sensitization", "Eczema and epithelial-barrier inflammation"],
+        "variants": [
+            {"variant": "rs20541", "display_name": "rs20541 (IL13 Arg130Gln)", "position": 131995964, "common_name": "IL13 missense atopy/asthma marker"},
+            {"variant": "rs1800925", "common_name": "IL13 promoter asthma/IgE marker"},
+        ],
+    },
+    {
+        "gene_name": "IL4",
+        "ensembl_id": "ENSG00000113520",
+        "ncbi_id": "3565",
+        "uniprot_id": "P05112",
+        "cytoband": "5q31.1",
+        "chromosome": "5",
+        "start": 132009678,
+        "end": 132018368,
+        "strand": "+",
+        "gene_summary": "IL4 encodes interleukin-4, a central type 2 cytokine that promotes Th2 differentiation, B-cell class switching, IgE biology, and allergic inflammation.",
+        "variant_effect_overview": [
+            "IL4 promoter and regulatory markers are studied as modifiers of IL-4 expression, IgE, asthma, and atopy.",
+            "The IL4/IL13/RAD50 5q31 region should be interpreted with LD and cytokine-cluster context.",
+        ],
+        "conditions": ["Asthma and allergic sensitization", "IgE and Th2 differentiation", "5q31 cytokine-cluster research"],
+        "variants": [
+            {"variant": "rs2243250", "common_name": "IL4 promoter atopy/asthma marker"},
+            {"variant": "IL4/IL13 cytokine-cluster model", "common_name": "5q31 IL4-IL13 regulatory haplotype model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "FLG",
+        "ensembl_id": "ENSG00000143631",
+        "ncbi_id": "2312",
+        "uniprot_id": "P20930",
+        "cytoband": "1q21.3",
+        "chromosome": "1",
+        "start": 152274651,
+        "end": 152297679,
+        "strand": "-",
+        "gene_summary": "FLG encodes filaggrin, a key epidermal barrier protein whose loss-of-function variants are strongly linked to ichthyosis vulgaris, atopic dermatitis, allergic sensitization, and asthma risk in barrier-impaired contexts.",
+        "variant_effect_overview": [
+            "FLG loss-of-function alleles are higher-impact barrier-disruption markers than most common allergic-disease GWAS SNPs.",
+            "Asthma interpretation is usually strongest when atopic dermatitis, eczema, or barrier dysfunction is also present.",
+        ],
+        "conditions": ["Atopic dermatitis and ichthyosis vulgaris", "Epidermal barrier dysfunction", "Allergic sensitization and atopic asthma context"],
+        "variants": [
+            {"variant": "rs61816761", "display_name": "rs61816761 (FLG R501X)", "common_name": "FLG loss-of-function barrier marker", "clinical_significance": "Clinically important FLG loss-of-function research and barrier-risk marker; classification still depends on zygosity and external clinical review."},
+            {"variant": "FLG 2282del4", "common_name": "FLG recurrent loss-of-function deletion marker", "clinical_significance": "Clinically important FLG loss-of-function research and barrier-risk marker; classification still depends on zygosity and external clinical review."},
+        ],
+    },
+    {
+        "gene_name": "TLR10",
+        "ensembl_id": "ENSG00000174123",
+        "ncbi_id": "81793",
+        "uniprot_id": "Q9BXR5",
+        "cytoband": "4p14",
+        "chromosome": "4",
+        "start": 38773860,
+        "end": 38784611,
+        "strand": "-",
+        "gene_summary": "TLR10 encodes toll-like receptor 10, an innate immune receptor in the TLR1/6/10 cluster with immunomodulatory roles in microbial sensing, inflammation, and allergy/asthma association research.",
+        "variant_effect_overview": [
+            "TLR10 markers can tag innate immune signaling and the 4p14 TLR cluster rather than a single isolated receptor effect.",
+            "Interpretation should account for infection exposure, ancestry, immune-cell state, and linked TLR1/TLR6 variation.",
+        ],
+        "conditions": ["Asthma and allergic inflammation", "Innate immune signaling and microbial exposure research", "TLR1/TLR6/TLR10 cluster context"],
+        "variants": [
+            {"variant": "rs4129009", "common_name": "TLR10 innate-immune/allergy association marker"},
+            {"variant": "TLR1/TLR6/TLR10 cluster model", "common_name": "4p14 toll-like receptor haplotype model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "TNFRSF8",
+        "ensembl_id": "ENSG00000120949",
+        "ncbi_id": "943",
+        "uniprot_id": "P28908",
+        "cytoband": "1p36.22",
+        "chromosome": "1",
+        "start": 12123434,
+        "end": 12204264,
+        "strand": "+",
+        "gene_summary": "TNFRSF8 encodes CD30, a tumor necrosis factor receptor superfamily member expressed on activated lymphocytes and central to CD30-positive lymphoproliferative biology and immune activation research.",
+        "variant_effect_overview": [
+            "TNFRSF8 interpretation is usually expression-, cell-state-, and disease-context driven rather than centered on common diagnostic SNPs.",
+            "Sequence or methylation signals should be integrated with CD30 expression, lymphocyte activation, and inflammatory or lymphoma phenotype context.",
+        ],
+        "conditions": ["Activated T-cell and B-cell immune biology", "CD30-positive lymphoma and lymphoproliferative disease research", "Allergic and inflammatory immune activation context"],
+        "variants": [
+            {"variant": "TNFRSF8/CD30 expression model", "common_name": "CD30 immune-activation expression model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "CD30",
+        "canonical_symbol": "TNFRSF8",
+        "ensembl_id": "ENSG00000120949",
+        "ncbi_id": "943",
+        "uniprot_id": "P28908",
+        "cytoband": "1p36.22",
+        "chromosome": "1",
+        "start": 12123434,
+        "end": 12204264,
+        "strand": "+",
+        "gene_summary": "CD30 is the common immunology name for TNFRSF8, a tumor necrosis factor receptor superfamily member expressed on activated lymphocytes and used as a marker in CD30-positive lymphoproliferative disease research.",
+        "variant_effect_overview": [
+            "CD30/TNFRSF8 interpretation is primarily expression-, activation-state-, and disease-context based rather than a common-SNP diagnostic model.",
+            "The CD30 alias bundle lets users request the familiar CD30 name while preserving TNFRSF8 coordinates and evidence.",
+        ],
+        "conditions": ["Activated lymphocyte and CD30 biology", "CD30-positive lymphoma and inflammatory immune activation research", "Allergic and immune-cell activation context"],
+        "variants": [
+            {"variant": "CD30/TNFRSF8 expression model", "common_name": "CD30 immune-activation alias model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "MUC5AC",
+        "ensembl_id": "ENSG00000215182",
+        "ncbi_id": "4586",
+        "uniprot_id": "P98088",
+        "cytoband": "11p15.5",
+        "chromosome": "11",
+        "start": 1151580,
+        "end": 1222364,
+        "strand": "+",
+        "gene_summary": "MUC5AC encodes a gel-forming secreted mucin that is central to airway mucus, goblet-cell metaplasia, mucociliary biology, asthma, chronic airway disease, and epithelial inflammation research.",
+        "variant_effect_overview": [
+            "MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+            "Methylation and expression context can be especially important because airway mucus phenotypes are tissue- and exposure-dependent.",
+        ],
+        "conditions": ["Asthma mucus hypersecretion", "Airway epithelial goblet-cell metaplasia", "Chronic airway inflammation and mucin biology"],
+        "variants": [
+            {"variant": "MUC5AC regulatory-expression model", "common_name": "MUC5AC airway mucus expression model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "SMAD3",
+        "ensembl_id": "ENSG00000166949",
+        "ncbi_id": "4088",
+        "uniprot_id": "P84022",
+        "cytoband": "15q22.33",
+        "chromosome": "15",
+        "start": 67356101,
+        "end": 67487533,
+        "strand": "+",
+        "gene_summary": "SMAD3 encodes a TGF-beta pathway transcriptional mediator involved in epithelial remodeling, fibrosis, immune regulation, vascular biology, and asthma or inflammatory-disease association studies.",
+        "variant_effect_overview": [
+            "SMAD3 variants can tag TGF-beta signaling and airway remodeling context in asthma and inflammatory phenotypes.",
+            "Rare high-impact SMAD3 variants have separate clinical genetics implications; this bundle keeps common markers as research-level association context.",
+        ],
+        "conditions": ["Asthma and airway remodeling", "TGF-beta signaling and fibrosis biology", "Inflammatory and connective-tissue disease context"],
+        "variants": [
+            {"variant": "rs744910", "position": 67446785, "common_name": "SMAD3 asthma and airway-remodeling association marker"},
+            {"variant": "rs17293632", "common_name": "SMAD3 immune/inflammatory disease regulatory marker"},
+        ],
+    },
+    {
+        "gene_name": "IL18R1",
+        "ensembl_id": "ENSG00000115604",
+        "ncbi_id": "8809",
+        "uniprot_id": "Q13478",
+        "cytoband": "2q12.1",
+        "chromosome": "2",
+        "start": 102927989,
+        "end": 103015218,
+        "strand": "+",
+        "gene_summary": "IL18R1 encodes the IL-18 receptor alpha chain, a cytokine receptor in the 2q12 IL1 receptor cluster that supports IL-18-driven Th1, NK-cell, inflammatory, and asthma/eosinophil research biology.",
+        "variant_effect_overview": [
+            "IL18R1 markers often sit in LD with IL1RL1 and IL18RAP cluster signals and should be interpreted at the 2q12 receptor-cluster level when needed.",
+            "Variant signals may relate to asthma, eosinophils, immune activation, or inflammatory disease, but causal gene assignment is often unresolved.",
+        ],
+        "conditions": ["Asthma and eosinophil trait research", "IL-18 receptor signaling and Th1/NK-cell inflammation", "2q12 IL1 receptor-cluster association context"],
+        "variants": [
+            {"variant": "rs3771166", "position": 102986222, "common_name": "IL18R1 asthma/eosinophil receptor-cluster marker"},
+            {"variant": "rs13408661", "position": 102955082, "common_name": "IL1RL1/IL18R1 receptor-cluster asthma marker"},
+        ],
+    },
+    {
+        "gene_name": "IL18RAP",
+        "ensembl_id": "ENSG00000115607",
+        "ncbi_id": "8807",
+        "uniprot_id": "O95256",
+        "cytoband": "2q12.1",
+        "chromosome": "2",
+        "start": 103035149,
+        "end": 103069025,
+        "strand": "+",
+        "gene_summary": "IL18RAP encodes the IL-18 receptor accessory protein, the co-receptor that helps IL18R1 transmit IL-18 signaling in inflammatory, Th1, NK-cell, autoimmune, and airway immune research.",
+        "variant_effect_overview": [
+            "IL18RAP markers can tag IL-18 receptor complex function and the broader 2q12 IL1 receptor gene cluster.",
+            "Interpretation should account for IL18R1 and IL1RL1 LD, inflammatory phenotype, and tissue-specific expression.",
+        ],
+        "conditions": ["IL-18 receptor signaling and inflammatory disease", "Asthma and immune activation research", "2q12 IL1 receptor-cluster association context"],
+        "variants": [
+            {"variant": "rs917997", "common_name": "IL18RAP inflammatory-disease receptor-cluster marker"},
+            {"variant": "IL18R1/IL18RAP receptor-complex model", "common_name": "IL-18 receptor complex model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+]
+
+
+GENE_DEFINITIONS.extend(
+    _build_allergic_inflammation_gene_definition(config)
+    for config in ALLERGIC_INFLAMMATION_GENE_CONFIGS
+)
+
+
 def _build_promoter_region(meta: dict[str, Any]) -> dict[str, int | str]:
     if meta.get("promoter_review_region"):
         return dict(meta["promoter_review_region"])
@@ -3612,11 +5734,30 @@ def _write_empty_manifest_subset(meta: dict[str, Any]) -> tuple[Path, pd.DataFra
     return subset_path, subset_df
 
 
+def _write_manifest_subset_from_loaded_manifest(
+    manifest_df: pd.DataFrame,
+    meta: dict[str, Any],
+    region: str,
+) -> tuple[Path, pd.DataFrame]:
+    """Write one gene-specific manifest subset using a preloaded manifest."""
+    chrom, start, end = parse_region_string(region)
+    subset_df = filter_probes_by_region(manifest_df, chrom, start, end, "hg19")
+    if subset_df.empty:
+        if not meta.get("allow_empty_manifest_subset"):
+            raise ValueError(f"No manifest probes were found in {chrom}:{start}-{end} for genome build hg19.")
+        subset_df = manifest_df.iloc[0:0].copy()
+
+    subset_path = GENE_DATA_DIR / f"{meta['gene_name']}_epigenetics_hg19.csv"
+    subset_df.to_csv(subset_path, index=False)
+    return subset_path, subset_df
+
+
 def main() -> None:
     if not MANIFEST_PATH.exists():
         raise FileNotFoundError(f"Required manifest not found: {MANIFEST_PATH}")
 
     GENE_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    manifest_df = load_manifest(str(MANIFEST_PATH))
 
     generated: list[str] = []
     for meta in GENE_DEFINITIONS:
@@ -3624,15 +5765,7 @@ def main() -> None:
             subset_path, subset_df = _write_empty_manifest_subset(meta)
         else:
             region = str(meta.get("manifest_filter_region") or f"{meta['chromosome']}:{meta['start']}-{meta['end']}")
-            selection = save_filtered_manifest(
-                gene_name=meta["gene_name"],
-                manifest_path=str(MANIFEST_PATH),
-                region=region,
-                genome_build="hg19",
-                output_dir=GENE_DATA_DIR,
-            )
-            subset_path = Path(selection["output_path"])
-            subset_df = pd.read_csv(subset_path)
+            subset_path, subset_df = _write_manifest_subset_from_loaded_manifest(manifest_df, meta, region)
 
         interpretation_path = GENE_DATA_DIR / f"{meta['gene_name'].lower()}_interpretation_db.json"
         population_path = GENE_DATA_DIR / f"{meta['gene_name'].lower()}_population_db.json"

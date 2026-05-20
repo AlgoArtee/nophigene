@@ -33,10 +33,35 @@ CURATED_GENES = {
     "TERT": 1253282,
     "CLRN2": 17516788,
     "ARHGAP10": 148653239,
+    "CCDC66": 56591184,
+    "TYW5": 200793636,
+    "ELOVL7": 60047618,
+    "SH3PXD2B": 171752185,
+    "FRMD3": 85857907,
+    "TMEM218": 124964285,
     "FAM170A": 118965253,
     "SYCE3": 50989541,
     "BLTP3B": 100430850,
     "CIROP": 23568271,
+    "IL33": 6215805,
+    "IL1RL1": 102927962,
+    "ORMDL3": 38077294,
+    "GSDMB": 38060848,
+    "HLA-DQA1": 32595956,
+    "HLA-DQB1": 32627244,
+    "TSLP": 110405760,
+    "IL4R": 27324989,
+    "STAT6": 57489191,
+    "IL13": 131991955,
+    "IL4": 132009678,
+    "FLG": 152274651,
+    "TLR10": 38773860,
+    "TNFRSF8": 12123434,
+    "CD30": 12123434,
+    "MUC5AC": 1151580,
+    "SMAD3": 67356101,
+    "IL18R1": 102927989,
+    "IL18RAP": 103035149,
 }
 
 
@@ -520,6 +545,187 @@ def test_arhgap10_bundle_covers_schizophrenia_rhogap_and_tss_probes() -> None:
     )
 
 
+def test_ccdc66_bundle_covers_retinal_ciliary_and_high_myopia_context() -> None:
+    """CCDC66 should load as a retinal/ciliary microtubule and high-myopia bundle."""
+    knowledge_base = load_gene_interpretation_database("CCDC66")
+    population_database = load_gene_population_database("CCDC66")
+    synthesis_database = load_gene_synthesis_database("CCDC66")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "3"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 56591184
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 56655865
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "3:56590184-56655865"
+    assert "microtubule, ciliary-transition-zone, and retinal-development thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg26457421",
+        "cg02129834",
+        "cg26943727",
+        "cg24569399",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "CCDC66 c.C172T / p.Q58X" in variant_ids
+    assert "CCDC66 retinal degeneration/ciliary loss model" in variant_ids
+
+    q58x_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "CCDC66 c.C172T / p.Q58X"
+    )
+    assert "CCDC66 p.Q58X" in q58x_record["lookup_keys"]
+    assert "Research-level high-myopia marker" in q58x_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "3",
+                "id": "CCDC66 p.Q58X",
+                "pos": 56591241,
+                "ref": "C",
+                "alt": "T",
+                "gt_raw": "0/1",
+                "ad": [14, 10],
+                "dp": 24,
+                "gq": 61,
+                "qual": 94.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg02129834",
+                "beta": 0.64,
+                "chrom": "3",
+                "pos": 56591125,
+                "GencodeBasicV12_NAME": "CCDC66",
+                "UCSC_RefGene_Group": "TSS200",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="3:56590184-56655865",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "CCDC66 c.C172T / p.Q58X"
+    assert "Research-level high-myopia marker" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.64
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "high-myopia and retinal-development thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_tyw5_bundle_covers_trna_modification_and_schizophrenia_context() -> None:
+    """TYW5 should load as a tRNA hydroxylase and schizophrenia regulatory-expression bundle."""
+    knowledge_base = load_gene_interpretation_database("TYW5")
+    population_database = load_gene_population_database("TYW5")
+    synthesis_database = load_gene_synthesis_database("TYW5")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "2"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 200793636
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 200820214
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "2:200793636-200821214"
+    assert "tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg03599729",
+        "cg17075961",
+        "cg03947362",
+        "cg06278833",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "rs796364 / rs281759" in variant_ids
+    assert "rs203772" in variant_ids
+    assert "TYW5 enzymatic wybutosine-hydroxylase model" in variant_ids
+
+    rs203772_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "rs203772"
+    )
+    assert "TYW5 rs203772" in rs203772_record["lookup_keys"]
+    assert "Research-level schizophrenia eQTL" in rs203772_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "2",
+                "id": "rs203772",
+                "pos": 200800000,
+                "ref": "A",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [16, 9],
+                "dp": 25,
+                "gq": 62,
+                "qual": 95.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg17075961",
+                "beta": 0.63,
+                "chrom": "2",
+                "pos": 200820165,
+                "GencodeBasicV12_NAME": "TYW5",
+                "UCSC_RefGene_Group": "5'UTR;1stExon;Body;Body;Body;Body",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="2:200793636-200821214",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "rs203772 (TYW5 schizophrenia eQTL/MRI marker)"
+    assert "Research-level schizophrenia eQTL" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.63
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "integrative schizophrenia eQTL and neuroimaging thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
 def test_fam170a_bundle_covers_spermiogenesis_transcription_and_tss_probes() -> None:
     """FAM170A should load as a male-fertility transcription-factor research bundle."""
     knowledge_base = load_gene_interpretation_database("FAM170A")
@@ -605,6 +811,366 @@ def test_fam170a_bundle_covers_spermiogenesis_transcription_and_tss_probes() -> 
     assert predictive_theses["matched_case_count"] >= 1
     assert any(
         "sperm chromatin-remodeling thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_elovl7_bundle_covers_vlcfa_and_msa_locus_context() -> None:
+    """ELOVL7 should load as a VLCFA-remodeling and MSA locus-context research bundle."""
+    knowledge_base = load_gene_interpretation_database("ELOVL7")
+    population_database = load_gene_population_database("ELOVL7")
+    synthesis_database = load_gene_synthesis_database("ELOVL7")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "5"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 60047618
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 60140096
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "5:60047618-60141096"
+    assert "ER fatty-acid elongase and VLCFA-remodeling thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg06320606",
+        "cg13581847",
+        "cg07716486",
+        "cg22553062",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "rs7715147" in variant_ids
+    assert "ELOVL7 functional lipid-elongation model" in variant_ids
+
+    rs_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "rs7715147"
+    )
+    assert "ELOVL7 rs7715147" in rs_record["lookup_keys"]
+    assert "Research-level MSA locus marker" in rs_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "5",
+                "id": "rs7715147",
+                "pos": 60090000,
+                "ref": "A",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [14, 12],
+                "dp": 26,
+                "gq": 58,
+                "qual": 91.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg06320606",
+                "beta": 0.67,
+                "chrom": "5",
+                "pos": 60139941,
+                "GencodeBasicV12_NAME": "ELOVL7",
+                "UCSC_RefGene_Group": "5'UTR",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="5:60047618-60141096",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "rs7715147 (ELOVL7 intronic MSA locus marker)"
+    assert "Research-level MSA locus marker" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.67
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "MSA GWAS-interest lipid-dyshomeostasis locus thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_sh3pxd2b_bundle_covers_tks4_and_recessive_fths_context() -> None:
+    """SH3PXD2B should load as a TKS4 podosome and recessive FTHS/BDCS bundle."""
+    knowledge_base = load_gene_interpretation_database("SH3PXD2B")
+    population_database = load_gene_population_database("SH3PXD2B")
+    synthesis_database = load_gene_synthesis_database("SH3PXD2B")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "5"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 171752185
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 171881529
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "5:171752185-171882529"
+    assert "SH3PXD2B/TKS4 podosome-adaptor" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg08854128",
+        "cg05224707",
+        "cg26528541",
+        "cg00591781",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "SH3PXD2B c.76-2A>C" in variant_ids
+    assert "SH3PXD2B loss-of-function/deletion model" in variant_ids
+
+    splice_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "SH3PXD2B c.76-2A>C"
+    )
+    assert "rs775217258" in splice_record["lookup_keys"]
+    assert "Pathogenic Frank-ter Haar syndrome splice-acceptor variant" in splice_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "5",
+                "id": "rs775217258",
+                "pos": 171849502,
+                "ref": "T",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [13, 12],
+                "dp": 25,
+                "gq": 61,
+                "qual": 94.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg05224707",
+                "beta": 0.64,
+                "chrom": "5",
+                "pos": 171881549,
+                "GencodeBasicV12_NAME": "SH3PXD2B",
+                "UCSC_RefGene_Group": "TSS200",
+                "Relation_to_UCSC_CpG_Island": "S_Shore",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="5:171752185-171882529",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "SH3PXD2B c.76-2A>C splice acceptor"
+    assert "Pathogenic Frank-ter Haar syndrome" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.64
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "high-priority Frank-ter Haar syndrome splice-acceptor thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_frmd3_bundle_covers_dkd_regulatory_and_cytoskeletal_context() -> None:
+    """FRMD3 should load as a DKD regulatory and protein 4.1O cytoskeletal bundle."""
+    knowledge_base = load_gene_interpretation_database("FRMD3")
+    population_database = load_gene_population_database("FRMD3")
+    synthesis_database = load_gene_synthesis_database("FRMD3")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "9"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 85857907
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 86153316
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "9:85857907-86154316"
+    assert "FRMD3/protein 4.1O FERM-domain" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg21197678",
+        "cg01681498",
+        "cg16643109",
+        "cg04008954",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "rs1888747" in variant_ids
+    assert "FRMD3 tumor-suppressor/cytoskeletal model" in variant_ids
+
+    rs_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "rs1888747"
+    )
+    assert "FRMD3 rs1888747" in rs_record["lookup_keys"]
+    assert "Research-level diabetic kidney disease association marker" in rs_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "9",
+                "id": "rs1888747",
+                "pos": 86153558,
+                "ref": "C",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [16, 11],
+                "dp": 27,
+                "gq": 59,
+                "qual": 92.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg21197678",
+                "beta": 0.62,
+                "chrom": "9",
+                "pos": 86153558,
+                "GencodeBasicV12_NAME": "FRMD3",
+                "UCSC_RefGene_Group": "TSS1500",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="9:85857907-86154316",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "rs1888747 (FRMD3 diabetic kidney disease regulatory locus marker)"
+    assert "Research-level diabetic kidney disease" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.62
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "diabetic-kidney-disease regulatory-locus thesis" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
+def test_tmem218_bundle_covers_ciliary_transition_zone_and_jbts_context() -> None:
+    """TMEM218 should load as a ciliary transition-zone/Joubert-Meckel bundle."""
+    knowledge_base = load_gene_interpretation_database("TMEM218")
+    population_database = load_gene_population_database("TMEM218")
+    synthesis_database = load_gene_synthesis_database("TMEM218")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+    assert knowledge_base["gene_context"]["chromosome"] == "11"
+    assert knowledge_base["gene_context"]["gene_region"]["start"] == 124964285
+    assert knowledge_base["gene_context"]["gene_region"]["end"] == 124981522
+    assert knowledge_base["gene_context"]["recommended_promoter_plus_gene_region"] == "11:124964285-124982522"
+    assert "ciliary-transition-zone and Joubert-Meckel ciliopathy thesis" in synthesis_database["concrete_variant_prediction"]
+
+    relevant_probe_ids = knowledge_base["gene_context"]["relevant_methylation_probe_ids"]
+    assert {
+        "cg19645210",
+        "cg17569390",
+        "cg09410014",
+        "cg01963620",
+    } <= set(relevant_probe_ids)
+
+    variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
+    assert "TMEM218 c.111G>T / p.Arg37Ser" in variant_ids
+    assert "TMEM218 biallelic Joubert-Meckel ciliopathy model" in variant_ids
+
+    r37s_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "TMEM218 c.111G>T / p.Arg37Ser"
+    )
+    assert "TMEM218 p.Arg37Ser" in r37s_record["lookup_keys"]
+    assert "Likely pathogenic Joubert syndrome 39 marker" in r37s_record["clinical_significance"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "11",
+                "id": "TMEM218 c.111G>T",
+                "pos": 124971199,
+                "ref": "C",
+                "alt": "A",
+                "gt_raw": "0/1",
+                "ad": [15, 11],
+                "dp": 26,
+                "gq": 60,
+                "qual": 93.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": "cg09410014",
+                "beta": 0.66,
+                "chrom": "11",
+                "pos": 124981664,
+                "GencodeBasicV12_NAME": "TMEM218",
+                "UCSC_RefGene_Group": "TSS200",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="11:124964285-124982522",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "TMEM218 c.111G>T / p.Arg37Ser"
+    assert "Likely pathogenic Joubert syndrome 39 marker" in interpretation["matched_records"][0]["clinical_significance"]
+    assert methylation_insights["whitelist_mean_beta"] == 0.66
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "high-priority Joubert syndrome 39" in row["prediction"]
         for row in predictive_theses["variant_prediction_rows"]
     )
 
