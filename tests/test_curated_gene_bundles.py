@@ -987,6 +987,19 @@ def test_sh3pxd2b_bundle_covers_tks4_and_recessive_fths_context() -> None:
 
     assert interpretation["matched_records"][0]["variant"] == "SH3PXD2B c.76-2A>C splice acceptor"
     assert "Pathogenic Frank-ter Haar syndrome" in interpretation["matched_records"][0]["clinical_significance"]
+    catalog_marker = next(
+        item
+        for item in interpretation["curated_named_markers"]
+        if item["variant"] == "SH3PXD2B c.76-2A>C splice acceptor"
+    )
+    assert catalog_marker["genome_location"] == "GRCh37 / hg19 chr5:171,849,502"
+    assert catalog_marker["nucleotide_change"] == "T>G"
+    assert catalog_marker["reference_allele"] == "T"
+    assert catalog_marker["alternate_allele"] == "G"
+    assert catalog_marker["coding_change"] == "c.76-2A>C"
+    assert catalog_marker["rsids"] == ["rs775217258"]
+    assert catalog_marker["marker_type"] == "Single-nucleotide variant"
+    assert any("ClinVar" in link["label"] for link in catalog_marker["research_links"])
     assert methylation_insights["whitelist_mean_beta"] == 0.64
     assert predictive_theses["matched_case_count"] >= 1
     assert any(

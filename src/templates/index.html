@@ -1539,6 +1539,76 @@
     .source-list a:hover {
       text-decoration: underline;
     }
+    .marker-catalog-shell {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 14px;
+      border: 1px solid rgba(118, 19, 45, 0.10);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+    .marker-catalog-table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.9rem;
+    }
+    .marker-catalog-table th,
+    .marker-catalog-table td {
+      padding: 13px 14px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(118, 19, 45, 0.10);
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .marker-catalog-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: rgba(255, 247, 247, 0.98);
+      color: var(--accent-3);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .marker-catalog-table tr:last-child td {
+      border-bottom: 0;
+    }
+    .marker-catalog-table code {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 6px;
+      border-radius: 7px;
+      background: rgba(161, 20, 61, 0.08);
+      color: var(--accent-3);
+      font-size: 0.82rem;
+    }
+    .marker-detail-line {
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .marker-detail-line strong {
+      color: var(--accent-3);
+    }
+    .marker-research-links {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .marker-research-links a {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .marker-research-links a:hover {
+      text-decoration: underline;
+    }
     .insight-list {
       display: grid;
       gap: 10px;
@@ -3115,25 +3185,73 @@
                             </summary>
                             <div class="expandable-body">
                               {% if result.variant_interpretations.curated_named_markers %}
-                              <ul class="insight-list">
-                                {% for item in result.variant_interpretations.curated_named_markers %}
-                                <li>
-                                  <strong>{{ item.variant }}</strong>
-                                  {% if item.common_name %}({{ item.common_name }}){% endif %}
-                                  {% if item.observed_in_run %}
-                                  matched in this run as {{ item.observed_variants | join(", ") }}.
-                                  {% else %}
-                                  was not directly observed in this run.
-                                  {% endif %}
-                                  {% if item.region_class %} Curated class: {{ item.region_class | replace("_", " ") }}.{% endif %}
-                                  {{ item.clinical_significance }} {{ item.summary }}
-                                  {% if item.assay_note %} {{ item.assay_note }}{% endif %}
-                                  {% if item.functional_effects %} Functional themes: {{ item.functional_effects | join(", ") }}.{% endif %}
-                                  {% if item.associated_conditions %} Studied in {{ item.associated_conditions | join(", ") }}.{% endif %}
-                                  {% if item.research_context %} Research notes: {{ item.research_context | join("; ") }}.{% endif %}
-                                </li>
-                                {% endfor %}
-                              </ul>
+                              <div class="marker-catalog-shell">
+                                <table class="marker-catalog-table">
+                                  <thead>
+                                    <tr>
+                                      <th>Marker</th>
+                                      <th>Genome and nucleotides</th>
+                                      <th>Clinical parameters</th>
+                                      <th>Research links</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for item in result.variant_interpretations.curated_named_markers %}
+                                    <tr>
+                                      <td>
+                                        <strong>{{ item.variant }}</strong>
+                                        {% if item.common_name %}<div class="marker-detail-line">{{ item.common_name }}</div>{% endif %}
+                                        {% if item.rsids %}<code>{{ item.rsids | join(", ") }}</code>{% endif %}
+                                        <div class="badge-row">
+                                          <span class="muted-badge">{{ "Observed" if item.observed_in_run else "Not observed" }}</span>
+                                          {% if item.region_class %}<span class="muted-badge">{{ item.region_class | replace("_", " ") }}</span>{% endif %}
+                                        </div>
+                                        {% if item.observed_variants %}
+                                        <div class="marker-detail-line"><strong>Observed labels:</strong> {{ item.observed_variants | join(", ") }}</div>
+                                        {% endif %}
+                                      </td>
+                                      <td>
+                                        <div class="marker-detail-line"><strong>Location:</strong> {{ item.genome_location }}</div>
+                                        <div class="marker-detail-line"><strong>Nucleotide change:</strong> {{ item.nucleotide_change }}</div>
+                                        <div class="marker-detail-line"><strong>REF/ALT:</strong> {{ item.reference_allele }} -> {{ item.alternate_allele }}</div>
+                                        <div class="marker-detail-line"><strong>Basis:</strong> {{ item.nucleotide_change_basis }}</div>
+                                        {% if item.coding_change and item.coding_change != "Not bundled" %}
+                                        <div class="marker-detail-line"><strong>Coding or mtDNA:</strong> {{ item.coding_change }}</div>
+                                        {% endif %}
+                                        {% if item.protein_change and item.protein_change != "Not bundled" %}
+                                        <div class="marker-detail-line"><strong>Protein:</strong> {{ item.protein_change }}</div>
+                                        {% endif %}
+                                      </td>
+                                      <td>
+                                        <div class="marker-detail-line"><strong>Type:</strong> {{ item.marker_type }}</div>
+                                        <div class="marker-detail-line"><strong>Assayability:</strong> {{ item.assayability }}</div>
+                                        <div class="marker-detail-line">{{ item.clinical_parameter_summary or item.clinical_significance }}</div>
+                                        {% if item.summary %}
+                                        <div class="marker-detail-line">{{ item.summary }}</div>
+                                        {% endif %}
+                                      </td>
+                                      <td>
+                                        {% if item.research_links %}
+                                        <ul class="marker-research-links">
+                                          {% for link in item.research_links %}
+                                          <li>
+                                            {% if link.url %}
+                                            <a href="{{ link.url }}" target="_blank" rel="noreferrer">{{ link.label }}</a>
+                                            {% else %}
+                                            <span>{{ link.label }}</span>
+                                            {% endif %}
+                                          </li>
+                                          {% endfor %}
+                                        </ul>
+                                        {% else %}
+                                        <span class="marker-detail-line">No marker-specific research link is bundled yet.</span>
+                                        {% endif %}
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                              </div>
                               {% else %}
                               <p>No curated named markers are bundled for {{ result.variant_interpretations.gene_name }} yet.</p>
                               {% endif %}

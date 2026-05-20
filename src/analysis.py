@@ -1427,7 +1427,273 @@ def _match_variant_record(row: pd.Series, variant_records: list[dict[str, Any]])
     return None
 
 
-def _build_known_variant_summary(record: dict[str, Any]) -> dict[str, Any]:
+def _variant_record_text_candidates(record: dict[str, Any]) -> list[str]:
+    """Collect searchable marker text without assuming every record uses the same schema."""
+    candidates: list[str] = []
+    for key in (
+        "variant",
+        "display_name",
+        "common_name",
+        "usual_variant_note",
+        "clinical_significance",
+        "interpretation_scope",
+    ):
+        value = str(record.get(key, "")).strip()
+        if value:
+            candidates.append(value)
+    candidates.extend(str(value).strip() for value in record.get("lookup_keys", []) if str(value).strip())
+    return candidates
+
+
+def _extract_record_rsids(record: dict[str, Any]) -> list[str]:
+    """Return stable rsID aliases mentioned by a curated marker record."""
+    rsids: list[str] = []
+    seen: set[str] = set()
+    for text in _variant_record_text_candidates(record):
+        for match in re.finditer(r"\brs\d+\b", text, flags=re.IGNORECASE):
+            rsid = match.group(0).lower()
+            if rsid in seen:
+                continue
+            seen.add(rsid)
+            rsids.append(match.group(0))
+    return rsids
+
+
+def _dedupe_record_changes(changes: Iterable[str]) -> list[str]:
+    """Return unique nucleotide or protein change strings while preserving order."""
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for change in changes:
+        text = str(change).strip().rstrip(".,;")
+        if not text:
+            continue
+        normalized = text.casefold()
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        deduped.append(text)
+    return deduped
+
+
+def _extract_transcript_nucleotide_changes(record: dict[str, Any]) -> list[str]:
+    """Extract transcript or mitochondrial nucleotide changes such as c.76-2A>C."""
+    changes: list[str] = []
+    pattern = re.compile(
+        r"(?P<change>[cm]\.[*+-]?\d+(?:[+-]\d+)?(?:[ACGT]+>[ACGT]+|delins[ACGT]+|del[ACGT]*|dup[ACGT]*|ins[ACGT]+)?)",
+        flags=re.IGNORECASE,
+    )
+    for text in _variant_record_text_candidates(record):
+        changes.extend(match.group("change") for match in pattern.finditer(text))
+    return _dedupe_record_changes(changes)
+
+
+def _extract_protein_changes(record: dict[str, Any]) -> list[str]:
+    """Extract protein-level aliases such as p.Arg37Ser when bundled."""
+    changes: list[str] = []
+    pattern = re.compile(
+        r"(?P<change>p\.[A-Za-z]{1,3}\d+(?:[A-Za-z]{1,3}|Ter|\*|X))",
+        flags=re.IGNORECASE,
+    )
+    for text in _variant_record_text_candidates(record):
+        changes.extend(match.group("change") for match in pattern.finditer(text))
+    return _dedupe_record_changes(changes)
+
+
+def _extract_record_genomic_changes(record: dict[str, Any]) -> list[dict[str, Any]]:
+    """Extract exact genomic REF/ALT aliases from curated lookup keys when available."""
+    changes: list[dict[str, Any]] = []
+    seen: set[tuple[str, int | None, str, str]] = set()
+    default_chrom = str(record.get("chromosome", "")).strip().removeprefix("chr")
+    coordinate_pattern = re.compile(
+        r"^(?:chr)?(?P<chrom>[0-9XYM]+|MT):(?P<position>\d+):(?P<ref>[ACGTN]+)>(?P<alt>[ACGTN]+)$",
+        flags=re.IGNORECASE,
+    )
+    genomic_hgvs_pattern = re.compile(
+        r"(?:^|[:(])g\.(?P<position>\d+)(?P<ref>[ACGTN]+)>(?P<alt>[ACGTN]+)",
+        flags=re.IGNORECASE,
+    )
+
+    for text in _variant_record_text_candidates(record):
+        candidate = text.strip()
+        match = coordinate_pattern.fullmatch(candidate)
+        chrom = ""
+        position: int | None = None
+        ref = ""
+        alt = ""
+        if match:
+            chrom = match.group("chrom").removeprefix("chr")
+            position = int(match.group("position"))
+            ref = match.group("ref").upper()
+            alt = match.group("alt").upper()
+        else:
+            match = genomic_hgvs_pattern.search(candidate)
+            if match:
+                chrom = default_chrom
+                position = int(match.group("position"))
+                ref = match.group("ref").upper()
+                alt = match.group("alt").upper()
+        if not ref or not alt:
+            continue
+
+        dedupe_key = (chrom or default_chrom, position, ref, alt)
+        if dedupe_key in seen:
+            continue
+        seen.add(dedupe_key)
+        changes.append(
+            {
+                "chromosome": chrom or default_chrom,
+                "position": position,
+                "reference_allele": ref,
+                "alternate_allele": alt,
+                "change": f"{ref}>{alt}",
+            }
+        )
+
+    return changes
+
+
+def _extract_alleles_from_nucleotide_changes(changes: Iterable[str]) -> tuple[list[str], list[str]]:
+    """Return simple REF/ALT alleles from change strings where that is unambiguous."""
+    refs: list[str] = []
+    alts: list[str] = []
+    for change in changes:
+        match = re.search(r"(?P<ref>[ACGT]+)>(?P<alt>[ACGT]+)$", str(change).strip(), flags=re.IGNORECASE)
+        if not match:
+            continue
+        refs.append(match.group("ref").upper())
+        alts.append(match.group("alt").upper())
+    return _dedupe_record_changes(refs), _dedupe_record_changes(alts)
+
+
+def _build_marker_type(record: dict[str, Any], genomic_changes: list[dict[str, Any]]) -> str:
+    """Classify a curated marker for compact catalog display."""
+    marker_text = " ".join(_variant_record_text_candidates(record)).casefold()
+    if "copy-number" in marker_text or "copy number" in marker_text or "cnv" in marker_text:
+        return "Copy-number / structural marker"
+    if "deletion" in marker_text or "duplication" in marker_text:
+        return "Deletion / duplication marker"
+    if genomic_changes:
+        return "Single-nucleotide variant"
+    if "model" in marker_text:
+        return "Functional or haplotype model"
+    return "Curated sequence marker"
+
+
+def _format_marker_genome_location(
+    record: dict[str, Any],
+    *,
+    assembly: str,
+    genomic_changes: list[dict[str, Any]],
+) -> str:
+    """Return the genome location for a curated marker, with explicit uncertainty when needed."""
+    if genomic_changes:
+        loci = []
+        for change in genomic_changes:
+            chrom = str(change.get("chromosome", record.get("chromosome", ""))).removeprefix("chr")
+            position = change.get("position")
+            if chrom and position is not None:
+                loci.append(f"{assembly} {_format_point(chrom, int(position))}")
+        loci = _dedupe_record_changes(loci)
+        if loci:
+            return "; ".join(loci)
+
+    chrom = str(record.get("chromosome", "")).strip().removeprefix("chr")
+    position = record.get("position")
+    if chrom and position is not None and not pd.isna(position):
+        return f"{assembly} {_format_point(chrom, int(position))}"
+    if chrom:
+        return f"{assembly} chr{chrom}; exact single-base coordinate not bundled"
+    return f"{assembly}; genome location not bundled"
+
+
+def _build_marker_clinical_parameter_summary(record: dict[str, Any], marker_type: str) -> str:
+    """Condense clinically relevant marker parameters for table/report display."""
+    parts: list[str] = []
+    clinical_significance = str(record.get("clinical_significance", "")).strip()
+    interpretation_scope = str(record.get("interpretation_scope", "")).strip()
+    conditions = _dedupe_text_items([str(item) for item in record.get("associated_conditions", [])])
+    functional_effects = _dedupe_text_items([str(item) for item in record.get("functional_effects", [])])
+    probe_ids = _dedupe_text_items([str(item) for item in record.get("relevant_methylation_probe_ids", [])])
+
+    if clinical_significance:
+        parts.append(clinical_significance)
+    if interpretation_scope:
+        parts.append(f"Scope: {interpretation_scope}.")
+    if marker_type:
+        parts.append(f"Type: {marker_type}.")
+    if conditions:
+        parts.append(f"Studied conditions: {'; '.join(conditions[:4])}.")
+    if functional_effects:
+        parts.append(f"Functional themes: {'; '.join(functional_effects[:3])}.")
+    if probe_ids:
+        parts.append(f"Methylation probes: {', '.join(probe_ids[:6])}.")
+    if not record.get("is_assayable_in_snp_vcf", True):
+        parts.append("Assay note: not directly called by the SNP-oriented VCF preview.")
+    return " ".join(parts).strip()
+
+
+def _build_curated_marker_metadata(
+    record: dict[str, Any],
+    *,
+    assembly: str = "GRCh37 / hg19",
+) -> dict[str, Any]:
+    """Build exact-position, allele, clinical, and research-link metadata for a marker."""
+    genomic_changes = _extract_record_genomic_changes(record)
+    transcript_changes = _extract_transcript_nucleotide_changes(record)
+    protein_changes = _extract_protein_changes(record)
+    marker_type = _build_marker_type(record, genomic_changes)
+
+    if genomic_changes:
+        nucleotide_changes = _dedupe_record_changes(change["change"] for change in genomic_changes)
+        nucleotide_change = "; ".join(nucleotide_changes)
+        refs = _dedupe_record_changes(change["reference_allele"] for change in genomic_changes)
+        alts = _dedupe_record_changes(change["alternate_allele"] for change in genomic_changes)
+        nucleotide_change_basis = "genomic REF/ALT alias"
+    elif transcript_changes:
+        nucleotide_change = "; ".join(transcript_changes)
+        refs, alts = _extract_alleles_from_nucleotide_changes(transcript_changes)
+        nucleotide_change_basis = "transcript or mitochondrial HGVS"
+    else:
+        nucleotide_change = "Not a bundled single-nucleotide change"
+        refs = []
+        alts = []
+        nucleotide_change_basis = "structural, haplotype, or model marker"
+
+    assayability = (
+        "Directly assayable in SNP-oriented VCF preview"
+        if record.get("is_assayable_in_snp_vcf", True)
+        else "Not directly called by the current SNP-oriented VCF preview"
+    )
+    clinical_parameter_summary = _build_marker_clinical_parameter_summary(record, marker_type)
+
+    return {
+        "genome_assembly": assembly,
+        "genome_location": _format_marker_genome_location(
+            record,
+            assembly=assembly,
+            genomic_changes=genomic_changes,
+        ),
+        "genomic_changes": genomic_changes,
+        "genomic_change": "; ".join(change["change"] for change in genomic_changes) or "Not bundled",
+        "nucleotide_change": nucleotide_change,
+        "nucleotide_change_basis": nucleotide_change_basis,
+        "reference_allele": "/".join(refs) if refs else "Not specified",
+        "alternate_allele": "/".join(alts) if alts else "Not specified",
+        "coding_change": "; ".join(transcript_changes) if transcript_changes else "Not bundled",
+        "protein_change": "; ".join(protein_changes) if protein_changes else "Not bundled",
+        "rsids": _extract_record_rsids(record),
+        "marker_type": marker_type,
+        "assayability": assayability,
+        "clinical_parameter_summary": clinical_parameter_summary,
+        "research_links": _collect_variant_record_papers(record),
+    }
+
+
+def _build_known_variant_summary(
+    record: dict[str, Any],
+    *,
+    assembly: str = "GRCh37 / hg19",
+) -> dict[str, Any]:
     """Project a curated database record into a compact UI-friendly summary."""
     position = record.get("position")
     chrom = record.get("chromosome", "11")
@@ -1435,10 +1701,12 @@ def _build_known_variant_summary(record: dict[str, Any]) -> dict[str, Any]:
     if not record.get("is_assayable_in_snp_vcf", True):
         assay_note = "Not directly called by the current SNP-oriented VCF preview."
 
+    marker_metadata = _build_curated_marker_metadata(record, assembly=assembly)
     return {
         "variant": record.get("display_name", record["variant"]),
         "common_name": record.get("common_name"),
         "position": _format_point(chrom, int(position)) if position is not None else "Repeat / structural locus",
+        **marker_metadata,
         "clinical_significance": record.get("clinical_significance", "Clinical significance not specified."),
         "summary": record.get("clinical_interpretation", ""),
         "interpretation_scope": record.get("interpretation_scope", "Research context"),
@@ -1455,6 +1723,8 @@ def _build_known_variant_summary(record: dict[str, Any]) -> dict[str, Any]:
 def _build_curated_named_marker_catalog(
     variants: pd.DataFrame,
     variant_records: list[dict[str, Any]],
+    *,
+    assembly: str = "GRCh37 / hg19",
 ) -> list[dict[str, Any]]:
     """Return all curated named markers with run-specific observation flags."""
     observed_marker_map: dict[str, list[str]] = {}
@@ -1466,7 +1736,7 @@ def _build_curated_named_marker_catalog(
 
     marker_catalog: list[dict[str, Any]] = []
     for record in variant_records:
-        summary = _build_known_variant_summary(record)
+        summary = _build_known_variant_summary(record, assembly=assembly)
         observed_variants = observed_marker_map.get(record["variant"], [])
         marker_catalog.append(
             {
@@ -1633,6 +1903,7 @@ def _build_region_variant_analysis(
     curated_records: list[dict[str, Any]],
     gene_name: str,
     inclusion_hint: str,
+    assembly: str = "GRCh37 / hg19",
 ) -> dict[str, Any]:
     """Build a structured analysis block for promoter or gene-body coverage."""
     included = _intervals_overlap(search_region, region_record)
@@ -1674,7 +1945,10 @@ def _build_region_variant_analysis(
         "analysis_note": analysis_note,
         "found_variant_count": len(found_variants),
         "found_variants": found_variants,
-        "known_variants": [_build_known_variant_summary(record) for record in curated_records],
+        "known_variants": [
+            _build_known_variant_summary(record, assembly=assembly)
+            for record in curated_records
+        ],
     }
 
 
@@ -2273,6 +2547,7 @@ def build_variant_interpretations(
     gene_context = knowledge_base.get("gene_context", {})
     gene_name = str(gene_context.get("gene_name", DEFAULT_GENE_NAME))
     chrom = str(gene_context.get("chromosome", "11")).removeprefix("chr")
+    assembly = str(gene_context.get("assembly", "GRCh37 / hg19"))
     gene_region_source = gene_context.get("gene_region", {})
     promoter_region_source = gene_context.get("promoter_review_region", {})
     promoter_hotspot_source = gene_context.get("promoter_hotspot_region", {})
@@ -2410,6 +2685,7 @@ def build_variant_interpretations(
             f"{combined_region} "
             f"if you want the upstream {gene_name} promoter reviewed alongside the gene."
         ),
+        assembly=assembly,
     )
     gene_analysis = _build_region_variant_analysis(
         region_record=gene_region_record,
@@ -2418,6 +2694,7 @@ def build_variant_interpretations(
         curated_records=gene_records,
         gene_name=gene_name,
         inclusion_hint=f"Choose a region that overlaps the canonical {gene_name} gene interval if you want gene-body variants interpreted.",
+        assembly=assembly,
     )
 
     promoter_phrase = "overlaps" if promoter_analysis["included"] else "does not overlap"
@@ -2431,7 +2708,11 @@ def build_variant_interpretations(
         f"{gene_analysis['found_variant_count']} gene-interval VCF call(s) were surfaced. "
         "Sample genotype state is decoded from FORMAT/GT and QC fields; REF -> ALT is shown only as the site definition."
     )
-    curated_named_markers = _build_curated_named_marker_catalog(variants, variant_records)
+    curated_named_markers = _build_curated_named_marker_catalog(
+        variants,
+        variant_records,
+        assembly=assembly,
+    )
     observed_named_marker_count = sum(1 for item in curated_named_markers if item["observed_in_run"])
     if curated_named_markers:
         curated_named_markers_summary = (
@@ -4729,12 +5010,24 @@ def _render_variant_interpretation_report(
                         ("common_name", "Common name"),
                         ("observed_in_run", "Observed in run"),
                         ("observed_variants", "Observed labels"),
+                        ("genome_location", "Genome location"),
+                        ("nucleotide_change", "Nucleotide change"),
+                        ("nucleotide_change_basis", "Change basis"),
+                        ("reference_allele", "Reference allele"),
+                        ("alternate_allele", "Alternate allele"),
+                        ("coding_change", "Coding / mtDNA change"),
+                        ("protein_change", "Protein change"),
+                        ("rsids", "Variant IDs"),
+                        ("marker_type", "Marker type"),
+                        ("assayability", "Assayability"),
                         ("region_class", "Curated class"),
                         ("clinical_significance", "Clinical significance"),
+                        ("clinical_parameter_summary", "Clinical parameters"),
                         ("summary", "Interpretation"),
                         ("associated_conditions", "Associated conditions"),
                         ("functional_effects", "Functional effects"),
                         ("research_context", "Research context"),
+                        ("research_links", "Research links"),
                     ],
                 ),
                 "Curated Marker Catalog",

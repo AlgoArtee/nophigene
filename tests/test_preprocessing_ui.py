@@ -20,6 +20,10 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert "temporarySubmitterInput.name = submitter.name;" in template_text
     assert "Bundled named {{ result.variant_interpretations.gene_name }} markers" in template_text
     assert "{{ result.variant_interpretations.curated_named_markers_summary }}" in template_text
+    assert "Genome and nucleotides" in template_text
+    assert "{{ item.genome_location }}" in template_text
+    assert "{{ item.nucleotide_change }}" in template_text
+    assert "{% for link in item.research_links %}" in template_text
     assert "Genetic Variant Results" in template_text
     assert "{{ result.variant_interpretations.sample_highlights.result_table_rows }}" not in template_text
     assert "Exact variant links in this sample" in template_text
