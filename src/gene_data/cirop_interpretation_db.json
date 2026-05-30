@@ -1,0 +1,430 @@
+{
+  "database_name": "NophiGene CIROP Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "CIROP",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "14q11.2",
+    "chromosome": "14",
+    "gene_region": {
+      "label": "CIROP transcribed interval",
+      "start": 23568271,
+      "end": 23574198,
+      "definition": "Canonical CIROP genomic interval on GRCh37 / hg19 from NCBI Gene 100128908 reports CIROP on GRCh37.p13 at NC_000014.8:23568271..23574198, complement.."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 23574199,
+      "end": 23575198,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "CIROP TSS-proximal EPIC probe window",
+      "start": 23573850,
+      "end": 23574175,
+      "definition": "Two bundled EPIC manifest probes fall within the reverse-strand CIROP transcribed interval near the transcription start. They are treated as local regulatory context rather than as a validated diagnostic methylation assay."
+    },
+    "recommended_promoter_plus_gene_region": "14:23568271-23575198",
+    "gene_summary": "CIROP, previously known as LMLN2, encodes ciliated left-right organizer metallopeptidase. The gene is implicated in ciliated left-right organizer biology, vertebrate left-right axis specification, and autosomal visceral heterotaxy 12.",
+    "clinical_context": "The local CIROP knowledge base is developmental-genetics oriented. It focuses on rare heterotaxy 12 variants and left-right asymmetry biology rather than common adult trait prediction.",
+    "variant_effect_overview": [
+      "Loss-of-function and selected missense CIROP variants have been reported in recessive situs anomalies and visceral heterotaxy 12.",
+      "CIROP interpretation should be handled as rare developmental-disease context, with zygosity, phase, inheritance, and phenotype matching central to any clinical follow-up.",
+      "A single heterozygous CIROP marker in an exploratory VCF should not be promoted to a diagnosis without external clinical confirmation."
+    ],
+    "condition_research_overview": [
+      "Autosomal visceral heterotaxy 12 and situs anomaly cohorts.",
+      "Ciliated left-right organizer signaling upstream of asymmetric developmental patterning.",
+      "Rare variant interpretation in congenital heart and laterality-disorder sequencing."
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg19577365",
+      "cg11790074"
+    ],
+    "methylation_interpretation": "CIROP has two bundled EPIC probes close to the reverse-strand transcription start, but vendor gene annotations may not name CIROP on those rows. Use CIROP methylation as local regulatory context only, and keep rare coding-variant interpretation separate from CpG beta summaries.",
+    "methylation_effects": [
+      "The curated CIROP whitelist includes cg19577365 and cg11790074 because they sit near the GRCh37 CIROP TSS.",
+      "No source-backed CIROP methylation biomarker is bundled; beta values should not be interpreted as heterotaxy risk by themselves."
+    ],
+    "methylation_condition_research": [
+      "If CIROP regulation is the research question, use dedicated developmental tissue, expression, or functional data rather than relying on peripheral EPIC methylation alone."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 100128908: CIROP gene summary and GRCh37 coordinates",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/100128908"
+      },
+      {
+        "label": "PubMed 34903892: CIROP and vertebrate left-right asymmetry",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/34903892/"
+      },
+      {
+        "label": "ClinVar Miner: pathogenic CIROP variants for heterotaxy 12",
+        "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+      },
+      {
+        "label": "ClinVar: CIROP c.571C>T / p.Arg191Ter",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344495/"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "CIROP c.92C>T",
+      "display_name": "CIROP c.92C>T / p.Ser31Phe",
+      "common_name": "S31F heterotaxy 12 missense marker",
+      "position": 23574038,
+      "lookup_keys": [
+        "CIROP c.92C>T",
+        "NM_001354640.2:c.92C>T",
+        "NM_001354640.2(CIROP):c.92C>T",
+        "p.Ser31Phe",
+        "S31F",
+        "rs553352307",
+        "14:23574038",
+        "14:23574038:G>A"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "ClinVar heterotaxy 12 marker / recessive developmental-disease context",
+      "clinical_interpretation": "CIROP c.92C>T / p.Ser31Phe is listed among pathogenic CIROP variants for autosomal visceral heterotaxy 12. Because CIROP disease interpretation is recessive and phenotype dependent, use this marker as a rare laterality-disorder flag that needs phase, inheritance, and clinical correlation.",
+      "clinical_significance": "ClinVar pathogenic for heterotaxy, visceral, 12, autosomal; conflicting broader-condition assertions may exist.",
+      "functional_effects": [
+        "Missense change near the N terminus of CIROP.",
+        "Reported in CIROP heterotaxy 12 variant catalogs."
+      ],
+      "associated_conditions": [
+        "Heterotaxy, visceral, 12, autosomal",
+        "Situs anomaly and left-right patterning research"
+      ],
+      "research_context": [
+        "Interpret as rare developmental-disease evidence, not as a common trait marker.",
+        "Confirm ancestry-frequency, phase, and phenotype match before clinical use."
+      ],
+      "usual_variant_note": "Pathogenic CIROP heterotaxy 12 missense marker with interpretation caveats.",
+      "methylation_interpretation": "Methylation values near the CIROP TSS do not establish pathogenicity for this coding variant.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar: CIROP c.92C>T / p.Ser31Phe",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335920/"
+        },
+        {
+          "label": "ClinVar Miner: pathogenic CIROP heterotaxy 12 variants",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+          "genotypes": "NM_001354640.2:c.92C>T",
+          "phenotype": "Autosomal visceral heterotaxy 12",
+          "finding": "The variant is curated as a CIROP heterotaxy 12 marker, but interpretation should retain recessive-inheritance and phenotype-match caveats.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335920/"
+        }
+      ],
+      "gene_name": "CIROP",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg19577365",
+        "cg11790074"
+      ]
+    },
+    {
+      "variant": "CIROP c.571C>T",
+      "display_name": "CIROP c.571C>T / p.Arg191Ter",
+      "common_name": "R191* truncating heterotaxy 12 marker",
+      "position": 23572916,
+      "lookup_keys": [
+        "CIROP c.571C>T",
+        "NM_001354640.2:c.571C>T",
+        "NM_001354640.2(CIROP):c.571C>T",
+        "p.Arg191Ter",
+        "R191*",
+        "rs764530848",
+        "14:23572916",
+        "14:23572916:G>A"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Pathogenic ClinVar truncating variant / recessive heterotaxy 12 context",
+      "clinical_interpretation": "CIROP c.571C>T / p.Arg191Ter creates a premature stop in the CIROP coding sequence and is classified in ClinVar as pathogenic for autosomal visceral heterotaxy 12. In an exploratory run, this should trigger rare-variant review rather than an app-only clinical conclusion.",
+      "clinical_significance": "Pathogenic ClinVar germline variant for heterotaxy, visceral, 12, autosomal.",
+      "functional_effects": [
+        "Nonsense variant expected to truncate CIROP.",
+        "Reported in the CIROP left-right asymmetry and heterotaxy evidence stream."
+      ],
+      "associated_conditions": [
+        "Heterotaxy, visceral, 12, autosomal",
+        "Recessive situs anomaly research"
+      ],
+      "research_context": [
+        "Check whether another CIROP pathogenic allele is present in trans before inferring recessive disease context.",
+        "Clinical interpretation requires phenotype, inheritance, and confirmatory testing."
+      ],
+      "usual_variant_note": "Truncating CIROP heterotaxy 12 marker.",
+      "methylation_interpretation": "Methylation beta values can provide local regulatory context but should not dilute the variant-level pathogenicity review.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar: CIROP c.571C>T / p.Arg191Ter",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344495/"
+        },
+        {
+          "label": "PubMed 34903892: CIROP and human recessive situs anomalies",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/34903892/"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Szenker-Ravi et al., Nature Genetics 2022",
+          "genotypes": "Loss-of-function CIROP variants",
+          "phenotype": "Recessive situs anomalies and heterotaxy",
+          "finding": "The study identified human patients with loss-of-function CIROP mutations and recessive situs anomalies, supporting CIROP as essential for human left-right patterning.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/34903892/"
+        }
+      ],
+      "gene_name": "CIROP",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg19577365",
+        "cg11790074"
+      ]
+    },
+    {
+      "variant": "CIROP c.1037G>A",
+      "display_name": "CIROP c.1037G>A / p.Trp346Ter",
+      "common_name": "W346* truncating heterotaxy 12 marker",
+      "position": 23571650,
+      "lookup_keys": [
+        "CIROP c.1037G>A",
+        "NM_001354640.2:c.1037G>A",
+        "NM_001354640.2(CIROP):c.1037G>A",
+        "p.Trp346Ter",
+        "W346*",
+        "rs1014082266",
+        "14:23571650",
+        "14:23571650:C>T"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Pathogenic ClinVar truncating variant / recessive heterotaxy 12 context",
+      "clinical_interpretation": "CIROP c.1037G>A / p.Trp346Ter is a truncating CIROP variant listed as pathogenic for autosomal visceral heterotaxy 12. Treat a matched sample row as high-priority rare developmental-disease context that needs clinical-grade confirmation.",
+      "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+      "functional_effects": [
+        "Nonsense variant expected to truncate CIROP.",
+        "Supports a loss-of-function CIROP thesis when paired with inheritance and phenotype evidence."
+      ],
+      "associated_conditions": [
+        "Heterotaxy, visceral, 12, autosomal",
+        "Left-right axis specification disorders"
+      ],
+      "research_context": [
+        "Prioritize phase and second-allele review because CIROP heterotaxy is recessive."
+      ],
+      "usual_variant_note": "Truncating CIROP heterotaxy 12 marker.",
+      "methylation_interpretation": "Nearby CIROP methylation probes do not replace variant-level confirmation.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar: CIROP c.1037G>A / p.Trp346Ter",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344490/"
+        },
+        {
+          "label": "ClinVar Miner: pathogenic CIROP heterotaxy 12 variants",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+          "genotypes": "NM_001354640.2:c.1037G>A",
+          "phenotype": "Autosomal visceral heterotaxy 12",
+          "finding": "The variant is cataloged as a pathogenic CIROP truncating marker for heterotaxy 12.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344490/"
+        }
+      ],
+      "gene_name": "CIROP",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg19577365",
+        "cg11790074"
+      ]
+    },
+    {
+      "variant": "CIROP c.1151C>T",
+      "display_name": "CIROP c.1151C>T / p.Ser384Leu",
+      "common_name": "S384L heterotaxy 12 missense marker",
+      "position": 23571459,
+      "lookup_keys": [
+        "CIROP c.1151C>T",
+        "NM_001354640.2:c.1151C>T",
+        "NM_001354640.2(CIROP):c.1151C>T",
+        "p.Ser384Leu",
+        "S384L",
+        "rs183023758",
+        "14:23571459",
+        "14:23571459:G>A"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Pathogenic ClinVar missense variant / recessive heterotaxy 12 context",
+      "clinical_interpretation": "CIROP c.1151C>T / p.Ser384Leu is listed as pathogenic for autosomal visceral heterotaxy 12. A matched exploratory VCF call should be interpreted through rare laterality-disorder genetics, not as a broad adult phenotype predictor.",
+      "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+      "functional_effects": [
+        "Missense variant in the CIROP coding sequence.",
+        "Reported in the pathogenic CIROP heterotaxy 12 variant set."
+      ],
+      "associated_conditions": [
+        "Heterotaxy, visceral, 12, autosomal",
+        "Situs anomaly sequencing studies"
+      ],
+      "research_context": [
+        "Confirm zygosity and phase before elevating the finding beyond a local research flag."
+      ],
+      "usual_variant_note": "Pathogenic CIROP heterotaxy 12 missense marker.",
+      "methylation_interpretation": "Nearby CIROP methylation is regulatory context, not a pathogenicity modifier in this bundle.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar: CIROP c.1151C>T / p.Ser384Leu",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344488/"
+        },
+        {
+          "label": "ClinVar Miner: pathogenic CIROP heterotaxy 12 variants",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+          "genotypes": "NM_001354640.2:c.1151C>T",
+          "phenotype": "Autosomal visceral heterotaxy 12",
+          "finding": "The variant is cataloged as a pathogenic CIROP missense marker for heterotaxy 12.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344488/"
+        }
+      ],
+      "gene_name": "CIROP",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg19577365",
+        "cg11790074"
+      ]
+    },
+    {
+      "variant": "CIROP c.1166G>T",
+      "display_name": "CIROP c.1166G>T / p.Arg389Ile",
+      "common_name": "R389I heterotaxy 12 missense marker",
+      "position": 23571444,
+      "lookup_keys": [
+        "CIROP c.1166G>T",
+        "NM_001354640.2:c.1166G>T",
+        "NM_001354640.2(CIROP):c.1166G>T",
+        "p.Arg389Ile",
+        "R389I",
+        "rs2140282332",
+        "14:23571444",
+        "14:23571444:C>A"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Pathogenic ClinVar missense variant / recessive heterotaxy 12 context",
+      "clinical_interpretation": "CIROP c.1166G>T / p.Arg389Ile is listed as pathogenic for autosomal visceral heterotaxy 12. The strongest interpretation is a rare developmental-disease marker that needs clinical confirmation and inheritance review.",
+      "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+      "functional_effects": [
+        "Missense variant in the CIROP coding sequence.",
+        "Reported in the pathogenic CIROP heterotaxy 12 variant set."
+      ],
+      "associated_conditions": [
+        "Heterotaxy, visceral, 12, autosomal",
+        "Left-right patterning disorder research"
+      ],
+      "research_context": [
+        "Interpret with rare-disease quality controls, phenotype review, and parental testing when relevant."
+      ],
+      "usual_variant_note": "Pathogenic CIROP heterotaxy 12 missense marker.",
+      "methylation_interpretation": "Nearby CIROP methylation does not establish clinical significance for this missense variant.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar: CIROP c.1166G>T / p.Arg389Ile",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344493/"
+        },
+        {
+          "label": "ClinVar Miner: pathogenic CIROP heterotaxy 12 variants",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+          "genotypes": "NM_001354640.2:c.1166G>T",
+          "phenotype": "Autosomal visceral heterotaxy 12",
+          "finding": "The variant is cataloged as a pathogenic CIROP missense marker for heterotaxy 12.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1344493/"
+        }
+      ],
+      "gene_name": "CIROP",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg19577365",
+        "cg11790074"
+      ]
+    },
+    {
+      "variant": "CIROP c.1364TCT[1]",
+      "display_name": "CIROP c.1364TCT[1] / p.Phe456del",
+      "common_name": "F456del heterotaxy 12 in-frame deletion",
+      "position": 23571061,
+      "lookup_keys": [
+        "CIROP c.1364TCT[1]",
+        "NM_001354640.2:c.1364TCT[1]",
+        "NM_001354640.2(CIROP):c.1364TCT[1]",
+        "p.Phe456del",
+        "F456del",
+        "rs1392604380",
+        "14:23571061",
+        "14:23571061:CAGA>C"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Pathogenic ClinVar in-frame deletion / recessive heterotaxy 12 context",
+      "clinical_interpretation": "CIROP c.1364TCT[1] / p.Phe456del is an in-frame deletion listed as pathogenic for autosomal visceral heterotaxy 12. Because deletion representation can vary across VCF normalizers, rsID, transcript HGVS, and coordinate evidence should be reconciled during review.",
+      "clinical_significance": "Pathogenic ClinVar variant for heterotaxy, visceral, 12, autosomal.",
+      "functional_effects": [
+        "In-frame deletion affecting the CIROP coding sequence.",
+        "Reported in the pathogenic CIROP heterotaxy 12 variant set."
+      ],
+      "associated_conditions": [
+        "Heterotaxy, visceral, 12, autosomal",
+        "Recessive situs anomaly research"
+      ],
+      "research_context": [
+        "Normalize indel representation before relying on coordinate-only matching.",
+        "Confirm phase and second-allele status in suspected recessive disease contexts."
+      ],
+      "usual_variant_note": "Pathogenic CIROP heterotaxy 12 in-frame deletion marker.",
+      "methylation_interpretation": "Nearby CIROP methylation values are separate regulatory context.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar: CIROP c.1364TCT[1] / p.Phe456del",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335922/"
+        },
+        {
+          "label": "ClinVar Miner: pathogenic CIROP heterotaxy 12 variants",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "ClinVar / CIROP heterotaxy 12 submissions",
+          "genotypes": "NM_001354640.2:c.1364TCT[1]",
+          "phenotype": "Autosomal visceral heterotaxy 12",
+          "finding": "The variant is cataloged as a pathogenic CIROP in-frame deletion marker for heterotaxy 12.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/1335922/"
+        }
+      ],
+      "gene_name": "CIROP",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg19577365",
+        "cg11790074"
+      ]
+    }
+  ]
+}

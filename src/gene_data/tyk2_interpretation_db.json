@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene TYK2 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "TYK2",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "19p13.2",
+    "chromosome": "19",
+    "gene_region": {
+      "label": "TYK2 transcribed interval",
+      "start": 10461209,
+      "end": 10491352,
+      "definition": "Canonical TYK2 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 10491353,
+      "end": 10492352,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 10361286,
+      "end": 10543144,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "19:10461209-10492352",
+    "gene_summary": "TYK2 encodes tyrosine kinase 2, a JAK-family kinase used by interferon, IL-12, and IL-23 signaling. This topic bundle emphasizes allergy and inflammation, with interpretation centered on IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+    "clinical_context": "The local TYK2 bundle is oriented toward allergy and inflammation. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "TYK2 variants can alter, tag, or contextualize IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Allergy, asthma, atopy, and inflammatory disease context",
+      "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+      "Immune signaling, barrier inflammation, and therapeutic target review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg25676786",
+      "cg16068727",
+      "cg21941105",
+      "cg15981620",
+      "cg11331422",
+      "cg15079565",
+      "cg06622468",
+      "cg18856252",
+      "cg08896629",
+      "cg22140136"
+    ],
+    "methylation_interpretation": "TYK2 methylation should be treated as local regulatory context around a IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for TYK2.",
+      "Because TYK2 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use TYK2 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+      "Allergy, asthma, atopy, and inflammatory disease context",
+      "Mast-cell, eosinophil, cytokine, and chemokine pathway biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 7297: TYK2",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/7297"
+      },
+      {
+        "label": "UniProt P29597: TYK2_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P29597/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000105397: TYK2 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000105397"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "TYK2 biochemical figure starter",
+      "focus": "TYK2: allergy and inflammation via IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation",
+      "template_title": "Mechanism of Allergic Inflammation Induction",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-63403fd8cda8d1d02e0a3126?source=mcp",
+      "icon_search_terms": [
+        "mast cell allergy IgE cytokine",
+        "allergic inflammation",
+        "eosinophil cytokine"
+      ],
+      "recommended_icons": [
+        "Antibody IgE (round style, with domains)",
+        "IL-5 receptor-ligand pair (cartoon)",
+        "Cytokine (2D)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a TYK2 allergy and inflammation thesis: the individual may carry context relevant to IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "TYK2 immune-response variation model",
+      "display_name": "TYK2 immune-response variation model",
+      "common_name": "TYK2 allergy and inflammation pathway model",
+      "lookup_keys": [
+        "TYK2 immune-response variation model",
+        "TYK2 immune-response variation model",
+        "TYK2:TYK2 immune-response variation model",
+        "tyk2:tyk2 immune-response variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TYK2 immune-response variation model is curated as a TYK2 marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology. Read it through genotype dosage, phenotype context, and the IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Allergy, asthma, atopy, and inflammatory disease context",
+        "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+        "Immune signaling, barrier inflammation, and therapeutic target review"
+      ],
+      "research_context": [
+        "Use this marker as a TYK2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TYK2 allergy and inflammation pathway model",
+      "methylation_interpretation": "Pair TYK2 immune-response variation model with TYK2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TYK2 curated evidence set",
+          "genotypes": "TYK2 immune-response variation model or linked TYK2 locus genotype states",
+          "phenotype": "Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+          "finding": "The local curation treats TYK2 immune-response variation model as a gene-specific marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology and IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TYK2",
+      "chromosome": "19",
+      "relevant_methylation_probe_ids": [
+        "cg25676786",
+        "cg16068727",
+        "cg21941105",
+        "cg15981620",
+        "cg11331422",
+        "cg15079565",
+        "cg06622468",
+        "cg18856252",
+        "cg08896629",
+        "cg22140136"
+      ]
+    },
+    {
+      "variant": "TYK2 regulatory expression context model",
+      "display_name": "TYK2 regulatory expression context model",
+      "common_name": "TYK2 expression and methylation-context model",
+      "lookup_keys": [
+        "TYK2 regulatory expression context model",
+        "TYK2 regulatory expression context model",
+        "TYK2:TYK2 regulatory expression context model",
+        "tyk2:tyk2 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TYK2 regulatory expression context model is curated as a TYK2 marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology. Read it through genotype dosage, phenotype context, and the IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Allergy, asthma, atopy, and inflammatory disease context",
+        "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+        "Immune signaling, barrier inflammation, and therapeutic target review"
+      ],
+      "research_context": [
+        "Use this marker as a TYK2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TYK2 expression and methylation-context model",
+      "methylation_interpretation": "Pair TYK2 regulatory expression context model with TYK2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TYK2 curated evidence set",
+          "genotypes": "TYK2 regulatory expression context model or linked TYK2 locus genotype states",
+          "phenotype": "Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+          "finding": "The local curation treats TYK2 regulatory expression context model as a gene-specific marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology and IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TYK2",
+      "chromosome": "19",
+      "relevant_methylation_probe_ids": [
+        "cg25676786",
+        "cg16068727",
+        "cg21941105",
+        "cg15981620",
+        "cg11331422",
+        "cg15079565",
+        "cg06622468",
+        "cg18856252",
+        "cg08896629",
+        "cg22140136"
+      ]
+    }
+  ]
+}

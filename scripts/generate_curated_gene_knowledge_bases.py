@@ -4986,9 +4986,12 @@ def _build_allergic_inflammation_variant(
             "interpretation_scope",
             "Research association / immune-airway regulatory context",
         ),
-        "clinical_interpretation": (
-            f"{display_name} is bundled as a {gene_name} research marker for {marker_context}. "
-            "Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele."
+        "clinical_interpretation": variant.get(
+            "clinical_interpretation",
+            (
+                f"{display_name} is bundled as a {gene_name} research marker for {marker_context}. "
+                "Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele."
+            ),
         ),
         "clinical_significance": variant.get(
             "clinical_significance",
@@ -5154,7 +5157,26 @@ ALLERGIC_INFLAMMATION_GENE_CONFIGS: list[dict[str, Any]] = [
         ],
         "conditions": ["Asthma susceptibility", "Atopic dermatitis and allergic disease", "Airway epithelial alarmin and type 2 inflammation research"],
         "variants": [
-            {"variant": "rs1342326", "position": 6190076, "common_name": "IL33 asthma GWAS regulatory-locus marker"},
+            {
+                "variant": "rs1342326",
+                "position": 6190076,
+                "common_name": "IL33 asthma GWAS regulatory-locus marker",
+                "lookup_keys": ["9:6190076:A>C"],
+                "clinical_interpretation": (
+                    "rs1342326 is curated as an upstream/flanking A/C marker near IL33 for asthma and allergic-inflammation research. "
+                    "The A/C genomic alias is retained alongside the T/G reverse-complement notation used in parts of the literature, so strand notation should be checked before assigning direction."
+                ),
+                "research_context": [
+                    "The marker sits about 25.7 kb upstream of the IL33 transcribed interval in the bundled GRCh37 coordinate context.",
+                    "Use the A/C genomic REF/ALT alias and the T/G reverse-complement literature notation carefully when comparing sources.",
+                    "Interpret rs1342326 as low-penetrance asthma and allergic-inflammation association context rather than as a diagnostic allele.",
+                ],
+                "evidence": [
+                    _evidence("Moffatt asthma GWAS IL33 rs1342326 signal", "https://pubmed.ncbi.nlm.nih.gov/20860503/"),
+                    _evidence("Ensembl GRCh37 IL33 rs1342326 A/C coordinate context", "https://grch37.ensembl.org/Homo_sapiens/Variation/Explore?v=rs1342326"),
+                    _evidence("GWAS Catalog rs1342326 T/G asthma notation", "https://www.ebi.ac.uk/gwas/variants/rs1342326"),
+                ],
+            },
             {"variant": "rs2381416", "position": 6193455, "common_name": "IL33 asthma/allergy linked regulatory marker"},
         ],
     },
@@ -5536,9 +5558,2097 @@ ALLERGIC_INFLAMMATION_GENE_CONFIGS: list[dict[str, Any]] = [
 ]
 
 
+BIORENDER_VISUAL_LIBRARY: dict[str, dict[str, Any]] = {
+    "dna_repair": {
+        "template_title": "DNA Repair Mechanisms",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-5ee11f56287bce00b20b3f92?source=mcp",
+        "icon_search_terms": ["DNA repair", "genome editing"],
+        "recommended_icons": ["BRCA1 (schematic)", "BRCA2 (schematic)", "Cytosine base editor"],
+    },
+    "receptor_signaling": {
+        "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+        "icon_search_terms": ["growth factor receptor", "EGFR"],
+        "recommended_icons": ["EGFR in endosome (ubiquitinated)", "EGF (pathway)", "VEGFR2 (dimer, schematic)"],
+    },
+    "lipid_metabolism": {
+        "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+        "icon_search_terms": ["lipid metabolism", "APOE", "LDL receptor"],
+        "recommended_icons": ["Apolipoprotein A brush (kringle)", "Vessel (atherosclerosis, cross-section)", "Atherosclerosis (with hypoxia, cross-section)"],
+    },
+    "mitochondria": {
+        "template_title": "Mitochondrial Damage Pathways (Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-63dd8cb60cba5b3e6469eb30?source=mcp",
+        "icon_search_terms": ["mitochondria", "aldehyde dehydrogenase"],
+        "recommended_icons": ["Mitochondria (elongated)", "Mitochondria (2D, with ROS symbol)", "Metabolic pathway (in mitochondria)"],
+    },
+    "ion_channel": {
+        "template_title": "Types of Cellular Receptors",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-60ba45fff7aa2e00a8b7081c?source=mcp",
+        "icon_search_terms": ["ion channel", "calcium channel", "CFTR"],
+        "recommended_icons": ["Ion channel (ligand-gated, open, schematic)", "ATP sensitive potassium channel (open, in membrane)", "Cardiac action potential diagram"],
+    },
+    "hematology": {
+        "template_title": "Pathway and Genetic Markers (Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+        "icon_search_terms": ["hemoglobin", "iron metabolism"],
+        "recommended_icons": ["Vessel cross-section with red  blood cells (anemic)", "Blood vessel (with red  blood cells, anemic)", "Osmoregulation (red blood cell)"],
+    },
+    "synapse": {
+        "template_title": "CREB Signaling Pathway",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-608c41c359b80e00a38478b4?source=mcp",
+        "icon_search_terms": ["synapse", "neurotrophin"],
+        "recommended_icons": ["Synaptic vesicle with neurotransmitters (medium)", "Pre-synaptic membrane (with cycling vesicles)", "Post-synaptic membrane (3D, dendrite)"],
+    },
+    "metabolic_pathway": {
+        "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+        "icon_search_terms": ["folate metabolism", "protein kinase", "metabolic pathway"],
+        "recommended_icons": ["Metabolic pathway (in mitochondria)", "Simulated metabolic activity", "PKA bound to cAMP"],
+    },
+    "cardiac_contractile": {
+        "template_title": "Pathway and Genetic Markers (Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+        "icon_search_terms": ["myosin sarcomere", "cardiomyocyte"],
+        "recommended_icons": ["Cardiomyocyte (branched, hypertrophy)", "Cardiomyocyte 2", "Cardiomyocyte (branched)"],
+    },
+    "allergic_inflammation": {
+        "template_title": "Mechanism of Allergic Inflammation Induction",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-63403fd8cda8d1d02e0a3126?source=mcp",
+        "icon_search_terms": ["mast cell allergy IgE cytokine", "allergic inflammation", "eosinophil cytokine"],
+        "recommended_icons": ["Antibody IgE (round style, with domains)", "IL-5 receptor-ligand pair (cartoon)", "Cytokine (2D)"],
+    },
+    "pigmentation_hair": {
+        "template_title": "Hair Follicle Anatomy",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-641dc82b59511ede76dc7b32?source=mcp",
+        "icon_search_terms": ["melanocyte", "melanin", "hair follicle", "skin epidermis hair follicle"],
+        "recommended_icons": ["Skin (epidermis)", "Epithelial layers (skin)", "Male balding (stage 0, lateral)"],
+    },
+    "aging_telomere": {
+        "template_title": "Hallmarks of Aging (Circle Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-6629073064f3f05486a9a0ab?source=mcp",
+        "icon_search_terms": ["telomere", "cellular senescence", "aging"],
+        "recommended_icons": ["Chromosome (with telomeric DNA sequence)", "Human telomerase (RNA)", "p53 (pathway)"],
+    },
+    "neurodegeneration": {
+        "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+        "icon_search_terms": ["neuron synapse neurodegeneration", "synapse", "microglia"],
+        "recommended_icons": ["Microglial cell (with Abeta plaque)", "Axonal-dendritic synaptic cleft (3D)", "Myelin sheath (long, degenerating)"],
+    },
+    "gut_barrier": {
+        "template_title": "Intestinal Barrier Structure with Microbiota",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-69eded0a2c5ddd9536c15eda?source=mcp",
+        "icon_search_terms": ["intestinal barrier gut epithelium", "digestion", "microbiome"],
+        "recommended_icons": ["Intestinal epithelium (Peyer's patch)", "Colon epithelium", "Colon epithelium (mucous)"],
+    },
+}
+
+
+def _build_biorender_visuals(gene_name: str, visual_key: str, figure_focus: str) -> dict[str, Any]:
+    visual = BIORENDER_VISUAL_LIBRARY[visual_key]
+    return {
+        "provider": "BioRender",
+        "label": f"{gene_name} biochemical figure starter",
+        "focus": figure_focus,
+        "template_title": visual["template_title"],
+        "template_url": visual["template_url"],
+        "icon_search_terms": visual["icon_search_terms"],
+        "recommended_icons": visual["recommended_icons"],
+        "usage_note": (
+            "BioRender template and icon-library search results are bundled as figure starters. "
+            "Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+        ),
+    }
+
+
+def _build_biochemistry_evidence(config: dict[str, Any]) -> list[dict[str, str]]:
+    gene_name = str(config["gene_name"])
+    evidence = [
+        _evidence(f"NCBI Gene {config['ncbi_id']}: {gene_name}", f"https://www.ncbi.nlm.nih.gov/gene/{config['ncbi_id']}"),
+        _evidence(f"UniProt {config['uniprot_id']}: {gene_name}_HUMAN", f"https://www.uniprot.org/uniprotkb/{config['uniprot_id']}/entry"),
+        _evidence(
+            f"Ensembl GRCh37 {config['ensembl_id']}: {gene_name} coordinate source",
+            f"https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g={config['ensembl_id']}",
+        ),
+    ]
+    evidence.extend(config.get("evidence", []))
+    return evidence
+
+
+def _build_biochemistry_variant(
+    config: dict[str, Any],
+    variant: dict[str, Any],
+) -> dict[str, Any]:
+    gene_name = str(config["gene_name"])
+    axis = str(config["biochemical_axis"])
+    conditions = list(config["conditions"])
+    variant_name = str(variant["variant"])
+    display_name = str(variant.get("display_name") or variant_name)
+    common_name = str(variant.get("common_name") or f"{gene_name} biochemical marker")
+    assayable = bool(variant.get("is_assayable_in_snp_vcf", True))
+    marker_context = str(variant.get("marker_context") or ", ".join(conditions[:2]))
+    default_evidence = variant.get("evidence", []) or config.get("evidence", [])
+    record: dict[str, Any] = {
+        "variant": variant_name,
+        "display_name": display_name,
+        "common_name": common_name,
+        "lookup_keys": variant.get("lookup_keys") or [
+            variant_name,
+            display_name,
+            f"{gene_name}:{variant_name}",
+            f"{gene_name.lower()}:{variant_name.lower()}",
+        ],
+        "region_class": str(variant.get("region_class") or "gene_body"),
+        "interpretation_scope": str(
+            variant.get("interpretation_scope")
+            or "Biochemistry research marker / clinical-context marker"
+        ),
+        "clinical_interpretation": str(
+            variant.get("clinical_interpretation")
+            or (
+                f"{display_name} is curated as a {gene_name} marker for {marker_context}. "
+                f"Read it through genotype dosage, phenotype context, and the {axis} pathway rather than as a stand-alone deterministic result."
+            )
+        ),
+        "clinical_significance": str(
+            variant.get("clinical_significance")
+            or "Curated research and clinical-context marker; external clinical classification is required for diagnostic use."
+        ),
+        "functional_effects": variant.get("functional_effects")
+        or [
+            f"Can modify or tag {axis}.",
+            "Best interpreted with tissue, ancestry, phenotype, and assay context.",
+        ],
+        "associated_conditions": variant.get("associated_conditions") or conditions,
+        "research_context": variant.get("research_context")
+        or [
+            f"Use this marker as a {gene_name} pathway-context signal, not as a stand-alone diagnosis.",
+            "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled.",
+        ],
+        "usual_variant_note": str(variant.get("usual_variant_note") or common_name),
+        "methylation_interpretation": str(
+            variant.get("methylation_interpretation")
+            or (
+                f"Pair {display_name} with {gene_name} methylation only as local regulatory context; "
+                "methylation does not prove the variant's biochemical effect."
+            )
+        ),
+        "is_assayable_in_snp_vcf": assayable,
+        "evidence": default_evidence,
+        "literature_findings": variant.get("literature_findings")
+        or [
+            {
+                "paper": str(variant.get("evidence_label") or f"{gene_name} curated evidence set"),
+                "genotypes": f"{display_name} or linked {gene_name} locus genotype states",
+                "phenotype": marker_context,
+                "finding": str(
+                    variant.get("finding")
+                    or (
+                        f"The local curation treats {display_name} as a gene-specific marker for {marker_context} and {axis}."
+                    )
+                ),
+                "url": str(variant.get("evidence_url") or (default_evidence[0]["url"] if default_evidence else "")),
+            }
+        ],
+    }
+    if "position" in variant:
+        record["position"] = int(variant["position"])
+    if not assayable:
+        record["clinical_parameter_summary"] = (
+            "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row."
+        )
+    return record
+
+
+def _build_biochemistry_gene_definition(config: dict[str, Any]) -> dict[str, Any]:
+    gene_name = str(config["gene_name"])
+    axis = str(config["biochemical_axis"])
+    conditions = list(config["conditions"])
+    evidence = _build_biochemistry_evidence(config)
+    variants = [_build_biochemistry_variant(config, variant) for variant in config["variants"]]
+    definition = {
+        "gene_name": gene_name,
+        "ensembl_id": config["ensembl_id"],
+        "ncbi_id": config["ncbi_id"],
+        "uniprot_id": config["uniprot_id"],
+        "cytoband": config["cytoband"],
+        "chromosome": config["chromosome"],
+        "start": int(config["start"]),
+        "end": int(config["end"]),
+        "strand": config["strand"],
+        "coordinate_source": "Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app",
+        "gene_summary": config["gene_summary"],
+        "clinical_context": config["clinical_context"],
+        "variant_effect_overview": config["variant_effect_overview"],
+        "condition_research_overview": conditions,
+        "methylation_interpretation": (
+            f"{gene_name} methylation should be treated as local regulatory context around a {axis} gene. "
+            "Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data."
+        ),
+        "methylation_effects": [
+            f"Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for {gene_name}.",
+            f"Because {gene_name} biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+            f"Combined sequence plus methylation findings are most useful when interpreted against {axis}.",
+        ],
+        "methylation_condition_research": [
+            f"Epigenetic regulation studies that use {gene_name} promoter or gene-body methylation as expression-context evidence.",
+            f"Variant-plus-methylation review for {axis}.",
+            *conditions[:2],
+        ],
+        "evidence": evidence,
+        "variants": variants,
+        "population_intro": f"Broader population patterns curated from {gene_name} {axis} and condition-association literature.",
+        "population_coverage_note": (
+            f"The bundled {gene_name} population database stores gene-level and marker-level interpretation notes, "
+            "but does not embed a full ancestry-frequency matrix for these markers yet."
+        ),
+        "population_sources": evidence,
+        "gene_population_patterns": [
+            {
+                "variant": f"{gene_name} biochemical pathway context",
+                "location_group": "Global pattern",
+                "summary": (
+                    f"{gene_name} findings should be read against {axis}; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+                ),
+            },
+            *[
+                {
+                    "variant": record["display_name"],
+                    "location_group": "Marker and cohort pattern",
+                    "summary": (
+                        f"{record['display_name']} is curated as a {gene_name} marker for {', '.join(record['associated_conditions'][:2])}; "
+                        "interpret ancestry and cohort patterns before assigning biological direction."
+                    ),
+                }
+                for record in variants[:3]
+            ],
+        ],
+        "biorender_visuals": _build_biorender_visuals(
+            gene_name,
+            str(config["visual_key"]),
+            str(config.get("figure_focus") or axis),
+        ),
+        "concrete_variant_prediction": config["concrete_variant_prediction"],
+    }
+    for optional_key in ("manifest_filter_region", "allow_empty_manifest_subset", "skip_manifest_subset"):
+        if optional_key in config:
+            definition[optional_key] = config[optional_key]
+    return definition
+
+
+BIOCHEMISTRY_GENE_CONFIGS: list[dict[str, Any]] = [
+    {
+        "gene_name": "TP53",
+        "ensembl_id": "ENSG00000141510",
+        "ncbi_id": "7157",
+        "uniprot_id": "P04637",
+        "cytoband": "17p13.1",
+        "chromosome": "17",
+        "start": 7565097,
+        "end": 7590856,
+        "strand": "-",
+        "biochemical_axis": "DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence",
+        "gene_summary": "TP53 encodes the p53 tumor suppressor, a stress-responsive transcription factor that integrates DNA damage, oncogene activation, hypoxia, ribosomal stress, and metabolic stress to control cell-cycle arrest, apoptosis, DNA repair, and senescence programs.",
+        "clinical_context": "The local TP53 bundle is tumor-suppressor and DNA-damage-response oriented. Germline pathogenic variants require clinical review for Li-Fraumeni syndrome context, while common and somatic markers should stay separated from germline risk interpretation.",
+        "variant_effect_overview": [
+            "TP53 interpretation depends heavily on variant class, zygosity, tumor versus germline origin, and whether the event affects the DNA-binding domain or regulatory regions.",
+            "Common polymorphisms such as Arg72Pro are research modifiers; truncating, missense hotspot, or deletion events can have much higher clinical impact when externally classified.",
+        ],
+        "conditions": ["Cancer susceptibility and tumor-suppressor biology", "DNA damage response and apoptosis", "Li-Fraumeni syndrome and somatic oncology context"],
+        "visual_key": "dna_repair",
+        "evidence": [_evidence("ClinVar TP53 variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=TP53%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs1042522", "display_name": "rs1042522 (TP53 Arg72Pro)", "common_name": "TP53 p.Arg72Pro apoptosis/cancer association marker"},
+            {"variant": "TP53 loss-of-function model", "common_name": "TP53 high-impact tumor-suppressor loss model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a TP53 stress-response thesis: the individual may carry a marker relevant to DNA-damage checkpoint tone, apoptosis, cell-cycle arrest, senescence, cancer cohort biology, or high-impact tumor-suppressor review depending on the exact allele class. Do not merge benign/common TP53 markers with pathogenic germline or somatic hotspot interpretation without external classification.",
+    },
+    {
+        "gene_name": "BRCA1",
+        "ensembl_id": "ENSG00000012048",
+        "ncbi_id": "672",
+        "uniprot_id": "P38398",
+        "cytoband": "17q21.31",
+        "chromosome": "17",
+        "start": 41196312,
+        "end": 41277500,
+        "strand": "-",
+        "biochemical_axis": "homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability",
+        "gene_summary": "BRCA1 encodes a tumor-suppressor scaffold for homologous recombination, DNA damage signaling, checkpoint control, replication-fork protection, and chromatin-linked repair.",
+        "clinical_context": "The local BRCA1 bundle is DNA-repair and hereditary cancer oriented. Pathogenic BRCA1 alleles are clinically important, but app-level matches remain research/triage context until confirmed by clinical-grade variant interpretation.",
+        "variant_effect_overview": [
+            "BRCA1 truncating, splice, and damaging missense variants can compromise homologous recombination and hereditary breast/ovarian cancer biology.",
+            "Founder variants and VUS records require zygosity, transcript, classification, ancestry, and family-history context before interpretation.",
+        ],
+        "conditions": ["Hereditary breast and ovarian cancer context", "Homologous recombination repair deficiency", "DNA double-strand break response"],
+        "visual_key": "dna_repair",
+        "evidence": [_evidence("ClinVar BRCA1 variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D")],
+        "variants": [
+            {"variant": "BRCA1 c.68_69delAG", "display_name": "BRCA1 c.68_69delAG / 185delAG", "common_name": "BRCA1 frameshift founder marker", "is_assayable_in_snp_vcf": False},
+            {"variant": "BRCA1 c.5266dupC", "display_name": "BRCA1 c.5266dupC / 5382insC", "common_name": "BRCA1 frameshift founder marker", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a BRCA1 homologous-recombination thesis: the individual may carry a signal relevant to DNA double-strand break repair, replication-fork protection, hereditary breast/ovarian cancer review, or HRD pathway biology. Only externally classified pathogenic or likely pathogenic BRCA1 variants should be escalated toward clinical hereditary-cancer risk interpretation.",
+    },
+    {
+        "gene_name": "EGFR",
+        "ensembl_id": "ENSG00000146648",
+        "ncbi_id": "1956",
+        "uniprot_id": "P00533",
+        "cytoband": "7p11.2",
+        "chromosome": "7",
+        "start": 55086714,
+        "end": 55324313,
+        "strand": "+",
+        "biochemical_axis": "receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways",
+        "gene_summary": "EGFR encodes the epidermal growth factor receptor, a receptor tyrosine kinase that links ligand binding and receptor dimerization to phosphorylation cascades controlling proliferation, survival, differentiation, and receptor trafficking.",
+        "clinical_context": "The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously.",
+        "variant_effect_overview": [
+            "EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+            "T790M-like resistance markers require tumor context and treatment history; common germline SNPs are not equivalent to somatic driver calls.",
+        ],
+        "conditions": ["Receptor tyrosine kinase signaling", "Non-small cell lung cancer somatic driver context", "EGFR inhibitor sensitivity and resistance research"],
+        "visual_key": "receptor_signaling",
+        "evidence": [_evidence("ClinVar EGFR variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D")],
+        "variants": [
+            {"variant": "EGFR p.Leu858Arg", "display_name": "EGFR L858R", "common_name": "EGFR activating kinase-domain marker"},
+            {"variant": "EGFR exon 19 deletion model", "common_name": "EGFR activating exon 19 deletion class", "is_assayable_in_snp_vcf": False},
+            {"variant": "EGFR p.Thr790Met", "display_name": "EGFR T790M", "common_name": "EGFR resistance-gatekeeper marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification.",
+    },
+    {
+        "gene_name": "APOE",
+        "ensembl_id": "ENSG00000130203",
+        "ncbi_id": "348",
+        "uniprot_id": "P02649",
+        "cytoband": "19q13.32",
+        "chromosome": "19",
+        "start": 45409011,
+        "end": 45412650,
+        "strand": "+",
+        "biochemical_axis": "lipoprotein transport, cholesterol handling, remnant clearance, neuroinflammation, and amyloid/tau-associated brain lipid biology",
+        "gene_summary": "APOE encodes apolipoprotein E, a lipid-transport protein central to cholesterol and triglyceride-rich lipoprotein handling and to brain lipid, amyloid, tau, and neuroinflammatory research.",
+        "clinical_context": "The local APOE bundle is lipid and neurogenetics oriented. APOE epsilon genotypes are risk modifiers rather than deterministic Alzheimer disease calls, and lipid/cardiovascular interpretation depends on full haplotype and phenotype context.",
+        "variant_effect_overview": [
+            "The APOE epsilon2/epsilon3/epsilon4 isoforms are defined mainly by rs429358 and rs7412 combinations, so single-site interpretation is incomplete.",
+            "APOE variants modify cohort-level risk for Alzheimer disease, lipid traits, cardiovascular biology, and type III hyperlipoproteinemia context.",
+        ],
+        "conditions": ["Alzheimer disease risk-modifier research", "Lipid transport and cardiovascular traits", "ApoE isoform and neuroinflammation biology"],
+        "visual_key": "lipid_metabolism",
+        "evidence": [_evidence("Alzforum APOE gene overview", "https://www.alzforum.org/mutations/apoe")],
+        "variants": [
+            {"variant": "rs429358", "common_name": "APOE epsilon4-defining Cys130Arg marker"},
+            {"variant": "rs7412", "common_name": "APOE epsilon2-defining Arg176Cys marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an APOE lipid-transport and neurogenetics thesis: the individual may carry partial or complete epsilon haplotype context relevant to lipoprotein clearance, Alzheimer disease cohort risk, neuroinflammation, and cardiovascular lipid biology. Full APOE epsilon interpretation requires both rs429358 and rs7412 genotype dosage.",
+    },
+    {
+        "gene_name": "ACE2",
+        "ensembl_id": "ENSG00000130234",
+        "ncbi_id": "59272",
+        "uniprot_id": "Q9BYF1",
+        "cytoband": "Xp22.2",
+        "chromosome": "X",
+        "start": 15579156,
+        "end": 15620271,
+        "strand": "-",
+        "biochemical_axis": "renin-angiotensin peptide processing, carboxypeptidase activity, cardiopulmonary vascular biology, and viral spike receptor biology",
+        "gene_summary": "ACE2 encodes angiotensin-converting enzyme 2, a membrane carboxypeptidase that converts angiotensin peptides and also serves as an entry receptor for SARS-CoV and SARS-CoV-2 spike proteins.",
+        "clinical_context": "The local ACE2 bundle is cardiopulmonary, vascular, and receptor-biology oriented. ACE2 variants are mostly research-context modifiers unless externally classified and phenotypically anchored.",
+        "variant_effect_overview": [
+            "ACE2 regulatory and coding variants can be studied for expression, peptide balance, cardiovascular traits, or host-pathogen interaction context.",
+            "X-linked location, sex, tissue expression, ancestry, and infection/exposure context all matter for interpretation.",
+        ],
+        "conditions": ["Renin-angiotensin system biology", "Cardiopulmonary and vascular research", "SARS-CoV/SARS-CoV-2 receptor interaction context"],
+        "visual_key": "receptor_signaling",
+        "evidence": [_evidence("UniProt ACE2 coronavirus receptor annotation", "https://www.uniprot.org/uniprotkb/Q9BYF1/entry")],
+        "variants": [
+            {"variant": "rs2285666", "common_name": "ACE2 regulatory/splice-region expression marker"},
+            {"variant": "ACE2 spike-binding model", "common_name": "ACE2 receptor-binding functional model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an ACE2 receptor-peptidase thesis: the individual may carry research context relevant to angiotensin peptide processing, vascular or cardiopulmonary biology, ACE2 expression, or viral spike-receptor interaction studies. This is not a deterministic infection-risk or cardiovascular-risk call.",
+    },
+    {
+        "gene_name": "CFTR",
+        "ensembl_id": "ENSG00000001626",
+        "ncbi_id": "1080",
+        "uniprot_id": "P13569",
+        "cytoband": "7q31.2",
+        "chromosome": "7",
+        "start": 117105838,
+        "end": 117356025,
+        "strand": "+",
+        "biochemical_axis": "ATP-regulated chloride and bicarbonate channel function, epithelial fluid balance, mucus hydration, and ABC transporter folding/trafficking",
+        "gene_summary": "CFTR encodes an ATP-binding cassette chloride and bicarbonate channel that regulates epithelial salt and water transport in lung, pancreas, intestine, sweat gland, and reproductive tissues.",
+        "clinical_context": "The local CFTR bundle is cystic-fibrosis and epithelial-ion-transport oriented. CFTR interpretation requires exact variant class, phase, zygosity, phenotype, and external clinical classification.",
+        "variant_effect_overview": [
+            "CFTR pathogenic variants can affect channel synthesis, folding, gating, conductance, splicing, or protein stability.",
+            "Carrier, compound-heterozygous, and modifier contexts should be kept separate from single-site exploratory findings.",
+        ],
+        "conditions": ["Cystic fibrosis and CFTR-related disorder context", "Epithelial chloride/bicarbonate transport", "Airway mucus hydration and pancreatic/intestinal biology"],
+        "visual_key": "ion_channel",
+        "evidence": [_evidence("CFTR2 variant database", "https://cftr2.org/")],
+        "variants": [
+            {"variant": "rs113993960", "display_name": "CFTR p.Phe508del / F508del", "common_name": "CFTR class II folding/trafficking marker"},
+            {"variant": "CFTR gating-variant model", "common_name": "CFTR channel gating and conductance model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a CFTR epithelial-ion-channel thesis: the individual may carry a marker relevant to chloride/bicarbonate transport, channel folding or gating, mucus hydration, cystic-fibrosis biology, or CFTR-related disorder review. Clinical interpretation requires phase, zygosity, exact allele classification, and phenotype match.",
+    },
+    {
+        "gene_name": "PCSK9",
+        "ensembl_id": "ENSG00000169174",
+        "ncbi_id": "255738",
+        "uniprot_id": "Q8NBP7",
+        "cytoband": "1p32.3",
+        "chromosome": "1",
+        "start": 55505221,
+        "end": 55530525,
+        "strand": "+",
+        "biochemical_axis": "LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation",
+        "gene_summary": "PCSK9 encodes a secreted proprotein convertase that binds LDL receptor and promotes receptor degradation, thereby tuning hepatic LDL uptake and circulating LDL cholesterol.",
+        "clinical_context": "The local PCSK9 bundle is lipid and pharmacogenetic-mechanism oriented. Loss-of-function and gain-of-function alleles can have different LDL-C and cardiovascular-risk implications.",
+        "variant_effect_overview": [
+            "PCSK9 loss-of-function alleles tend to lower LDL-C through increased LDL receptor availability.",
+            "Rare gain-of-function variants can support familial hypercholesterolemia context when externally classified.",
+        ],
+        "conditions": ["LDL cholesterol and cardiovascular risk biology", "Familial hypercholesterolemia review context", "PCSK9 inhibitor target biology"],
+        "visual_key": "lipid_metabolism",
+        "evidence": [_evidence("ClinVar PCSK9 variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=PCSK9%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs11591147", "display_name": "rs11591147 (PCSK9 R46L)", "common_name": "PCSK9 loss-of-function LDL-C marker"},
+            {"variant": "PCSK9 gain-of-function model", "common_name": "PCSK9 familial hypercholesterolemia gain-of-function model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a PCSK9 LDL-receptor-trafficking thesis: the individual may carry context relevant to LDL-C set point, hepatic LDL receptor recycling/degradation, cardiovascular lipid traits, familial hypercholesterolemia review, or PCSK9 inhibitor target biology.",
+    },
+    {
+        "gene_name": "LDLR",
+        "ensembl_id": "ENSG00000130164",
+        "ncbi_id": "3949",
+        "uniprot_id": "P01130",
+        "cytoband": "19p13.2",
+        "chromosome": "19",
+        "start": 11200038,
+        "end": 11244492,
+        "strand": "+",
+        "biochemical_axis": "LDL particle binding, receptor-mediated endocytosis, cholesterol uptake, and familial hypercholesterolemia biology",
+        "gene_summary": "LDLR encodes the low-density lipoprotein receptor, which binds apoB/apoE-containing lipoproteins and mediates LDL uptake through clathrin-associated endocytosis.",
+        "clinical_context": "The local LDLR bundle is familial-hypercholesterolemia and lipid-uptake oriented. High-impact LDLR findings require clinical-grade classification, inheritance, phenotype, and lipid data.",
+        "variant_effect_overview": [
+            "LDLR variants can affect ligand binding, trafficking, recycling, splicing, or receptor abundance.",
+            "Common markers are risk modifiers, while pathogenic LDLR variants can have monogenic familial hypercholesterolemia implications.",
+        ],
+        "conditions": ["Familial hypercholesterolemia review context", "LDL-C and apoB lipoprotein uptake", "Atherosclerotic cardiovascular disease lipid biology"],
+        "visual_key": "lipid_metabolism",
+        "evidence": [_evidence("ClinVar LDLR variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=LDLR%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs688", "common_name": "LDLR splicing/lipid association marker"},
+            {"variant": "LDLR loss-of-function model", "common_name": "LDLR familial hypercholesterolemia loss-of-function model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an LDLR receptor-mediated-endocytosis thesis: the individual may carry context relevant to LDL particle clearance, LDL-C levels, apoB lipoprotein uptake, familial hypercholesterolemia review, or atherosclerotic lipid biology.",
+    },
+    {
+        "gene_name": "HBB",
+        "ensembl_id": "ENSG00000244734",
+        "ncbi_id": "3043",
+        "uniprot_id": "P68871",
+        "cytoband": "11p15.4",
+        "chromosome": "11",
+        "start": 5246694,
+        "end": 5250625,
+        "strand": "-",
+        "biochemical_axis": "beta-globin oxygen transport, hemoglobin tetramer assembly, erythrocyte physiology, and hemoglobinopathy biology",
+        "gene_summary": "HBB encodes beta-globin, the beta subunit of adult hemoglobin that pairs with alpha-globin to transport oxygen in red blood cells.",
+        "clinical_context": "The local HBB bundle is hemoglobinopathy oriented. HBB findings depend strongly on exact allele, zygosity, phase with other globin variants, hematologic phenotype, and clinical classification.",
+        "variant_effect_overview": [
+            "HBB missense, nonsense, splice, and regulatory variants can produce sickle hemoglobin, beta-thalassemia, or other hemoglobinopathy contexts.",
+            "Carrier and disease interpretations require phase, genotype combination, and hematology data.",
+        ],
+        "conditions": ["Sickle cell disease and trait context", "Beta-thalassemia and hemoglobinopathy review", "Erythrocyte oxygen transport biology"],
+        "visual_key": "hematology",
+        "evidence": [_evidence("ClinVar HBB variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=HBB%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs334", "display_name": "rs334 (HBB HbS / Glu6Val)", "common_name": "HBB sickle hemoglobin marker"},
+            {"variant": "HBB beta-thalassemia model", "common_name": "HBB beta-thalassemia variant-class model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an HBB hemoglobinopathy thesis: the individual may carry context relevant to beta-globin structure, oxygen transport, sickle hemoglobin, beta-thalassemia, or carrier/disease review. Interpretation requires exact allele, zygosity, phase, and hematology context.",
+    },
+    {
+        "gene_name": "HFE",
+        "ensembl_id": "ENSG00000010704",
+        "ncbi_id": "3077",
+        "uniprot_id": "Q30201",
+        "cytoband": "6p22.2",
+        "chromosome": "6",
+        "start": 26087509,
+        "end": 26098571,
+        "strand": "+",
+        "biochemical_axis": "iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis",
+        "gene_summary": "HFE encodes an MHC class I-like iron-regulatory protein that interacts with transferrin receptor biology and contributes to hepcidin-mediated systemic iron balance.",
+        "clinical_context": "The local HFE bundle is hereditary hemochromatosis and iron-metabolism oriented. Penetrance is incomplete and interpretation depends on genotype combination, sex, ferritin/transferrin saturation, ancestry, and clinical context.",
+        "variant_effect_overview": [
+            "C282Y and H63D are common HFE markers with genotype-combination-dependent hemochromatosis relevance.",
+            "Single heterozygous findings often have limited predictive value without iron studies or compound genotype context.",
+        ],
+        "conditions": ["Hereditary hemochromatosis review context", "Iron overload and hepcidin regulation", "Transferrin receptor and iron homeostasis biology"],
+        "visual_key": "hematology",
+        "evidence": [_evidence("ClinVar HFE variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=HFE%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs1800562", "display_name": "rs1800562 (HFE C282Y)", "common_name": "HFE C282Y iron-overload marker"},
+            {"variant": "rs1799945", "display_name": "rs1799945 (HFE H63D)", "common_name": "HFE H63D modifier marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an HFE iron-homeostasis thesis: the individual may carry context relevant to transferrin receptor interaction, hepcidin regulation, iron overload susceptibility, or hereditary hemochromatosis review. Penetrance and clinical meaning depend on genotype combination and iron studies.",
+    },
+    {
+        "gene_name": "ALDH2",
+        "ensembl_id": "ENSG00000111275",
+        "ncbi_id": "217",
+        "uniprot_id": "P05091",
+        "cytoband": "12q24.12",
+        "chromosome": "12",
+        "start": 112204691,
+        "end": 112247782,
+        "strand": "+",
+        "biochemical_axis": "mitochondrial aldehyde detoxification, acetaldehyde metabolism, oxidative-stress handling, and alcohol-response pharmacogenetics",
+        "gene_summary": "ALDH2 encodes the mitochondrial aldehyde dehydrogenase that oxidizes acetaldehyde and other reactive aldehydes, linking ethanol metabolism, mitochondrial stress, and cardiovascular/toxicology research.",
+        "clinical_context": "The local ALDH2 bundle is pharmacogenetic and mitochondrial-detoxification oriented. ALDH2*2 effects are genotype-dose and ancestry dependent and should not be translated into medical advice without clinical context.",
+        "variant_effect_overview": [
+            "ALDH2 rs671 reduces ALDH2 enzymatic activity and can affect acetaldehyde accumulation after alcohol exposure.",
+            "Interpretation should consider alcohol exposure, ancestry, heterozygous versus homozygous dosage, and broader aldehyde/toxicology context.",
+        ],
+        "conditions": ["Alcohol flushing and acetaldehyde metabolism", "Mitochondrial aldehyde detoxification", "Cardiometabolic and cancer-risk exposure interaction research"],
+        "visual_key": "mitochondria",
+        "evidence": [_evidence("PharmGKB ALDH2 gene summary", "https://www.pharmgkb.org/gene/PA24678")],
+        "variants": [
+            {"variant": "rs671", "display_name": "rs671 (ALDH2 Glu504Lys / ALDH2*2)", "common_name": "ALDH2 reduced-activity alcohol-response marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an ALDH2 aldehyde-detoxification thesis: the individual may carry context relevant to acetaldehyde metabolism, alcohol flushing biology, mitochondrial oxidative stress, and exposure-linked risk studies. Direction depends strongly on rs671 dosage and exposure context.",
+    },
+    {
+        "gene_name": "MTHFR",
+        "ensembl_id": "ENSG00000177000",
+        "ncbi_id": "4524",
+        "uniprot_id": "P42898",
+        "cytoband": "1p36.22",
+        "chromosome": "1",
+        "start": 11845780,
+        "end": 11866977,
+        "strand": "-",
+        "biochemical_axis": "folate one-carbon metabolism, 5-methyltetrahydrofolate production, homocysteine remethylation, and methyl-donor balance",
+        "gene_summary": "MTHFR encodes methylenetetrahydrofolate reductase, an enzyme that produces 5-methyltetrahydrofolate for homocysteine remethylation and one-carbon methyl-donor metabolism.",
+        "clinical_context": "The local MTHFR bundle is one-carbon-metabolism oriented. Common MTHFR variants are context modifiers and should not be overinterpreted as diagnostic thrombophilia or deterministic disease findings.",
+        "variant_effect_overview": [
+            "C677T and A1298C can influence enzyme activity and homocysteine context, especially with folate status and genotype dosage.",
+            "Clinical interpretation should follow current professional guidance and avoid unsupported deterministic claims.",
+        ],
+        "conditions": ["Folate and homocysteine metabolism", "Methyl-donor and one-carbon pathway context", "Nutritional and cardiometabolic association research"],
+        "visual_key": "metabolic_pathway",
+        "evidence": [_evidence("ClinVar MTHFR variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=MTHFR%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs1801133", "display_name": "rs1801133 (MTHFR C677T / Ala222Val)", "common_name": "MTHFR thermolabile activity marker"},
+            {"variant": "rs1801131", "display_name": "rs1801131 (MTHFR A1298C / Glu429Ala)", "common_name": "MTHFR one-carbon modifier marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an MTHFR one-carbon-metabolism thesis: the individual may carry context relevant to folate-dependent methyl-donor balance, homocysteine remethylation, nutritional status, or cardiometabolic association studies. Common MTHFR variants should not be treated as deterministic clinical diagnoses.",
+    },
+    {
+        "gene_name": "LCT",
+        "ensembl_id": "ENSG00000115850",
+        "ncbi_id": "3938",
+        "uniprot_id": "P09848",
+        "cytoband": "2q21.3",
+        "chromosome": "2",
+        "start": 136545410,
+        "end": 136594750,
+        "strand": "-",
+        "biochemical_axis": "intestinal lactose hydrolysis, brush-border disaccharidase activity, enhancer regulation, and lactase persistence biology",
+        "gene_summary": "LCT encodes lactase-phlorizin hydrolase, an intestinal brush-border enzyme that digests lactose and whose adult persistence is shaped by upstream regulatory variation.",
+        "clinical_context": "The local LCT bundle is nutrition-genetics and regulatory-enhancer oriented. Lactase persistence and intolerance interpretation depends on ancestry, genotype, age, diet, symptoms, and non-genetic gastrointestinal context.",
+        "variant_effect_overview": [
+            "rs4988235-like upstream enhancer variation is a classic lactase persistence marker in many European-ancestry contexts.",
+            "Population specificity matters because different lactase-persistence alleles occur in different ancestry groups.",
+        ],
+        "conditions": ["Lactase persistence and lactose intolerance context", "Intestinal brush-border carbohydrate digestion", "Nutrition genetics and enhancer regulation"],
+        "visual_key": "metabolic_pathway",
+        "evidence": [_evidence("OMIM LCT gene entry", "https://omim.org/entry/603202")],
+        "variants": [
+            {"variant": "rs4988235", "display_name": "rs4988235 (-13910 C>T lactase persistence marker)", "common_name": "LCT/MCM6 enhancer lactase-persistence marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an LCT lactase-persistence thesis: the individual may carry regulatory context relevant to adult lactase expression, lactose digestion, diet-response biology, and ancestry-specific enhancer evolution. Symptom interpretation still depends on diet, age, microbiome, and gastrointestinal context.",
+    },
+    {
+        "gene_name": "BDNF",
+        "ensembl_id": "ENSG00000176697",
+        "ncbi_id": "627",
+        "uniprot_id": "P23560",
+        "cytoband": "11p14.1",
+        "chromosome": "11",
+        "start": 27676440,
+        "end": 27743605,
+        "strand": "-",
+        "biochemical_axis": "neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival",
+        "gene_summary": "BDNF encodes brain-derived neurotrophic factor, a secreted neurotrophin that supports neuronal survival, synaptic plasticity, dendritic architecture, learning, memory, mood, and metabolic-neural crosstalk research.",
+        "clinical_context": "The local BDNF bundle is neuroplasticity and neuropsychiatric-research oriented. Common BDNF variants are trait modifiers and should not be treated as deterministic psychiatric or cognitive predictions.",
+        "variant_effect_overview": [
+            "Val66Met is studied for activity-dependent BDNF secretion, synaptic plasticity, memory, stress, mood, and exercise-response contexts.",
+            "Direction and magnitude are cohort, phenotype, and ancestry dependent.",
+        ],
+        "conditions": ["Synaptic plasticity and learning/memory research", "Mood, stress, and neuropsychiatric association context", "Neurotrophin signaling and neuronal survival"],
+        "visual_key": "synapse",
+        "evidence": [_evidence("UniProt BDNF function annotation", "https://www.uniprot.org/uniprotkb/P23560/entry")],
+        "variants": [
+            {"variant": "rs6265", "display_name": "rs6265 (BDNF Val66Met)", "common_name": "BDNF activity-dependent secretion marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a BDNF neurotrophin-plasticity thesis: the individual may carry context relevant to activity-dependent BDNF secretion, synaptic plasticity, memory, mood/stress association studies, exercise-response biology, or TrkB pathway signaling. This is not a psychiatric or cognitive diagnosis.",
+    },
+    {
+        "gene_name": "COMT",
+        "ensembl_id": "ENSG00000093010",
+        "ncbi_id": "1312",
+        "uniprot_id": "P21964",
+        "cytoband": "22q11.21",
+        "chromosome": "22",
+        "start": 19929130,
+        "end": 19957498,
+        "strand": "+",
+        "biochemical_axis": "catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use",
+        "gene_summary": "COMT encodes catechol-O-methyltransferase, an enzyme that methylates catecholamines and catechol estrogens, linking neurotransmitter turnover, pain, stress, cognition, and pharmacogenetic research.",
+        "clinical_context": "The local COMT bundle is neurotransmitter-metabolism oriented. Val158Met is a common functional marker but remains a probabilistic research modifier, not a deterministic behavior or psychiatric predictor.",
+        "variant_effect_overview": [
+            "Val158Met alters COMT enzyme thermostability/activity and is widely studied in dopamine, pain, stress, cognition, and medication-response contexts.",
+            "Interpretation should account for sex, tissue isoform, phenotype definition, ancestry, and environment.",
+        ],
+        "conditions": ["Catecholamine metabolism and prefrontal dopamine tone", "Pain, stress, and cognition association research", "Pharmacogenetic and neuropsychiatric context"],
+        "visual_key": "synapse",
+        "evidence": [_evidence("PharmGKB COMT gene summary", "https://www.pharmgkb.org/gene/PA117")],
+        "variants": [
+            {"variant": "rs4680", "display_name": "rs4680 (COMT Val158Met)", "common_name": "COMT catecholamine-metabolism activity marker"},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a COMT catecholamine-metabolism thesis: the individual may carry context relevant to dopamine/norepinephrine turnover, prefrontal signaling, pain/stress traits, methyl-donor use, or pharmacogenetic research. It should not be treated as a deterministic personality or psychiatric call.",
+    },
+    {
+        "gene_name": "CACNA1C",
+        "ensembl_id": "ENSG00000151067",
+        "ncbi_id": "775",
+        "uniprot_id": "Q13936",
+        "cytoband": "12p13.33",
+        "chromosome": "12",
+        "start": 2079952,
+        "end": 2802108,
+        "strand": "+",
+        "biochemical_axis": "L-type voltage-gated calcium channel function, excitation-transcription coupling, cardiac action potentials, and neuronal calcium signaling",
+        "gene_summary": "CACNA1C encodes the alpha-1C subunit of the L-type voltage-gated calcium channel Cav1.2, central to cardiac excitation-contraction coupling, action potentials, and neuronal calcium signaling.",
+        "clinical_context": "The local CACNA1C bundle is cardiac and neuropsychiatric channel-biology oriented. Rare pathogenic variants have separate clinical implications from common GWAS markers.",
+        "variant_effect_overview": [
+            "Common CACNA1C regulatory markers are studied in psychiatric, neurodevelopmental, and electrophysiology contexts.",
+            "Rare high-impact CACNA1C variants require clinical classification and phenotype matching for Timothy syndrome or arrhythmia review.",
+        ],
+        "conditions": ["Cardiac electrophysiology and action-potential biology", "Neuronal calcium signaling and psychiatric GWAS context", "L-type calcium channel pharmacology"],
+        "visual_key": "ion_channel",
+        "evidence": [_evidence("ClinVar CACNA1C variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=CACNA1C%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs1006737", "common_name": "CACNA1C psychiatric/calcium-channel regulatory marker"},
+            {"variant": "CACNA1C high-impact channelopathy model", "common_name": "CACNA1C Timothy/arrhythmia channelopathy model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a CACNA1C calcium-channel thesis: the individual may carry context relevant to L-type calcium channel gating/expression, cardiac action potentials, neuronal calcium signaling, psychiatric GWAS biology, or rare channelopathy review depending on exact allele class.",
+    },
+    {
+        "gene_name": "SCN5A",
+        "ensembl_id": "ENSG00000183873",
+        "ncbi_id": "6331",
+        "uniprot_id": "Q14524",
+        "cytoband": "3p22.2",
+        "chromosome": "3",
+        "start": 38589548,
+        "end": 38691164,
+        "strand": "-",
+        "biochemical_axis": "cardiac voltage-gated sodium channel Nav1.5 gating, conduction velocity, depolarization, and arrhythmia biology",
+        "gene_summary": "SCN5A encodes the Nav1.5 cardiac sodium channel alpha subunit, the main driver of fast inward sodium current in cardiomyocyte depolarization and cardiac conduction.",
+        "clinical_context": "The local SCN5A bundle is cardiac-channelopathy oriented. SCN5A interpretation requires exact allele, ECG/phenotype, inheritance, ancestry, and expert variant classification.",
+        "variant_effect_overview": [
+            "SCN5A variants can produce gain- or loss-of-function effects depending on channel gating, trafficking, and cellular context.",
+            "Common modifiers such as H558R are not equivalent to pathogenic Brugada, long-QT, conduction disease, or cardiomyopathy variants.",
+        ],
+        "conditions": ["Cardiac conduction and arrhythmia biology", "Brugada/long-QT/conduction disease review context", "Nav1.5 channel gating and trafficking"],
+        "visual_key": "ion_channel",
+        "evidence": [_evidence("ClinVar SCN5A variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=SCN5A%5Bgene%5D")],
+        "variants": [
+            {"variant": "rs1805124", "display_name": "rs1805124 (SCN5A H558R)", "common_name": "SCN5A common channel-modifier marker"},
+            {"variant": "SCN5A pathogenic channelopathy model", "common_name": "SCN5A arrhythmia-channelopathy model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an SCN5A Nav1.5 thesis: the individual may carry context relevant to cardiac sodium current, conduction velocity, arrhythmia susceptibility, channel trafficking/gating, or clinical channelopathy review. Exact classification and phenotype are essential.",
+    },
+    {
+        "gene_name": "MYH7",
+        "ensembl_id": "ENSG00000092054",
+        "ncbi_id": "4625",
+        "uniprot_id": "P12883",
+        "cytoband": "14q11.2",
+        "chromosome": "14",
+        "start": 23881947,
+        "end": 23904927,
+        "strand": "-",
+        "biochemical_axis": "beta-myosin heavy-chain motor activity, sarcomere contraction, ATPase force generation, and cardiomyopathy biology",
+        "gene_summary": "MYH7 encodes beta-myosin heavy chain, a cardiac and slow-skeletal muscle motor protein that converts ATP hydrolysis into sarcomere force generation.",
+        "clinical_context": "The local MYH7 bundle is sarcomere and cardiomyopathy oriented. High-impact MYH7 variants require cardiac phenotype, family history, inheritance, and expert variant classification.",
+        "variant_effect_overview": [
+            "MYH7 missense variants can alter myosin motor function and are important in hypertrophic, dilated, or other cardiomyopathy contexts.",
+            "Variant location, conservation, segregation, and phenotype matching are critical for interpretation.",
+        ],
+        "conditions": ["Hypertrophic and dilated cardiomyopathy review context", "Sarcomere force generation and ATPase motor biology", "Cardiac muscle structure-function research"],
+        "visual_key": "cardiac_contractile",
+        "evidence": [_evidence("ClinVar MYH7 variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=MYH7%5Bgene%5D")],
+        "variants": [
+            {"variant": "MYH7 p.Arg403Gln", "display_name": "MYH7 p.Arg403Gln / R403Q", "common_name": "MYH7 hypertrophic cardiomyopathy marker"},
+            {"variant": "MYH7 sarcomere motor-function model", "common_name": "MYH7 sarcomere motor-function model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a MYH7 sarcomere-motor thesis: the individual may carry context relevant to beta-myosin force generation, cardiomyocyte contraction, hypertrophic or dilated cardiomyopathy review, or muscle ATPase biology. Clinical meaning requires variant classification and phenotype match.",
+    },
+    {
+        "gene_name": "NTRK1",
+        "ensembl_id": "ENSG00000198400",
+        "ncbi_id": "4914",
+        "uniprot_id": "P04629",
+        "cytoband": "1q23.1",
+        "chromosome": "1",
+        "start": 156785432,
+        "end": 156851642,
+        "strand": "+",
+        "biochemical_axis": "TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions",
+        "gene_summary": "NTRK1 encodes TrkA, the high-affinity nerve growth factor receptor that controls neuronal survival, pain-sensory neuron biology, differentiation, and kinase signaling.",
+        "clinical_context": "The local NTRK1 bundle spans neurodevelopmental/pain biology and somatic fusion oncology. Germline loss-of-function and tumor fusion contexts must be kept separate.",
+        "variant_effect_overview": [
+            "NTRK1 loss-of-function can be relevant to congenital insensitivity to pain contexts when biallelic and clinically supported.",
+            "NTRK1 fusions are somatic oncology markers and require tumor assay context.",
+        ],
+        "conditions": ["NGF-TrkA neuronal survival and pain biology", "Congenital insensitivity to pain review context", "NTRK fusion oncology target context"],
+        "visual_key": "receptor_signaling",
+        "evidence": [_evidence("ClinVar NTRK1 variation set", "https://www.ncbi.nlm.nih.gov/clinvar/?term=NTRK1%5Bgene%5D")],
+        "variants": [
+            {"variant": "NTRK1 fusion model", "common_name": "NTRK1 oncogenic kinase-fusion model", "is_assayable_in_snp_vcf": False},
+            {"variant": "NTRK1 loss-of-function model", "common_name": "NTRK1 congenital pain-insensitivity model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests an NTRK1 TrkA signaling thesis: the individual may carry context relevant to NGF receptor signaling, pain-sensory neuron development, neuronal survival, kinase-pathway activation, or somatic NTRK fusion review. Germline and tumor contexts must be separated.",
+    },
+    {
+        "gene_name": "PPARG",
+        "ensembl_id": "ENSG00000132170",
+        "ncbi_id": "5468",
+        "uniprot_id": "P37231",
+        "cytoband": "3p25.2",
+        "chromosome": "3",
+        "start": 12328867,
+        "end": 12475855,
+        "strand": "+",
+        "biochemical_axis": "nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology",
+        "gene_summary": "PPARG encodes peroxisome proliferator-activated receptor gamma, a ligand-activated nuclear receptor that regulates adipocyte differentiation, lipid storage, insulin sensitivity, macrophage polarization, and metabolic inflammation.",
+        "clinical_context": "The local PPARG bundle is metabolic and pharmacology oriented. Common PPARG markers are low-penetrance modifiers, while rare dominant-negative variants require clinical classification.",
+        "variant_effect_overview": [
+            "Pro12Ala is a widely studied PPARG functional/metabolic marker with context-dependent effects on insulin sensitivity and metabolic traits.",
+            "Drug-response interpretation for thiazolidinediones should remain cautious and phenotype/treatment specific.",
+        ],
+        "conditions": ["Adipogenesis and insulin-sensitivity biology", "Type 2 diabetes and metabolic trait association research", "PPAR-gamma agonist pharmacology"],
+        "visual_key": "lipid_metabolism",
+        "evidence": [_evidence("PharmGKB PPARG gene summary", "https://www.pharmgkb.org/gene/PA281")],
+        "variants": [
+            {"variant": "rs1801282", "display_name": "rs1801282 (PPARG Pro12Ala)", "common_name": "PPARG adipogenesis/insulin-sensitivity marker"},
+            {"variant": "PPARG dominant-negative model", "common_name": "PPARG severe insulin-resistance model", "is_assayable_in_snp_vcf": False},
+        ],
+        "concrete_variant_prediction": "The variant observed in this sample suggests a PPARG adipogenesis and insulin-sensitivity thesis: the individual may carry context relevant to lipid storage, adipocyte differentiation, metabolic inflammation, type 2 diabetes traits, or PPAR-gamma agonist pharmacology. Common markers remain probabilistic modifiers.",
+    },
+]
+
+
+def _build_extended_biochemistry_gene_config(config: dict[str, Any]) -> dict[str, Any]:
+    """Expand compact gene metadata into the full biochemistry bundle schema."""
+    gene_name = str(config["gene_name"])
+    axis = str(config["biochemical_axis"])
+    conditions = list(config["conditions"])
+    bundle_focus = str(config.get("bundle_focus") or (conditions[0] if conditions else axis))
+    function = str(config["function"])
+    variant_note = str(
+        config.get("variant_note")
+        or "exact allele class, zygosity, ancestry, phenotype, and assay context"
+    )
+    expanded = dict(config)
+    expanded["gene_summary"] = str(
+        config.get("gene_summary")
+        or f"{gene_name} encodes {function}. This bundle emphasizes {axis}."
+    )
+    expanded["clinical_context"] = str(
+        config.get("clinical_context")
+        or (
+            f"The local {gene_name} bundle is {bundle_focus} oriented. "
+            f"Interpret markers through {variant_note} rather than as stand-alone deterministic calls."
+        )
+    )
+    expanded["variant_effect_overview"] = config.get("variant_effect_overview") or [
+        f"{gene_name} variants can alter or tag {axis}; effect direction depends on allele class, tissue, dosage, and biological context.",
+        "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation.",
+    ]
+    expanded["variants"] = config.get("variants") or [
+        {
+            "variant": f"{gene_name} functional variation model",
+            "common_name": f"{gene_name} pathway-function model",
+            "is_assayable_in_snp_vcf": False,
+        }
+    ]
+    expanded["figure_focus"] = str(config.get("figure_focus") or f"{gene_name}: {axis}")
+    expanded["concrete_variant_prediction"] = str(
+        config.get("concrete_variant_prediction")
+        or (
+            f"The variant observed in this sample suggests a {gene_name} {bundle_focus} thesis: "
+            f"the individual may carry context relevant to {axis} and {', '.join(conditions[:2])}. "
+            "Treat this as pathway triage until the exact allele has external classification and phenotype support."
+        )
+    )
+    return expanded
+
+
+EXTENDED_BIOCHEMISTRY_GENE_CONFIGS: list[dict[str, Any]] = [
+    {
+        "gene_name": "KRAS",
+        "ensembl_id": "ENSG00000133703",
+        "ncbi_id": "3845",
+        "uniprot_id": "P01116",
+        "cytoband": "12p12.1",
+        "chromosome": "12",
+        "start": 25357723,
+        "end": 25403870,
+        "strand": "-",
+        "function": "KRAS, a membrane-associated small GTPase that couples receptor input to RAF-MEK-ERK and PI3K signaling",
+        "biochemical_axis": "RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling",
+        "bundle_focus": "oncogenic RAS signaling",
+        "conditions": ["Somatic oncology and targeted-therapy context", "RAS-MAPK pathway biology", "Developmental RASopathy review context"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "KRAS codon 12/13/61 model", "common_name": "KRAS activating hotspot model", "is_assayable_in_snp_vcf": False},
+            {"variant": "rs61764370", "display_name": "rs61764370 (KRAS 3'UTR marker)", "common_name": "KRAS 3'UTR regulatory association marker"},
+        ],
+    },
+    {
+        "gene_name": "BRAF",
+        "ensembl_id": "ENSG00000157764",
+        "ncbi_id": "673",
+        "uniprot_id": "P15056",
+        "cytoband": "7q34",
+        "chromosome": "7",
+        "start": 140419127,
+        "end": 140624564,
+        "strand": "-",
+        "function": "B-Raf serine/threonine kinase, a core RAF family MAPK pathway effector",
+        "biochemical_axis": "RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology",
+        "bundle_focus": "MAPK kinase signaling",
+        "conditions": ["Somatic oncology and kinase-inhibitor context", "RASopathy and developmental signaling review", "MAPK pathway activation"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "BRAF V600E model", "common_name": "BRAF activating kinase hotspot model", "is_assayable_in_snp_vcf": False},
+            {"variant": "BRAF non-V600 kinase-altered model", "common_name": "BRAF non-V600 signaling model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "PIK3CA",
+        "ensembl_id": "ENSG00000121879",
+        "ncbi_id": "5290",
+        "uniprot_id": "P42336",
+        "cytoband": "3q26.32",
+        "chromosome": "3",
+        "start": 178865902,
+        "end": 178957881,
+        "strand": "+",
+        "function": "the p110-alpha catalytic subunit of class IA phosphoinositide 3-kinase",
+        "biochemical_axis": "PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival",
+        "bundle_focus": "PI3K pathway signaling",
+        "conditions": ["PI3K-AKT-mTOR signaling and cancer context", "Overgrowth and mosaic activation review", "Targeted PI3K inhibitor biology"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "PIK3CA E542K/E545K/H1047R model", "common_name": "PIK3CA activating hotspot model", "is_assayable_in_snp_vcf": False},
+            {"variant": "PIK3CA mosaic overgrowth model", "common_name": "PIK3CA-related overgrowth spectrum model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "PTEN",
+        "ensembl_id": "ENSG00000171862",
+        "ncbi_id": "5728",
+        "uniprot_id": "P60484",
+        "cytoband": "10q23.31",
+        "chromosome": "10",
+        "start": 89622870,
+        "end": 89731687,
+        "strand": "+",
+        "function": "PTEN, a lipid and protein phosphatase that opposes PI3K signaling",
+        "biochemical_axis": "PIP3 dephosphorylation, AKT pathway restraint, cell growth control, genomic stability, and tumor-suppressor biology",
+        "bundle_focus": "PI3K restraint and tumor-suppressor review",
+        "conditions": ["PTEN hamartoma tumor syndrome review context", "PI3K-AKT pathway regulation", "Somatic tumor-suppressor loss context"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "PTEN loss-of-function model", "common_name": "PTEN tumor-suppressor loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "PTEN promoter/regulatory loss model", "common_name": "PTEN expression-restraint model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "AKT1",
+        "ensembl_id": "ENSG00000142208",
+        "ncbi_id": "207",
+        "uniprot_id": "P31749",
+        "cytoband": "14q32.33",
+        "chromosome": "14",
+        "start": 105235686,
+        "end": 105262088,
+        "strand": "-",
+        "function": "AKT1, a serine/threonine kinase that integrates PI3K input with survival and growth programs",
+        "biochemical_axis": "AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology",
+        "bundle_focus": "AKT signaling",
+        "conditions": ["PI3K-AKT-mTOR pathway biology", "Somatic oncology and mosaic overgrowth context", "Growth-factor survival signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "AKT1 E17K model", "common_name": "AKT1 activating pleckstrin-homology-domain model", "is_assayable_in_snp_vcf": False},
+            {"variant": "AKT1 pathway-activation model", "common_name": "AKT1 signaling activation model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "ALK",
+        "ensembl_id": "ENSG00000171094",
+        "ncbi_id": "238",
+        "uniprot_id": "Q9UM73",
+        "cytoband": "2p23.1 p23.2",
+        "chromosome": "2",
+        "start": 29415640,
+        "end": 30144432,
+        "strand": "-",
+        "function": "anaplastic lymphoma kinase, a receptor tyrosine kinase with developmental and oncogenic roles",
+        "biochemical_axis": "ALK receptor kinase signaling, fusion activation, MAPK/PI3K/JAK pathway output, and kinase-inhibitor response",
+        "bundle_focus": "ALK kinase and fusion oncology",
+        "conditions": ["ALK fusion and somatic oncology context", "Neuroblastoma predisposition review context", "Receptor tyrosine kinase signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "ALK fusion model", "common_name": "ALK oncogenic kinase-fusion model", "is_assayable_in_snp_vcf": False},
+            {"variant": "ALK activating kinase-domain model", "common_name": "ALK kinase-domain activation model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "ROS1",
+        "ensembl_id": "ENSG00000047936",
+        "ncbi_id": "6098",
+        "uniprot_id": "P08922",
+        "cytoband": "6q22.1",
+        "chromosome": "6",
+        "start": 117609463,
+        "end": 117747018,
+        "strand": "-",
+        "function": "ROS1, a receptor tyrosine kinase best known for oncogenic fusion activation",
+        "biochemical_axis": "ROS1 kinase fusion signaling, MAPK/PI3K/JAK pathway output, cell survival, and targeted-therapy biology",
+        "bundle_focus": "ROS1 fusion kinase signaling",
+        "conditions": ["ROS1 fusion oncology context", "Tyrosine kinase inhibitor response", "Receptor kinase signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "ROS1 fusion model", "common_name": "ROS1 oncogenic kinase-fusion model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "RET",
+        "ensembl_id": "ENSG00000165731",
+        "ncbi_id": "5979",
+        "uniprot_id": "P07949",
+        "cytoband": "10q11.21",
+        "chromosome": "10",
+        "start": 43572475,
+        "end": 43625799,
+        "strand": "+",
+        "function": "RET, a receptor tyrosine kinase for GDNF-family neurotrophic signaling",
+        "biochemical_axis": "RET receptor kinase signaling, neural-crest development, MAPK/PI3K activation, endocrine tumor biology, and fusion oncology",
+        "bundle_focus": "RET receptor kinase biology",
+        "conditions": ["MEN2 and medullary thyroid carcinoma review context", "Hirschsprung disease developmental context", "RET fusion oncology context"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "RET MEN2 activating model", "common_name": "RET endocrine tumor activation model", "is_assayable_in_snp_vcf": False},
+            {"variant": "RET fusion model", "common_name": "RET oncogenic kinase-fusion model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "MET",
+        "ensembl_id": "ENSG00000105976",
+        "ncbi_id": "4233",
+        "uniprot_id": "P08581",
+        "cytoband": "7q31.2",
+        "chromosome": "7",
+        "start": 116312444,
+        "end": 116438440,
+        "strand": "+",
+        "function": "MET, the hepatocyte growth factor receptor tyrosine kinase",
+        "biochemical_axis": "HGF-MET receptor signaling, motility, invasion, epithelial repair, PI3K/MAPK activation, and exon-14 skipping oncology",
+        "bundle_focus": "MET receptor signaling",
+        "conditions": ["MET exon 14 skipping and oncology context", "HGF-driven motility and invasion biology", "Receptor tyrosine kinase signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "MET exon 14 skipping model", "common_name": "MET juxtamembrane regulation-loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "MET amplification/activation model", "common_name": "MET receptor activation model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "ERBB2",
+        "ensembl_id": "ENSG00000141736",
+        "ncbi_id": "2064",
+        "uniprot_id": "P04626",
+        "cytoband": "17q12",
+        "chromosome": "17",
+        "start": 37844167,
+        "end": 37886679,
+        "strand": "+",
+        "function": "HER2/ERBB2, an ErbB family receptor tyrosine kinase dimerization partner",
+        "biochemical_axis": "HER2 receptor dimer signaling, MAPK/PI3K activation, amplification biology, and anti-HER2 therapy response",
+        "bundle_focus": "HER2 receptor signaling",
+        "conditions": ["HER2-amplified oncology context", "ErbB receptor signaling", "Targeted antibody and kinase-inhibitor biology"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "ERBB2 amplification model", "common_name": "HER2 amplification expression model", "is_assayable_in_snp_vcf": False},
+            {"variant": "ERBB2 activating kinase-domain model", "common_name": "HER2 kinase activation model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "ESR1",
+        "ensembl_id": "ENSG00000091831",
+        "ncbi_id": "2099",
+        "uniprot_id": "P03372",
+        "cytoband": "6q25.1",
+        "chromosome": "6",
+        "start": 151977826,
+        "end": 152450754,
+        "strand": "+",
+        "function": "estrogen receptor alpha, a ligand-regulated nuclear receptor transcription factor",
+        "biochemical_axis": "estrogen receptor transcriptional control, chromatin binding, endocrine signaling, and anti-estrogen response biology",
+        "bundle_focus": "steroid hormone receptor signaling",
+        "conditions": ["Endocrine-responsive breast cancer context", "Estrogen signaling and reproductive tissue biology", "Bone, vascular, and metabolic association research"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "rs2234693", "display_name": "rs2234693 (ESR1 PvuII marker)", "common_name": "ESR1 intronic association marker"},
+            {"variant": "ESR1 ligand-binding-domain resistance model", "common_name": "ESR1 endocrine-resistance model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "AR",
+        "ensembl_id": "ENSG00000169083",
+        "ncbi_id": "367",
+        "uniprot_id": "P10275",
+        "cytoband": "Xq12",
+        "chromosome": "X",
+        "start": 66764465,
+        "end": 66950461,
+        "strand": "+",
+        "function": "the androgen receptor, a ligand-regulated nuclear receptor transcription factor",
+        "biochemical_axis": "androgen receptor transcriptional control, steroid signaling, CAG-repeat modulation, prostate biology, and endocrine therapy response",
+        "bundle_focus": "androgen receptor signaling",
+        "conditions": ["Androgen signaling and prostate biology", "Androgen insensitivity and endocrine review context", "Prostate cancer resistance biology"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "AR CAG-repeat model", "common_name": "AR polyglutamine-length modulation model", "is_assayable_in_snp_vcf": False},
+            {"variant": "AR ligand-binding-domain resistance model", "common_name": "AR endocrine-resistance model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "VHL",
+        "ensembl_id": "ENSG00000134086",
+        "ncbi_id": "7428",
+        "uniprot_id": "P40337",
+        "cytoband": "3p25.3",
+        "chromosome": "3",
+        "start": 10182692,
+        "end": 10193904,
+        "strand": "+",
+        "function": "VHL, the substrate-recognition component of an E3 ligase complex that targets HIF-alpha",
+        "biochemical_axis": "oxygen sensing, HIF-alpha ubiquitination, hypoxia-response control, angiogenesis, and tumor-suppressor biology",
+        "bundle_focus": "hypoxia and tumor-suppressor review",
+        "conditions": ["Von Hippel-Lindau disease review context", "Renal and endocrine tumor biology", "Hypoxia-inducible factor pathway control"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "VHL loss-of-function model", "common_name": "VHL HIF-regulation loss model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "APC",
+        "ensembl_id": "ENSG00000134982",
+        "ncbi_id": "324",
+        "uniprot_id": "P25054",
+        "cytoband": "5q22.2",
+        "chromosome": "5",
+        "start": 112043195,
+        "end": 112181936,
+        "strand": "+",
+        "function": "APC, a tumor-suppressor scaffold in the beta-catenin destruction complex",
+        "biochemical_axis": "Wnt/beta-catenin restraint, cell adhesion, chromosome segregation, intestinal stem-cell control, and colorectal tumor biology",
+        "bundle_focus": "Wnt pathway tumor-suppressor review",
+        "conditions": ["Familial adenomatous polyposis review context", "Colorectal tumor-suppressor biology", "Wnt/beta-catenin signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "APC truncating-variant model", "common_name": "APC Wnt-restraint loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "APC I1307K model", "common_name": "APC colorectal-risk modifier model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "MLH1",
+        "ensembl_id": "ENSG00000076242",
+        "ncbi_id": "4292",
+        "uniprot_id": "P40692",
+        "cytoband": "3p22.2",
+        "chromosome": "3",
+        "start": 37034823,
+        "end": 37107380,
+        "strand": "+",
+        "function": "MLH1, a DNA mismatch-repair factor that partners with PMS2",
+        "biochemical_axis": "DNA mismatch repair, microsatellite stability, replication-error correction, Lynch syndrome biology, and promoter methylation context",
+        "bundle_focus": "mismatch-repair review",
+        "conditions": ["Lynch syndrome review context", "Microsatellite instability and colorectal/endometrial tumor biology", "Mismatch-repair pathway function"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "MLH1 loss-of-function model", "common_name": "MLH1 mismatch-repair loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "MLH1 promoter methylation model", "common_name": "MLH1 epigenetic silencing model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "MSH2",
+        "ensembl_id": "ENSG00000095002",
+        "ncbi_id": "4436",
+        "uniprot_id": "P43246",
+        "cytoband": "2p21",
+        "chromosome": "2",
+        "start": 47630108,
+        "end": 47789450,
+        "strand": "+",
+        "function": "MSH2, a DNA mismatch-recognition factor that pairs with MSH6 or MSH3",
+        "biochemical_axis": "DNA mismatch recognition, microsatellite stability, replication-error repair, and Lynch syndrome biology",
+        "bundle_focus": "mismatch-repair review",
+        "conditions": ["Lynch syndrome review context", "Microsatellite instability biology", "DNA mismatch-recognition function"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "MSH2 loss-of-function model", "common_name": "MSH2 mismatch-recognition loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "EPCAM-MSH2 silencing model", "common_name": "MSH2 epigenetic-silencing context model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "MSH6",
+        "ensembl_id": "ENSG00000116062",
+        "ncbi_id": "2956",
+        "uniprot_id": "P52701",
+        "cytoband": "2p16.3",
+        "chromosome": "2",
+        "start": 47922669,
+        "end": 48037240,
+        "strand": "+",
+        "function": "MSH6, the mismatch-recognition partner in the MutS-alpha complex",
+        "biochemical_axis": "single-base mismatch recognition, insertion/deletion-loop repair, microsatellite stability, and Lynch syndrome biology",
+        "bundle_focus": "mismatch-repair review",
+        "conditions": ["Lynch syndrome review context", "Mismatch-repair pathway function", "Microsatellite instability biology"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "MSH6 loss-of-function model", "common_name": "MSH6 mismatch-recognition loss model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "PMS2",
+        "ensembl_id": "ENSG00000122512",
+        "ncbi_id": "5395",
+        "uniprot_id": "P54278",
+        "cytoband": "7p22.1",
+        "chromosome": "7",
+        "start": 6012870,
+        "end": 6048756,
+        "strand": "-",
+        "function": "PMS2, the endonuclease partner of MLH1 in mismatch repair",
+        "biochemical_axis": "MutL-alpha mismatch repair, strand incision, replication-error correction, and Lynch syndrome biology",
+        "bundle_focus": "mismatch-repair review",
+        "conditions": ["Lynch syndrome review context", "Constitutional mismatch-repair deficiency review", "DNA mismatch-repair function"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "PMS2 loss-of-function model", "common_name": "PMS2 mismatch-repair loss model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "ATM",
+        "ensembl_id": "ENSG00000149311",
+        "ncbi_id": "472",
+        "uniprot_id": "Q13315",
+        "cytoband": "11q22.3",
+        "chromosome": "11",
+        "start": 108093211,
+        "end": 108239829,
+        "strand": "+",
+        "function": "ATM, a DNA damage response kinase activated by double-strand breaks",
+        "biochemical_axis": "DNA double-strand break signaling, checkpoint kinase cascades, p53 activation, radiosensitivity, and genome stability",
+        "bundle_focus": "DNA damage response kinase review",
+        "conditions": ["Ataxia-telangiectasia and carrier review context", "Hereditary cancer susceptibility context", "Radiation response and checkpoint biology"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "ATM loss-of-function model", "common_name": "ATM checkpoint-kinase loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "rs1801516", "display_name": "rs1801516 (ATM D1853N)", "common_name": "ATM radiosensitivity association marker"},
+        ],
+    },
+    {
+        "gene_name": "CHEK2",
+        "ensembl_id": "ENSG00000183765",
+        "ncbi_id": "11200",
+        "uniprot_id": "O96017",
+        "cytoband": "22q12.1",
+        "chromosome": "22",
+        "start": 29083731,
+        "end": 29138410,
+        "strand": "-",
+        "function": "CHK2, a checkpoint kinase downstream of ATM",
+        "biochemical_axis": "DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology",
+        "bundle_focus": "checkpoint kinase review",
+        "conditions": ["Hereditary cancer susceptibility context", "DNA damage checkpoint biology", "Breast, colorectal, and prostate cancer association research"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "CHEK2 c.1100delC model", "common_name": "CHEK2 truncating founder model", "is_assayable_in_snp_vcf": False},
+            {"variant": "rs17879961", "display_name": "rs17879961 (CHEK2 I157T)", "common_name": "CHEK2 missense modifier marker"},
+        ],
+    },
+    {
+        "gene_name": "PALB2",
+        "ensembl_id": "ENSG00000083093",
+        "ncbi_id": "79728",
+        "uniprot_id": "Q86YC2",
+        "cytoband": "16p12.2",
+        "chromosome": "16",
+        "start": 23614488,
+        "end": 23652631,
+        "strand": "-",
+        "function": "PALB2, a BRCA2-localizing scaffold for homologous recombination",
+        "biochemical_axis": "homologous recombination, BRCA1-BRCA2 coordination, DNA double-strand break repair, and hereditary cancer biology",
+        "bundle_focus": "homologous recombination review",
+        "conditions": ["Hereditary breast/pancreatic cancer review context", "Homologous recombination repair", "BRCA-pathway genome stability"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "PALB2 loss-of-function model", "common_name": "PALB2 homologous-recombination loss model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "BRCA2",
+        "ensembl_id": "ENSG00000139618",
+        "ncbi_id": "675",
+        "uniprot_id": "P51587",
+        "cytoband": "13q13.1",
+        "chromosome": "13",
+        "start": 32889611,
+        "end": 32973805,
+        "strand": "+",
+        "function": "BRCA2, a homologous recombination mediator that loads RAD51 onto DNA",
+        "biochemical_axis": "RAD51 loading, homologous recombination repair, replication-fork protection, and hereditary cancer biology",
+        "bundle_focus": "homologous recombination review",
+        "conditions": ["Hereditary breast/ovarian/pancreatic/prostate cancer context", "Homologous recombination deficiency", "Replication-fork protection"],
+        "visual_key": "dna_repair",
+        "variants": [
+            {"variant": "BRCA2 c.5946delT / 6174delT model", "common_name": "BRCA2 frameshift founder model", "is_assayable_in_snp_vcf": False},
+            {"variant": "BRCA2 loss-of-function model", "common_name": "BRCA2 homologous-recombination loss model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "RYR1",
+        "ensembl_id": "ENSG00000196218",
+        "ncbi_id": "6261",
+        "uniprot_id": "P21817",
+        "cytoband": "19q13.2",
+        "chromosome": "19",
+        "start": 38924339,
+        "end": 39078204,
+        "strand": "+",
+        "function": "the skeletal-muscle ryanodine receptor calcium-release channel",
+        "biochemical_axis": "sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context",
+        "bundle_focus": "skeletal muscle calcium-channel review",
+        "conditions": ["Malignant hyperthermia susceptibility review context", "Congenital myopathy context", "Excitation-contraction coupling"],
+        "visual_key": "ion_channel",
+        "variants": [
+            {"variant": "RYR1 malignant-hyperthermia model", "common_name": "RYR1 calcium-release susceptibility model", "is_assayable_in_snp_vcf": False},
+            {"variant": "RYR1 congenital myopathy model", "common_name": "RYR1 skeletal-muscle channelopathy model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "KCNQ1",
+        "ensembl_id": "ENSG00000053918",
+        "ncbi_id": "3784",
+        "uniprot_id": "P51787",
+        "cytoband": "11p15.4 p15.5",
+        "chromosome": "11",
+        "start": 2465914,
+        "end": 2870339,
+        "strand": "+",
+        "function": "the Kv7.1 voltage-gated potassium channel alpha subunit",
+        "biochemical_axis": "cardiac repolarization, IKs potassium current, beta-cell electrophysiology, imprinting-region context, and channel pharmacology",
+        "bundle_focus": "potassium-channel review",
+        "conditions": ["Long-QT syndrome review context", "Cardiac repolarization biology", "Type 2 diabetes association research"],
+        "visual_key": "ion_channel",
+        "variants": [
+            {"variant": "KCNQ1 long-QT model", "common_name": "KCNQ1 IKs channelopathy model", "is_assayable_in_snp_vcf": False},
+            {"variant": "rs2237892", "common_name": "KCNQ1 diabetes-association marker"},
+        ],
+    },
+    {
+        "gene_name": "KCNH2",
+        "ensembl_id": "ENSG00000055118",
+        "ncbi_id": "3757",
+        "uniprot_id": "Q12809",
+        "cytoband": "7q36.1",
+        "chromosome": "7",
+        "start": 150642049,
+        "end": 150675403,
+        "strand": "-",
+        "function": "the hERG/Kv11.1 voltage-gated potassium channel",
+        "biochemical_axis": "cardiac IKr current, ventricular repolarization, drug-induced QT sensitivity, trafficking, and arrhythmia biology",
+        "bundle_focus": "hERG potassium-channel review",
+        "conditions": ["Long-QT syndrome review context", "Drug-induced QT prolongation biology", "Cardiac repolarization and channel trafficking"],
+        "visual_key": "ion_channel",
+        "variants": [
+            {"variant": "KCNH2 long-QT model", "common_name": "KCNH2 hERG channelopathy model", "is_assayable_in_snp_vcf": False},
+            {"variant": "KCNH2 drug-sensitivity model", "common_name": "hERG pharmacology and QT-risk model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "APOB",
+        "ensembl_id": "ENSG00000084674",
+        "ncbi_id": "338",
+        "uniprot_id": "P04114",
+        "cytoband": "2p24.1",
+        "chromosome": "2",
+        "start": 21224301,
+        "end": 21266945,
+        "strand": "-",
+        "function": "apolipoprotein B, the structural apolipoprotein of LDL and other atherogenic lipoproteins",
+        "biochemical_axis": "LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology",
+        "bundle_focus": "atherogenic lipoprotein biology",
+        "conditions": ["Familial hypercholesterolemia review context", "LDL cholesterol and atherosclerosis biology", "Hypobetalipoproteinemia context"],
+        "visual_key": "lipid_metabolism",
+        "variants": [
+            {"variant": "rs693", "display_name": "rs693 (APOB lipid association marker)", "common_name": "APOB common lipid marker"},
+            {"variant": "APOB familial-hypercholesterolemia model", "common_name": "APOB LDLR-binding disruption model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "F5",
+        "ensembl_id": "ENSG00000198734",
+        "ncbi_id": "2153",
+        "uniprot_id": "P12259",
+        "cytoband": "1q24.2",
+        "chromosome": "1",
+        "start": 169483404,
+        "end": 169555826,
+        "strand": "-",
+        "function": "coagulation factor V, a cofactor for prothrombinase complex assembly",
+        "biochemical_axis": "thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology",
+        "bundle_focus": "coagulation and thrombosis review",
+        "conditions": ["Factor V Leiden thrombophilia context", "Venous thromboembolism association research", "Coagulation cascade biology"],
+        "visual_key": "hematology",
+        "variants": [
+            {"variant": "rs6025", "display_name": "rs6025 (Factor V Leiden / R506Q)", "common_name": "Factor V Leiden APC-resistance marker"},
+        ],
+    },
+    {
+        "gene_name": "F2",
+        "ensembl_id": "ENSG00000180210",
+        "ncbi_id": "2147",
+        "uniprot_id": "P00734",
+        "cytoband": "11p11.2",
+        "chromosome": "11",
+        "start": 46740730,
+        "end": 46761056,
+        "strand": "+",
+        "function": "prothrombin, the precursor of thrombin in the coagulation cascade",
+        "biochemical_axis": "thrombin generation, fibrin clot formation, platelet activation, and prothrombotic regulatory biology",
+        "bundle_focus": "coagulation and thrombosis review",
+        "conditions": ["Prothrombin thrombophilia context", "Venous thromboembolism association research", "Coagulation cascade biology"],
+        "visual_key": "hematology",
+        "variants": [
+            {"variant": "rs1799963", "display_name": "rs1799963 (F2 G20210A)", "common_name": "prothrombin 20210A thrombosis marker"},
+        ],
+    },
+    {
+        "gene_name": "SERPINA1",
+        "ensembl_id": "ENSG00000197249",
+        "ncbi_id": "5265",
+        "uniprot_id": "P01009",
+        "cytoband": "14q32.13",
+        "chromosome": "14",
+        "start": 94843084,
+        "end": 94857030,
+        "strand": "-",
+        "function": "alpha-1 antitrypsin, a secreted serine-protease inhibitor",
+        "biochemical_axis": "neutrophil elastase restraint, protease-antiprotease balance, liver polymerization stress, and lung inflammation biology",
+        "bundle_focus": "protease inhibitor deficiency review",
+        "conditions": ["Alpha-1 antitrypsin deficiency context", "COPD/emphysema risk biology", "Liver polymerization and secretion stress"],
+        "visual_key": "hematology",
+        "variants": [
+            {"variant": "rs28929474", "display_name": "rs28929474 (SERPINA1 Pi*Z)", "common_name": "SERPINA1 Pi*Z deficiency marker"},
+            {"variant": "rs17580", "display_name": "rs17580 (SERPINA1 Pi*S)", "common_name": "SERPINA1 Pi*S deficiency marker"},
+        ],
+    },
+    {
+        "gene_name": "G6PD",
+        "ensembl_id": "ENSG00000160211",
+        "ncbi_id": "2539",
+        "uniprot_id": "P11413",
+        "cytoband": "Xq28",
+        "chromosome": "X",
+        "start": 153759606,
+        "end": 153775787,
+        "strand": "-",
+        "function": "glucose-6-phosphate dehydrogenase, the rate-limiting pentose phosphate pathway enzyme",
+        "biochemical_axis": "NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility",
+        "bundle_focus": "red-cell oxidative metabolism",
+        "conditions": ["G6PD deficiency review context", "Drug/food-triggered hemolysis susceptibility", "Pentose phosphate pathway and NADPH biology"],
+        "visual_key": "hematology",
+        "variants": [
+            {"variant": "rs1050828", "display_name": "rs1050828 (G6PD A- marker)", "common_name": "G6PD A- deficiency marker"},
+            {"variant": "G6PD deficiency class model", "common_name": "G6PD enzyme-deficiency model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "CYP2D6",
+        "ensembl_id": "ENSG00000100197",
+        "ncbi_id": "1565",
+        "uniprot_id": "P10635",
+        "cytoband": "22q13.2",
+        "chromosome": "22",
+        "start": 42522501,
+        "end": 42526908,
+        "strand": "-",
+        "function": "cytochrome P450 2D6, a polymorphic drug-metabolizing monooxygenase",
+        "biochemical_axis": "phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology",
+        "bundle_focus": "pharmacogenomic drug metabolism",
+        "conditions": ["CYP2D6 pharmacogenomics context", "Drug exposure and adverse-response biology", "Star-allele and copy-number interpretation"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs3892097", "display_name": "rs3892097 (CYP2D6*4 splice marker)", "common_name": "CYP2D6 no-function allele marker"},
+            {"variant": "CYP2D6 copy-number/star-allele model", "common_name": "CYP2D6 metabolizer phenotype model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "CYP2C19",
+        "ensembl_id": "ENSG00000165841",
+        "ncbi_id": "1557",
+        "uniprot_id": "P33261",
+        "cytoband": "10q23.33",
+        "chromosome": "10",
+        "start": 96447911,
+        "end": 96613017,
+        "strand": "+",
+        "function": "cytochrome P450 2C19, a polymorphic drug-metabolizing monooxygenase",
+        "biochemical_axis": "phase I drug oxidation, proton-pump inhibitor and antiplatelet pharmacogenetics, star-allele activity, and metabolizer phenotype biology",
+        "bundle_focus": "pharmacogenomic drug metabolism",
+        "conditions": ["CYP2C19 pharmacogenomics context", "Clopidogrel and proton-pump inhibitor response biology", "Star-allele metabolizer interpretation"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs4244285", "display_name": "rs4244285 (CYP2C19*2)", "common_name": "CYP2C19 no-function allele marker"},
+            {"variant": "rs12248560", "display_name": "rs12248560 (CYP2C19*17)", "common_name": "CYP2C19 increased-function allele marker"},
+        ],
+    },
+    {
+        "gene_name": "CYP2C9",
+        "ensembl_id": "ENSG00000138109",
+        "ncbi_id": "1559",
+        "uniprot_id": "P11712",
+        "cytoband": "10q23.33",
+        "chromosome": "10",
+        "start": 96698415,
+        "end": 96749147,
+        "strand": "+",
+        "function": "cytochrome P450 2C9, a polymorphic drug-metabolizing monooxygenase",
+        "biochemical_axis": "phase I drug oxidation, warfarin/NSAID/phenytoin pharmacogenetics, star-allele activity, and exposure biology",
+        "bundle_focus": "pharmacogenomic drug metabolism",
+        "conditions": ["CYP2C9 pharmacogenomics context", "Warfarin and phenytoin dose-sensitivity biology", "Star-allele metabolizer interpretation"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs1799853", "display_name": "rs1799853 (CYP2C9*2)", "common_name": "CYP2C9 reduced-function allele marker"},
+            {"variant": "rs1057910", "display_name": "rs1057910 (CYP2C9*3)", "common_name": "CYP2C9 reduced-function allele marker"},
+        ],
+    },
+    {
+        "gene_name": "SLCO1B1",
+        "ensembl_id": "ENSG00000134538",
+        "ncbi_id": "10599",
+        "uniprot_id": "Q9Y6L6",
+        "cytoband": "12p12.1 p12.2",
+        "chromosome": "12",
+        "start": 21284136,
+        "end": 21392180,
+        "strand": "+",
+        "function": "OATP1B1, a hepatic organic anion uptake transporter",
+        "biochemical_axis": "hepatic statin uptake, bile-acid and drug transport, transporter pharmacogenetics, and myopathy-risk biology",
+        "bundle_focus": "transporter pharmacogenomics",
+        "conditions": ["Statin-associated myopathy context", "Hepatic transporter pharmacogenomics", "Drug disposition and exposure biology"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs4149056", "display_name": "rs4149056 (SLCO1B1 c.521T>C)", "common_name": "SLCO1B1 reduced-transport statin marker"},
+        ],
+    },
+    {
+        "gene_name": "VKORC1",
+        "ensembl_id": "ENSG00000167397",
+        "ncbi_id": "79001",
+        "uniprot_id": "Q9BQB6",
+        "cytoband": "16p11.2",
+        "chromosome": "16",
+        "start": 31102163,
+        "end": 31107301,
+        "strand": "-",
+        "function": "vitamin K epoxide reductase complex subunit 1, the warfarin target",
+        "biochemical_axis": "vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics",
+        "bundle_focus": "warfarin pharmacogenomics",
+        "conditions": ["Warfarin dose-sensitivity context", "Vitamin K cycle biology", "Anticoagulation pharmacogenetics"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs9923231", "display_name": "rs9923231 (VKORC1 -1639G>A)", "common_name": "VKORC1 warfarin sensitivity marker"},
+        ],
+    },
+    {
+        "gene_name": "DPYD",
+        "ensembl_id": "ENSG00000188641",
+        "ncbi_id": "1806",
+        "uniprot_id": "Q12882",
+        "cytoband": "1p21.3",
+        "chromosome": "1",
+        "start": 97543299,
+        "end": 98386605,
+        "strand": "-",
+        "function": "dihydropyrimidine dehydrogenase, the rate-limiting enzyme in fluoropyrimidine catabolism",
+        "biochemical_axis": "pyrimidine catabolism, 5-fluorouracil/capecitabine clearance, toxicity susceptibility, and pharmacogenomic dosing biology",
+        "bundle_focus": "fluoropyrimidine pharmacogenomics",
+        "conditions": ["DPYD fluoropyrimidine toxicity context", "Pyrimidine catabolism", "Oncology pharmacogenomics"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs3918290", "display_name": "rs3918290 (DPYD*2A)", "common_name": "DPYD no-function fluoropyrimidine toxicity marker"},
+            {"variant": "rs67376798", "display_name": "rs67376798 (DPYD D949V)", "common_name": "DPYD reduced-function toxicity marker"},
+        ],
+    },
+    {
+        "gene_name": "TPMT",
+        "ensembl_id": "ENSG00000137364",
+        "ncbi_id": "7172",
+        "uniprot_id": "P51580",
+        "cytoband": "6p22.3",
+        "chromosome": "6",
+        "start": 18128542,
+        "end": 18155305,
+        "strand": "-",
+        "function": "thiopurine S-methyltransferase, a thiopurine inactivation enzyme",
+        "biochemical_axis": "thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics",
+        "bundle_focus": "thiopurine pharmacogenomics",
+        "conditions": ["TPMT thiopurine toxicity context", "Mercaptopurine/azathioprine dosing biology", "Methyltransferase activity variation"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs1800460", "display_name": "rs1800460 (TPMT*3B)", "common_name": "TPMT reduced-function allele marker"},
+            {"variant": "rs1142345", "display_name": "rs1142345 (TPMT*3C)", "common_name": "TPMT reduced-function allele marker"},
+        ],
+    },
+    {
+        "gene_name": "UGT1A1",
+        "ensembl_id": "ENSG00000242366",
+        "ncbi_id": "54658",
+        "uniprot_id": "P22309",
+        "cytoband": "2q37.1",
+        "chromosome": "2",
+        "start": 234668894,
+        "end": 234681945,
+        "strand": "+",
+        "function": "bilirubin UDP-glucuronosyltransferase 1A1",
+        "biochemical_axis": "bilirubin glucuronidation, irinotecan SN-38 clearance, promoter-repeat regulation, and glucuronidation pharmacogenomics",
+        "bundle_focus": "glucuronidation pharmacogenomics",
+        "conditions": ["Gilbert syndrome context", "Irinotecan toxicity pharmacogenomics", "Bilirubin conjugation biology"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "UGT1A1*28 promoter-repeat model", "common_name": "UGT1A1 reduced-expression promoter model", "is_assayable_in_snp_vcf": False},
+            {"variant": "rs4148323", "display_name": "rs4148323 (UGT1A1*6)", "common_name": "UGT1A1 reduced-function allele marker"},
+        ],
+    },
+    {
+        "gene_name": "IFNG",
+        "ensembl_id": "ENSG00000111537",
+        "ncbi_id": "3458",
+        "uniprot_id": "P01579",
+        "cytoband": "12q15",
+        "chromosome": "12",
+        "start": 68548548,
+        "end": 68553527,
+        "strand": "-",
+        "function": "interferon gamma, a type II interferon cytokine",
+        "biochemical_axis": "Th1 cytokine signaling, macrophage activation, antigen presentation, JAK-STAT1 activation, and host-defense inflammation",
+        "bundle_focus": "cytokine signaling",
+        "conditions": ["Th1 immune activation context", "Infectious disease and autoimmunity association research", "Macrophage activation and antigen presentation"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "rs2430561", "display_name": "rs2430561 (IFNG +874 T>A)", "common_name": "IFNG expression association marker"},
+        ],
+    },
+    {
+        "gene_name": "TNF",
+        "ensembl_id": "ENSG00000232810",
+        "ncbi_id": "7124",
+        "uniprot_id": "P01375",
+        "cytoband": "6p21.33",
+        "chromosome": "6",
+        "start": 31543344,
+        "end": 31546113,
+        "strand": "+",
+        "function": "tumor necrosis factor, a central inflammatory cytokine",
+        "biochemical_axis": "TNF receptor signaling, NF-kappaB activation, apoptosis/necroptosis crosstalk, inflammation, and anti-TNF pharmacology",
+        "bundle_focus": "inflammatory cytokine signaling",
+        "conditions": ["Autoimmune and inflammatory disease context", "TNF-blocker pharmacology", "NF-kappaB and cell-death signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "rs1800629", "display_name": "rs1800629 (TNF -308G>A)", "common_name": "TNF promoter association marker"},
+        ],
+    },
+    {
+        "gene_name": "IL6",
+        "ensembl_id": "ENSG00000136244",
+        "ncbi_id": "3569",
+        "uniprot_id": "P05231",
+        "cytoband": "7p15.3",
+        "chromosome": "7",
+        "start": 22765503,
+        "end": 22771621,
+        "strand": "+",
+        "function": "interleukin-6, a pleiotropic inflammatory cytokine",
+        "biochemical_axis": "IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk",
+        "bundle_focus": "inflammatory cytokine signaling",
+        "conditions": ["Inflammation and acute-phase response context", "Autoimmune and infection association research", "JAK-STAT3 cytokine signaling"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "rs1800795", "display_name": "rs1800795 (IL6 -174G>C)", "common_name": "IL6 promoter association marker"},
+        ],
+    },
+    {
+        "gene_name": "CRP",
+        "ensembl_id": "ENSG00000132693",
+        "ncbi_id": "1401",
+        "uniprot_id": "P02741",
+        "cytoband": "1q23.2",
+        "chromosome": "1",
+        "start": 159682079,
+        "end": 159684379,
+        "strand": "-",
+        "function": "C-reactive protein, a pentraxin acute-phase protein",
+        "biochemical_axis": "acute-phase inflammation, complement engagement, pentraxin biology, cardiometabolic biomarker context, and hepatic IL-6 response",
+        "bundle_focus": "acute-phase inflammatory biomarker review",
+        "conditions": ["Inflammation biomarker context", "Cardiometabolic association research", "Hepatic acute-phase response"],
+        "visual_key": "hematology",
+        "variants": [
+            {"variant": "rs1205", "display_name": "rs1205 (CRP 3'UTR marker)", "common_name": "CRP level association marker"},
+        ],
+    },
+    {
+        "gene_name": "VDR",
+        "ensembl_id": "ENSG00000111424",
+        "ncbi_id": "7421",
+        "uniprot_id": "P11473",
+        "cytoband": "12q13.11",
+        "chromosome": "12",
+        "start": 48235320,
+        "end": 48336831,
+        "strand": "-",
+        "function": "the vitamin D receptor, a ligand-regulated nuclear receptor",
+        "biochemical_axis": "vitamin D hormone signaling, calcium/phosphate homeostasis, immune modulation, bone biology, and nuclear receptor transcription",
+        "bundle_focus": "vitamin D receptor signaling",
+        "conditions": ["Bone mineral and calcium homeostasis context", "Immune and infection association research", "Nuclear receptor transcriptional control"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "rs2228570", "display_name": "rs2228570 (VDR FokI)", "common_name": "VDR translation-start marker"},
+            {"variant": "rs731236", "display_name": "rs731236 (VDR TaqI)", "common_name": "VDR association marker"},
+        ],
+    },
+    {
+        "gene_name": "FTO",
+        "ensembl_id": "ENSG00000140718",
+        "ncbi_id": "79068",
+        "uniprot_id": "Q9C0B1",
+        "cytoband": "16q12.2",
+        "chromosome": "16",
+        "start": 53737875,
+        "end": 54155853,
+        "strand": "+",
+        "function": "FTO, an Fe(II)/2-oxoglutarate-dependent RNA demethylase",
+        "biochemical_axis": "RNA demethylation, appetite and adiposity association biology, m6A regulation, energy balance, and IRX3/IRX5 regulatory context",
+        "bundle_focus": "adiposity and RNA-modification review",
+        "conditions": ["Obesity and BMI association context", "Energy balance and appetite biology", "RNA methylation regulation"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "rs9939609", "display_name": "rs9939609 (FTO obesity association marker)", "common_name": "FTO adiposity association marker"},
+        ],
+    },
+    {
+        "gene_name": "LEP",
+        "ensembl_id": "ENSG00000174697",
+        "ncbi_id": "3952",
+        "uniprot_id": "P41159",
+        "cytoband": "7q32.1",
+        "chromosome": "7",
+        "start": 127881337,
+        "end": 127897681,
+        "strand": "+",
+        "function": "leptin, an adipocyte-derived endocrine hormone",
+        "biochemical_axis": "adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk",
+        "bundle_focus": "leptin endocrine signaling",
+        "conditions": ["Energy balance and obesity context", "Leptin deficiency review context", "Adipokine and inflammatory signaling"],
+        "visual_key": "lipid_metabolism",
+        "variants": [
+            {"variant": "rs7799039", "display_name": "rs7799039 (LEP promoter marker)", "common_name": "LEP expression association marker"},
+            {"variant": "LEP deficiency model", "common_name": "leptin deficiency endocrine model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "MC4R",
+        "ensembl_id": "ENSG00000166603",
+        "ncbi_id": "4160",
+        "uniprot_id": "P32245",
+        "cytoband": "18q21.32",
+        "chromosome": "18",
+        "start": 58038564,
+        "end": 58040001,
+        "strand": "-",
+        "function": "melanocortin 4 receptor, a hypothalamic G protein-coupled receptor",
+        "biochemical_axis": "melanocortin GPCR signaling, appetite suppression, energy balance, obesity biology, and receptor trafficking",
+        "bundle_focus": "melanocortin receptor signaling",
+        "conditions": ["Monogenic obesity review context", "Appetite and energy-balance biology", "GPCR signaling and receptor trafficking"],
+        "visual_key": "receptor_signaling",
+        "variants": [
+            {"variant": "rs17782313", "display_name": "rs17782313 (near MC4R obesity marker)", "common_name": "MC4R-region adiposity association marker"},
+            {"variant": "MC4R loss-of-function model", "common_name": "MC4R monogenic obesity model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "HNF1A",
+        "ensembl_id": "ENSG00000135100",
+        "ncbi_id": "6927",
+        "uniprot_id": "P20823",
+        "cytoband": "12q24.31",
+        "chromosome": "12",
+        "start": 121416346,
+        "end": 121440315,
+        "strand": "+",
+        "function": "hepatocyte nuclear factor 1-alpha, a homeobox transcription factor",
+        "biochemical_axis": "pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations",
+        "bundle_focus": "diabetes transcription-factor review",
+        "conditions": ["MODY3 review context", "Beta-cell function and glycemic trait biology", "Hepatic transcriptional regulation"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "HNF1A MODY3 loss-of-function model", "common_name": "HNF1A beta-cell transcription loss model", "is_assayable_in_snp_vcf": False},
+            {"variant": "rs1169288", "display_name": "rs1169288 (HNF1A I27L)", "common_name": "HNF1A cardiometabolic association marker"},
+        ],
+    },
+    {
+        "gene_name": "GCK",
+        "ensembl_id": "ENSG00000106633",
+        "ncbi_id": "2645",
+        "uniprot_id": "Q12851",
+        "cytoband": "7p13",
+        "chromosome": "7",
+        "start": 44183872,
+        "end": 44237769,
+        "strand": "-",
+        "function": "glucokinase, the glucose sensor hexokinase in beta cells and liver",
+        "biochemical_axis": "glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context",
+        "bundle_focus": "glucose-sensing enzyme review",
+        "conditions": ["GCK-MODY review context", "Beta-cell glucose sensing", "Congenital hyperinsulinism and glycemic set-point biology"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "GCK MODY2 loss-of-function model", "common_name": "GCK glucose-sensing set-point model", "is_assayable_in_snp_vcf": False},
+            {"variant": "GCK activating hyperinsulinism model", "common_name": "GCK activating enzyme model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "KCNJ11",
+        "ensembl_id": "ENSG00000187486",
+        "ncbi_id": "3767",
+        "uniprot_id": "Q14654",
+        "cytoband": "11p15.1",
+        "chromosome": "11",
+        "start": 17407406,
+        "end": 17410878,
+        "strand": "-",
+        "function": "Kir6.2, the pore-forming subunit of the ATP-sensitive potassium channel",
+        "biochemical_axis": "ATP-sensitive potassium channel gating, beta-cell insulin secretion, neonatal diabetes biology, and sulfonylurea pharmacology",
+        "bundle_focus": "KATP channel and insulin-secretion review",
+        "conditions": ["Neonatal diabetes review context", "Type 2 diabetes association research", "Sulfonylurea response and beta-cell electrophysiology"],
+        "visual_key": "ion_channel",
+        "variants": [
+            {"variant": "rs5219", "display_name": "rs5219 (KCNJ11 E23K)", "common_name": "KCNJ11 diabetes association marker"},
+            {"variant": "KCNJ11 neonatal-diabetes model", "common_name": "KCNJ11 KATP gain-of-function model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+    {
+        "gene_name": "TTR",
+        "ensembl_id": "ENSG00000118271",
+        "ncbi_id": "7276",
+        "uniprot_id": "P02766",
+        "cytoband": "18q12.1",
+        "chromosome": "18",
+        "start": 29171689,
+        "end": 29178974,
+        "strand": "+",
+        "function": "transthyretin, a tetrameric transporter of thyroxine and retinol-binding protein",
+        "biochemical_axis": "transthyretin tetramer stability, amyloid fibril formation, neuropathy/cardiomyopathy context, and protein-stabilizer therapy biology",
+        "bundle_focus": "amyloid protein stability review",
+        "conditions": ["Hereditary transthyretin amyloidosis context", "Amyloid cardiomyopathy and neuropathy biology", "Tetramer stabilization pharmacology"],
+        "visual_key": "metabolic_pathway",
+        "variants": [
+            {"variant": "TTR Val50Met / V30M model", "common_name": "TTR amyloidogenic variant model", "is_assayable_in_snp_vcf": False},
+            {"variant": "TTR tetramer-destabilization model", "common_name": "TTR amyloid stability model", "is_assayable_in_snp_vcf": False},
+        ],
+    },
+]
+
+
+TOPIC_BIOLOGY_DEFAULTS: dict[str, dict[str, Any]] = {
+    "allergy_inflammation": {
+        "label": "allergy and inflammation",
+        "axis": "IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation",
+        "conditions": [
+            "Allergy, asthma, atopy, and inflammatory disease context",
+            "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+            "Immune signaling, barrier inflammation, and therapeutic target review",
+        ],
+        "visual_key": "allergic_inflammation",
+        "variant_label": "immune-response",
+    },
+    "pigmentation_hair": {
+        "label": "hair pigmentation and graying",
+        "axis": "melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology",
+        "conditions": [
+            "Hair pigmentation, skin pigmentation, and graying research context",
+            "Melanocyte development, survival, and melanosome biology",
+            "Pigmentary trait, albinism, melanoma-lineage, and follicle biology",
+        ],
+        "visual_key": "pigmentation_hair",
+        "variant_label": "pigmentation",
+    },
+    "aging_maintenance": {
+        "label": "aging and cellular maintenance",
+        "axis": "telomere and genome maintenance, stress resilience, NAD-dependent signaling, proteostasis, oxidative response, and senescence biology",
+        "conditions": [
+            "Aging, longevity, and cellular maintenance research context",
+            "Telomere biology, DNA repair, oxidative stress, and senescence pathways",
+            "Progeroid, degenerative, cancer-risk, and stress-resilience review",
+        ],
+        "visual_key": "aging_telomere",
+        "variant_label": "aging-maintenance",
+    },
+    "neurobiology": {
+        "label": "neurological and neurodegenerative biology",
+        "axis": "synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+        "conditions": [
+            "Neurological, neurodevelopmental, and neurodegenerative disease context",
+            "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+            "Cognitive, movement-disorder, epilepsy, and psychiatric association review",
+        ],
+        "visual_key": "neurodegeneration",
+        "variant_label": "neurobiology",
+    },
+    "digestion_gut": {
+        "label": "digestion and gut barrier biology",
+        "axis": "intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling",
+        "conditions": [
+            "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+            "Inflammatory bowel disease and mucosal immune pathway biology",
+            "Nutrient transport, digestive enzyme, and epithelial repair review",
+        ],
+        "visual_key": "gut_barrier",
+        "variant_label": "gut-digestion",
+    },
+}
+
+
+def _build_topic_biology_gene_config(row: tuple[str, str, str, str, str, str, int, int, str, str, str]) -> dict[str, Any]:
+    """Expand compact topic biology rows into the full biochemistry config schema."""
+    (
+        gene_name,
+        ensembl_id,
+        ncbi_id,
+        uniprot_id,
+        cytoband,
+        chromosome,
+        start,
+        end,
+        strand,
+        topic,
+        role,
+    ) = row
+    topic_defaults = TOPIC_BIOLOGY_DEFAULTS[topic]
+    topic_label = str(topic_defaults["label"])
+    axis = str(topic_defaults["axis"])
+    manifest_start = max(1, int(start) - 100000)
+    manifest_end = int(end) + 100000
+    return _build_extended_biochemistry_gene_config(
+        {
+            "gene_name": gene_name,
+            "ensembl_id": ensembl_id,
+            "ncbi_id": ncbi_id,
+            "uniprot_id": uniprot_id,
+            "cytoband": cytoband,
+            "chromosome": chromosome,
+            "start": start,
+            "end": end,
+            "strand": strand,
+            "manifest_filter_region": f"{chromosome}:{manifest_start}-{manifest_end}",
+            "function": role,
+            "biochemical_axis": axis,
+            "bundle_focus": topic_label,
+            "conditions": list(topic_defaults["conditions"]),
+            "visual_key": str(topic_defaults["visual_key"]),
+            "figure_focus": f"{gene_name}: {topic_label} via {axis}",
+            "gene_summary": (
+                f"{gene_name} encodes {role}. This topic bundle emphasizes {topic_label}, "
+                f"with interpretation centered on {axis}."
+            ),
+            "clinical_context": (
+                f"The local {gene_name} bundle is oriented toward {topic_label}. "
+                "Use it for pathway triage, phenotype review, and candidate-gene context; "
+                "external variant classification is required before clinical interpretation."
+            ),
+            "variant_effect_overview": [
+                f"{gene_name} variants can alter, tag, or contextualize {axis}.",
+                "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context.",
+            ],
+            "variants": [
+                {
+                    "variant": f"{gene_name} {topic_defaults['variant_label']} variation model",
+                    "common_name": f"{gene_name} {topic_label} pathway model",
+                    "is_assayable_in_snp_vcf": False,
+                },
+                {
+                    "variant": f"{gene_name} regulatory expression context model",
+                    "common_name": f"{gene_name} expression and methylation-context model",
+                    "is_assayable_in_snp_vcf": False,
+                },
+            ],
+            "concrete_variant_prediction": (
+                f"The variant observed in this sample suggests a {gene_name} {topic_label} thesis: "
+                f"the individual may carry context relevant to {axis}. "
+                "Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+            ),
+        }
+    )
+
+
+TOPIC_BIOLOGY_GENE_ROWS: list[tuple[str, str, str, str, str, str, int, int, str, str, str]] = [
+    ("FCER1A", "ENSG00000179639", "2205", "P12319", "1q23.2", "1", 159259504, 159278014, "+", "allergy_inflammation", "the high-affinity IgE receptor alpha chain that binds IgE on mast cells and basophils"),
+    ("FCER1G", "ENSG00000158869", "2207", "P30273", "1q23.3", "1", 161185024, 161190489, "+", "allergy_inflammation", "the Fc receptor gamma signaling chain used by IgE, IgG, and innate immune receptor complexes"),
+    ("FCER2", "ENSG00000104921", "2208", "P06734", "19p13.2", "19", 7753644, 7767032, "-", "allergy_inflammation", "CD23, the low-affinity IgE receptor that regulates IgE biology and B-cell/allergic responses"),
+    ("MS4A2", "ENSG00000149534", "2206", "Q01362", "11q12.1", "11", 59855734, 59863444, "+", "allergy_inflammation", "the beta chain of the high-affinity IgE receptor complex"),
+    ("TPSAB1", "ENSG00000172236", "7177", "Q15661", "16p13.3", "16", 1290697, 1292555, "+", "allergy_inflammation", "alpha/beta tryptase, a mast-cell granule protease linked to mediator release biology"),
+    ("TPSB2", "ENSG00000197253", "64499", "P20231", "16p13.3", "16", 1277272, 1280214, "-", "allergy_inflammation", "beta-2 tryptase, a mast-cell serine protease relevant to allergic inflammation"),
+    ("CMA1", "ENSG00000092009", "1215", "P23946", "14q12", "14", 24974559, 24977471, "-", "allergy_inflammation", "mast-cell chymase, a granule protease involved in tissue remodeling and inflammatory mediator processing"),
+    ("CPA3", "ENSG00000163751", "1359", "P15088", "3q24", "3", 148583043, 148614983, "+", "allergy_inflammation", "mast-cell carboxypeptidase A3, a granule enzyme used as a mast-cell activation and differentiation marker"),
+    ("KIT", "ENSG00000157404", "3815", "P10721", "4q12", "4", 55524085, 55606881, "+", "allergy_inflammation", "the KIT receptor tyrosine kinase that supports mast-cell development, survival, and activation thresholds"),
+    ("IL5", "ENSG00000113525", "3567", "P05113", "5q31.1", "5", 131877136, 131892530, "-", "allergy_inflammation", "interleukin-5, a type 2 cytokine central to eosinophil maturation and survival"),
+    ("IL5RA", "ENSG00000091181", "3568", "Q01344", "3p26.2", "3", 3111233, 3168297, "-", "allergy_inflammation", "the interleukin-5 receptor alpha chain that mediates eosinophil-targeted cytokine signaling"),
+    ("CCL11", "ENSG00000172156", "6356", "P51671", "17q12", "17", 32612687, 32615353, "+", "allergy_inflammation", "eotaxin-1, a chemokine that recruits CCR3-positive eosinophils"),
+    ("CCR3", "ENSG00000183625", "1232", "P51677", "3p21.31", "3", 46205096, 46308197, "+", "allergy_inflammation", "the eosinophil-biased chemokine receptor for eotaxin-family ligands"),
+    ("CCL17", "ENSG00000102970", "6361", "Q92583", "16q21", "16", 57438679, 57449974, "+", "allergy_inflammation", "TARC/CCL17, a chemokine that recruits CCR4-positive type 2 immune cells"),
+    ("CCL22", "ENSG00000102962", "6367", "O00626", "16q13 q21", "16", 57392684, 57400102, "+", "allergy_inflammation", "MDC/CCL22, a CCR4 ligand involved in Th2 and regulatory T-cell trafficking"),
+    ("CCR4", "ENSG00000183813", "1233", "Q9UK39", "3p22.3", "3", 32993066, 32997841, "+", "allergy_inflammation", "a chemokine receptor used by Th2, Treg, and skin-homing inflammatory cells"),
+    ("IL8", "ENSG00000169429", "3576", "P10145", "4q13.3", "4", 74606223, 74609433, "+", "allergy_inflammation", "CXCL8/IL-8, a neutrophil chemoattractant chemokine in acute inflammation"),
+    ("CXCR2", "ENSG00000180871", "3579", "P25025", "2q35", "2", 218990012, 219001976, "+", "allergy_inflammation", "a CXCL8-family chemokine receptor that drives neutrophil recruitment and inflammatory trafficking"),
+    ("NFKB1", "ENSG00000109320", "4790", "P19838", "4q24", "4", 103422486, 103538459, "+", "allergy_inflammation", "the NF-kappaB p105/p50 transcription factor subunit central to inflammatory gene control"),
+    ("NFKBIA", "ENSG00000100906", "4792", "P25963", "14q13.2", "14", 35870717, 35873955, "-", "allergy_inflammation", "IkappaB-alpha, an inhibitor that restrains NF-kappaB inflammatory activation"),
+    ("RELA", "ENSG00000173039", "5970", "Q04206", "11q13.1", "11", 65421067, 65430565, "-", "allergy_inflammation", "the NF-kappaB p65 transcriptional activation subunit"),
+    ("JAK1", "ENSG00000162434", "3716", "P23458", "1p31.3", "1", 65298912, 65432187, "-", "allergy_inflammation", "Janus kinase 1, a core cytokine receptor signaling kinase"),
+    ("JAK2", "ENSG00000096968", "3717", "O60674", "9p24.1", "9", 4985033, 5128183, "+", "allergy_inflammation", "Janus kinase 2, a cytokine and hematopoietic growth-factor signaling kinase"),
+    ("TYK2", "ENSG00000105397", "7297", "P29597", "19p13.2", "19", 10461209, 10491352, "-", "allergy_inflammation", "tyrosine kinase 2, a JAK-family kinase used by interferon, IL-12, and IL-23 signaling"),
+    ("STAT3", "ENSG00000168610", "6774", "P40763", "17q21.2", "17", 40465342, 40540586, "-", "allergy_inflammation", "STAT3, a cytokine-responsive transcription factor linking IL-6/IL-23 signaling to inflammatory differentiation"),
+    ("MC1R", "ENSG00000258839", "4157", "Q01726", "16q24.3", "16", 89978527, 89987385, "+", "pigmentation_hair", "the melanocortin 1 receptor that switches melanocytes toward eumelanin production"),
+    ("TYR", "ENSG00000077498", "7299", "P14679", "11q14.3", "11", 88910620, 89028927, "+", "pigmentation_hair", "tyrosinase, the copper enzyme that catalyzes key early steps in melanin synthesis"),
+    ("TYRP1", "ENSG00000107165", "7306", "P17643", "9p23", "9", 12685439, 12710290, "+", "pigmentation_hair", "tyrosinase-related protein 1, a melanosomal enzyme involved in eumelanin maturation"),
+    ("DCT", "ENSG00000080166", "1638", "P40126", "13q32.1", "13", 95089558, 95131936, "-", "pigmentation_hair", "dopachrome tautomerase, a melanin-pathway enzyme active in melanocytes"),
+    ("OCA2", "ENSG00000104044", "4948", "Q04671", "15q12 q13.1", "15", 28000021, 28344504, "-", "pigmentation_hair", "a melanosomal membrane protein affecting melanosome pH and pigment production"),
+    ("SLC45A2", "ENSG00000164175", "51151", "Q9UMX9", "5p13.2", "5", 33944721, 33984835, "-", "pigmentation_hair", "a melanosomal solute carrier required for normal pigmentation"),
+    ("SLC24A5", "ENSG00000188467", "283652", "Q71RS6", "15q21.1", "15", 48413169, 48434869, "+", "pigmentation_hair", "a melanosomal sodium/potassium/calcium exchanger shaping pigmentation traits"),
+    ("IRF4", "ENSG00000137265", "3662", "Q15306", "6p25.3", "6", 391739, 411447, "+", "pigmentation_hair", "an interferon regulatory factor with melanocyte regulatory and immune differentiation roles"),
+    ("MITF", "ENSG00000187098", "4286", "O75030", "3p13 p14.1", "3", 69788586, 70017488, "+", "pigmentation_hair", "the master melanocyte lineage transcription factor controlling pigment and survival programs"),
+    ("PAX3", "ENSG00000135903", "5077", "P23760", "2q36.1", "2", 223064607, 223163715, "-", "pigmentation_hair", "a paired-box transcription factor involved in neural crest and melanocyte development"),
+    ("SOX10", "ENSG00000100146", "6663", "P56693", "22q13.1", "22", 38366693, 38383429, "-", "pigmentation_hair", "a neural-crest transcription factor required for melanocyte and glial lineage development"),
+    ("KITLG", "ENSG00000049130", "4254", "P21583", "12q21.32", "12", 88886570, 88974628, "-", "pigmentation_hair", "stem cell factor, the KIT ligand that supports melanocyte development and hair-follicle pigment cells"),
+    ("EDNRB", "ENSG00000136160", "1910", "P24530", "13q22.3", "13", 78469616, 78493903, "-", "pigmentation_hair", "endothelin receptor type B, a GPCR needed for melanocyte and enteric neural crest development"),
+    ("EDN3", "ENSG00000124205", "1908", "P14138", "20q13.32", "20", 57875482, 57901047, "+", "pigmentation_hair", "endothelin-3, a neural-crest ligand supporting melanocyte and enteric neuron development"),
+    ("ASIP", "ENSG00000101440", "434", "P42127", "20q11.22", "20", 32782375, 32857150, "+", "pigmentation_hair", "agouti signaling protein, an MC1R antagonist that shifts pigment toward pheomelanin"),
+    ("BCL2", "ENSG00000171791", "596", "P10415", "18q21.33", "18", 60790579, 60987361, "-", "pigmentation_hair", "an anti-apoptotic mitochondrial protein relevant to melanocyte survival and stem-cell maintenance"),
+    ("PMEL", "ENSG00000185664", "6490", "P40967", "12q13.2", "12", 56347889, 56367101, "-", "pigmentation_hair", "a premelanosome matrix protein needed for melanosome structure"),
+    ("GPR143", "ENSG00000101850", "4935", "P51810", "Xp22.2", "X", 9693386, 9754337, "-", "pigmentation_hair", "an intracellular melanosomal GPCR implicated in ocular albinism and melanosome biology"),
+    ("MLANA", "ENSG00000120215", "2315", "Q16655", "9p24.1", "9", 5890802, 5910606, "+", "pigmentation_hair", "melan-A, a melanocyte-lineage protein involved in melanosome protein processing"),
+    ("SLC24A4", "ENSG00000140090", "123041", "Q8NFF2", "14q32.12", "14", 92788925, 92962596, "+", "pigmentation_hair", "a sodium/potassium/calcium exchanger associated with pigmentation and tooth/hair-related traits"),
+    ("SIRT1", "ENSG00000096717", "23411", "Q96EB6", "10q21.3", "10", 69644427, 69678147, "+", "aging_maintenance", "NAD-dependent deacetylase SIRT1, a stress-response and metabolic regulator"),
+    ("SIRT2", "ENSG00000068903", "22933", "Q8IXJ6", "19q13.2", "19", 39369197, 39390502, "-", "aging_maintenance", "NAD-dependent deacetylase SIRT2, a cytosolic and nuclear regulator of microtubules, metabolism, and stress responses"),
+    ("SIRT3", "ENSG00000142082", "23410", "Q9NTG7", "11p15.5", "11", 215458, 236931, "-", "aging_maintenance", "mitochondrial NAD-dependent deacetylase SIRT3, a regulator of oxidative metabolism and stress resilience"),
+    ("SIRT7", "ENSG00000187531", "51547", "Q9NRC8", "17q25.3", "17", 79869815, 79879199, "-", "aging_maintenance", "nucleolar sirtuin SIRT7, a chromatin, ribosome-biogenesis, and stress-response regulator"),
+    ("KL", "ENSG00000133116", "9365", "Q9UEF7", "13q13.1", "13", 33590207, 33640282, "+", "aging_maintenance", "klotho, a membrane and secreted endocrine factor linked to phosphate, FGF23, and aging biology"),
+    ("WRN", "ENSG00000165392", "7486", "Q14191", "8p12", "8", 30891317, 31031285, "+", "aging_maintenance", "the Werner syndrome RecQ helicase with exonuclease activity in genome maintenance"),
+    ("LMNA", "ENSG00000160789", "4000", "P02545", "1q22", "1", 156052364, 156109880, "+", "aging_maintenance", "lamin A/C, a nuclear lamina scaffold protein involved in genome organization and progeroid disease"),
+    ("TERF1", "ENSG00000147601", "7013", "P54274", "8q21.11", "8", 73921099, 73960357, "+", "aging_maintenance", "telomeric repeat-binding factor 1, a shelterin component regulating telomere length and replication"),
+    ("POT1", "ENSG00000128513", "25913", "Q9NUX5", "7q31.33", "7", 124462440, 124570037, "-", "aging_maintenance", "protection of telomeres 1, a shelterin single-stranded telomeric DNA-binding protein"),
+    ("RTEL1", "ENSG00000258366", "51750", "Q9NZ71", "20q13.33", "20", 62289163, 62328416, "+", "aging_maintenance", "a helicase that resolves telomere and genome replication structures"),
+    ("PARN", "ENSG00000140694", "5073", "O95453", "16p13.12", "16", 14529558, 14726585, "-", "aging_maintenance", "poly(A)-specific ribonuclease, an RNA-processing factor linked to telomerase RNA maturation"),
+    ("DKC1", "ENSG00000130826", "1736", "O60832", "Xq28", "X", 153991031, 154005964, "+", "aging_maintenance", "dyskerin, an H/ACA ribonucleoprotein and telomerase-complex component"),
+    ("TINF2", "ENSG00000092330", "26277", "Q9BSI4", "14q12", "14", 24708849, 24711880, "-", "aging_maintenance", "TIN2, a shelterin adaptor connecting TRF1/TRF2 with telomere protection complexes"),
+    ("ACD", "ENSG00000102977", "65057", "Q96AP0", "16q22.1", "16", 67691415, 67694713, "-", "aging_maintenance", "TPP1, a shelterin component that recruits telomerase and protects telomeres"),
+    ("PARP1", "ENSG00000143799", "142", "P09874", "1q42.12", "1", 226548392, 226595780, "-", "aging_maintenance", "poly(ADP-ribose) polymerase 1, a DNA damage sensor and chromatin regulator"),
+    ("NFE2L2", "ENSG00000116044", "4780", "Q16236", "2q31.2", "2", 178092323, 178257425, "-", "aging_maintenance", "NRF2, a transcription factor controlling antioxidant and detoxification stress responses"),
+    ("KEAP1", "ENSG00000079999", "9817", "Q14145", "19p13.2", "19", 10596796, 10614417, "-", "aging_maintenance", "KEAP1, the redox-sensitive adaptor that restrains NRF2 signaling"),
+    ("FOXO1", "ENSG00000150907", "2308", "Q12778", "13q14.11", "13", 41129804, 41240734, "-", "aging_maintenance", "FOXO1, a forkhead transcription factor linking insulin signaling, stress resistance, and metabolism"),
+    ("FOXO4", "ENSG00000184481", "4303", "P98177", "Xq13.1", "X", 70316047, 70323385, "+", "aging_maintenance", "FOXO4, a forkhead transcription factor linked to stress response and senescence biology"),
+    ("CDKN1A", "ENSG00000124762", "1026", "P38936", "6p21.2", "6", 36644305, 36655116, "+", "aging_maintenance", "p21/CIP1, a cyclin-dependent kinase inhibitor induced by p53 and senescence programs"),
+    ("APP", "ENSG00000142192", "351", "P05067", "21q21.3", "21", 27252861, 27543446, "-", "neurobiology", "amyloid precursor protein, the source of amyloid-beta peptides in Alzheimer disease biology"),
+    ("PSEN1", "ENSG00000080815", "5663", "P49768", "14q24.2", "14", 73603126, 73690399, "+", "neurobiology", "presenilin-1, the catalytic component of gamma-secretase in amyloid precursor processing"),
+    ("PSEN2", "ENSG00000143801", "5664", "P49810", "1q42.13", "1", 227057885, 227083806, "+", "neurobiology", "presenilin-2, a gamma-secretase complex component involved in amyloid precursor processing"),
+    ("MAPT", "ENSG00000186868", "4137", "P10636", "17q21.31", "17", 43971748, 44105700, "+", "neurobiology", "tau, a microtubule-associated protein central to tauopathy and neuronal cytoskeleton biology"),
+    ("SNCA", "ENSG00000145335", "6622", "P37840", "4q22.1", "4", 90645250, 90759466, "-", "neurobiology", "alpha-synuclein, a presynaptic protein involved in synucleinopathy and vesicle biology"),
+    ("LRRK2", "ENSG00000188906", "120892", "Q5S007", "12q12", "12", 40590546, 40763087, "+", "neurobiology", "leucine-rich repeat kinase 2, a kinase/GTPase involved in vesicle, lysosome, and Parkinson disease biology"),
+    ("PINK1", "ENSG00000158828", "65018", "Q9BXM7", "1p36.12", "1", 20959948, 20978004, "+", "neurobiology", "PTEN-induced kinase 1, a mitochondrial damage sensor in mitophagy"),
+    ("PARK2", "ENSG00000185345", "5071", "O60260", "6q26", "6", 161768452, 163148803, "-", "neurobiology", "parkin/PRKN, an E3 ubiquitin ligase that cooperates with PINK1 in mitophagy"),
+    ("GBA", "ENSG00000177628", "2629", "P04062", "1q22", "1", 155204243, 155214490, "-", "neurobiology", "glucocerebrosidase/GBA1, a lysosomal enzyme linking Gaucher and Parkinson disease biology"),
+    ("GRIN2A", "ENSG00000183454", "2903", "Q12879", "16p13.2", "16", 9852376, 10276611, "-", "neurobiology", "the GluN2A NMDA receptor subunit involved in excitatory synaptic signaling"),
+    ("GRIN2B", "ENSG00000273079", "2904", "Q13224", "12p13.1", "12", 13693165, 14133053, "-", "neurobiology", "the GluN2B NMDA receptor subunit involved in synaptic plasticity and neurodevelopment"),
+    ("SLC6A4", "ENSG00000108576", "6532", "P31645", "17q11.2", "17", 28521337, 28563020, "-", "neurobiology", "the serotonin transporter that clears serotonin from synapses"),
+    ("MAOA", "ENSG00000189221", "4128", "P21397", "Xp11.3", "X", 43515467, 43606068, "+", "neurobiology", "monoamine oxidase A, a mitochondrial enzyme that degrades serotonin, norepinephrine, and dopamine"),
+    ("HTR2A", "ENSG00000102468", "3356", "P28223", "13q14.2", "13", 47405685, 47471169, "-", "neurobiology", "the serotonin 2A receptor, a GPCR involved in cortical signaling and neuropsychiatric pharmacology"),
+    ("GABRA1", "ENSG00000022355", "2554", "P14867", "5q34", "5", 161274197, 161326975, "+", "neurobiology", "the GABA-A receptor alpha-1 subunit involved in inhibitory synaptic signaling"),
+    ("SHANK3", "ENSG00000251322", "85358", "Q9BYB0", "22q13.33", "22", 51112843, 51171726, "+", "neurobiology", "a postsynaptic density scaffold protein important for excitatory synapse organization"),
+    ("MECP2", "ENSG00000169057", "4204", "P51608", "Xq28", "X", 153287024, 153363212, "-", "neurobiology", "methyl-CpG-binding protein 2, an epigenetic regulator central to Rett syndrome biology"),
+    ("FMR1", "ENSG00000102081", "2332", "Q06787", "Xq27.3", "X", 146993469, 147032645, "+", "neurobiology", "fragile X messenger ribonucleoprotein 1, an RNA-binding regulator of synaptic protein translation"),
+    ("HTT", "ENSG00000197386", "3064", "P42858", "4p16.3", "4", 3076408, 3245676, "+", "neurobiology", "huntingtin, a large scaffold protein whose polyglutamine expansion causes Huntington disease"),
+    ("SCN1A", "ENSG00000144285", "6323", "P35498", "2q24.3", "2", 166845670, 166984523, "-", "neurobiology", "the Nav1.1 voltage-gated sodium channel alpha subunit important for inhibitory interneuron excitability"),
+    ("FUT2", "ENSG00000176920", "2524", "Q10981", "19q13.33", "19", 49199228, 49209207, "+", "digestion_gut", "alpha(1,2)fucosyltransferase 2, the secretor-status enzyme shaping mucosal glycans and microbiome interaction"),
+    ("NOD2", "ENSG00000167207", "64127", "Q9HC29", "16q12.1", "16", 50727514, 50766988, "+", "digestion_gut", "an intracellular muramyl dipeptide sensor involved in Crohn disease and bacterial-response biology"),
+    ("ATG16L1", "ENSG00000085978", "55054", "Q676U5", "2q37.1", "2", 234118697, 234204320, "+", "digestion_gut", "an autophagy complex component linked to Paneth-cell and Crohn disease biology"),
+    ("CARD9", "ENSG00000187796", "64170", "Q9H257", "9q34.3", "9", 139256355, 139268133, "-", "digestion_gut", "an adaptor for fungal and bacterial innate immune signaling in mucosal defense"),
+    ("IL23R", "ENSG00000162594", "149233", "Q5VWK5", "1p31.3", "1", 67632083, 67725662, "+", "digestion_gut", "the interleukin-23 receptor, a Th17/IL-23 pathway receptor important in IBD genetics"),
+    ("TNFSF15", "ENSG00000181634", "9966", "O95150", "9q32", "9", 117546915, 117568406, "-", "digestion_gut", "TL1A, a TNF-family cytokine ligand implicated in gut inflammation and fibrosis"),
+    ("PNLIP", "ENSG00000175535", "5406", "P16233", "10q25.3", "10", 118305443, 118327367, "+", "digestion_gut", "pancreatic triglyceride lipase, a digestive enzyme required for dietary fat hydrolysis"),
+    ("AMY1A", "ENSG00000237763", "276", "P0DUB6", "1p21.1", "1", 104197912, 104207173, "+", "digestion_gut", "salivary alpha-amylase, a starch-digestion enzyme with copy-number and diet-adaptation relevance"),
+    ("SI", "ENSG00000090402", "6476", "P14410", "3q26.1", "3", 164696686, 164796283, "-", "digestion_gut", "sucrase-isomaltase, an intestinal brush-border enzyme for sucrose and starch-derived disaccharide digestion"),
+    ("ALPI", "ENSG00000163295", "248", "P09923", "2q37.1", "2", 233320833, 233324742, "+", "digestion_gut", "intestinal alkaline phosphatase, a brush-border enzyme involved in barrier and microbial-lipid detoxification biology"),
+    ("MUC2", "ENSG00000198788", "4583", "Q02817", "11p15.5", "11", 1074875, 1104419, "+", "digestion_gut", "mucin-2, the major gel-forming mucin of the intestinal mucus barrier"),
+    ("TFF3", "ENSG00000160180", "7033", "Q07654", "21q22.3", "21", 43731777, 43735761, "-", "digestion_gut", "trefoil factor 3, a secreted epithelial repair peptide abundant in intestinal goblet cells"),
+    ("SLC5A1", "ENSG00000100170", "6523", "P13866", "22q12.3", "22", 32439019, 32509016, "+", "digestion_gut", "SGLT1, the sodium-glucose cotransporter responsible for intestinal glucose and galactose uptake"),
+    ("SLC2A2", "ENSG00000163581", "6514", "P11168", "3q26.2", "3", 170714137, 170744539, "-", "digestion_gut", "GLUT2, a glucose transporter in liver, pancreas, kidney, and intestinal nutrient handling"),
+    ("SLC10A2", "ENSG00000125255", "6555", "Q12908", "13q33.1", "13", 103696350, 103719196, "-", "digestion_gut", "ASBT, the ileal sodium-bile acid cotransporter required for enterohepatic bile-acid recycling"),
+]
+
+
+BIOCHEMISTRY_GENE_CONFIGS.extend(
+    _build_extended_biochemistry_gene_config(config)
+    for config in EXTENDED_BIOCHEMISTRY_GENE_CONFIGS
+)
+
+BIOCHEMISTRY_GENE_CONFIGS.extend(
+    _build_topic_biology_gene_config(row)
+    for row in TOPIC_BIOLOGY_GENE_ROWS
+)
+
+
 GENE_DEFINITIONS.extend(
     _build_allergic_inflammation_gene_definition(config)
     for config in ALLERGIC_INFLAMMATION_GENE_CONFIGS
+)
+
+GENE_DEFINITIONS.extend(
+    _build_biochemistry_gene_definition(config)
+    for config in BIOCHEMISTRY_GENE_CONFIGS
 )
 
 
@@ -5689,6 +7799,10 @@ def _build_interpretation_database(meta: dict[str, Any], subset_df: pd.DataFrame
         "methylation_condition_research": meta["methylation_condition_research"],
         "evidence": meta["evidence"],
     }
+    if meta.get("biorender_visuals"):
+        gene_context["biorender_visuals"] = meta["biorender_visuals"]
+    if meta.get("concrete_variant_prediction"):
+        gene_context["concrete_variant_prediction"] = meta["concrete_variant_prediction"]
 
     variant_records: list[dict[str, Any]] = []
     for raw_variant in meta["variants"]:

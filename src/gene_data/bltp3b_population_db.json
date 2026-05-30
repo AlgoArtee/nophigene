@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene BLTP3B Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled BLTP3B population database is literature oriented. It does not embed a complete allele-frequency panel, and rs7134216 interpretation should be checked against current population and phenotype-specific resources before individual-level use.",
+  "gene_population_patterns_intro": "Broader population patterns curated from BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 23074: BLTP3B gene summary",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/23074"
+    },
+    {
+      "label": "PMCID PMC9067936: SHIP164 lipid-transfer and endosome-Golgi traffic",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9067936/"
+    },
+    {
+      "label": "PMCID PMC3621505: MYP3 high-grade myopia association mapping",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "BLTP3B lipid-transfer biology",
+      "location_group": "Functional biology",
+      "summary": "BLTP3B population interpretation should start from a conservative functional lane: the protein is best supported as a bridge-like lipid-transfer factor in early endosome-to-Golgi traffic."
+    },
+    {
+      "variant": "rs7134216 / MYP3 locus",
+      "location_group": "Disease cohorts",
+      "summary": "rs7134216 belongs in a cohort-level high-grade myopia/MYP3 research frame, especially for quantitative refractive-error association rather than monogenic diagnosis."
+    },
+    {
+      "variant": "BLTP3B TSS methylation",
+      "location_group": "Local regulatory context",
+      "summary": "The bundled promoter/TSS EPIC probes provide local regulatory context for BLTP3B/UHRF1BP1L, but no disease-specific methylation threshold is bundled."
+    }
+  ]
+}

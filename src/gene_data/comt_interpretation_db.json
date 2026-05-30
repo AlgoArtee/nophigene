@@ -1,0 +1,162 @@
+{
+  "database_name": "NophiGene COMT Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "COMT",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "22q11.21",
+    "chromosome": "22",
+    "gene_region": {
+      "label": "COMT transcribed interval",
+      "start": 19929130,
+      "end": 19957498,
+      "definition": "Canonical COMT genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 19928130,
+      "end": 19929129,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 19929184,
+      "end": 19930802,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "22:19928130-19957498",
+    "gene_summary": "COMT encodes catechol-O-methyltransferase, an enzyme that methylates catecholamines and catechol estrogens, linking neurotransmitter turnover, pain, stress, cognition, and pharmacogenetic research.",
+    "clinical_context": "The local COMT bundle is neurotransmitter-metabolism oriented. Val158Met is a common functional marker but remains a probabilistic research modifier, not a deterministic behavior or psychiatric predictor.",
+    "variant_effect_overview": [
+      "Val158Met alters COMT enzyme thermostability/activity and is widely studied in dopamine, pain, stress, cognition, and medication-response contexts.",
+      "Interpretation should account for sex, tissue isoform, phenotype definition, ancestry, and environment."
+    ],
+    "condition_research_overview": [
+      "Catecholamine metabolism and prefrontal dopamine tone",
+      "Pain, stress, and cognition association research",
+      "Pharmacogenetic and neuropsychiatric context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg24899205",
+      "cg07019740",
+      "cg11032634",
+      "cg03205258",
+      "cg12175949",
+      "cg10253022",
+      "cg00465975",
+      "cg24164157",
+      "cg01633693",
+      "cg06860277"
+    ],
+    "methylation_interpretation": "COMT methylation should be treated as local regulatory context around a catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for COMT.",
+      "Because COMT biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use COMT promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use.",
+      "Catecholamine metabolism and prefrontal dopamine tone",
+      "Pain, stress, and cognition association research"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 1312: COMT",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/1312"
+      },
+      {
+        "label": "UniProt P21964: COMT_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P21964/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000093010: COMT coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000093010"
+      },
+      {
+        "label": "PharmGKB COMT gene summary",
+        "url": "https://www.pharmgkb.org/gene/PA117"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "COMT biochemical figure starter",
+      "focus": "catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use",
+      "template_title": "CREB Signaling Pathway",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-608c41c359b80e00a38478b4?source=mcp",
+      "icon_search_terms": [
+        "synapse",
+        "neurotrophin"
+      ],
+      "recommended_icons": [
+        "Synaptic vesicle with neurotransmitters (medium)",
+        "Pre-synaptic membrane (with cycling vesicles)",
+        "Post-synaptic membrane (3D, dendrite)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a COMT catecholamine-metabolism thesis: the individual may carry context relevant to dopamine/norepinephrine turnover, prefrontal signaling, pain/stress traits, methyl-donor use, or pharmacogenetic research. It should not be treated as a deterministic personality or psychiatric call."
+  },
+  "variant_records": [
+    {
+      "variant": "rs4680",
+      "display_name": "rs4680 (COMT Val158Met)",
+      "common_name": "COMT catecholamine-metabolism activity marker",
+      "lookup_keys": [
+        "rs4680",
+        "rs4680 (COMT Val158Met)",
+        "COMT:rs4680",
+        "comt:rs4680"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs4680 (COMT Val158Met) is curated as a COMT marker for Catecholamine metabolism and prefrontal dopamine tone, Pain, stress, and cognition association research. Read it through genotype dosage, phenotype context, and the catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Catecholamine metabolism and prefrontal dopamine tone",
+        "Pain, stress, and cognition association research",
+        "Pharmacogenetic and neuropsychiatric context"
+      ],
+      "research_context": [
+        "Use this marker as a COMT pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "COMT catecholamine-metabolism activity marker",
+      "methylation_interpretation": "Pair rs4680 (COMT Val158Met) with COMT methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "PharmGKB COMT gene summary",
+          "url": "https://www.pharmgkb.org/gene/PA117"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "COMT curated evidence set",
+          "genotypes": "rs4680 (COMT Val158Met) or linked COMT locus genotype states",
+          "phenotype": "Catecholamine metabolism and prefrontal dopamine tone, Pain, stress, and cognition association research",
+          "finding": "The local curation treats rs4680 (COMT Val158Met) as a gene-specific marker for Catecholamine metabolism and prefrontal dopamine tone, Pain, stress, and cognition association research and catecholamine methylation, dopamine/norepinephrine turnover, prefrontal neurotransmitter tone, and methyl-donor use.",
+          "url": "https://www.pharmgkb.org/gene/PA117"
+        }
+      ],
+      "gene_name": "COMT",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg24899205",
+        "cg07019740",
+        "cg11032634",
+        "cg03205258",
+        "cg12175949",
+        "cg10253022",
+        "cg00465975",
+        "cg24164157",
+        "cg01633693",
+        "cg06860277"
+      ]
+    }
+  ]
+}

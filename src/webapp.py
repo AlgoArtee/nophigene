@@ -834,6 +834,25 @@ def _protein_matches_processed_gene_symbols(protein: dict[str, Any], processed_g
     return bool(candidates.intersection(processed_gene_symbols))
 
 
+def _biorender_visuals_for_protein(protein: dict[str, Any]) -> dict[str, Any] | None:
+    """Return bundled BioRender figure-starter metadata for a UniProt protein card."""
+    candidates = [_normalize_processed_gene_symbol(protein.get("gene_name", ""))]
+    gene_synonyms = protein.get("gene_synonyms", [])
+    if isinstance(gene_synonyms, (list, tuple, set)):
+        candidates.extend(_normalize_processed_gene_symbol(item) for item in gene_synonyms)
+
+    for candidate in candidates:
+        if not candidate:
+            continue
+        knowledge_base = load_gene_interpretation_database(candidate)
+        if knowledge_base is None:
+            continue
+        visuals = knowledge_base.get("gene_context", {}).get("biorender_visuals")
+        if isinstance(visuals, dict) and visuals:
+            return visuals
+    return None
+
+
 def _render_table(df: pd.DataFrame, rows: int = 12) -> str:
     """Render a compact preview table for the result cards."""
     return df.head(rows).to_html(index=False, classes="preview-table", border=0)
@@ -1468,6 +1487,15 @@ def human_proteins_api() -> Any:
             excluded_processed_count = len(proteins) - len(filtered_proteins)
             payload["proteins"] = filtered_proteins
             payload["records_returned"] = len(filtered_proteins)
+
+    proteins = payload.get("proteins", [])
+    if isinstance(proteins, list):
+        for protein in proteins:
+            if not isinstance(protein, dict):
+                continue
+            visuals = _biorender_visuals_for_protein(protein)
+            if visuals:
+                protein["biorender_visuals"] = visuals
 
     payload["exclude_processed"] = exclude_processed
     payload["processed_gene_symbols"] = processed_gene_symbols

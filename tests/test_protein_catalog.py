@@ -163,6 +163,48 @@ def test_human_proteins_api_returns_json_payload(monkeypatch) -> None:
     payload = response.get_json()
     assert payload["query"] == "DRD4"
     assert payload["proteins"][0]["gene_name"] == "DRD4"
+    assert "biorender_visuals" not in payload["proteins"][0]
+
+
+def test_human_proteins_api_adds_biorender_visuals_for_local_bundles(monkeypatch) -> None:
+    """Protein cards should expose bundled BioRender figure starters when the gene has one."""
+    sample_payload = {
+        "query": "TP53",
+        "reviewed_only": True,
+        "cursor": None,
+        "next_cursor": None,
+        "has_next_page": False,
+        "has_previous_page": False,
+        "page_index": None,
+        "next_page_index": None,
+        "previous_page_index": None,
+        "pagination_mode": "cursor",
+        "page_size": 24,
+        "records_returned": 1,
+        "total_results": 1,
+        "catalog_label": "UniProt human UniProtKB catalog",
+        "catalog_scope": "Reviewed human proteins",
+        "catalog_url": "https://rest.uniprot.org/uniprotkb/search",
+        "featured_queries": ["TP53"],
+        "longevity_only": False,
+        "longevity_source": None,
+        "proteins": [
+            {"gene_name": "TP53", "gene_synonyms": [], "protein_name": "Cellular tumor antigen p53"}
+        ],
+        "error": None,
+    }
+
+    monkeypatch.setattr("src.webapp.get_human_protein_catalog", lambda **_: sample_payload)
+
+    client = app.test_client()
+    response = client.get("/api/human-proteins?q=TP53")
+
+    assert response.status_code == 200
+    payload = response.get_json()
+    visuals = payload["proteins"][0]["biorender_visuals"]
+    assert visuals["provider"] == "BioRender"
+    assert visuals["template_title"] == "DNA Repair Mechanisms"
+    assert visuals["recommended_icons"]
 
 
 def test_human_proteins_api_excludes_processed_history_genes(monkeypatch, tmp_path) -> None:

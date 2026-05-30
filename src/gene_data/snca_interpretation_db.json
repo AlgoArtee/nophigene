@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene SNCA Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "SNCA",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "4q22.1",
+    "chromosome": "4",
+    "gene_region": {
+      "label": "SNCA transcribed interval",
+      "start": 90645250,
+      "end": 90759466,
+      "definition": "Canonical SNCA genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 90759467,
+      "end": 90760466,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 90757139,
+      "end": 90760841,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "4:90645250-90760466",
+    "gene_summary": "SNCA encodes alpha-synuclein, a presynaptic protein involved in synucleinopathy and vesicle biology. This topic bundle emphasizes neurological and neurodegenerative biology, with interpretation centered on synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+    "clinical_context": "The local SNCA bundle is oriented toward neurological and neurodegenerative biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "SNCA variants can alter, tag, or contextualize synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+      "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg21244408",
+      "cg17978223",
+      "cg12030690",
+      "cg00869039",
+      "cg10731794",
+      "cg08767460",
+      "cg15452573",
+      "cg20776829",
+      "cg23396644",
+      "cg00119181"
+    ],
+    "methylation_interpretation": "SNCA methylation should be treated as local regulatory context around a synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for SNCA.",
+      "Because SNCA biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use SNCA promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 6622: SNCA",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/6622"
+      },
+      {
+        "label": "UniProt P37840: SNCA_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P37840/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000145335: SNCA coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000145335"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "SNCA biochemical figure starter",
+      "focus": "SNCA: neurological and neurodegenerative biology via synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+      "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+      "icon_search_terms": [
+        "neuron synapse neurodegeneration",
+        "synapse",
+        "microglia"
+      ],
+      "recommended_icons": [
+        "Microglial cell (with Abeta plaque)",
+        "Axonal-dendritic synaptic cleft (3D)",
+        "Myelin sheath (long, degenerating)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a SNCA neurological and neurodegenerative biology thesis: the individual may carry context relevant to synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "SNCA neurobiology variation model",
+      "display_name": "SNCA neurobiology variation model",
+      "common_name": "SNCA neurological and neurodegenerative biology pathway model",
+      "lookup_keys": [
+        "SNCA neurobiology variation model",
+        "SNCA neurobiology variation model",
+        "SNCA:SNCA neurobiology variation model",
+        "snca:snca neurobiology variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SNCA neurobiology variation model is curated as a SNCA marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a SNCA pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SNCA neurological and neurodegenerative biology pathway model",
+      "methylation_interpretation": "Pair SNCA neurobiology variation model with SNCA methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SNCA curated evidence set",
+          "genotypes": "SNCA neurobiology variation model or linked SNCA locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats SNCA neurobiology variation model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SNCA",
+      "chromosome": "4",
+      "relevant_methylation_probe_ids": [
+        "cg21244408",
+        "cg17978223",
+        "cg12030690",
+        "cg00869039",
+        "cg10731794",
+        "cg08767460",
+        "cg15452573",
+        "cg20776829",
+        "cg23396644",
+        "cg00119181"
+      ]
+    },
+    {
+      "variant": "SNCA regulatory expression context model",
+      "display_name": "SNCA regulatory expression context model",
+      "common_name": "SNCA expression and methylation-context model",
+      "lookup_keys": [
+        "SNCA regulatory expression context model",
+        "SNCA regulatory expression context model",
+        "SNCA:SNCA regulatory expression context model",
+        "snca:snca regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SNCA regulatory expression context model is curated as a SNCA marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a SNCA pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SNCA expression and methylation-context model",
+      "methylation_interpretation": "Pair SNCA regulatory expression context model with SNCA methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SNCA curated evidence set",
+          "genotypes": "SNCA regulatory expression context model or linked SNCA locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats SNCA regulatory expression context model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SNCA",
+      "chromosome": "4",
+      "relevant_methylation_probe_ids": [
+        "cg21244408",
+        "cg17978223",
+        "cg12030690",
+        "cg00869039",
+        "cg10731794",
+        "cg08767460",
+        "cg15452573",
+        "cg20776829",
+        "cg23396644",
+        "cg00119181"
+      ]
+    }
+  ]
+}

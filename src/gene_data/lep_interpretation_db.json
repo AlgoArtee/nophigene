@@ -1,0 +1,210 @@
+{
+  "database_name": "NophiGene LEP Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "LEP",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "7q32.1",
+    "chromosome": "7",
+    "gene_region": {
+      "label": "LEP transcribed interval",
+      "start": 127881337,
+      "end": 127897681,
+      "definition": "Canonical LEP genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 127880337,
+      "end": 127881336,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 127881344,
+      "end": 127882889,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "7:127880337-127897681",
+    "gene_summary": "LEP encodes leptin, an adipocyte-derived endocrine hormone. This bundle emphasizes adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk.",
+    "clinical_context": "The local LEP bundle is leptin endocrine signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "LEP variants can alter or tag adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Energy balance and obesity context",
+      "Leptin deficiency review context",
+      "Adipokine and inflammatory signaling"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg13381984",
+      "cg00666422",
+      "cg15792829",
+      "cg20564991",
+      "cg08349670",
+      "cg12083122",
+      "cg11005360",
+      "cg23381058",
+      "cg23753947",
+      "cg25435800"
+    ],
+    "methylation_interpretation": "LEP methylation should be treated as local regulatory context around a adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for LEP.",
+      "Because LEP biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use LEP promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk.",
+      "Energy balance and obesity context",
+      "Leptin deficiency review context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 3952: LEP",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/3952"
+      },
+      {
+        "label": "UniProt P41159: LEP_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P41159/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000174697: LEP coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000174697"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "LEP biochemical figure starter",
+      "focus": "LEP: adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "lipid metabolism",
+        "APOE",
+        "LDL receptor"
+      ],
+      "recommended_icons": [
+        "Apolipoprotein A brush (kringle)",
+        "Vessel (atherosclerosis, cross-section)",
+        "Atherosclerosis (with hypoxia, cross-section)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a LEP leptin endocrine signaling thesis: the individual may carry context relevant to adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk and Energy balance and obesity context, Leptin deficiency review context. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs7799039",
+      "display_name": "rs7799039 (LEP promoter marker)",
+      "common_name": "LEP expression association marker",
+      "lookup_keys": [
+        "rs7799039",
+        "rs7799039 (LEP promoter marker)",
+        "LEP:rs7799039",
+        "lep:rs7799039"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs7799039 (LEP promoter marker) is curated as a LEP marker for Energy balance and obesity context, Leptin deficiency review context. Read it through genotype dosage, phenotype context, and the adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Energy balance and obesity context",
+        "Leptin deficiency review context",
+        "Adipokine and inflammatory signaling"
+      ],
+      "research_context": [
+        "Use this marker as a LEP pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "LEP expression association marker",
+      "methylation_interpretation": "Pair rs7799039 (LEP promoter marker) with LEP methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "LEP curated evidence set",
+          "genotypes": "rs7799039 (LEP promoter marker) or linked LEP locus genotype states",
+          "phenotype": "Energy balance and obesity context, Leptin deficiency review context",
+          "finding": "The local curation treats rs7799039 (LEP promoter marker) as a gene-specific marker for Energy balance and obesity context, Leptin deficiency review context and adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk.",
+          "url": ""
+        }
+      ],
+      "gene_name": "LEP",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg13381984",
+        "cg00666422",
+        "cg15792829",
+        "cg20564991",
+        "cg08349670",
+        "cg12083122",
+        "cg11005360",
+        "cg23381058",
+        "cg23753947",
+        "cg25435800"
+      ]
+    },
+    {
+      "variant": "LEP deficiency model",
+      "display_name": "LEP deficiency model",
+      "common_name": "leptin deficiency endocrine model",
+      "lookup_keys": [
+        "LEP deficiency model",
+        "LEP deficiency model",
+        "LEP:LEP deficiency model",
+        "lep:lep deficiency model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "LEP deficiency model is curated as a LEP marker for Energy balance and obesity context, Leptin deficiency review context. Read it through genotype dosage, phenotype context, and the adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Energy balance and obesity context",
+        "Leptin deficiency review context",
+        "Adipokine and inflammatory signaling"
+      ],
+      "research_context": [
+        "Use this marker as a LEP pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "leptin deficiency endocrine model",
+      "methylation_interpretation": "Pair LEP deficiency model with LEP methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "LEP curated evidence set",
+          "genotypes": "LEP deficiency model or linked LEP locus genotype states",
+          "phenotype": "Energy balance and obesity context, Leptin deficiency review context",
+          "finding": "The local curation treats LEP deficiency model as a gene-specific marker for Energy balance and obesity context, Leptin deficiency review context and adipose endocrine signaling, hypothalamic appetite regulation, energy expenditure, puberty/fertility signaling, and inflammatory crosstalk.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "LEP",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg13381984",
+        "cg00666422",
+        "cg15792829",
+        "cg20564991",
+        "cg08349670",
+        "cg12083122",
+        "cg11005360",
+        "cg23381058",
+        "cg23753947",
+        "cg25435800"
+      ]
+    }
+  ]
+}

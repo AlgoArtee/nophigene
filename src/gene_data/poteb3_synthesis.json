@@ -1,0 +1,200 @@
+{
+  "database_name": "NophiGene POTEB3 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "POTEB3",
+  "source_interpretation_database": "NophiGene POTEB3 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "15q11.1-q11.2 copy-number region including POTEB3 (Benign ClinVar regional CNV context)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction.",
+  "variant_prediction_rules": [
+    {
+      "variant": "15q11.1-q11.2 CNV including POTEB3",
+      "display_name": "15q11.1-q11.2 copy-number region including POTEB3",
+      "common_name": "Benign ClinVar regional CNV context",
+      "lookup_keys": [
+        "RCV000136295",
+        "nsv533590",
+        "nssv707330",
+        "15q11.1-q11.2 CNV",
+        "POTEB3 copy-number region"
+      ],
+      "prediction": "Observed 15q11.1-q11.2 copy-number context including POTEB3 suggests a regional structural-variation thesis: the sample matched a broad segmental-duplication CNV context that includes POTEB3 among many genes. Keep this interpretation regional and assembly-aware; it is not a POTEB3-specific pathogenic or protective call.",
+      "sample_change_template": "This sample matched 15q11.1-q11.2 copy-number region including POTEB3 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the POTEB3 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Large regional copy-number event rather than a single POTEB3 coding or regulatory variant.",
+      "evidence": [
+        {
+          "label": "ClinVar RCV000136295: benign copy-number loss spanning POTEB3",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"
+        },
+        {
+          "label": "NCBI Gene 102724631: POTEB3 gene identity",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/102724631"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. An observed POTEB3 variant places this sample in the curated POTEB3 research context. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a POTEB3 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a POTEB3 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a POTEB3 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a POTEB3 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a POTEB3 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a POTEB3 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a POTEB3 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a POTEB3 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a POTEB3 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a POTEB3/POTE-family structural-region thesis: the individual may carry a signal in a highly paralogous 15q11.2 cancer-testis gene region where assembly choice, copy number, and read-mapping uniqueness matter more than single-SNV heuristics. This is a paralog-aware research flag, not a POTEB3-specific diagnosis or methylation prediction. No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays. The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene. Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+        "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+        "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+      ]
+    }
+  ]
+}

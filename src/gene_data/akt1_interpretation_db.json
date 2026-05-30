@@ -1,0 +1,210 @@
+{
+  "database_name": "NophiGene AKT1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "AKT1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "14q32.33",
+    "chromosome": "14",
+    "gene_region": {
+      "label": "AKT1 transcribed interval",
+      "start": 105235686,
+      "end": 105262088,
+      "definition": "Canonical AKT1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 105262089,
+      "end": 105263088,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 105259826,
+      "end": 105261564,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "14:105235686-105263088",
+    "gene_summary": "AKT1 encodes AKT1, a serine/threonine kinase that integrates PI3K input with survival and growth programs. This bundle emphasizes AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology.",
+    "clinical_context": "The local AKT1 bundle is AKT signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "AKT1 variants can alter or tag AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "PI3K-AKT-mTOR pathway biology",
+      "Somatic oncology and mosaic overgrowth context",
+      "Growth-factor survival signaling"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg07197515",
+      "cg02956093",
+      "cg10290474",
+      "cg26049684",
+      "cg18690816",
+      "cg14825287",
+      "cg05616442",
+      "cg18071894",
+      "cg11916669",
+      "cg02313172"
+    ],
+    "methylation_interpretation": "AKT1 methylation should be treated as local regulatory context around a AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for AKT1.",
+      "Because AKT1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use AKT1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology.",
+      "PI3K-AKT-mTOR pathway biology",
+      "Somatic oncology and mosaic overgrowth context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 207: AKT1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/207"
+      },
+      {
+        "label": "UniProt P31749: AKT1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P31749/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000142208: AKT1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000142208"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "AKT1 biochemical figure starter",
+      "focus": "AKT1: AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology",
+      "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+      "icon_search_terms": [
+        "growth factor receptor",
+        "EGFR"
+      ],
+      "recommended_icons": [
+        "EGFR in endosome (ubiquitinated)",
+        "EGF (pathway)",
+        "VEGFR2 (dimer, schematic)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a AKT1 AKT signaling thesis: the individual may carry context relevant to AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology and PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "AKT1 E17K model",
+      "display_name": "AKT1 E17K model",
+      "common_name": "AKT1 activating pleckstrin-homology-domain model",
+      "lookup_keys": [
+        "AKT1 E17K model",
+        "AKT1 E17K model",
+        "AKT1:AKT1 E17K model",
+        "akt1:akt1 e17k model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "AKT1 E17K model is curated as a AKT1 marker for PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context. Read it through genotype dosage, phenotype context, and the AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "PI3K-AKT-mTOR pathway biology",
+        "Somatic oncology and mosaic overgrowth context",
+        "Growth-factor survival signaling"
+      ],
+      "research_context": [
+        "Use this marker as a AKT1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "AKT1 activating pleckstrin-homology-domain model",
+      "methylation_interpretation": "Pair AKT1 E17K model with AKT1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "AKT1 curated evidence set",
+          "genotypes": "AKT1 E17K model or linked AKT1 locus genotype states",
+          "phenotype": "PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context",
+          "finding": "The local curation treats AKT1 E17K model as a gene-specific marker for PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context and AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "AKT1",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg07197515",
+        "cg02956093",
+        "cg10290474",
+        "cg26049684",
+        "cg18690816",
+        "cg14825287",
+        "cg05616442",
+        "cg18071894",
+        "cg11916669",
+        "cg02313172"
+      ]
+    },
+    {
+      "variant": "AKT1 pathway-activation model",
+      "display_name": "AKT1 pathway-activation model",
+      "common_name": "AKT1 signaling activation model",
+      "lookup_keys": [
+        "AKT1 pathway-activation model",
+        "AKT1 pathway-activation model",
+        "AKT1:AKT1 pathway-activation model",
+        "akt1:akt1 pathway-activation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "AKT1 pathway-activation model is curated as a AKT1 marker for PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context. Read it through genotype dosage, phenotype context, and the AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "PI3K-AKT-mTOR pathway biology",
+        "Somatic oncology and mosaic overgrowth context",
+        "Growth-factor survival signaling"
+      ],
+      "research_context": [
+        "Use this marker as a AKT1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "AKT1 signaling activation model",
+      "methylation_interpretation": "Pair AKT1 pathway-activation model with AKT1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "AKT1 curated evidence set",
+          "genotypes": "AKT1 pathway-activation model or linked AKT1 locus genotype states",
+          "phenotype": "PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context",
+          "finding": "The local curation treats AKT1 pathway-activation model as a gene-specific marker for PI3K-AKT-mTOR pathway biology, Somatic oncology and mosaic overgrowth context and AKT kinase signaling, glucose and growth-factor response, apoptosis restraint, mTOR activation, and mosaic activation biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "AKT1",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg07197515",
+        "cg02956093",
+        "cg10290474",
+        "cg26049684",
+        "cg18690816",
+        "cg14825287",
+        "cg05616442",
+        "cg18071894",
+        "cg11916669",
+        "cg02313172"
+      ]
+    }
+  ]
+}

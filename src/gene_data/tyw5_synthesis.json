@@ -1,0 +1,283 @@
+{
+  "database_name": "NophiGene TYW5 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "TYW5",
+  "source_interpretation_database": "NophiGene TYW5 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs796364 / rs281759 (TYW5 2q33.1 regulatory schizophrenia locus) (TYW5 distal enhancer schizophrenia eQTL marker pair)",
+    "rs203772 (TYW5 schizophrenia eQTL/MRI marker) (TYW5 prefrontal-expression schizophrenia marker)",
+    "TYW5 JmjC tRNA(Phe) hydroxywybutosine model (TYW5 Fe(II)/2-OG RNA hydroxylase model)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs796364 / rs281759",
+      "display_name": "rs796364 / rs281759 (TYW5 2q33.1 regulatory schizophrenia locus)",
+      "common_name": "TYW5 distal enhancer schizophrenia eQTL marker pair",
+      "lookup_keys": [
+        "rs796364",
+        "TYW5 rs796364",
+        "TYW5:rs796364",
+        "rs281759",
+        "TYW5 rs281759",
+        "TYW5:rs281759",
+        "chr2_200825237_I",
+        "2q33.1 TYW5 schizophrenia locus",
+        "TYW5 schizophrenia regulatory locus",
+        "TYW5 distal enhancer"
+      ],
+      "prediction": "Observed TYW5-linked rs796364 or rs281759 suggests a 2q33.1 schizophrenia regulatory-expression thesis: the sample matched a functional regulatory marker pair reported to disrupt CTCF/RAD21/FOXP2 binding, physically interact with TYW5, associate with brain TYW5 expression, and affect TYW5 expression after CRISPR deletion of nearby regulatory sequence. Keep this interpretation cohort-level and non-diagnostic because schizophrenia risk is polygenic, the markers are noncoding and LD-dependent, and individual interpretation depends on ancestry, genotype dosage, brain-expression context, phenotype, and current GWAS/eQTL evidence.",
+      "sample_change_template": "This sample matched rs796364 / rs281759 (TYW5 2q33.1 regulatory schizophrenia locus) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the TYW5 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "rs796364 disrupted CTCF and RAD21 binding in the cited functional genomics study.",
+      "evidence": [
+        {
+          "label": "PubMed 34581804: rs796364 and rs281759 regulatory mechanism for TYW5 and schizophrenia",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/34581804/"
+        },
+        {
+          "label": "PMCID PMC9014752: full text functional genomics and TYW5 neurodevelopment/spine evidence",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9014752/"
+        },
+        {
+          "label": "ClinGen Gene Facts HGNC:26754: no published TYW5 clinical curations",
+          "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A26754"
+        }
+      ]
+    },
+    {
+      "variant": "rs203772",
+      "display_name": "rs203772 (TYW5 schizophrenia eQTL/MRI marker)",
+      "common_name": "TYW5 prefrontal-expression schizophrenia marker",
+      "lookup_keys": [
+        "rs203772",
+        "TYW5 rs203772",
+        "TYW5:rs203772",
+        "rs203772 TYW5 expression",
+        "rs203772 schizophrenia",
+        "rs203772 gray matter volume"
+      ],
+      "prediction": "Observed TYW5 rs203772 suggests an integrative schizophrenia eQTL and neuroimaging thesis: the sample matched a marker whose risk allele was associated with higher TYW5 transcription in prefrontal cortex, stronger schizophrenia association in Sherlock/SMR analyses, higher TYW5 expression in schizophrenia brain or induced-neuron data, and gray-matter volume differences in first-episode antipsychotic-naive schizophrenia MRI analyses. Treat this as research-grade neurogenetic context rather than a diagnostic psychiatric prediction.",
+      "sample_change_template": "This sample matched rs203772 (TYW5 schizophrenia eQTL/MRI marker) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the TYW5 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Risk allele associated with higher TYW5 transcriptional level in prefrontal cortex in the cited study.",
+      "evidence": [
+        {
+          "label": "PubMed 35527273: rs203772, TYW5 expression, schizophrenia risk, and structural MRI",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35527273/"
+        },
+        {
+          "label": "PMCID PMC9082878: full text integrative TYW5 schizophrenia risk-gene analysis",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9082878/"
+        },
+        {
+          "label": "NCBI Gene 129450: TYW5 gene and bibliography context",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/129450"
+        }
+      ]
+    },
+    {
+      "variant": "TYW5 enzymatic wybutosine-hydroxylase model",
+      "display_name": "TYW5 JmjC tRNA(Phe) hydroxywybutosine model",
+      "common_name": "TYW5 Fe(II)/2-OG RNA hydroxylase model",
+      "lookup_keys": [
+        "TYW5 enzymatic model",
+        "TYW5 loss-of-function",
+        "TYW5 loss of function",
+        "TYW5 LOF",
+        "TYW5 overexpression",
+        "TYW5 knockdown",
+        "TYW5 JmjC",
+        "TYW5 RNA hydroxylase",
+        "TYW5 tRNA hydroxylase",
+        "TYW5 wybutosine",
+        "TYW5 hydroxywybutosine",
+        "TYW5 OHyW",
+        "TYW5 yW-72",
+        "TYW5 Fe(II)",
+        "TYW5 2-oxoglutarate",
+        "TYW5 tRNA(Phe)"
+      ],
+      "prediction": "Observed TYW5 enzymatic, loss-of-function, overexpression, or RNA-modification context suggests a JmjC RNA-hydroxylase thesis: the sample matched a model class tied to Fe(II)/2-oxoglutarate-dependent hydroxylation of yW-72 to OHyW* in tRNA(Phe), tRNA-binding Arg residues, homodimer structure, translational reading-frame fidelity, neurodevelopmental expression effects, and dendritic spine morphology. Keep this as pathway and expression biology unless a clinically reviewed human TYW5 variant, RNA-modification assay, or disease model supports stronger interpretation.",
+      "sample_change_template": "This sample matched TYW5 JmjC tRNA(Phe) hydroxywybutosine model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the TYW5 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Catalyzes hydroxylation of 7-(alpha-amino-alpha-carboxypropyl)wyosine into the hydroxywybutosine-pathway intermediate OHyW*.",
+      "evidence": [
+        {
+          "label": "PubMed 20739293: TYW5 as JmjC RNA hydroxylase for hydroxywybutosine biosynthesis",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20739293/"
+        },
+        {
+          "label": "PMCID PMC3045595: human TYW5 crystal structure, cofactor binding, dimerization, and tRNA-recognition residues",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3045595/"
+        },
+        {
+          "label": "UniProt A2RUC4: TYW5 enzymatic function and cofactor annotations",
+          "url": "https://www.uniprot.org/uniprotkb/A2RUC4/entry"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. An observed TYW5 variant places this sample in the curated TYW5 research context. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a TYW5 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a TYW5 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a TYW5 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a TYW5 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a TYW5 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a TYW5 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a TYW5 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a TYW5 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a TYW5 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a TYW5 tRNA(Phe) hydroxywybutosine and schizophrenia regulatory-expression thesis: the individual may carry a research-grade marker relevant to Fe(II)/2-oxoglutarate JmjC RNA hydroxylase biology, wybutosine-tRNA modification, translational reading-frame fidelity, brain TYW5 eQTL regulation, neurodevelopment, dendritic spine morphology, or structural-MRI schizophrenia genetics. Because ClinGen has not published a TYW5 clinical curation, TYW5 findings should stay cohort-, tissue-, expression-, genotype-, and phenotype-aware rather than being treated as deterministic schizophrenia, neurodevelopmental, retinal, cancer, or RNA-modification disorder predictions. TYW5 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TYW5 methylation as local regulatory context around a reverse-strand tRNA-modification and schizophrenia-eQTL gene, not as a validated schizophrenia, neurodevelopmental, RNA-modification, retinal, cancer, or structural-MRI biomarker. The local TYW5 knowledge base is tRNA modification, RNA hydroxylase, schizophrenia regulatory-expression, neurodevelopment, dendritic spine, structural-MRI, and translational-fidelity research oriented. ClinGen has not published a TYW5 gene-disease validity or dosage curation, so TYW5 findings should remain exploratory unless external clinical review supplies stronger variant-level evidence. Biochemical and structural work identifies TYW5 as a human JmjC RNA hydroxylase that uses Fe(II) and 2-oxoglutarate to form hydroxywybutosine-pathway intermediates at position 37 of cytoplasmic tRNA(Phe), a modification class important for codon reading-frame fidelity.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "tRNA(Phe) wybutosine and hydroxywybutosine biosynthesis, JmjC Fe(II)/2-oxoglutarate RNA hydroxylase activity, tRNA binding, homodimer structure, translational fidelity, and codon-frame maintenance.",
+        "Schizophrenia GWAS/eQTL/SMR integration, 2q33.1 regulatory variants, TYW5 brain expression, neurodevelopment, neural stem cell proliferation/differentiation, dendritic spine morphogenesis, and structural MRI research.",
+        "Broad expression, mitochondrial/subcellular localization evidence from HPA, cone/rod photoreceptor-enriched single-cell RNA context, and exploratory liver hepatocellular carcinoma prognostic-expression context."
+      ]
+    }
+  ]
+}

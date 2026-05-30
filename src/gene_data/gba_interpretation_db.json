@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene GBA Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "GBA",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "1q22",
+    "chromosome": "1",
+    "gene_region": {
+      "label": "GBA transcribed interval",
+      "start": 155204243,
+      "end": 155214490,
+      "definition": "Canonical GBA genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 155214491,
+      "end": 155215490,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 155106714,
+      "end": 155295267,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "1:155204243-155215490",
+    "gene_summary": "GBA encodes glucocerebrosidase/GBA1, a lysosomal enzyme linking Gaucher and Parkinson disease biology. This topic bundle emphasizes neurological and neurodegenerative biology, with interpretation centered on synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+    "clinical_context": "The local GBA bundle is oriented toward neurological and neurodegenerative biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "GBA variants can alter, tag, or contextualize synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+      "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg13919724",
+      "cg12276487",
+      "cg17319849",
+      "cg08171195",
+      "cg16415604",
+      "cg15525002",
+      "cg18915060",
+      "cg14165168",
+      "cg03801816",
+      "cg10012396"
+    ],
+    "methylation_interpretation": "GBA methylation should be treated as local regulatory context around a synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for GBA.",
+      "Because GBA biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use GBA promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 2629: GBA",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/2629"
+      },
+      {
+        "label": "UniProt P04062: GBA_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P04062/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000177628: GBA coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000177628"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "GBA biochemical figure starter",
+      "focus": "GBA: neurological and neurodegenerative biology via synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+      "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+      "icon_search_terms": [
+        "neuron synapse neurodegeneration",
+        "synapse",
+        "microglia"
+      ],
+      "recommended_icons": [
+        "Microglial cell (with Abeta plaque)",
+        "Axonal-dendritic synaptic cleft (3D)",
+        "Myelin sheath (long, degenerating)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a GBA neurological and neurodegenerative biology thesis: the individual may carry context relevant to synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "GBA neurobiology variation model",
+      "display_name": "GBA neurobiology variation model",
+      "common_name": "GBA neurological and neurodegenerative biology pathway model",
+      "lookup_keys": [
+        "GBA neurobiology variation model",
+        "GBA neurobiology variation model",
+        "GBA:GBA neurobiology variation model",
+        "gba:gba neurobiology variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "GBA neurobiology variation model is curated as a GBA marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a GBA pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "GBA neurological and neurodegenerative biology pathway model",
+      "methylation_interpretation": "Pair GBA neurobiology variation model with GBA methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "GBA curated evidence set",
+          "genotypes": "GBA neurobiology variation model or linked GBA locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats GBA neurobiology variation model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "GBA",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg13919724",
+        "cg12276487",
+        "cg17319849",
+        "cg08171195",
+        "cg16415604",
+        "cg15525002",
+        "cg18915060",
+        "cg14165168",
+        "cg03801816",
+        "cg10012396"
+      ]
+    },
+    {
+      "variant": "GBA regulatory expression context model",
+      "display_name": "GBA regulatory expression context model",
+      "common_name": "GBA expression and methylation-context model",
+      "lookup_keys": [
+        "GBA regulatory expression context model",
+        "GBA regulatory expression context model",
+        "GBA:GBA regulatory expression context model",
+        "gba:gba regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "GBA regulatory expression context model is curated as a GBA marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a GBA pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "GBA expression and methylation-context model",
+      "methylation_interpretation": "Pair GBA regulatory expression context model with GBA methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "GBA curated evidence set",
+          "genotypes": "GBA regulatory expression context model or linked GBA locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats GBA regulatory expression context model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "GBA",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg13919724",
+        "cg12276487",
+        "cg17319849",
+        "cg08171195",
+        "cg16415604",
+        "cg15525002",
+        "cg18915060",
+        "cg14165168",
+        "cg03801816",
+        "cg10012396"
+      ]
+    }
+  ]
+}

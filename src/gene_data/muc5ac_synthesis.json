@@ -1,0 +1,206 @@
+{
+  "database_name": "NophiGene MUC5AC Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "MUC5AC",
+  "source_interpretation_database": "NophiGene MUC5AC Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "MUC5AC regulatory-expression model (MUC5AC airway mucus expression model)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important.",
+  "variant_prediction_rules": [
+    {
+      "variant": "MUC5AC regulatory-expression model",
+      "display_name": "MUC5AC regulatory-expression model",
+      "common_name": "MUC5AC airway mucus expression model",
+      "lookup_keys": [
+        "MUC5AC regulatory-expression model",
+        "MUC5AC airway mucus expression model",
+        "MUC5AC:MUC5AC regulatory-expression model"
+      ],
+      "prediction": "GT-confirmed MUC5AC regulatory-expression model dosage suggests this sample carries the MUC5AC prediction context described by the gene-level thesis. The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. This specific marker is curated as MUC5AC airway mucus expression model. MUC5AC regulatory-expression model is bundled as a MUC5AC research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "sample_change_template": "This sample matched MUC5AC regulatory-expression model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the MUC5AC prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "May tag regulatory, expression, coding, haplotype, or linked-locus variation around MUC5AC.",
+      "evidence": [
+        {
+          "label": "NCBI Gene 4586: MUC5AC gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/4586"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000215182: MUC5AC coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000215182"
+        },
+        {
+          "label": "UniProt P98088: MUC5AC protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P98088/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: MUC5AC",
+          "url": "https://www.ebi.ac.uk/gwas/genes/MUC5AC"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. An observed MUC5AC variant places this sample in the curated MUC5AC research context. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a MUC5AC variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a MUC5AC variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a MUC5AC variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a MUC5AC variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a MUC5AC variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a MUC5AC variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a MUC5AC variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a MUC5AC variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a MUC5AC variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a MUC5AC airway mucus thesis: the individual may carry research context relevant to goblet-cell metaplasia, mucus hypersecretion, asthma, chronic airway inflammation, or epithelial regulation. Methylation and tissue-specific expression context are especially important. MUC5AC methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled MUC5AC knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. MUC5AC findings are often regulatory, expression, or mucin-locus context rather than classic high-penetrance coding-variant calls.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Asthma mucus hypersecretion",
+        "Airway epithelial goblet-cell metaplasia",
+        "Chronic airway inflammation and mucin biology"
+      ]
+    }
+  ]
+}

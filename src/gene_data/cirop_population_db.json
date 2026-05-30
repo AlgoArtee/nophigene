@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene CIROP Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled CIROP population database is gene- and literature-oriented. It is not a complete allele-frequency panel, and rare heterotaxy-marker interpretation should be checked against current ClinVar, gnomAD, inheritance, and phenotype data.",
+  "gene_population_patterns_intro": "Broader population patterns curated from CIROP heterotaxy, left-right asymmetry, and rare-variant interpretation literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 100128908: CIROP gene summary and related phenotype",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/100128908"
+    },
+    {
+      "label": "PubMed 34903892: CIROP and human left-right asymmetry",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34903892/"
+    },
+    {
+      "label": "ClinVar Miner: pathogenic CIROP variants for heterotaxy 12",
+      "url": "https://clinvarminer.genetics.utah.edu/variants-by-condition/Heterotaxy%2C%20visceral%2C%2012%2C%20autosomal/gene/CIROP/pathogenic"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "CIROP rare pathogenic variants",
+      "location_group": "Heterotaxy cohorts",
+      "summary": "The most interpretable CIROP signals are rare variants reported in heterotaxy or situs anomaly contexts, especially when inheritance supports a recessive model."
+    },
+    {
+      "variant": "CIROP left-right asymmetry module",
+      "location_group": "Functional biology",
+      "summary": "CIROP is best interpreted through developmental left-right organizer biology rather than through common-variant population trait screens."
+    },
+    {
+      "variant": "CIROP EPIC methylation probes",
+      "location_group": "Local regulatory context",
+      "summary": "The two bundled CIROP-proximal EPIC probes can summarize local methylation in a sample, but no population methylation threshold is bundled for heterotaxy interpretation."
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "database_name": "NophiGene F5 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "F5",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "1q24.2",
+    "chromosome": "1",
+    "gene_region": {
+      "label": "F5 transcribed interval",
+      "start": 169483404,
+      "end": 169555826,
+      "definition": "Canonical F5 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 169555827,
+      "end": 169556826,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 169555674,
+      "end": 169555805,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "1:169483404-169556826",
+    "gene_summary": "F5 encodes coagulation factor V, a cofactor for prothrombinase complex assembly. This bundle emphasizes thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology.",
+    "clinical_context": "The local F5 bundle is coagulation and thrombosis review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "F5 variants can alter or tag thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Factor V Leiden thrombophilia context",
+      "Venous thromboembolism association research",
+      "Coagulation cascade biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg01953591",
+      "cg10532540",
+      "cg26667792",
+      "cg24673322",
+      "cg09891761"
+    ],
+    "methylation_interpretation": "F5 methylation should be treated as local regulatory context around a thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for F5.",
+      "Because F5 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use F5 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology.",
+      "Factor V Leiden thrombophilia context",
+      "Venous thromboembolism association research"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 2153: F5",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/2153"
+      },
+      {
+        "label": "UniProt P12259: F5_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P12259/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000198734: F5 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000198734"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "F5 biochemical figure starter",
+      "focus": "F5: thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "hemoglobin",
+        "iron metabolism"
+      ],
+      "recommended_icons": [
+        "Vessel cross-section with red  blood cells (anemic)",
+        "Blood vessel (with red  blood cells, anemic)",
+        "Osmoregulation (red blood cell)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a F5 coagulation and thrombosis review thesis: the individual may carry context relevant to thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology and Factor V Leiden thrombophilia context, Venous thromboembolism association research. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs6025",
+      "display_name": "rs6025 (Factor V Leiden / R506Q)",
+      "common_name": "Factor V Leiden APC-resistance marker",
+      "lookup_keys": [
+        "rs6025",
+        "rs6025 (Factor V Leiden / R506Q)",
+        "F5:rs6025",
+        "f5:rs6025"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs6025 (Factor V Leiden / R506Q) is curated as a F5 marker for Factor V Leiden thrombophilia context, Venous thromboembolism association research. Read it through genotype dosage, phenotype context, and the thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Factor V Leiden thrombophilia context",
+        "Venous thromboembolism association research",
+        "Coagulation cascade biology"
+      ],
+      "research_context": [
+        "Use this marker as a F5 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "Factor V Leiden APC-resistance marker",
+      "methylation_interpretation": "Pair rs6025 (Factor V Leiden / R506Q) with F5 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "F5 curated evidence set",
+          "genotypes": "rs6025 (Factor V Leiden / R506Q) or linked F5 locus genotype states",
+          "phenotype": "Factor V Leiden thrombophilia context, Venous thromboembolism association research",
+          "finding": "The local curation treats rs6025 (Factor V Leiden / R506Q) as a gene-specific marker for Factor V Leiden thrombophilia context, Venous thromboembolism association research and thrombin generation, activated protein C resistance, clotting cascade amplification, and venous thrombosis biology.",
+          "url": ""
+        }
+      ],
+      "gene_name": "F5",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg01953591",
+        "cg10532540",
+        "cg26667792",
+        "cg24673322",
+        "cg09891761"
+      ]
+    }
+  ]
+}

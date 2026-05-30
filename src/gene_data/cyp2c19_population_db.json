@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene CYP2C19 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled CYP2C19 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from CYP2C19 phase I drug oxidation, proton-pump inhibitor and antiplatelet pharmacogenetics, star-allele activity, and metabolizer phenotype biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 1557: CYP2C19",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/1557"
+    },
+    {
+      "label": "UniProt P33261: CYP2C19_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P33261/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000165841: CYP2C19 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000165841"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "CYP2C19 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "CYP2C19 findings should be read against phase I drug oxidation, proton-pump inhibitor and antiplatelet pharmacogenetics, star-allele activity, and metabolizer phenotype biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "rs4244285 (CYP2C19*2)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs4244285 (CYP2C19*2) is curated as a CYP2C19 marker for CYP2C19 pharmacogenomics context, Clopidogrel and proton-pump inhibitor response biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "rs12248560 (CYP2C19*17)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs12248560 (CYP2C19*17) is curated as a CYP2C19 marker for CYP2C19 pharmacogenomics context, Clopidogrel and proton-pump inhibitor response biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

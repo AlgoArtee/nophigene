@@ -1,0 +1,190 @@
+{
+  "database_name": "NophiGene RYR1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "RYR1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "19q13.2",
+    "chromosome": "19",
+    "gene_region": {
+      "label": "RYR1 transcribed interval",
+      "start": 38924339,
+      "end": 39078204,
+      "definition": "Canonical RYR1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 38923339,
+      "end": 38924338,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 38924347,
+      "end": 38924436,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "19:38923339-39078204",
+    "gene_summary": "RYR1 encodes the skeletal-muscle ryanodine receptor calcium-release channel. This bundle emphasizes sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context.",
+    "clinical_context": "The local RYR1 bundle is skeletal muscle calcium-channel review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "RYR1 variants can alter or tag sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Malignant hyperthermia susceptibility review context",
+      "Congenital myopathy context",
+      "Excitation-contraction coupling"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg04571321",
+      "cg05471297",
+      "cg06740600"
+    ],
+    "methylation_interpretation": "RYR1 methylation should be treated as local regulatory context around a sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for RYR1.",
+      "Because RYR1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use RYR1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context.",
+      "Malignant hyperthermia susceptibility review context",
+      "Congenital myopathy context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 6261: RYR1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/6261"
+      },
+      {
+        "label": "UniProt P21817: RYR1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P21817/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000196218: RYR1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000196218"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "RYR1 biochemical figure starter",
+      "focus": "RYR1: sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context",
+      "template_title": "Types of Cellular Receptors",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-60ba45fff7aa2e00a8b7081c?source=mcp",
+      "icon_search_terms": [
+        "ion channel",
+        "calcium channel",
+        "CFTR"
+      ],
+      "recommended_icons": [
+        "Ion channel (ligand-gated, open, schematic)",
+        "ATP sensitive potassium channel (open, in membrane)",
+        "Cardiac action potential diagram"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a RYR1 skeletal muscle calcium-channel review thesis: the individual may carry context relevant to sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context and Malignant hyperthermia susceptibility review context, Congenital myopathy context. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "RYR1 malignant-hyperthermia model",
+      "display_name": "RYR1 malignant-hyperthermia model",
+      "common_name": "RYR1 calcium-release susceptibility model",
+      "lookup_keys": [
+        "RYR1 malignant-hyperthermia model",
+        "RYR1 malignant-hyperthermia model",
+        "RYR1:RYR1 malignant-hyperthermia model",
+        "ryr1:ryr1 malignant-hyperthermia model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "RYR1 malignant-hyperthermia model is curated as a RYR1 marker for Malignant hyperthermia susceptibility review context, Congenital myopathy context. Read it through genotype dosage, phenotype context, and the sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Malignant hyperthermia susceptibility review context",
+        "Congenital myopathy context",
+        "Excitation-contraction coupling"
+      ],
+      "research_context": [
+        "Use this marker as a RYR1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "RYR1 calcium-release susceptibility model",
+      "methylation_interpretation": "Pair RYR1 malignant-hyperthermia model with RYR1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "RYR1 curated evidence set",
+          "genotypes": "RYR1 malignant-hyperthermia model or linked RYR1 locus genotype states",
+          "phenotype": "Malignant hyperthermia susceptibility review context, Congenital myopathy context",
+          "finding": "The local curation treats RYR1 malignant-hyperthermia model as a gene-specific marker for Malignant hyperthermia susceptibility review context, Congenital myopathy context and sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "RYR1",
+      "chromosome": "19",
+      "relevant_methylation_probe_ids": [
+        "cg04571321",
+        "cg05471297",
+        "cg06740600"
+      ]
+    },
+    {
+      "variant": "RYR1 congenital myopathy model",
+      "display_name": "RYR1 congenital myopathy model",
+      "common_name": "RYR1 skeletal-muscle channelopathy model",
+      "lookup_keys": [
+        "RYR1 congenital myopathy model",
+        "RYR1 congenital myopathy model",
+        "RYR1:RYR1 congenital myopathy model",
+        "ryr1:ryr1 congenital myopathy model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "RYR1 congenital myopathy model is curated as a RYR1 marker for Malignant hyperthermia susceptibility review context, Congenital myopathy context. Read it through genotype dosage, phenotype context, and the sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Malignant hyperthermia susceptibility review context",
+        "Congenital myopathy context",
+        "Excitation-contraction coupling"
+      ],
+      "research_context": [
+        "Use this marker as a RYR1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "RYR1 skeletal-muscle channelopathy model",
+      "methylation_interpretation": "Pair RYR1 congenital myopathy model with RYR1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "RYR1 curated evidence set",
+          "genotypes": "RYR1 congenital myopathy model or linked RYR1 locus genotype states",
+          "phenotype": "Malignant hyperthermia susceptibility review context, Congenital myopathy context",
+          "finding": "The local curation treats RYR1 congenital myopathy model as a gene-specific marker for Malignant hyperthermia susceptibility review context, Congenital myopathy context and sarcoplasmic-reticulum calcium release, excitation-contraction coupling, malignant hyperthermia biology, and myopathy context.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "RYR1",
+      "chromosome": "19",
+      "relevant_methylation_probe_ids": [
+        "cg04571321",
+        "cg05471297",
+        "cg06740600"
+      ]
+    }
+  ]
+}

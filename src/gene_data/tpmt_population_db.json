@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene TPMT Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled TPMT population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from TPMT thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 7172: TPMT",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/7172"
+    },
+    {
+      "label": "UniProt P51580: TPMT_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P51580/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000137364: TPMT coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000137364"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "TPMT biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "TPMT findings should be read against thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "rs1800460 (TPMT*3B)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs1800460 (TPMT*3B) is curated as a TPMT marker for TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "rs1142345 (TPMT*3C)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs1142345 (TPMT*3C) is curated as a TPMT marker for TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

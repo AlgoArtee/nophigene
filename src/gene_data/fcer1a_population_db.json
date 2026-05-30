@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene FCER1A Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled FCER1A population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from FCER1A IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 2205: FCER1A",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/2205"
+    },
+    {
+      "label": "UniProt P12319: FCER1A_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P12319/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000179639: FCER1A coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000179639"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "FCER1A biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "FCER1A findings should be read against IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "FCER1A immune-response variation model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "FCER1A immune-response variation model is curated as a FCER1A marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "FCER1A regulatory expression context model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "FCER1A regulatory expression context model is curated as a FCER1A marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

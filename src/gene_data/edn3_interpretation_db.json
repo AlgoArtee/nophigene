@@ -1,0 +1,212 @@
+{
+  "database_name": "NophiGene EDN3 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "EDN3",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "20q13.32",
+    "chromosome": "20",
+    "gene_region": {
+      "label": "EDN3 transcribed interval",
+      "start": 57875482,
+      "end": 57901047,
+      "definition": "Canonical EDN3 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 57874482,
+      "end": 57875481,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 57874597,
+      "end": 57875735,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "20:57874482-57901047",
+    "gene_summary": "EDN3 encodes endothelin-3, a neural-crest ligand supporting melanocyte and enteric neuron development. This topic bundle emphasizes hair pigmentation and graying, with interpretation centered on melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+    "clinical_context": "The local EDN3 bundle is oriented toward hair pigmentation and graying. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "EDN3 variants can alter, tag, or contextualize melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Hair pigmentation, skin pigmentation, and graying research context",
+      "Melanocyte development, survival, and melanosome biology",
+      "Pigmentary trait, albinism, melanoma-lineage, and follicle biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg20910807",
+      "cg08318212",
+      "cg17146570",
+      "cg04048259",
+      "cg09005679",
+      "cg16205854",
+      "cg23710795",
+      "cg19194373",
+      "cg20671059",
+      "cg01665123"
+    ],
+    "methylation_interpretation": "EDN3 methylation should be treated as local regulatory context around a melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for EDN3.",
+      "Because EDN3 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use EDN3 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+      "Hair pigmentation, skin pigmentation, and graying research context",
+      "Melanocyte development, survival, and melanosome biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 1908: EDN3",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/1908"
+      },
+      {
+        "label": "UniProt P14138: EDN3_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P14138/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000124205: EDN3 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000124205"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "EDN3 biochemical figure starter",
+      "focus": "EDN3: hair pigmentation and graying via melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology",
+      "template_title": "Hair Follicle Anatomy",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-641dc82b59511ede76dc7b32?source=mcp",
+      "icon_search_terms": [
+        "melanocyte",
+        "melanin",
+        "hair follicle",
+        "skin epidermis hair follicle"
+      ],
+      "recommended_icons": [
+        "Skin (epidermis)",
+        "Epithelial layers (skin)",
+        "Male balding (stage 0, lateral)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a EDN3 hair pigmentation and graying thesis: the individual may carry context relevant to melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "EDN3 pigmentation variation model",
+      "display_name": "EDN3 pigmentation variation model",
+      "common_name": "EDN3 hair pigmentation and graying pathway model",
+      "lookup_keys": [
+        "EDN3 pigmentation variation model",
+        "EDN3 pigmentation variation model",
+        "EDN3:EDN3 pigmentation variation model",
+        "edn3:edn3 pigmentation variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "EDN3 pigmentation variation model is curated as a EDN3 marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology. Read it through genotype dosage, phenotype context, and the melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hair pigmentation, skin pigmentation, and graying research context",
+        "Melanocyte development, survival, and melanosome biology",
+        "Pigmentary trait, albinism, melanoma-lineage, and follicle biology"
+      ],
+      "research_context": [
+        "Use this marker as a EDN3 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "EDN3 hair pigmentation and graying pathway model",
+      "methylation_interpretation": "Pair EDN3 pigmentation variation model with EDN3 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "EDN3 curated evidence set",
+          "genotypes": "EDN3 pigmentation variation model or linked EDN3 locus genotype states",
+          "phenotype": "Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology",
+          "finding": "The local curation treats EDN3 pigmentation variation model as a gene-specific marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology and melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "EDN3",
+      "chromosome": "20",
+      "relevant_methylation_probe_ids": [
+        "cg20910807",
+        "cg08318212",
+        "cg17146570",
+        "cg04048259",
+        "cg09005679",
+        "cg16205854",
+        "cg23710795",
+        "cg19194373",
+        "cg20671059",
+        "cg01665123"
+      ]
+    },
+    {
+      "variant": "EDN3 regulatory expression context model",
+      "display_name": "EDN3 regulatory expression context model",
+      "common_name": "EDN3 expression and methylation-context model",
+      "lookup_keys": [
+        "EDN3 regulatory expression context model",
+        "EDN3 regulatory expression context model",
+        "EDN3:EDN3 regulatory expression context model",
+        "edn3:edn3 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "EDN3 regulatory expression context model is curated as a EDN3 marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology. Read it through genotype dosage, phenotype context, and the melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hair pigmentation, skin pigmentation, and graying research context",
+        "Melanocyte development, survival, and melanosome biology",
+        "Pigmentary trait, albinism, melanoma-lineage, and follicle biology"
+      ],
+      "research_context": [
+        "Use this marker as a EDN3 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "EDN3 expression and methylation-context model",
+      "methylation_interpretation": "Pair EDN3 regulatory expression context model with EDN3 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "EDN3 curated evidence set",
+          "genotypes": "EDN3 regulatory expression context model or linked EDN3 locus genotype states",
+          "phenotype": "Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology",
+          "finding": "The local curation treats EDN3 regulatory expression context model as a gene-specific marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology and melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "EDN3",
+      "chromosome": "20",
+      "relevant_methylation_probe_ids": [
+        "cg20910807",
+        "cg08318212",
+        "cg17146570",
+        "cg04048259",
+        "cg09005679",
+        "cg16205854",
+        "cg23710795",
+        "cg19194373",
+        "cg20671059",
+        "cg01665123"
+      ]
+    }
+  ]
+}

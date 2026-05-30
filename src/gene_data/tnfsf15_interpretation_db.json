@@ -1,0 +1,205 @@
+{
+  "database_name": "NophiGene TNFSF15 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "TNFSF15",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "9q32",
+    "chromosome": "9",
+    "gene_region": {
+      "label": "TNFSF15 transcribed interval",
+      "start": 117546915,
+      "end": 117568406,
+      "definition": "Canonical TNFSF15 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 117568407,
+      "end": 117569406,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 117554714,
+      "end": 117569511,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "9:117546915-117569406",
+    "gene_summary": "TNFSF15 encodes TL1A, a TNF-family cytokine ligand implicated in gut inflammation and fibrosis. This topic bundle emphasizes digestion and gut barrier biology, with interpretation centered on intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+    "clinical_context": "The local TNFSF15 bundle is oriented toward digestion and gut barrier biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "TNFSF15 variants can alter, tag, or contextualize intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+      "Inflammatory bowel disease and mucosal immune pathway biology",
+      "Nutrient transport, digestive enzyme, and epithelial repair review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg10791260",
+      "cg04200931",
+      "cg11671947",
+      "cg06629146",
+      "cg02404720",
+      "cg01412300",
+      "cg11072638",
+      "cg26202458"
+    ],
+    "methylation_interpretation": "TNFSF15 methylation should be treated as local regulatory context around a intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for TNFSF15.",
+      "Because TNFSF15 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use TNFSF15 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+      "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+      "Inflammatory bowel disease and mucosal immune pathway biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 9966: TNFSF15",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/9966"
+      },
+      {
+        "label": "UniProt O95150: TNFSF15_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/O95150/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000181634: TNFSF15 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000181634"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "TNFSF15 biochemical figure starter",
+      "focus": "TNFSF15: digestion and gut barrier biology via intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling",
+      "template_title": "Intestinal Barrier Structure with Microbiota",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-69eded0a2c5ddd9536c15eda?source=mcp",
+      "icon_search_terms": [
+        "intestinal barrier gut epithelium",
+        "digestion",
+        "microbiome"
+      ],
+      "recommended_icons": [
+        "Intestinal epithelium (Peyer's patch)",
+        "Colon epithelium",
+        "Colon epithelium (mucous)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a TNFSF15 digestion and gut barrier biology thesis: the individual may carry context relevant to intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "TNFSF15 gut-digestion variation model",
+      "display_name": "TNFSF15 gut-digestion variation model",
+      "common_name": "TNFSF15 digestion and gut barrier biology pathway model",
+      "lookup_keys": [
+        "TNFSF15 gut-digestion variation model",
+        "TNFSF15 gut-digestion variation model",
+        "TNFSF15:TNFSF15 gut-digestion variation model",
+        "tnfsf15:tnfsf15 gut-digestion variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TNFSF15 gut-digestion variation model is curated as a TNFSF15 marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology. Read it through genotype dosage, phenotype context, and the intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+        "Inflammatory bowel disease and mucosal immune pathway biology",
+        "Nutrient transport, digestive enzyme, and epithelial repair review"
+      ],
+      "research_context": [
+        "Use this marker as a TNFSF15 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TNFSF15 digestion and gut barrier biology pathway model",
+      "methylation_interpretation": "Pair TNFSF15 gut-digestion variation model with TNFSF15 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TNFSF15 curated evidence set",
+          "genotypes": "TNFSF15 gut-digestion variation model or linked TNFSF15 locus genotype states",
+          "phenotype": "Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology",
+          "finding": "The local curation treats TNFSF15 gut-digestion variation model as a gene-specific marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology and intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TNFSF15",
+      "chromosome": "9",
+      "relevant_methylation_probe_ids": [
+        "cg10791260",
+        "cg04200931",
+        "cg11671947",
+        "cg06629146",
+        "cg02404720",
+        "cg01412300",
+        "cg11072638",
+        "cg26202458"
+      ]
+    },
+    {
+      "variant": "TNFSF15 regulatory expression context model",
+      "display_name": "TNFSF15 regulatory expression context model",
+      "common_name": "TNFSF15 expression and methylation-context model",
+      "lookup_keys": [
+        "TNFSF15 regulatory expression context model",
+        "TNFSF15 regulatory expression context model",
+        "TNFSF15:TNFSF15 regulatory expression context model",
+        "tnfsf15:tnfsf15 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TNFSF15 regulatory expression context model is curated as a TNFSF15 marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology. Read it through genotype dosage, phenotype context, and the intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+        "Inflammatory bowel disease and mucosal immune pathway biology",
+        "Nutrient transport, digestive enzyme, and epithelial repair review"
+      ],
+      "research_context": [
+        "Use this marker as a TNFSF15 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TNFSF15 expression and methylation-context model",
+      "methylation_interpretation": "Pair TNFSF15 regulatory expression context model with TNFSF15 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TNFSF15 curated evidence set",
+          "genotypes": "TNFSF15 regulatory expression context model or linked TNFSF15 locus genotype states",
+          "phenotype": "Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology",
+          "finding": "The local curation treats TNFSF15 regulatory expression context model as a gene-specific marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology and intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TNFSF15",
+      "chromosome": "9",
+      "relevant_methylation_probe_ids": [
+        "cg10791260",
+        "cg04200931",
+        "cg11671947",
+        "cg06629146",
+        "cg02404720",
+        "cg01412300",
+        "cg11072638",
+        "cg26202458"
+      ]
+    }
+  ]
+}

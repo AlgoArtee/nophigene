@@ -1,0 +1,227 @@
+{
+  "database_name": "NophiGene IL18RAP Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "IL18RAP",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "2q12.1",
+    "chromosome": "2",
+    "gene_region": {
+      "label": "IL18RAP transcribed interval",
+      "start": 103035149,
+      "end": 103069025,
+      "definition": "Canonical IL18RAP genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup for ENSG00000115607 on the primary assembly, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 103034149,
+      "end": 103035148,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 103034576,
+      "end": 103039542,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "2:103034149-103069025",
+    "gene_summary": "IL18RAP encodes the IL-18 receptor accessory protein, the co-receptor that helps IL18R1 transmit IL-18 signaling in inflammatory, Th1, NK-cell, autoimmune, and airway immune research.",
+    "clinical_context": "The bundled IL18RAP knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation.",
+    "variant_effect_overview": [
+      "IL18RAP markers can tag IL-18 receptor complex function and the broader 2q12 IL1 receptor gene cluster.",
+      "Interpretation should account for IL18R1 and IL1RL1 LD, inflammatory phenotype, and tissue-specific expression."
+    ],
+    "condition_research_overview": [
+      "IL-18 receptor signaling and inflammatory disease",
+      "Asthma and immune activation research",
+      "2q12 IL1 receptor-cluster association context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg18156583",
+      "cg12640402",
+      "cg00108440",
+      "cg21282997",
+      "cg21972222",
+      "cg00772686",
+      "cg03453574",
+      "cg27361520",
+      "cg13477969",
+      "cg13897122"
+    ],
+    "methylation_interpretation": "IL18RAP methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response.",
+    "methylation_effects": [
+      "Promoter-proximal methylation may suggest a more restrained or permissive local regulatory state for IL18RAP expression potential.",
+      "Interpret methylation with tissue, cell composition, environmental exposure, disease state, medication history, and genotype context."
+    ],
+    "methylation_condition_research": [
+      "Asthma, allergy, atopic dermatitis, eosinophilic inflammation, and airway epithelial studies.",
+      "Immune-cell, epithelial-barrier, cytokine-signaling, and inflammatory-disease epigenetic research."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 8807: IL18RAP gene summary",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/8807"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000115607: IL18RAP coordinates and transcripts",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115607"
+      },
+      {
+        "label": "UniProt O95256: IL18RAP protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/O95256/entry"
+      },
+      {
+        "label": "GWAS Catalog gene page: IL18RAP",
+        "url": "https://www.ebi.ac.uk/gwas/genes/IL18RAP"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "rs917997",
+      "display_name": "rs917997",
+      "common_name": "IL18RAP inflammatory-disease receptor-cluster marker",
+      "position": null,
+      "lookup_keys": [
+        "rs917997",
+        "IL18RAP inflammatory-disease receptor-cluster marker",
+        "IL18RAP:rs917997"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs917997 is bundled as a IL18RAP research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around IL18RAP.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "IL-18 receptor signaling and inflammatory disease",
+        "Asthma and immune activation research",
+        "2q12 IL1 receptor-cluster association context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "IL18RAP marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "IL18RAP methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs917997.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 8807: IL18RAP gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/8807"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000115607: IL18RAP coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115607"
+        },
+        {
+          "label": "UniProt O95256: IL18RAP protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/O95256/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: IL18RAP",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18RAP"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs917997 or linked IL18RAP locus genotype states",
+          "phenotype": "IL-18 receptor signaling and inflammatory disease, Asthma and immune activation research, 2q12 IL1 receptor-cluster association context",
+          "finding": "The local curation treats rs917997 as a research-grade IL18RAP signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18RAP"
+        }
+      ],
+      "gene_name": "IL18RAP",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg18156583",
+        "cg12640402",
+        "cg00108440",
+        "cg21282997",
+        "cg21972222",
+        "cg00772686",
+        "cg03453574",
+        "cg27361520",
+        "cg13477969",
+        "cg13897122"
+      ]
+    },
+    {
+      "variant": "IL18R1/IL18RAP receptor-complex model",
+      "display_name": "IL18R1/IL18RAP receptor-complex model",
+      "common_name": "IL-18 receptor complex model",
+      "position": null,
+      "lookup_keys": [
+        "IL18R1/IL18RAP receptor-complex model",
+        "IL-18 receptor complex model",
+        "IL18RAP:IL18R1/IL18RAP receptor-complex model"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "IL18R1/IL18RAP receptor-complex model is bundled as a IL18RAP research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around IL18RAP.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "IL-18 receptor signaling and inflammatory disease",
+        "Asthma and immune activation research",
+        "2q12 IL1 receptor-cluster association context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "IL18RAP marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "IL18RAP methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for IL18R1/IL18RAP receptor-complex model.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "NCBI Gene 8807: IL18RAP gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/8807"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000115607: IL18RAP coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115607"
+        },
+        {
+          "label": "UniProt O95256: IL18RAP protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/O95256/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: IL18RAP",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18RAP"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "IL18R1/IL18RAP receptor-complex model or linked IL18RAP locus genotype states",
+          "phenotype": "IL-18 receptor signaling and inflammatory disease, Asthma and immune activation research, 2q12 IL1 receptor-cluster association context",
+          "finding": "The local curation treats IL18R1/IL18RAP receptor-complex model as a research-grade IL18RAP signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18RAP"
+        }
+      ],
+      "gene_name": "IL18RAP",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg18156583",
+        "cg12640402",
+        "cg00108440",
+        "cg21282997",
+        "cg21972222",
+        "cg00772686",
+        "cg03453574",
+        "cg27361520",
+        "cg13477969",
+        "cg13897122"
+      ]
+    }
+  ]
+}

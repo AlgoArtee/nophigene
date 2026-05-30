@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene NFKB1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "NFKB1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "4q24",
+    "chromosome": "4",
+    "gene_region": {
+      "label": "NFKB1 transcribed interval",
+      "start": 103422486,
+      "end": 103538459,
+      "definition": "Canonical NFKB1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 103421486,
+      "end": 103422485,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 103421224,
+      "end": 103424418,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "4:103421486-103538459",
+    "gene_summary": "NFKB1 encodes the NF-kappaB p105/p50 transcription factor subunit central to inflammatory gene control. This topic bundle emphasizes allergy and inflammation, with interpretation centered on IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+    "clinical_context": "The local NFKB1 bundle is oriented toward allergy and inflammation. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "NFKB1 variants can alter, tag, or contextualize IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Allergy, asthma, atopy, and inflammatory disease context",
+      "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+      "Immune signaling, barrier inflammation, and therapeutic target review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg06003169",
+      "cg09321494",
+      "cg03464689",
+      "cg16177076",
+      "cg24880057",
+      "cg10189525",
+      "cg07830103",
+      "cg00119197",
+      "cg23462257",
+      "cg21583111"
+    ],
+    "methylation_interpretation": "NFKB1 methylation should be treated as local regulatory context around a IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for NFKB1.",
+      "Because NFKB1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use NFKB1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+      "Allergy, asthma, atopy, and inflammatory disease context",
+      "Mast-cell, eosinophil, cytokine, and chemokine pathway biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 4790: NFKB1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/4790"
+      },
+      {
+        "label": "UniProt P19838: NFKB1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P19838/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000109320: NFKB1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000109320"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "NFKB1 biochemical figure starter",
+      "focus": "NFKB1: allergy and inflammation via IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation",
+      "template_title": "Mechanism of Allergic Inflammation Induction",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-63403fd8cda8d1d02e0a3126?source=mcp",
+      "icon_search_terms": [
+        "mast cell allergy IgE cytokine",
+        "allergic inflammation",
+        "eosinophil cytokine"
+      ],
+      "recommended_icons": [
+        "Antibody IgE (round style, with domains)",
+        "IL-5 receptor-ligand pair (cartoon)",
+        "Cytokine (2D)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a NFKB1 allergy and inflammation thesis: the individual may carry context relevant to IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "NFKB1 immune-response variation model",
+      "display_name": "NFKB1 immune-response variation model",
+      "common_name": "NFKB1 allergy and inflammation pathway model",
+      "lookup_keys": [
+        "NFKB1 immune-response variation model",
+        "NFKB1 immune-response variation model",
+        "NFKB1:NFKB1 immune-response variation model",
+        "nfkb1:nfkb1 immune-response variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "NFKB1 immune-response variation model is curated as a NFKB1 marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology. Read it through genotype dosage, phenotype context, and the IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Allergy, asthma, atopy, and inflammatory disease context",
+        "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+        "Immune signaling, barrier inflammation, and therapeutic target review"
+      ],
+      "research_context": [
+        "Use this marker as a NFKB1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "NFKB1 allergy and inflammation pathway model",
+      "methylation_interpretation": "Pair NFKB1 immune-response variation model with NFKB1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "NFKB1 curated evidence set",
+          "genotypes": "NFKB1 immune-response variation model or linked NFKB1 locus genotype states",
+          "phenotype": "Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+          "finding": "The local curation treats NFKB1 immune-response variation model as a gene-specific marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology and IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "NFKB1",
+      "chromosome": "4",
+      "relevant_methylation_probe_ids": [
+        "cg06003169",
+        "cg09321494",
+        "cg03464689",
+        "cg16177076",
+        "cg24880057",
+        "cg10189525",
+        "cg07830103",
+        "cg00119197",
+        "cg23462257",
+        "cg21583111"
+      ]
+    },
+    {
+      "variant": "NFKB1 regulatory expression context model",
+      "display_name": "NFKB1 regulatory expression context model",
+      "common_name": "NFKB1 expression and methylation-context model",
+      "lookup_keys": [
+        "NFKB1 regulatory expression context model",
+        "NFKB1 regulatory expression context model",
+        "NFKB1:NFKB1 regulatory expression context model",
+        "nfkb1:nfkb1 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "NFKB1 regulatory expression context model is curated as a NFKB1 marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology. Read it through genotype dosage, phenotype context, and the IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Allergy, asthma, atopy, and inflammatory disease context",
+        "Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+        "Immune signaling, barrier inflammation, and therapeutic target review"
+      ],
+      "research_context": [
+        "Use this marker as a NFKB1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "NFKB1 expression and methylation-context model",
+      "methylation_interpretation": "Pair NFKB1 regulatory expression context model with NFKB1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "NFKB1 curated evidence set",
+          "genotypes": "NFKB1 regulatory expression context model or linked NFKB1 locus genotype states",
+          "phenotype": "Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology",
+          "finding": "The local curation treats NFKB1 regulatory expression context model as a gene-specific marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology and IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "NFKB1",
+      "chromosome": "4",
+      "relevant_methylation_probe_ids": [
+        "cg06003169",
+        "cg09321494",
+        "cg03464689",
+        "cg16177076",
+        "cg24880057",
+        "cg10189525",
+        "cg07830103",
+        "cg00119197",
+        "cg23462257",
+        "cg21583111"
+      ]
+    }
+  ]
+}

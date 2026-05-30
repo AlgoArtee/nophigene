@@ -1,0 +1,203 @@
+{
+  "database_name": "NophiGene TPMT Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "TPMT",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "6p22.3",
+    "chromosome": "6",
+    "gene_region": {
+      "label": "TPMT transcribed interval",
+      "start": 18128542,
+      "end": 18155305,
+      "definition": "Canonical TPMT genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 18155306,
+      "end": 18156305,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 18155101,
+      "end": 18155296,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "6:18128542-18156305",
+    "gene_summary": "TPMT encodes thiopurine S-methyltransferase, a thiopurine inactivation enzyme. This bundle emphasizes thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics.",
+    "clinical_context": "The local TPMT bundle is thiopurine pharmacogenomics oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "TPMT variants can alter or tag thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "TPMT thiopurine toxicity context",
+      "Mercaptopurine/azathioprine dosing biology",
+      "Methyltransferase activity variation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg23073439",
+      "cg15124342",
+      "cg18243005",
+      "cg15772801",
+      "cg24342628",
+      "cg16056511",
+      "cg06702726",
+      "cg01081808"
+    ],
+    "methylation_interpretation": "TPMT methylation should be treated as local regulatory context around a thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for TPMT.",
+      "Because TPMT biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use TPMT promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics.",
+      "TPMT thiopurine toxicity context",
+      "Mercaptopurine/azathioprine dosing biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 7172: TPMT",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/7172"
+      },
+      {
+        "label": "UniProt P51580: TPMT_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P51580/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000137364: TPMT coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000137364"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "TPMT biochemical figure starter",
+      "focus": "TPMT: thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "folate metabolism",
+        "protein kinase",
+        "metabolic pathway"
+      ],
+      "recommended_icons": [
+        "Metabolic pathway (in mitochondria)",
+        "Simulated metabolic activity",
+        "PKA bound to cAMP"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a TPMT thiopurine pharmacogenomics thesis: the individual may carry context relevant to thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics and TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs1800460",
+      "display_name": "rs1800460 (TPMT*3B)",
+      "common_name": "TPMT reduced-function allele marker",
+      "lookup_keys": [
+        "rs1800460",
+        "rs1800460 (TPMT*3B)",
+        "TPMT:rs1800460",
+        "tpmt:rs1800460"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1800460 (TPMT*3B) is curated as a TPMT marker for TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology. Read it through genotype dosage, phenotype context, and the thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "TPMT thiopurine toxicity context",
+        "Mercaptopurine/azathioprine dosing biology",
+        "Methyltransferase activity variation"
+      ],
+      "research_context": [
+        "Use this marker as a TPMT pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TPMT reduced-function allele marker",
+      "methylation_interpretation": "Pair rs1800460 (TPMT*3B) with TPMT methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TPMT curated evidence set",
+          "genotypes": "rs1800460 (TPMT*3B) or linked TPMT locus genotype states",
+          "phenotype": "TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology",
+          "finding": "The local curation treats rs1800460 (TPMT*3B) as a gene-specific marker for TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology and thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics.",
+          "url": ""
+        }
+      ],
+      "gene_name": "TPMT",
+      "chromosome": "6",
+      "relevant_methylation_probe_ids": [
+        "cg23073439",
+        "cg15124342",
+        "cg18243005",
+        "cg15772801",
+        "cg24342628",
+        "cg16056511",
+        "cg06702726",
+        "cg01081808"
+      ]
+    },
+    {
+      "variant": "rs1142345",
+      "display_name": "rs1142345 (TPMT*3C)",
+      "common_name": "TPMT reduced-function allele marker",
+      "lookup_keys": [
+        "rs1142345",
+        "rs1142345 (TPMT*3C)",
+        "TPMT:rs1142345",
+        "tpmt:rs1142345"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1142345 (TPMT*3C) is curated as a TPMT marker for TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology. Read it through genotype dosage, phenotype context, and the thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "TPMT thiopurine toxicity context",
+        "Mercaptopurine/azathioprine dosing biology",
+        "Methyltransferase activity variation"
+      ],
+      "research_context": [
+        "Use this marker as a TPMT pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TPMT reduced-function allele marker",
+      "methylation_interpretation": "Pair rs1142345 (TPMT*3C) with TPMT methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TPMT curated evidence set",
+          "genotypes": "rs1142345 (TPMT*3C) or linked TPMT locus genotype states",
+          "phenotype": "TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology",
+          "finding": "The local curation treats rs1142345 (TPMT*3C) as a gene-specific marker for TPMT thiopurine toxicity context, Mercaptopurine/azathioprine dosing biology and thiopurine methylation, active nucleotide accumulation, myelosuppression risk, and immunosuppressant pharmacogenomics.",
+          "url": ""
+        }
+      ],
+      "gene_name": "TPMT",
+      "chromosome": "6",
+      "relevant_methylation_probe_ids": [
+        "cg23073439",
+        "cg15124342",
+        "cg18243005",
+        "cg15772801",
+        "cg24342628",
+        "cg16056511",
+        "cg06702726",
+        "cg01081808"
+      ]
+    }
+  ]
+}

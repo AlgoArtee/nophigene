@@ -1,0 +1,194 @@
+{
+  "database_name": "NophiGene KRAS Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "KRAS",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "12p12.1",
+    "chromosome": "12",
+    "gene_region": {
+      "label": "KRAS transcribed interval",
+      "start": 25357723,
+      "end": 25403870,
+      "definition": "Canonical KRAS genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 25403871,
+      "end": 25404870,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 25403102,
+      "end": 25403693,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "12:25357723-25404870",
+    "gene_summary": "KRAS encodes KRAS, a membrane-associated small GTPase that couples receptor input to RAF-MEK-ERK and PI3K signaling. This bundle emphasizes RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling.",
+    "clinical_context": "The local KRAS bundle is oncogenic RAS signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "KRAS variants can alter or tag RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Somatic oncology and targeted-therapy context",
+      "RAS-MAPK pathway biology",
+      "Developmental RASopathy review context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg08373951",
+      "cg02850821",
+      "cg21334449",
+      "cg00584022",
+      "cg18394848"
+    ],
+    "methylation_interpretation": "KRAS methylation should be treated as local regulatory context around a RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for KRAS.",
+      "Because KRAS biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use KRAS promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling.",
+      "Somatic oncology and targeted-therapy context",
+      "RAS-MAPK pathway biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 3845: KRAS",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/3845"
+      },
+      {
+        "label": "UniProt P01116: KRAS_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P01116/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000133703: KRAS coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000133703"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "KRAS biochemical figure starter",
+      "focus": "KRAS: RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling",
+      "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+      "icon_search_terms": [
+        "growth factor receptor",
+        "EGFR"
+      ],
+      "recommended_icons": [
+        "EGFR in endosome (ubiquitinated)",
+        "EGF (pathway)",
+        "VEGFR2 (dimer, schematic)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a KRAS oncogenic RAS signaling thesis: the individual may carry context relevant to RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling and Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "KRAS codon 12/13/61 model",
+      "display_name": "KRAS codon 12/13/61 model",
+      "common_name": "KRAS activating hotspot model",
+      "lookup_keys": [
+        "KRAS codon 12/13/61 model",
+        "KRAS codon 12/13/61 model",
+        "KRAS:KRAS codon 12/13/61 model",
+        "kras:kras codon 12/13/61 model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "KRAS codon 12/13/61 model is curated as a KRAS marker for Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology. Read it through genotype dosage, phenotype context, and the RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Somatic oncology and targeted-therapy context",
+        "RAS-MAPK pathway biology",
+        "Developmental RASopathy review context"
+      ],
+      "research_context": [
+        "Use this marker as a KRAS pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "KRAS activating hotspot model",
+      "methylation_interpretation": "Pair KRAS codon 12/13/61 model with KRAS methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "KRAS curated evidence set",
+          "genotypes": "KRAS codon 12/13/61 model or linked KRAS locus genotype states",
+          "phenotype": "Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology",
+          "finding": "The local curation treats KRAS codon 12/13/61 model as a gene-specific marker for Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology and RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "KRAS",
+      "chromosome": "12",
+      "relevant_methylation_probe_ids": [
+        "cg08373951",
+        "cg02850821",
+        "cg21334449",
+        "cg00584022",
+        "cg18394848"
+      ]
+    },
+    {
+      "variant": "rs61764370",
+      "display_name": "rs61764370 (KRAS 3'UTR marker)",
+      "common_name": "KRAS 3'UTR regulatory association marker",
+      "lookup_keys": [
+        "rs61764370",
+        "rs61764370 (KRAS 3'UTR marker)",
+        "KRAS:rs61764370",
+        "kras:rs61764370"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs61764370 (KRAS 3'UTR marker) is curated as a KRAS marker for Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology. Read it through genotype dosage, phenotype context, and the RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Somatic oncology and targeted-therapy context",
+        "RAS-MAPK pathway biology",
+        "Developmental RASopathy review context"
+      ],
+      "research_context": [
+        "Use this marker as a KRAS pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "KRAS 3'UTR regulatory association marker",
+      "methylation_interpretation": "Pair rs61764370 (KRAS 3'UTR marker) with KRAS methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "KRAS curated evidence set",
+          "genotypes": "rs61764370 (KRAS 3'UTR marker) or linked KRAS locus genotype states",
+          "phenotype": "Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology",
+          "finding": "The local curation treats rs61764370 (KRAS 3'UTR marker) as a gene-specific marker for Somatic oncology and targeted-therapy context, RAS-MAPK pathway biology and RAS GTPase switching, MAPK pathway activation, PI3K crosstalk, proliferation, differentiation, and oncogenic signaling.",
+          "url": ""
+        }
+      ],
+      "gene_name": "KRAS",
+      "chromosome": "12",
+      "relevant_methylation_probe_ids": [
+        "cg08373951",
+        "cg02850821",
+        "cg21334449",
+        "cg00584022",
+        "cg18394848"
+      ]
+    }
+  ]
+}

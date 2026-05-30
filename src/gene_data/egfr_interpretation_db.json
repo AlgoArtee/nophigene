@@ -1,0 +1,275 @@
+{
+  "database_name": "NophiGene EGFR Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "EGFR",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "7p11.2",
+    "chromosome": "7",
+    "gene_region": {
+      "label": "EGFR transcribed interval",
+      "start": 55086714,
+      "end": 55324313,
+      "definition": "Canonical EGFR genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 55085714,
+      "end": 55086713,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 55086868,
+      "end": 55323649,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "7:55085714-55324313",
+    "gene_summary": "EGFR encodes the epidermal growth factor receptor, a receptor tyrosine kinase that links ligand binding and receptor dimerization to phosphorylation cascades controlling proliferation, survival, differentiation, and receptor trafficking.",
+    "clinical_context": "The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously.",
+    "variant_effect_overview": [
+      "EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "T790M-like resistance markers require tumor context and treatment history; common germline SNPs are not equivalent to somatic driver calls."
+    ],
+    "condition_research_overview": [
+      "Receptor tyrosine kinase signaling",
+      "Non-small cell lung cancer somatic driver context",
+      "EGFR inhibitor sensitivity and resistance research"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg05064645",
+      "cg14094960",
+      "cg27044180",
+      "cg03565206",
+      "cg06669370",
+      "cg22806257",
+      "cg13694097",
+      "cg04288063"
+    ],
+    "methylation_interpretation": "EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for EGFR.",
+      "Because EGFR biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use EGFR promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+      "Receptor tyrosine kinase signaling",
+      "Non-small cell lung cancer somatic driver context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 1956: EGFR",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/1956"
+      },
+      {
+        "label": "UniProt P00533: EGFR_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P00533/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000146648: EGFR coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000146648"
+      },
+      {
+        "label": "ClinVar EGFR variation set",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "EGFR biochemical figure starter",
+      "focus": "receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways",
+      "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+      "icon_search_terms": [
+        "growth factor receptor",
+        "EGFR"
+      ],
+      "recommended_icons": [
+        "EGFR in endosome (ubiquitinated)",
+        "EGF (pathway)",
+        "VEGFR2 (dimer, schematic)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification."
+  },
+  "variant_records": [
+    {
+      "variant": "EGFR p.Leu858Arg",
+      "display_name": "EGFR L858R",
+      "common_name": "EGFR activating kinase-domain marker",
+      "lookup_keys": [
+        "EGFR p.Leu858Arg",
+        "EGFR L858R",
+        "EGFR:EGFR p.Leu858Arg",
+        "egfr:egfr p.leu858arg"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "EGFR L858R is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context. Read it through genotype dosage, phenotype context, and the receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ],
+      "research_context": [
+        "Use this marker as a EGFR pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "EGFR activating kinase-domain marker",
+      "methylation_interpretation": "Pair EGFR L858R with EGFR methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar EGFR variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "EGFR curated evidence set",
+          "genotypes": "EGFR L858R or linked EGFR locus genotype states",
+          "phenotype": "Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context",
+          "finding": "The local curation treats EGFR L858R as a gene-specific marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context and receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ],
+      "gene_name": "EGFR",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg05064645",
+        "cg14094960",
+        "cg27044180",
+        "cg03565206",
+        "cg06669370",
+        "cg22806257",
+        "cg13694097",
+        "cg04288063"
+      ]
+    },
+    {
+      "variant": "EGFR exon 19 deletion model",
+      "display_name": "EGFR exon 19 deletion model",
+      "common_name": "EGFR activating exon 19 deletion class",
+      "lookup_keys": [
+        "EGFR exon 19 deletion model",
+        "EGFR exon 19 deletion model",
+        "EGFR:EGFR exon 19 deletion model",
+        "egfr:egfr exon 19 deletion model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "EGFR exon 19 deletion model is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context. Read it through genotype dosage, phenotype context, and the receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ],
+      "research_context": [
+        "Use this marker as a EGFR pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "EGFR activating exon 19 deletion class",
+      "methylation_interpretation": "Pair EGFR exon 19 deletion model with EGFR methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar EGFR variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "EGFR curated evidence set",
+          "genotypes": "EGFR exon 19 deletion model or linked EGFR locus genotype states",
+          "phenotype": "Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context",
+          "finding": "The local curation treats EGFR exon 19 deletion model as a gene-specific marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context and receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "EGFR",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg05064645",
+        "cg14094960",
+        "cg27044180",
+        "cg03565206",
+        "cg06669370",
+        "cg22806257",
+        "cg13694097",
+        "cg04288063"
+      ]
+    },
+    {
+      "variant": "EGFR p.Thr790Met",
+      "display_name": "EGFR T790M",
+      "common_name": "EGFR resistance-gatekeeper marker",
+      "lookup_keys": [
+        "EGFR p.Thr790Met",
+        "EGFR T790M",
+        "EGFR:EGFR p.Thr790Met",
+        "egfr:egfr p.thr790met"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "EGFR T790M is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context. Read it through genotype dosage, phenotype context, and the receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ],
+      "research_context": [
+        "Use this marker as a EGFR pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "EGFR resistance-gatekeeper marker",
+      "methylation_interpretation": "Pair EGFR T790M with EGFR methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar EGFR variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "EGFR curated evidence set",
+          "genotypes": "EGFR T790M or linked EGFR locus genotype states",
+          "phenotype": "Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context",
+          "finding": "The local curation treats EGFR T790M as a gene-specific marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context and receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ],
+      "gene_name": "EGFR",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg05064645",
+        "cg14094960",
+        "cg27044180",
+        "cg03565206",
+        "cg06669370",
+        "cg22806257",
+        "cg13694097",
+        "cg04288063"
+      ]
+    }
+  ]
+}

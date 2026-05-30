@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene SCN1A Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "SCN1A",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "2q24.3",
+    "chromosome": "2",
+    "gene_region": {
+      "label": "SCN1A transcribed interval",
+      "start": 166845670,
+      "end": 166984523,
+      "definition": "Canonical SCN1A genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 166984524,
+      "end": 166985523,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 166810260,
+      "end": 166811795,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "2:166845670-166985523",
+    "gene_summary": "SCN1A encodes the Nav1.1 voltage-gated sodium channel alpha subunit important for inhibitory interneuron excitability. This topic bundle emphasizes neurological and neurodegenerative biology, with interpretation centered on synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+    "clinical_context": "The local SCN1A bundle is oriented toward neurological and neurodegenerative biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "SCN1A variants can alter, tag, or contextualize synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+      "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg06381284",
+      "cg12397071",
+      "cg09703363",
+      "cg20038717",
+      "cg12667043",
+      "cg19343783",
+      "cg09500364",
+      "cg13173924",
+      "cg17396020",
+      "cg08534769"
+    ],
+    "methylation_interpretation": "SCN1A methylation should be treated as local regulatory context around a synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for SCN1A.",
+      "Because SCN1A biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use SCN1A promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 6323: SCN1A",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/6323"
+      },
+      {
+        "label": "UniProt P35498: SCN1A_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P35498/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000144285: SCN1A coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000144285"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "SCN1A biochemical figure starter",
+      "focus": "SCN1A: neurological and neurodegenerative biology via synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+      "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+      "icon_search_terms": [
+        "neuron synapse neurodegeneration",
+        "synapse",
+        "microglia"
+      ],
+      "recommended_icons": [
+        "Microglial cell (with Abeta plaque)",
+        "Axonal-dendritic synaptic cleft (3D)",
+        "Myelin sheath (long, degenerating)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a SCN1A neurological and neurodegenerative biology thesis: the individual may carry context relevant to synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "SCN1A neurobiology variation model",
+      "display_name": "SCN1A neurobiology variation model",
+      "common_name": "SCN1A neurological and neurodegenerative biology pathway model",
+      "lookup_keys": [
+        "SCN1A neurobiology variation model",
+        "SCN1A neurobiology variation model",
+        "SCN1A:SCN1A neurobiology variation model",
+        "scn1a:scn1a neurobiology variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SCN1A neurobiology variation model is curated as a SCN1A marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a SCN1A pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SCN1A neurological and neurodegenerative biology pathway model",
+      "methylation_interpretation": "Pair SCN1A neurobiology variation model with SCN1A methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SCN1A curated evidence set",
+          "genotypes": "SCN1A neurobiology variation model or linked SCN1A locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats SCN1A neurobiology variation model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SCN1A",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg06381284",
+        "cg12397071",
+        "cg09703363",
+        "cg20038717",
+        "cg12667043",
+        "cg19343783",
+        "cg09500364",
+        "cg13173924",
+        "cg17396020",
+        "cg08534769"
+      ]
+    },
+    {
+      "variant": "SCN1A regulatory expression context model",
+      "display_name": "SCN1A regulatory expression context model",
+      "common_name": "SCN1A expression and methylation-context model",
+      "lookup_keys": [
+        "SCN1A regulatory expression context model",
+        "SCN1A regulatory expression context model",
+        "SCN1A:SCN1A regulatory expression context model",
+        "scn1a:scn1a regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SCN1A regulatory expression context model is curated as a SCN1A marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a SCN1A pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SCN1A expression and methylation-context model",
+      "methylation_interpretation": "Pair SCN1A regulatory expression context model with SCN1A methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SCN1A curated evidence set",
+          "genotypes": "SCN1A regulatory expression context model or linked SCN1A locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats SCN1A regulatory expression context model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SCN1A",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg06381284",
+        "cg12397071",
+        "cg09703363",
+        "cg20038717",
+        "cg12667043",
+        "cg19343783",
+        "cg09500364",
+        "cg13173924",
+        "cg17396020",
+        "cg08534769"
+      ]
+    }
+  ]
+}

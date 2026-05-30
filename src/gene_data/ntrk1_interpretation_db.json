@@ -1,0 +1,224 @@
+{
+  "database_name": "NophiGene NTRK1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "NTRK1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "1q23.1",
+    "chromosome": "1",
+    "gene_region": {
+      "label": "NTRK1 transcribed interval",
+      "start": 156785432,
+      "end": 156851642,
+      "definition": "Canonical NTRK1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 156784432,
+      "end": 156785431,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 156785467,
+      "end": 156830691,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "1:156784432-156851642",
+    "gene_summary": "NTRK1 encodes TrkA, the high-affinity nerve growth factor receptor that controls neuronal survival, pain-sensory neuron biology, differentiation, and kinase signaling.",
+    "clinical_context": "The local NTRK1 bundle spans neurodevelopmental/pain biology and somatic fusion oncology. Germline loss-of-function and tumor fusion contexts must be kept separate.",
+    "variant_effect_overview": [
+      "NTRK1 loss-of-function can be relevant to congenital insensitivity to pain contexts when biallelic and clinically supported.",
+      "NTRK1 fusions are somatic oncology markers and require tumor assay context."
+    ],
+    "condition_research_overview": [
+      "NGF-TrkA neuronal survival and pain biology",
+      "Congenital insensitivity to pain review context",
+      "NTRK fusion oncology target context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg02122575",
+      "cg25827666",
+      "cg24892963",
+      "cg14455176",
+      "cg09888330",
+      "cg20839149",
+      "cg04666830",
+      "cg12499211",
+      "cg12039611",
+      "cg21652471"
+    ],
+    "methylation_interpretation": "NTRK1 methylation should be treated as local regulatory context around a TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for NTRK1.",
+      "Because NTRK1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use NTRK1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions.",
+      "NGF-TrkA neuronal survival and pain biology",
+      "Congenital insensitivity to pain review context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 4914: NTRK1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/4914"
+      },
+      {
+        "label": "UniProt P04629: NTRK1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P04629/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000198400: NTRK1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000198400"
+      },
+      {
+        "label": "ClinVar NTRK1 variation set",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=NTRK1%5Bgene%5D"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "NTRK1 biochemical figure starter",
+      "focus": "TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions",
+      "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+      "icon_search_terms": [
+        "growth factor receptor",
+        "EGFR"
+      ],
+      "recommended_icons": [
+        "EGFR in endosome (ubiquitinated)",
+        "EGF (pathway)",
+        "VEGFR2 (dimer, schematic)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests an NTRK1 TrkA signaling thesis: the individual may carry context relevant to NGF receptor signaling, pain-sensory neuron development, neuronal survival, kinase-pathway activation, or somatic NTRK fusion review. Germline and tumor contexts must be separated."
+  },
+  "variant_records": [
+    {
+      "variant": "NTRK1 fusion model",
+      "display_name": "NTRK1 fusion model",
+      "common_name": "NTRK1 oncogenic kinase-fusion model",
+      "lookup_keys": [
+        "NTRK1 fusion model",
+        "NTRK1 fusion model",
+        "NTRK1:NTRK1 fusion model",
+        "ntrk1:ntrk1 fusion model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "NTRK1 fusion model is curated as a NTRK1 marker for NGF-TrkA neuronal survival and pain biology, Congenital insensitivity to pain review context. Read it through genotype dosage, phenotype context, and the TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "NGF-TrkA neuronal survival and pain biology",
+        "Congenital insensitivity to pain review context",
+        "NTRK fusion oncology target context"
+      ],
+      "research_context": [
+        "Use this marker as a NTRK1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "NTRK1 oncogenic kinase-fusion model",
+      "methylation_interpretation": "Pair NTRK1 fusion model with NTRK1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar NTRK1 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=NTRK1%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "NTRK1 curated evidence set",
+          "genotypes": "NTRK1 fusion model or linked NTRK1 locus genotype states",
+          "phenotype": "NGF-TrkA neuronal survival and pain biology, Congenital insensitivity to pain review context",
+          "finding": "The local curation treats NTRK1 fusion model as a gene-specific marker for NGF-TrkA neuronal survival and pain biology, Congenital insensitivity to pain review context and TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=NTRK1%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "NTRK1",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg02122575",
+        "cg25827666",
+        "cg24892963",
+        "cg14455176",
+        "cg09888330",
+        "cg20839149",
+        "cg04666830",
+        "cg12499211",
+        "cg12039611",
+        "cg21652471"
+      ]
+    },
+    {
+      "variant": "NTRK1 loss-of-function model",
+      "display_name": "NTRK1 loss-of-function model",
+      "common_name": "NTRK1 congenital pain-insensitivity model",
+      "lookup_keys": [
+        "NTRK1 loss-of-function model",
+        "NTRK1 loss-of-function model",
+        "NTRK1:NTRK1 loss-of-function model",
+        "ntrk1:ntrk1 loss-of-function model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "NTRK1 loss-of-function model is curated as a NTRK1 marker for NGF-TrkA neuronal survival and pain biology, Congenital insensitivity to pain review context. Read it through genotype dosage, phenotype context, and the TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "NGF-TrkA neuronal survival and pain biology",
+        "Congenital insensitivity to pain review context",
+        "NTRK fusion oncology target context"
+      ],
+      "research_context": [
+        "Use this marker as a NTRK1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "NTRK1 congenital pain-insensitivity model",
+      "methylation_interpretation": "Pair NTRK1 loss-of-function model with NTRK1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar NTRK1 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=NTRK1%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "NTRK1 curated evidence set",
+          "genotypes": "NTRK1 loss-of-function model or linked NTRK1 locus genotype states",
+          "phenotype": "NGF-TrkA neuronal survival and pain biology, Congenital insensitivity to pain review context",
+          "finding": "The local curation treats NTRK1 loss-of-function model as a gene-specific marker for NGF-TrkA neuronal survival and pain biology, Congenital insensitivity to pain review context and TrkA neurotrophin receptor signaling through NGF, RAS-MAPK, PI3K-AKT, PLC-gamma, pain pathways, and oncogenic fusions.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=NTRK1%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "NTRK1",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg02122575",
+        "cg25827666",
+        "cg24892963",
+        "cg14455176",
+        "cg09888330",
+        "cg20839149",
+        "cg04666830",
+        "cg12499211",
+        "cg12039611",
+        "cg21652471"
+      ]
+    }
+  ]
+}

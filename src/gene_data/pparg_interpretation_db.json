@@ -1,0 +1,224 @@
+{
+  "database_name": "NophiGene PPARG Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "PPARG",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "3p25.2",
+    "chromosome": "3",
+    "gene_region": {
+      "label": "PPARG transcribed interval",
+      "start": 12328867,
+      "end": 12475855,
+      "definition": "Canonical PPARG genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 12327867,
+      "end": 12328866,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 12329070,
+      "end": 12330532,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "3:12327867-12475855",
+    "gene_summary": "PPARG encodes peroxisome proliferator-activated receptor gamma, a ligand-activated nuclear receptor that regulates adipocyte differentiation, lipid storage, insulin sensitivity, macrophage polarization, and metabolic inflammation.",
+    "clinical_context": "The local PPARG bundle is metabolic and pharmacology oriented. Common PPARG markers are low-penetrance modifiers, while rare dominant-negative variants require clinical classification.",
+    "variant_effect_overview": [
+      "Pro12Ala is a widely studied PPARG functional/metabolic marker with context-dependent effects on insulin sensitivity and metabolic traits.",
+      "Drug-response interpretation for thiazolidinediones should remain cautious and phenotype/treatment specific."
+    ],
+    "condition_research_overview": [
+      "Adipogenesis and insulin-sensitivity biology",
+      "Type 2 diabetes and metabolic trait association research",
+      "PPAR-gamma agonist pharmacology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg26364899",
+      "cg27095527",
+      "cg06573644",
+      "cg21946299",
+      "cg06340600",
+      "cg23514324",
+      "cg15722404",
+      "cg13518792",
+      "cg09405169",
+      "cg07556134"
+    ],
+    "methylation_interpretation": "PPARG methylation should be treated as local regulatory context around a nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for PPARG.",
+      "Because PPARG biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use PPARG promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology.",
+      "Adipogenesis and insulin-sensitivity biology",
+      "Type 2 diabetes and metabolic trait association research"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 5468: PPARG",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/5468"
+      },
+      {
+        "label": "UniProt P37231: PPARG_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P37231/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000132170: PPARG coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000132170"
+      },
+      {
+        "label": "PharmGKB PPARG gene summary",
+        "url": "https://www.pharmgkb.org/gene/PA281"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "PPARG biochemical figure starter",
+      "focus": "nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "lipid metabolism",
+        "APOE",
+        "LDL receptor"
+      ],
+      "recommended_icons": [
+        "Apolipoprotein A brush (kringle)",
+        "Vessel (atherosclerosis, cross-section)",
+        "Atherosclerosis (with hypoxia, cross-section)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a PPARG adipogenesis and insulin-sensitivity thesis: the individual may carry context relevant to lipid storage, adipocyte differentiation, metabolic inflammation, type 2 diabetes traits, or PPAR-gamma agonist pharmacology. Common markers remain probabilistic modifiers."
+  },
+  "variant_records": [
+    {
+      "variant": "rs1801282",
+      "display_name": "rs1801282 (PPARG Pro12Ala)",
+      "common_name": "PPARG adipogenesis/insulin-sensitivity marker",
+      "lookup_keys": [
+        "rs1801282",
+        "rs1801282 (PPARG Pro12Ala)",
+        "PPARG:rs1801282",
+        "pparg:rs1801282"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1801282 (PPARG Pro12Ala) is curated as a PPARG marker for Adipogenesis and insulin-sensitivity biology, Type 2 diabetes and metabolic trait association research. Read it through genotype dosage, phenotype context, and the nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Adipogenesis and insulin-sensitivity biology",
+        "Type 2 diabetes and metabolic trait association research",
+        "PPAR-gamma agonist pharmacology"
+      ],
+      "research_context": [
+        "Use this marker as a PPARG pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "PPARG adipogenesis/insulin-sensitivity marker",
+      "methylation_interpretation": "Pair rs1801282 (PPARG Pro12Ala) with PPARG methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "PharmGKB PPARG gene summary",
+          "url": "https://www.pharmgkb.org/gene/PA281"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "PPARG curated evidence set",
+          "genotypes": "rs1801282 (PPARG Pro12Ala) or linked PPARG locus genotype states",
+          "phenotype": "Adipogenesis and insulin-sensitivity biology, Type 2 diabetes and metabolic trait association research",
+          "finding": "The local curation treats rs1801282 (PPARG Pro12Ala) as a gene-specific marker for Adipogenesis and insulin-sensitivity biology, Type 2 diabetes and metabolic trait association research and nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology.",
+          "url": "https://www.pharmgkb.org/gene/PA281"
+        }
+      ],
+      "gene_name": "PPARG",
+      "chromosome": "3",
+      "relevant_methylation_probe_ids": [
+        "cg26364899",
+        "cg27095527",
+        "cg06573644",
+        "cg21946299",
+        "cg06340600",
+        "cg23514324",
+        "cg15722404",
+        "cg13518792",
+        "cg09405169",
+        "cg07556134"
+      ]
+    },
+    {
+      "variant": "PPARG dominant-negative model",
+      "display_name": "PPARG dominant-negative model",
+      "common_name": "PPARG severe insulin-resistance model",
+      "lookup_keys": [
+        "PPARG dominant-negative model",
+        "PPARG dominant-negative model",
+        "PPARG:PPARG dominant-negative model",
+        "pparg:pparg dominant-negative model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "PPARG dominant-negative model is curated as a PPARG marker for Adipogenesis and insulin-sensitivity biology, Type 2 diabetes and metabolic trait association research. Read it through genotype dosage, phenotype context, and the nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Adipogenesis and insulin-sensitivity biology",
+        "Type 2 diabetes and metabolic trait association research",
+        "PPAR-gamma agonist pharmacology"
+      ],
+      "research_context": [
+        "Use this marker as a PPARG pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "PPARG severe insulin-resistance model",
+      "methylation_interpretation": "Pair PPARG dominant-negative model with PPARG methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "PharmGKB PPARG gene summary",
+          "url": "https://www.pharmgkb.org/gene/PA281"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "PPARG curated evidence set",
+          "genotypes": "PPARG dominant-negative model or linked PPARG locus genotype states",
+          "phenotype": "Adipogenesis and insulin-sensitivity biology, Type 2 diabetes and metabolic trait association research",
+          "finding": "The local curation treats PPARG dominant-negative model as a gene-specific marker for Adipogenesis and insulin-sensitivity biology, Type 2 diabetes and metabolic trait association research and nuclear receptor transcriptional control of adipogenesis, insulin sensitivity, lipid storage, inflammation, and thiazolidinedione pharmacology.",
+          "url": "https://www.pharmgkb.org/gene/PA281"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "PPARG",
+      "chromosome": "3",
+      "relevant_methylation_probe_ids": [
+        "cg26364899",
+        "cg27095527",
+        "cg06573644",
+        "cg21946299",
+        "cg06340600",
+        "cg23514324",
+        "cg15722404",
+        "cg13518792",
+        "cg09405169",
+        "cg07556134"
+      ]
+    }
+  ]
+}

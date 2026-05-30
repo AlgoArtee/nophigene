@@ -1,0 +1,209 @@
+{
+  "database_name": "NophiGene PCSK9 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "PCSK9",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "1p32.3",
+    "chromosome": "1",
+    "gene_region": {
+      "label": "PCSK9 transcribed interval",
+      "start": 55505221,
+      "end": 55530525,
+      "definition": "Canonical PCSK9 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 55504221,
+      "end": 55505220,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 55505327,
+      "end": 55505880,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "1:55504221-55530525",
+    "gene_summary": "PCSK9 encodes a secreted proprotein convertase that binds LDL receptor and promotes receptor degradation, thereby tuning hepatic LDL uptake and circulating LDL cholesterol.",
+    "clinical_context": "The local PCSK9 bundle is lipid and pharmacogenetic-mechanism oriented. Loss-of-function and gain-of-function alleles can have different LDL-C and cardiovascular-risk implications.",
+    "variant_effect_overview": [
+      "PCSK9 loss-of-function alleles tend to lower LDL-C through increased LDL receptor availability.",
+      "Rare gain-of-function variants can support familial hypercholesterolemia context when externally classified."
+    ],
+    "condition_research_overview": [
+      "LDL cholesterol and cardiovascular risk biology",
+      "Familial hypercholesterolemia review context",
+      "PCSK9 inhibitor target biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg13191808",
+      "cg25902309",
+      "cg08920610",
+      "cg14752245",
+      "cg25795075"
+    ],
+    "methylation_interpretation": "PCSK9 methylation should be treated as local regulatory context around a LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for PCSK9.",
+      "Because PCSK9 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use PCSK9 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation.",
+      "LDL cholesterol and cardiovascular risk biology",
+      "Familial hypercholesterolemia review context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 255738: PCSK9",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/255738"
+      },
+      {
+        "label": "UniProt Q8NBP7: PCSK9_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/Q8NBP7/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000169174: PCSK9 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000169174"
+      },
+      {
+        "label": "ClinVar PCSK9 variation set",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=PCSK9%5Bgene%5D"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "PCSK9 biochemical figure starter",
+      "focus": "LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "lipid metabolism",
+        "APOE",
+        "LDL receptor"
+      ],
+      "recommended_icons": [
+        "Apolipoprotein A brush (kringle)",
+        "Vessel (atherosclerosis, cross-section)",
+        "Atherosclerosis (with hypoxia, cross-section)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a PCSK9 LDL-receptor-trafficking thesis: the individual may carry context relevant to LDL-C set point, hepatic LDL receptor recycling/degradation, cardiovascular lipid traits, familial hypercholesterolemia review, or PCSK9 inhibitor target biology."
+  },
+  "variant_records": [
+    {
+      "variant": "rs11591147",
+      "display_name": "rs11591147 (PCSK9 R46L)",
+      "common_name": "PCSK9 loss-of-function LDL-C marker",
+      "lookup_keys": [
+        "rs11591147",
+        "rs11591147 (PCSK9 R46L)",
+        "PCSK9:rs11591147",
+        "pcsk9:rs11591147"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs11591147 (PCSK9 R46L) is curated as a PCSK9 marker for LDL cholesterol and cardiovascular risk biology, Familial hypercholesterolemia review context. Read it through genotype dosage, phenotype context, and the LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "LDL cholesterol and cardiovascular risk biology",
+        "Familial hypercholesterolemia review context",
+        "PCSK9 inhibitor target biology"
+      ],
+      "research_context": [
+        "Use this marker as a PCSK9 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "PCSK9 loss-of-function LDL-C marker",
+      "methylation_interpretation": "Pair rs11591147 (PCSK9 R46L) with PCSK9 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar PCSK9 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=PCSK9%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "PCSK9 curated evidence set",
+          "genotypes": "rs11591147 (PCSK9 R46L) or linked PCSK9 locus genotype states",
+          "phenotype": "LDL cholesterol and cardiovascular risk biology, Familial hypercholesterolemia review context",
+          "finding": "The local curation treats rs11591147 (PCSK9 R46L) as a gene-specific marker for LDL cholesterol and cardiovascular risk biology, Familial hypercholesterolemia review context and LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=PCSK9%5Bgene%5D"
+        }
+      ],
+      "gene_name": "PCSK9",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg13191808",
+        "cg25902309",
+        "cg08920610",
+        "cg14752245",
+        "cg25795075"
+      ]
+    },
+    {
+      "variant": "PCSK9 gain-of-function model",
+      "display_name": "PCSK9 gain-of-function model",
+      "common_name": "PCSK9 familial hypercholesterolemia gain-of-function model",
+      "lookup_keys": [
+        "PCSK9 gain-of-function model",
+        "PCSK9 gain-of-function model",
+        "PCSK9:PCSK9 gain-of-function model",
+        "pcsk9:pcsk9 gain-of-function model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "PCSK9 gain-of-function model is curated as a PCSK9 marker for LDL cholesterol and cardiovascular risk biology, Familial hypercholesterolemia review context. Read it through genotype dosage, phenotype context, and the LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "LDL cholesterol and cardiovascular risk biology",
+        "Familial hypercholesterolemia review context",
+        "PCSK9 inhibitor target biology"
+      ],
+      "research_context": [
+        "Use this marker as a PCSK9 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "PCSK9 familial hypercholesterolemia gain-of-function model",
+      "methylation_interpretation": "Pair PCSK9 gain-of-function model with PCSK9 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar PCSK9 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=PCSK9%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "PCSK9 curated evidence set",
+          "genotypes": "PCSK9 gain-of-function model or linked PCSK9 locus genotype states",
+          "phenotype": "LDL cholesterol and cardiovascular risk biology, Familial hypercholesterolemia review context",
+          "finding": "The local curation treats PCSK9 gain-of-function model as a gene-specific marker for LDL cholesterol and cardiovascular risk biology, Familial hypercholesterolemia review context and LDL receptor trafficking, hepatic cholesterol homeostasis, secreted protease biology, and LDL-C regulation.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=PCSK9%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "PCSK9",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg13191808",
+        "cg25902309",
+        "cg08920610",
+        "cg14752245",
+        "cg25795075"
+      ]
+    }
+  ]
+}

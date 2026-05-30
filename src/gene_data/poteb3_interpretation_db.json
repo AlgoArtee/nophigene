@@ -1,0 +1,133 @@
+{
+  "database_name": "NophiGene POTEB3 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "POTEB3",
+    "assembly": "GRCh38 / hg38",
+    "cytoband": "15q11.2",
+    "chromosome": "15",
+    "gene_region": {
+      "label": "POTEB3 transcribed interval",
+      "start": 21405401,
+      "end": 21440499,
+      "definition": "Canonical POTEB3 genomic interval on GRCh38 / hg38 from NCBI Gene 102724631 and Ensembl ENSG00000278522 report POTEB3 on GRCh38 at NC_000015.10/chr15:21405401..21440499, complement; Ensembl assembly mapping returned no direct GRCh37 projection for this primary interval."
+    },
+    "promoter_review_region": {
+      "label": "GRCh38 POTEB3 reverse-strand promoter review window",
+      "start": 21440500,
+      "end": 21441499,
+      "definition": "A practical 1 kb upstream window relative to the GRCh38 reverse-strand POTEB3 transcription start. This app stores it as context only because the bundled hg19 EPIC manifest has no POTEB3-specific probe slice."
+    },
+    "promoter_hotspot_region": {
+      "label": "No bundled POTEB3 EPIC methylation probe hotspot",
+      "start": 21440500,
+      "end": 21441499,
+      "definition": "No POTEB3-specific EPIC probes are bundled from the local hg19 manifest. Methylation interpretation should use custom GRCh38-aware probe annotation or orthogonal expression data."
+    },
+    "recommended_promoter_plus_gene_region": "15:21405401-21441499",
+    "gene_summary": "POTEB3 encodes POTE ankyrin domain family member B3, a POTE-family intracellular protein with ankyrin-repeat domains and a supported MANE/RefSeq coding transcript. POTE genes are recent, highly paralogous cancer-testis/reproductive-tissue genes; current POTEB3 expression resources emphasize testis-enriched or restricted expression and careful paralog-aware interpretation.",
+    "clinical_context": "The local POTEB3 knowledge base is paralog-aware and copy-number-context oriented. POTEB3 lies in the complex 15q11.2 POTE segmental-duplication region, has no direct GRCh37 primary-locus projection from Ensembl mapping, and should not be interpreted like a high-confidence single-copy clinical gene.",
+    "variant_effect_overview": [
+      "Most POTEB3 findings should be treated as structural-variation, segmental-duplication, expression, or POTE-family research context rather than as single-nucleotide diagnostic calls.",
+      "Short-read variant interpretation can be confounded by close POTE paralogs, mapping ambiguity, and the absence of a direct GRCh37 primary-locus mapping for the current POTEB3 annotation.",
+      "ClinVar copy-number records spanning the 15q11.1-q11.2 region include POTEB3 among many genes and are not POTEB3-specific pathogenic alleles."
+    ],
+    "condition_research_overview": [
+      "POTE-family cancer-testis antigen, spermatogenesis, and reproductive-tissue expression research.",
+      "15q11.1-q11.2 segmental duplication and copy-number interpretation.",
+      "Paralog-aware mapping and annotation differences between GRCh37 and GRCh38."
+    ],
+    "relevant_methylation_probe_ids": [],
+    "methylation_interpretation": "No POTEB3-specific methylation whitelist is bundled because the local EPIC manifest is hg19-oriented and the current POTEB3 primary interval is GRCh38-only in the sources checked. Any methylation analysis should be treated as unavailable unless the user supplies GRCh38-aware probe mappings or validated POTEB3-specific assays.",
+    "methylation_effects": [
+      "The bundled POTEB3 whitelist is intentionally empty.",
+      "Do not infer POTEB3 promoter methylation from neighboring POTEB/POTEB2 or other POTE-family probes without paralog-aware remapping."
+    ],
+    "methylation_condition_research": [
+      "Use custom GRCh38 probe annotation, long-read mapping, RNA expression, or copy-number assays if POTEB3 regulation is the research question.",
+      "Keep POTEB3 methylation separate from broader POTE-family methylation until probe uniqueness has been validated."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 102724631: POTEB3 gene summary and GRCh38 coordinates",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/102724631"
+      },
+      {
+        "label": "Ensembl ENSG00000278522: POTEB3 GRCh38 gene model",
+        "url": "https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000278522"
+      },
+      {
+        "label": "UniProt A0JP26: POTEB3 / POTB3_HUMAN protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/A0JP26/entry"
+      },
+      {
+        "label": "Human Protein Atlas: POTEB3 tissue-enriched testis expression context",
+        "url": "https://www.proteinatlas.org/ENSG00000278522-POTEB3/tissue"
+      },
+      {
+        "label": "PMCID PMC139254: foundational POTE family expression and paralog study",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC139254/"
+      },
+      {
+        "label": "ClinVar RCV000136295: benign 15q11.1-q11.2 CNV including POTEB3",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "15q11.1-q11.2 CNV including POTEB3",
+      "display_name": "15q11.1-q11.2 copy-number region including POTEB3",
+      "common_name": "Benign ClinVar regional CNV context",
+      "position": null,
+      "lookup_keys": [
+        "RCV000136295",
+        "nsv533590",
+        "nssv707330",
+        "15q11.1-q11.2 CNV",
+        "POTEB3 copy-number region"
+      ],
+      "region_class": "structural_region",
+      "interpretation_scope": "Regional copy-number context / not POTEB3-specific",
+      "clinical_interpretation": "ClinVar RCV000136295 describes a copy-number loss spanning a broad 15q11.1-q11.2 interval that includes POTEB3 and many neighboring genes, with a benign germline classification from one submission. Use this as regional CNV context only; it is not evidence that POTEB3 point variants or POTEB3 dosage alone are clinically benign or pathogenic.",
+      "clinical_significance": "Benign ClinVar regional CNV; not a POTEB3-specific pathogenic or protective variant.",
+      "functional_effects": [
+        "Large regional copy-number event rather than a single POTEB3 coding or regulatory variant.",
+        "Interpretation is dominated by 15q11.2 segmental-duplication structure and multi-gene CNV context."
+      ],
+      "associated_conditions": [
+        "15q11.1-q11.2 copy-number variation",
+        "Segmental-duplication and paralog-aware structural-variant interpretation"
+      ],
+      "research_context": [
+        "Confirm assembly, breakpoints, and copy-number method before making any POTEB3-specific claim.",
+        "Short-read SNV rows should not be promoted to POTEB3-specific findings without uniqueness and mapping checks."
+      ],
+      "usual_variant_note": "Regional CNV context that includes POTEB3 among many 15q11.2 genes.",
+      "methylation_interpretation": "Regional copy-number context does not provide a POTEB3 methylation biomarker, especially without GRCh38-aware probe uniqueness checks.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar RCV000136295: benign copy-number loss spanning POTEB3",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"
+        },
+        {
+          "label": "NCBI Gene 102724631: POTEB3 gene identity",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/102724631"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "ClinVar RCV000136295 / ISCA submission",
+          "genotypes": "15q11.1-q11.2 regional copy-number loss",
+          "phenotype": "See-cases regional CNV submission",
+          "finding": "The CNV spans POTEB3 and many other genes and is classified as benign in the cited ClinVar record; it should be used as broad regional context rather than a POTEB3-specific variant interpretation.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000136295/"
+        }
+      ],
+      "gene_name": "POTEB3",
+      "chromosome": "15",
+      "relevant_methylation_probe_ids": []
+    }
+  ]
+}

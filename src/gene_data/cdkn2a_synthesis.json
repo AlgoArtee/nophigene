@@ -1,0 +1,361 @@
+{
+  "database_name": "NophiGene CDKN2A Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "CDKN2A",
+  "source_interpretation_database": "NophiGene CDKN2A Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs11515 (c.*29G>C) (CDKN2A 3'UTR regulatory SNP)",
+    "rs3088440 (c.*69C>T / 540C>T) (CDKN2A 3'UTR melanoma-risk modifier)",
+    "rs3731249 (p.Ala148Thr / A148T) (CDKN2A Ala148Thr benign missense polymorphism)",
+    "CDKN2A p.Gly101Trp (c.301G>T / G101W) (Pathogenic CDKN2A G101W melanoma-pancreatic cancer marker)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs11515",
+      "display_name": "rs11515 (c.*29G>C)",
+      "common_name": "CDKN2A 3'UTR regulatory SNP",
+      "lookup_keys": [
+        "rs11515",
+        "CDKN2A:rs11515",
+        "9:21968199",
+        "9:21968199:C>G"
+      ],
+      "prediction": "Observed CDKN2A rs11515 suggests a common 3'UTR regulatory-context thesis. This marker is best interpreted as low-effect melanoma/cancer association and haplotype context, with benign germline ClinVar framing, not as high-penetrance CDKN2A cancer predisposition.",
+      "sample_change_template": "This sample matched rs11515 (c.*29G>C) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the CDKN2A prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Sits in the 3'UTR and may reflect post-transcriptional regulatory context at the CDKN2A locus.",
+      "evidence": [
+        {
+          "label": "ClinVar RCV001529165: rs11515 / c.*29G>C",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV001529165/"
+        },
+        {
+          "label": "PubMed 26557774: CDKN2A 3'UTR sequence variants in melanoma",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26557774/"
+        },
+        {
+          "label": "PubMed 33910831: 3'UTR CDKN2A/CDK4 germline variants",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33910831/"
+        }
+      ]
+    },
+    {
+      "variant": "rs3088440",
+      "display_name": "rs3088440 (c.*69C>T / 540C>T)",
+      "common_name": "CDKN2A 3'UTR melanoma-risk modifier",
+      "lookup_keys": [
+        "rs3088440",
+        "CDKN2A:rs3088440",
+        "9:21968159",
+        "9:21968159:G>A"
+      ],
+      "prediction": "Observed CDKN2A rs3088440 suggests a common 3'UTR melanoma-risk modifier thesis. Some cohorts report melanoma-risk or haplotype associations, but ClinVar submitter summaries frame the germline variant as benign, so the prediction should remain population- and haplotype-contextual.",
+      "sample_change_template": "This sample matched rs3088440 (c.*69C>T / 540C>T) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the CDKN2A prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [
+        {
+          "prediction": "This sample row reports A as the observed alternate allele at CDKN2A rs3088440 in the hg19 forward-strand VCF representation. The same marker is often described as 540C>T or c.*69C>T in transcript-oriented literature; interpret A dosage as common 3'UTR regulatory and melanoma-association context, not as a pathogenic CDKN2A finding.",
+          "basis": "Observed ALT A at rs3088440, a common CDKN2A 3'UTR marker discussed in 9p21 melanoma-risk and haplotype studies.",
+          "evidence": [
+            {
+              "label": "PubMed 23816148: rs3088440 and 9p21 melanoma risk",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/23816148/"
+            },
+            {
+              "label": "PubMed 33910831: 3'UTR CDKN2A/CDK4 germline variants",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/33910831/"
+            },
+            {
+              "label": "ClinVar Miner: rs3088440 benign submitter summary",
+              "url": "https://clinvarminer.genetics.utah.edu/variants-by-gene/CDKN2A/significance/benign"
+            }
+          ],
+          "change": "G -> A",
+          "alt_allele": "A"
+        }
+      ],
+      "basis": "Located in the 3'UTR where altered mRNA stability or post-transcriptional regulation has been proposed.",
+      "evidence": [
+        {
+          "label": "PubMed 23816148: rs3088440 and 9p21 melanoma risk",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/23816148/"
+        },
+        {
+          "label": "PubMed 33910831: 3'UTR CDKN2A/CDK4 germline variants",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33910831/"
+        },
+        {
+          "label": "ClinVar Miner: rs3088440 benign submitter summary",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-gene/CDKN2A/significance/benign"
+        }
+      ]
+    },
+    {
+      "variant": "rs3731249",
+      "display_name": "rs3731249 (p.Ala148Thr / A148T)",
+      "common_name": "CDKN2A Ala148Thr benign missense polymorphism",
+      "lookup_keys": [
+        "rs3731249",
+        "CDKN2A:rs3731249",
+        "CDKN2A p.Ala148Thr",
+        "p.A148T",
+        "9:21970916",
+        "9:21970916:C>T"
+      ],
+      "prediction": "Observed CDKN2A rs3731249 / p.Ala148Thr suggests a benign-polymorphism thesis: this sample carries a historically studied p16INK4A missense marker that current ClinVar curation classifies as benign. Do not convert this into a CDKN2A cancer-predisposition prediction without other pathogenic evidence.",
+      "sample_change_template": "This sample matched rs3731249 (p.Ala148Thr / A148T) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the CDKN2A prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [
+        {
+          "prediction": "This sample row reports T as the observed alternate allele at CDKN2A rs3731249 / p.Ala148Thr. Current ClinVar curation classifies p.Ala148Thr as benign, so the concrete prediction is benign-polymorphism context rather than inherited CDKN2A cancer predisposition.",
+          "basis": "Observed ALT T at rs3731249, interpreted through ClinVar benign curation for CDKN2A p.Ala148Thr.",
+          "evidence": [
+            {
+              "label": "ClinVar RCV000034482: CDKN2A p.Ala148Thr benign",
+              "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000034482/"
+            },
+            {
+              "label": "PubMed 22703879: exome screening secondary variants",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/22703879/"
+            }
+          ],
+          "change": "C -> T",
+          "alt_allele": "T"
+        }
+      ],
+      "basis": "Missense p.Ala148Thr in p16INK4A with benign ClinVar classification.",
+      "evidence": [
+        {
+          "label": "ClinVar RCV000034482: CDKN2A p.Ala148Thr benign",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000034482/"
+        },
+        {
+          "label": "PubMed 22703879: exome screening secondary variants",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/22703879/"
+        }
+      ]
+    },
+    {
+      "variant": "CDKN2A p.Gly101Trp",
+      "display_name": "CDKN2A p.Gly101Trp (c.301G>T / G101W)",
+      "common_name": "Pathogenic CDKN2A G101W melanoma-pancreatic cancer marker",
+      "lookup_keys": [
+        "CDKN2A p.Gly101Trp",
+        "CDKN2A:p.Gly101Trp",
+        "CDKN2A G101W",
+        "p.G101W",
+        "c.301G>T",
+        "NM_000077.5:c.301G>T",
+        "9:21971057:C>A"
+      ],
+      "prediction": "Observed CDKN2A p.Gly101Trp / G101W suggests a rare pathogenic tumor-suppressor thesis. If the exact GRCh37 C -> A allele is GT-confirmed, the sample carries a high-priority CDKN2A melanoma and melanoma-pancreatic cancer predisposition marker that warrants external clinical confirmation rather than a stand-alone app diagnosis.",
+      "sample_change_template": "This sample matched CDKN2A p.Gly101Trp (c.301G>T / G101W) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the CDKN2A prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [
+        {
+          "prediction": "This sample row reports A as the observed alternate allele at chr9:21,971,057, the hg19 forward-strand representation of CDKN2A c.301G>T / p.Gly101Trp. GT-confirmed A dosage is a rare pathogenic G101W signal in the local bundle, so the thesis should escalate to external clinical confirmation and genetics review while avoiding a diagnosis from this app alone.",
+          "basis": "Exact GRCh37 C -> A match for CDKN2A p.Gly101Trp / G101W, a ClinVar pathogenic melanoma and melanoma-pancreatic cancer marker.",
+          "evidence": [
+            {
+              "label": "ClinVar VCV000009412: CDKN2A c.301G>T / p.Gly101Trp",
+              "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/9412/"
+            },
+            {
+              "label": "ClinVar RCV000196633: p.Gly101Trp familial melanoma",
+              "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000196633/"
+            },
+            {
+              "label": "PubMed 11807902: G101W in Italian melanoma families",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/11807902/"
+            },
+            {
+              "label": "PubMed 21462282: CDKN2A variant functional classification",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/21462282/"
+            }
+          ],
+          "change": "C -> A",
+          "alt_allele": "A"
+        }
+      ],
+      "basis": "Missense change in the p16INK4A ankyrin-repeat region that can disrupt CDK4 binding and cell-cycle arrest.",
+      "evidence": [
+        {
+          "label": "ClinVar VCV000009412: CDKN2A c.301G>T / p.Gly101Trp",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/variation/9412/"
+        },
+        {
+          "label": "ClinVar RCV000196633: p.Gly101Trp familial melanoma",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000196633/"
+        },
+        {
+          "label": "PubMed 11807902: G101W in Italian melanoma families",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/11807902/"
+        },
+        {
+          "label": "PubMed 21462282: CDKN2A variant functional classification",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/21462282/"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. An observed CDKN2A variant places this sample in the curated CDKN2A research context. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a CDKN2A variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a CDKN2A variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a CDKN2A variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a CDKN2A variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a CDKN2A variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a CDKN2A variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a CDKN2A variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a CDKN2A variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a CDKN2A variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a cell-cycle checkpoint and tumor-suppressor thesis: the individual may carry a modifier of p16INK4A/p14ARF, RB-p53, senescence, melanoma, pancreatic cancer, glioma, or broader cancer-risk biology because CDKN2A controls G1 arrest and oncogenic-stress response. Only known loss-of-function or pathogenic CDKN2A variants should be treated as high-risk clinical findings. CDKN2A methylation is often biologically meaningful because promoter hypermethylation is a recurrent mode of tumor-suppressor silencing. In this workbench it should still be read as regulatory context rather than as a stand-alone diagnosis. The bundled CDKN2A knowledge base is tumor-suppressor focused. Clinically important CDKN2A events include heterozygous germline pathogenic variants, deletions, or promoter methylation changes; common 3'UTR and missense polymorphisms are kept as research context unless external clinical curation supports a higher-impact call. For CDKN2A, rare germline and somatic loss-of-function events usually carry more weight than common SNPs.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "CDKN2A is a major tumor-suppressor locus in melanoma, pancreatic cancer predisposition, glioma, and many additional tumors.",
+        "The locus is also central to aging and senescence research because p16INK4A expression is a canonical cellular-senescence marker.",
+        "Interpretation should distinguish common benign or low-effect polymorphisms from rare pathogenic variants such as p.Gly101Trp."
+      ]
+    }
+  ]
+}

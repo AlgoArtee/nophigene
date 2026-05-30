@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene GCK Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "GCK",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "7p13",
+    "chromosome": "7",
+    "gene_region": {
+      "label": "GCK transcribed interval",
+      "start": 44183872,
+      "end": 44237769,
+      "definition": "Canonical GCK genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 44237770,
+      "end": 44238769,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 44198380,
+      "end": 44230277,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "7:44183872-44238769",
+    "gene_summary": "GCK encodes glucokinase, the glucose sensor hexokinase in beta cells and liver. This bundle emphasizes glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context.",
+    "clinical_context": "The local GCK bundle is glucose-sensing enzyme review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "GCK variants can alter or tag glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "GCK-MODY review context",
+      "Beta-cell glucose sensing",
+      "Congenital hyperinsulinism and glycemic set-point biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg22744089",
+      "cg17918944",
+      "cg15001372",
+      "cg16476432",
+      "cg02816429",
+      "cg07696757",
+      "cg07944811",
+      "cg02901365",
+      "cg24385596",
+      "cg18811310"
+    ],
+    "methylation_interpretation": "GCK methylation should be treated as local regulatory context around a glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for GCK.",
+      "Because GCK biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use GCK promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context.",
+      "GCK-MODY review context",
+      "Beta-cell glucose sensing"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 2645: GCK",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/2645"
+      },
+      {
+        "label": "UniProt Q12851: GCK_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/Q12851/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000106633: GCK coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000106633"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "GCK biochemical figure starter",
+      "focus": "GCK: glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "folate metabolism",
+        "protein kinase",
+        "metabolic pathway"
+      ],
+      "recommended_icons": [
+        "Metabolic pathway (in mitochondria)",
+        "Simulated metabolic activity",
+        "PKA bound to cAMP"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a GCK glucose-sensing enzyme review thesis: the individual may carry context relevant to glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context and GCK-MODY review context, Beta-cell glucose sensing. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "GCK MODY2 loss-of-function model",
+      "display_name": "GCK MODY2 loss-of-function model",
+      "common_name": "GCK glucose-sensing set-point model",
+      "lookup_keys": [
+        "GCK MODY2 loss-of-function model",
+        "GCK MODY2 loss-of-function model",
+        "GCK:GCK MODY2 loss-of-function model",
+        "gck:gck mody2 loss-of-function model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "GCK MODY2 loss-of-function model is curated as a GCK marker for GCK-MODY review context, Beta-cell glucose sensing. Read it through genotype dosage, phenotype context, and the glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "GCK-MODY review context",
+        "Beta-cell glucose sensing",
+        "Congenital hyperinsulinism and glycemic set-point biology"
+      ],
+      "research_context": [
+        "Use this marker as a GCK pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "GCK glucose-sensing set-point model",
+      "methylation_interpretation": "Pair GCK MODY2 loss-of-function model with GCK methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "GCK curated evidence set",
+          "genotypes": "GCK MODY2 loss-of-function model or linked GCK locus genotype states",
+          "phenotype": "GCK-MODY review context, Beta-cell glucose sensing",
+          "finding": "The local curation treats GCK MODY2 loss-of-function model as a gene-specific marker for GCK-MODY review context, Beta-cell glucose sensing and glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "GCK",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg22744089",
+        "cg17918944",
+        "cg15001372",
+        "cg16476432",
+        "cg02816429",
+        "cg07696757",
+        "cg07944811",
+        "cg02901365",
+        "cg24385596",
+        "cg18811310"
+      ]
+    },
+    {
+      "variant": "GCK activating hyperinsulinism model",
+      "display_name": "GCK activating hyperinsulinism model",
+      "common_name": "GCK activating enzyme model",
+      "lookup_keys": [
+        "GCK activating hyperinsulinism model",
+        "GCK activating hyperinsulinism model",
+        "GCK:GCK activating hyperinsulinism model",
+        "gck:gck activating hyperinsulinism model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "GCK activating hyperinsulinism model is curated as a GCK marker for GCK-MODY review context, Beta-cell glucose sensing. Read it through genotype dosage, phenotype context, and the glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "GCK-MODY review context",
+        "Beta-cell glucose sensing",
+        "Congenital hyperinsulinism and glycemic set-point biology"
+      ],
+      "research_context": [
+        "Use this marker as a GCK pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "GCK activating enzyme model",
+      "methylation_interpretation": "Pair GCK activating hyperinsulinism model with GCK methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "GCK curated evidence set",
+          "genotypes": "GCK activating hyperinsulinism model or linked GCK locus genotype states",
+          "phenotype": "GCK-MODY review context, Beta-cell glucose sensing",
+          "finding": "The local curation treats GCK activating hyperinsulinism model as a gene-specific marker for GCK-MODY review context, Beta-cell glucose sensing and glucose phosphorylation, beta-cell glucose sensing, hepatic glycogen synthesis, MODY biology, and congenital hyperinsulinism context.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "GCK",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg22744089",
+        "cg17918944",
+        "cg15001372",
+        "cg16476432",
+        "cg02816429",
+        "cg07696757",
+        "cg07944811",
+        "cg02901365",
+        "cg24385596",
+        "cg18811310"
+      ]
+    }
+  ]
+}

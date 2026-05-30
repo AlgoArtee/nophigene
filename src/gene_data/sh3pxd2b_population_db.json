@@ -1,0 +1,92 @@
+{
+  "database_name": "NophiGene SH3PXD2B Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled SH3PXD2B population database is literature oriented and does not include a complete allele-frequency panel. Interpretation should prioritize current ClinVar/gnomAD status, zygosity, phase, segregation, copy-number breakpoint, transcript effect, phenotype match, and the definitive autosomal-recessive ClinGen curation.",
+  "gene_population_patterns_intro": "Broader population patterns curated from SH3PXD2B/TKS4 rare-disease, podosome, extracellular-matrix, collagen-remodeling, expression, and cancer-cell-migration literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 285590: SH3PXD2B expression, GO context, bibliography, and phenotype links",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/285590"
+    },
+    {
+      "label": "Human Protein Atlas: SH3PXD2B low tissue specificity, cytoplasmic expression, and plasma-membrane/nucleoplasm/cytosol localization",
+      "url": "https://www.proteinatlas.org/ENSG00000174705-SH3PXD2B"
+    },
+    {
+      "label": "ClinGen Gene Facts: definitive AR Frank-ter Haar syndrome gene-disease validity",
+      "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A29242"
+    },
+    {
+      "label": "ClinVar RCV000000214: pathogenic splice-acceptor example",
+      "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000000214/"
+    },
+    {
+      "label": "PMCID PMC2820172: SH3PXD2B FTHS mutation spectrum and developmental model",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"
+    },
+    {
+      "label": "PMCID PMC7790187: sh3pxd2b collagen-remodeling/fibrosis model",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7790187/"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "SH3PXD2B expression",
+      "location_group": "Global pattern",
+      "summary": "NCBI and Human Protein Atlas resources frame SH3PXD2B as broadly expressed or low tissue specificity, with cytoplasmic expression in many cell types including fibroblasts and plasma-membrane/nucleoplasm/cytosol localization context."
+    },
+    {
+      "variant": "Biallelic SH3PXD2B pathogenic variants",
+      "location_group": "Rare-disease cohorts",
+      "summary": "ClinGen curates SH3PXD2B-Frank-ter Haar syndrome as definitive with autosomal-recessive mode of inheritance; pathogenic interpretation therefore depends strongly on biallelic pathogenic dosage and phenotype fit."
+    },
+    {
+      "variant": "SH3PXD2B c.76-2A>C / rs775217258",
+      "location_group": "ClinVar and literature marker",
+      "summary": "This splice-acceptor variant is a pathogenic FTHS marker in ClinVar/OMIM literature, with GRCh37 coordinate chr5:171849502 and transcript-level c.76-2A>C notation."
+    },
+    {
+      "variant": "SH3PXD2B loss-of-function/deletion",
+      "location_group": "Structural and functional mechanism",
+      "summary": "Reported homozygous SH3PXD2B mutations, deletions, and exon 13 deletion support a TKS4 loss mechanism affecting podosome function, ECM degradation, collagen remodeling, skeletal/ocular/cardiac features, dermal fibrosis, and contractures."
+    },
+    {
+      "variant": "SH3PXD2B cancer-cell migration biology",
+      "location_group": "Functional biology",
+      "summary": "TKS4 participates in podosome/invadopodia formation and ECM degradation, so cancer and epithelial-plasticity literature is useful for pathway context but should not be treated as a germline cancer-risk prediction."
+    },
+    {
+      "variant": "SH3PXD2B TSS methylation",
+      "location_group": "Local regulatory context",
+      "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for FTHS, BDCS, collagen remodeling, ocular disease, fibrosis, or cancer migration."
+    }
+  ]
+}

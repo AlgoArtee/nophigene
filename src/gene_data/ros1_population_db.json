@@ -1,0 +1,60 @@
+{
+  "database_name": "NophiGene ROS1 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled ROS1 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from ROS1 ROS1 kinase fusion signaling, MAPK/PI3K/JAK pathway output, cell survival, and targeted-therapy biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 6098: ROS1",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/6098"
+    },
+    {
+      "label": "UniProt P08922: ROS1_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P08922/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000047936: ROS1 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000047936"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "ROS1 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "ROS1 findings should be read against ROS1 kinase fusion signaling, MAPK/PI3K/JAK pathway output, cell survival, and targeted-therapy biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "ROS1 fusion model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "ROS1 fusion model is curated as a ROS1 marker for ROS1 fusion oncology context, Tyrosine kinase inhibitor response; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

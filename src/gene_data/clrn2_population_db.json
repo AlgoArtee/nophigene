@@ -1,0 +1,74 @@
+{
+  "database_name": "NophiGene CLRN2 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled CLRN2 population database is literature oriented and does not include a complete allele-frequency panel. Rare-variant interpretation should be checked against current ClinVar, gnomAD, ancestry background, zygosity, phase, and the patient's hearing phenotype before clinical use.",
+  "gene_population_patterns_intro": "Broader population patterns curated from CLRN2 hearing-loss, stereocilia, and gene-supplementation literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 645104: CLRN2 gene summary and DFNB117 association",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/645104"
+    },
+    {
+      "label": "PubMed 33496845: biallelic CLRN2 human hearing-loss evidence",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/33496845/"
+    },
+    {
+      "label": "PubMed 31448880: mouse CLRN2 stereocilia and progressive hearing-loss evidence",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31448880/"
+    },
+    {
+      "label": "PubMed 38243601: CLRN2 gene supplementation in mouse model",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38243601/"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "CLRN2 c.494C>A",
+      "location_group": "Rare disease families",
+      "summary": "The strongest human evidence is a homozygous c.494C>A allele segregating with autosomal recessive nonsyndromic hearing loss in a consanguineous Iranian family."
+    },
+    {
+      "variant": "CLRN2 rare missense variants",
+      "location_group": "Disease cohorts",
+      "summary": "Other CLRN2 missense findings should be interpreted through rare hearing-loss panel evidence, current ClinVar classification, ancestry frequency, zygosity, and phenotype consistency."
+    },
+    {
+      "variant": "CLRN2 stereocilia function",
+      "location_group": "Functional biology",
+      "summary": "Mouse and zebrafish work supports clarin-2 as a hair-cell stereocilia maintenance and mechanotransduction gene, strengthening rare-variant biological plausibility."
+    },
+    {
+      "variant": "CLRN2 TSS methylation",
+      "location_group": "Local regulatory context",
+      "summary": "The bundled EPIC probes provide local promoter and early-gene-body regulatory context, but no population methylation threshold is bundled for DFNB117 interpretation."
+    }
+  ]
+}

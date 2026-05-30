@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene MAPT Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "MAPT",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "17q21.31",
+    "chromosome": "17",
+    "gene_region": {
+      "label": "MAPT transcribed interval",
+      "start": 43971748,
+      "end": 44105700,
+      "definition": "Canonical MAPT genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 43970748,
+      "end": 43971747,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 43971022,
+      "end": 44027251,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "17:43970748-44105700",
+    "gene_summary": "MAPT encodes tau, a microtubule-associated protein central to tauopathy and neuronal cytoskeleton biology. This topic bundle emphasizes neurological and neurodegenerative biology, with interpretation centered on synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+    "clinical_context": "The local MAPT bundle is oriented toward neurological and neurodegenerative biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "MAPT variants can alter, tag, or contextualize synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+      "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg00044095",
+      "cg13773723",
+      "cg07163735",
+      "cg23202277",
+      "cg20099416",
+      "cg21327887",
+      "cg16520312",
+      "cg11117266",
+      "cg12989733",
+      "cg05301556"
+    ],
+    "methylation_interpretation": "MAPT methylation should be treated as local regulatory context around a synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for MAPT.",
+      "Because MAPT biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use MAPT promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 4137: MAPT",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/4137"
+      },
+      {
+        "label": "UniProt P10636: MAPT_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P10636/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000186868: MAPT coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000186868"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "MAPT biochemical figure starter",
+      "focus": "MAPT: neurological and neurodegenerative biology via synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+      "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+      "icon_search_terms": [
+        "neuron synapse neurodegeneration",
+        "synapse",
+        "microglia"
+      ],
+      "recommended_icons": [
+        "Microglial cell (with Abeta plaque)",
+        "Axonal-dendritic synaptic cleft (3D)",
+        "Myelin sheath (long, degenerating)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a MAPT neurological and neurodegenerative biology thesis: the individual may carry context relevant to synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "MAPT neurobiology variation model",
+      "display_name": "MAPT neurobiology variation model",
+      "common_name": "MAPT neurological and neurodegenerative biology pathway model",
+      "lookup_keys": [
+        "MAPT neurobiology variation model",
+        "MAPT neurobiology variation model",
+        "MAPT:MAPT neurobiology variation model",
+        "mapt:mapt neurobiology variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "MAPT neurobiology variation model is curated as a MAPT marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a MAPT pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "MAPT neurological and neurodegenerative biology pathway model",
+      "methylation_interpretation": "Pair MAPT neurobiology variation model with MAPT methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "MAPT curated evidence set",
+          "genotypes": "MAPT neurobiology variation model or linked MAPT locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats MAPT neurobiology variation model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "MAPT",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg00044095",
+        "cg13773723",
+        "cg07163735",
+        "cg23202277",
+        "cg20099416",
+        "cg21327887",
+        "cg16520312",
+        "cg11117266",
+        "cg12989733",
+        "cg05301556"
+      ]
+    },
+    {
+      "variant": "MAPT regulatory expression context model",
+      "display_name": "MAPT regulatory expression context model",
+      "common_name": "MAPT expression and methylation-context model",
+      "lookup_keys": [
+        "MAPT regulatory expression context model",
+        "MAPT regulatory expression context model",
+        "MAPT:MAPT regulatory expression context model",
+        "mapt:mapt regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "MAPT regulatory expression context model is curated as a MAPT marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a MAPT pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "MAPT expression and methylation-context model",
+      "methylation_interpretation": "Pair MAPT regulatory expression context model with MAPT methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "MAPT curated evidence set",
+          "genotypes": "MAPT regulatory expression context model or linked MAPT locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats MAPT regulatory expression context model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "MAPT",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg00044095",
+        "cg13773723",
+        "cg07163735",
+        "cg23202277",
+        "cg20099416",
+        "cg21327887",
+        "cg16520312",
+        "cg11117266",
+        "cg12989733",
+        "cg05301556"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "database_name": "NophiGene G6PD Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "G6PD",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "Xq28",
+    "chromosome": "X",
+    "gene_region": {
+      "label": "G6PD transcribed interval",
+      "start": 153759606,
+      "end": 153775787,
+      "definition": "Canonical G6PD genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 153775788,
+      "end": 153776787,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 153774119,
+      "end": 153775711,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "X:153759606-153776787",
+    "gene_summary": "G6PD encodes glucose-6-phosphate dehydrogenase, the rate-limiting pentose phosphate pathway enzyme. This bundle emphasizes NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility.",
+    "clinical_context": "The local G6PD bundle is red-cell oxidative metabolism oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "G6PD variants can alter or tag NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "G6PD deficiency review context",
+      "Drug/food-triggered hemolysis susceptibility",
+      "Pentose phosphate pathway and NADPH biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg24156746",
+      "cg01058588",
+      "cg15535487",
+      "cg07215528",
+      "cg08422514",
+      "cg06554760",
+      "cg23680829",
+      "cg08417382",
+      "cg02869694",
+      "cg16915302"
+    ],
+    "methylation_interpretation": "G6PD methylation should be treated as local regulatory context around a NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for G6PD.",
+      "Because G6PD biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use G6PD promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility.",
+      "G6PD deficiency review context",
+      "Drug/food-triggered hemolysis susceptibility"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 2539: G6PD",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/2539"
+      },
+      {
+        "label": "UniProt P11413: G6PD_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P11413/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000160211: G6PD coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000160211"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "G6PD biochemical figure starter",
+      "focus": "G6PD: NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "hemoglobin",
+        "iron metabolism"
+      ],
+      "recommended_icons": [
+        "Vessel cross-section with red  blood cells (anemic)",
+        "Blood vessel (with red  blood cells, anemic)",
+        "Osmoregulation (red blood cell)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a G6PD red-cell oxidative metabolism thesis: the individual may carry context relevant to NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility and G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs1050828",
+      "display_name": "rs1050828 (G6PD A- marker)",
+      "common_name": "G6PD A- deficiency marker",
+      "lookup_keys": [
+        "rs1050828",
+        "rs1050828 (G6PD A- marker)",
+        "G6PD:rs1050828",
+        "g6pd:rs1050828"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1050828 (G6PD A- marker) is curated as a G6PD marker for G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility. Read it through genotype dosage, phenotype context, and the NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "G6PD deficiency review context",
+        "Drug/food-triggered hemolysis susceptibility",
+        "Pentose phosphate pathway and NADPH biology"
+      ],
+      "research_context": [
+        "Use this marker as a G6PD pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "G6PD A- deficiency marker",
+      "methylation_interpretation": "Pair rs1050828 (G6PD A- marker) with G6PD methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "G6PD curated evidence set",
+          "genotypes": "rs1050828 (G6PD A- marker) or linked G6PD locus genotype states",
+          "phenotype": "G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility",
+          "finding": "The local curation treats rs1050828 (G6PD A- marker) as a gene-specific marker for G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility and NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility.",
+          "url": ""
+        }
+      ],
+      "gene_name": "G6PD",
+      "chromosome": "X",
+      "relevant_methylation_probe_ids": [
+        "cg24156746",
+        "cg01058588",
+        "cg15535487",
+        "cg07215528",
+        "cg08422514",
+        "cg06554760",
+        "cg23680829",
+        "cg08417382",
+        "cg02869694",
+        "cg16915302"
+      ]
+    },
+    {
+      "variant": "G6PD deficiency class model",
+      "display_name": "G6PD deficiency class model",
+      "common_name": "G6PD enzyme-deficiency model",
+      "lookup_keys": [
+        "G6PD deficiency class model",
+        "G6PD deficiency class model",
+        "G6PD:G6PD deficiency class model",
+        "g6pd:g6pd deficiency class model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "G6PD deficiency class model is curated as a G6PD marker for G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility. Read it through genotype dosage, phenotype context, and the NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "G6PD deficiency review context",
+        "Drug/food-triggered hemolysis susceptibility",
+        "Pentose phosphate pathway and NADPH biology"
+      ],
+      "research_context": [
+        "Use this marker as a G6PD pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "G6PD enzyme-deficiency model",
+      "methylation_interpretation": "Pair G6PD deficiency class model with G6PD methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "G6PD curated evidence set",
+          "genotypes": "G6PD deficiency class model or linked G6PD locus genotype states",
+          "phenotype": "G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility",
+          "finding": "The local curation treats G6PD deficiency class model as a gene-specific marker for G6PD deficiency review context, Drug/food-triggered hemolysis susceptibility and NADPH production, red-cell oxidative stress defense, glutathione recycling, and hemolysis susceptibility.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "G6PD",
+      "chromosome": "X",
+      "relevant_methylation_probe_ids": [
+        "cg24156746",
+        "cg01058588",
+        "cg15535487",
+        "cg07215528",
+        "cg08422514",
+        "cg06554760",
+        "cg23680829",
+        "cg08417382",
+        "cg02869694",
+        "cg16915302"
+      ]
+    }
+  ]
+}

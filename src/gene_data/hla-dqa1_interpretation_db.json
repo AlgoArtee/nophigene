@@ -1,0 +1,210 @@
+{
+  "database_name": "NophiGene HLA-DQA1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "HLA-DQA1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "6p21.32",
+    "chromosome": "6",
+    "gene_region": {
+      "label": "HLA-DQA1 transcribed interval",
+      "start": 32595956,
+      "end": 32614839,
+      "definition": "Canonical HLA-DQA1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup for ENSG00000196735 on the primary assembly, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 32594956,
+      "end": 32595955,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 32604564,
+      "end": 32605283,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "6:32594956-32614839",
+    "gene_summary": "HLA-DQA1 encodes the alpha chain of HLA-DQ, an MHC class II antigen-presentation molecule whose haplotypes influence adaptive immune recognition and many autoimmune, allergic, and inflammatory association studies.",
+    "clinical_context": "The bundled HLA-DQA1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation.",
+    "variant_effect_overview": [
+      "HLA-DQA1 interpretation is usually haplotype and allele based rather than single-SNP deterministic.",
+      "Nearby HLA-DQ GWAS SNPs can tag complex MHC LD and should not be treated as HLA-DQA1-specific functional alleles without HLA typing or fine mapping."
+    ],
+    "condition_research_overview": [
+      "HLA-DQ antigen presentation",
+      "Autoimmune and allergic disease association research",
+      "Asthma and immune-trait MHC locus context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg21692241",
+      "cg24143305",
+      "cg00978846",
+      "cg02920196"
+    ],
+    "methylation_interpretation": "HLA-DQA1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response.",
+    "methylation_effects": [
+      "Promoter-proximal methylation may suggest a more restrained or permissive local regulatory state for HLA-DQA1 expression potential.",
+      "Interpret methylation with tissue, cell composition, environmental exposure, disease state, medication history, and genotype context."
+    ],
+    "methylation_condition_research": [
+      "Asthma, allergy, atopic dermatitis, eosinophilic inflammation, and airway epithelial studies.",
+      "Immune-cell, epithelial-barrier, cytokine-signaling, and inflammatory-disease epigenetic research."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 3117: HLA-DQA1 gene summary",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/3117"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000196735: HLA-DQA1 coordinates and transcripts",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000196735"
+      },
+      {
+        "label": "UniProt P01909: HLA-DQA1 protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/P01909/entry"
+      },
+      {
+        "label": "GWAS Catalog gene page: HLA-DQA1",
+        "url": "https://www.ebi.ac.uk/gwas/genes/HLA-DQA1"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "rs9273349",
+      "display_name": "rs9273349",
+      "common_name": "HLA-DQ asthma and immune-trait MHC marker",
+      "position": 32625869,
+      "lookup_keys": [
+        "rs9273349",
+        "HLA-DQ asthma and immune-trait MHC marker",
+        "HLA-DQA1:rs9273349",
+        "6:32625869"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs9273349 is bundled as a HLA-DQA1 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around HLA-DQA1.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "HLA-DQ antigen presentation",
+        "Autoimmune and allergic disease association research",
+        "Asthma and immune-trait MHC locus context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "HLA-DQA1 marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "HLA-DQA1 methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs9273349.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 3117: HLA-DQA1 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/3117"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000196735: HLA-DQA1 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000196735"
+        },
+        {
+          "label": "UniProt P01909: HLA-DQA1 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P01909/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: HLA-DQA1",
+          "url": "https://www.ebi.ac.uk/gwas/genes/HLA-DQA1"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs9273349 or linked HLA-DQA1 locus genotype states",
+          "phenotype": "HLA-DQ antigen presentation, Autoimmune and allergic disease association research, Asthma and immune-trait MHC locus context",
+          "finding": "The local curation treats rs9273349 as a research-grade HLA-DQA1 signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/HLA-DQA1"
+        }
+      ],
+      "gene_name": "HLA-DQA1",
+      "chromosome": "6",
+      "relevant_methylation_probe_ids": [
+        "cg21692241",
+        "cg24143305",
+        "cg00978846",
+        "cg02920196"
+      ]
+    },
+    {
+      "variant": "HLA-DQ haplotype model",
+      "display_name": "HLA-DQ haplotype model",
+      "common_name": "HLA-DQA1 haplotype and antigen-presentation model",
+      "position": null,
+      "lookup_keys": [
+        "HLA-DQ haplotype model",
+        "HLA-DQA1 haplotype and antigen-presentation model",
+        "HLA-DQA1:HLA-DQ haplotype model"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "HLA-DQ haplotype model is bundled as a HLA-DQA1 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around HLA-DQA1.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "HLA-DQ antigen presentation",
+        "Autoimmune and allergic disease association research",
+        "Asthma and immune-trait MHC locus context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "HLA-DQA1 marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "HLA-DQA1 methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for HLA-DQ haplotype model.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "NCBI Gene 3117: HLA-DQA1 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/3117"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000196735: HLA-DQA1 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000196735"
+        },
+        {
+          "label": "UniProt P01909: HLA-DQA1 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P01909/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: HLA-DQA1",
+          "url": "https://www.ebi.ac.uk/gwas/genes/HLA-DQA1"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "HLA-DQ haplotype model or linked HLA-DQA1 locus genotype states",
+          "phenotype": "HLA-DQ antigen presentation, Autoimmune and allergic disease association research, Asthma and immune-trait MHC locus context",
+          "finding": "The local curation treats HLA-DQ haplotype model as a research-grade HLA-DQA1 signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/HLA-DQA1"
+        }
+      ],
+      "gene_name": "HLA-DQA1",
+      "chromosome": "6",
+      "relevant_methylation_probe_ids": [
+        "cg21692241",
+        "cg24143305",
+        "cg00978846",
+        "cg02920196"
+      ]
+    }
+  ]
+}

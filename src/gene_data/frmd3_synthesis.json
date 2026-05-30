@@ -1,0 +1,248 @@
+{
+  "database_name": "NophiGene FRMD3 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "FRMD3",
+  "source_interpretation_database": "NophiGene FRMD3 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs1888747 (FRMD3 diabetic kidney disease regulatory locus marker) (FRMD3 promoter-proximal DKD GWAS marker)",
+    "FRMD3 protein 4.1O tumor-suppressor and focal-adhesion model (FRMD3 vimentin/focal-adhesion functional model)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs1888747",
+      "display_name": "rs1888747 (FRMD3 diabetic kidney disease regulatory locus marker)",
+      "common_name": "FRMD3 promoter-proximal DKD GWAS marker",
+      "lookup_keys": [
+        "rs1888747",
+        "FRMD3 rs1888747",
+        "FRMD3:rs1888747",
+        "rs10868025",
+        "FRMD3 rs10868025",
+        "FRMD3 DKD locus",
+        "FRMD3 diabetic nephropathy locus"
+      ],
+      "prediction": "Observed FRMD3 rs1888747 suggests a diabetic-kidney-disease regulatory-locus thesis: the sample matched a promoter-proximal marker reported as the strongest FRMD3-region signal in type 1 diabetes nephropathy GWAS and replicated or re-evaluated in several type 2 diabetes kidney cohorts. Keep this as probabilistic complex-trait context because the literature is cohort-dependent, C/C has been reported as protective in one T2D DKD cohort, and kidney expression studies did not show a direct rs1888747 genotype effect on FRMD3 mRNA or protein.",
+      "sample_change_template": "This sample matched rs1888747 (FRMD3 diabetic kidney disease regulatory locus marker) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the FRMD3 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Noncoding FRMD3-region marker with proposed transcription-factor binding and BMP-pathway regulatory effects.",
+      "evidence": [
+        {
+          "label": "PubMed 19252134: original type 1 diabetes nephropathy GWAS FRMD3 signal",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/19252134/"
+        },
+        {
+          "label": "PMCID PMC3712052: rs1888747 promoter/BMP-pathway model",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3712052/"
+        },
+        {
+          "label": "PMCID PMC4706705: rs1888747 and FRMD3 expression in T2D DKD cohort",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4706705/"
+        },
+        {
+          "label": "PMCID PMC4696171: review of mixed FRMD3/DKD replication",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4696171/"
+        }
+      ]
+    },
+    {
+      "variant": "FRMD3 tumor-suppressor/cytoskeletal model",
+      "display_name": "FRMD3 protein 4.1O tumor-suppressor and focal-adhesion model",
+      "common_name": "FRMD3 vimentin/focal-adhesion functional model",
+      "lookup_keys": [
+        "FRMD3 tumor suppressor",
+        "FRMD3 NSCLC",
+        "FRMD3 breast cancer",
+        "FRMD3 vimentin",
+        "FRMD3 focal adhesion",
+        "FRMD3 metastasis",
+        "FRMD3 cytoskeletal model",
+        "protein 4.1O tumor suppressor"
+      ],
+      "prediction": "Observed FRMD3 functional or expression context suggests a protein 4.1O cytoskeletal and tumor-suppressor thesis: the sample matched a model class tied to FERM-domain membrane/cytoskeletal organization, NSCLC tumor-suppressor candidate evidence, breast-cancer vimentin degradation, focal-adhesion impairment, and migration or invasion biology. Treat this as pathway and expression-model context, not a germline cancer-risk or therapy-selection prediction.",
+      "sample_change_template": "This sample matched FRMD3 protein 4.1O tumor-suppressor and focal-adhesion model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the FRMD3 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "FERM-domain protein 4.1O biology supports membrane/cytoskeletal organization and actomyosin-structure context.",
+      "evidence": [
+        {
+          "label": "Oncogene 2007: FRMD3 as putative NSCLC tumor suppressor",
+          "url": "https://www.nature.com/articles/1210225"
+        },
+        {
+          "label": "PMCID PMC9834407: FRMD3, vimentin degradation, focal adhesion, and breast-cancer metastasis model",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834407/"
+        },
+        {
+          "label": "NCBI Gene 257019: FRMD3 GO, expression, and bibliography",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/257019"
+        },
+        {
+          "label": "Human Protein Atlas: FRMD3 tissue and subcellular expression",
+          "url": "https://www.proteinatlas.org/ENSG00000172159-FRMD3"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. An observed FRMD3 variant places this sample in the curated FRMD3 research context. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a FRMD3 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a FRMD3 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a FRMD3 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a FRMD3 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a FRMD3 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a FRMD3 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a FRMD3 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a FRMD3 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a FRMD3 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a FRMD3/protein 4.1O FERM-domain and diabetic-kidney-disease regulatory thesis: the individual may carry a research-grade signal relevant to kidney cytoskeletal architecture, albuminuria or diabetic nephropathy association studies, FRMD3/BMP-pathway promoter regulation, podocyte or tubular expression, or tumor-suppressor and focal-adhesion biology. This is complex-trait and pathway context, not a diagnostic kidney-disease, diabetes, retinopathy, cancer-risk, or monogenic-disease prediction. FRMD3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use FRMD3 methylation as local regulatory context around a reverse-strand membrane/cytoskeletal FERM-domain gene, not as a validated diabetic kidney disease, retinopathy, diabetes, cancer, or BMP-pathway biomarker. The local FRMD3 knowledge base is diabetic kidney disease, renal expression, BMP-pathway regulation, cytoskeletal organization, and tumor-suppressor research oriented. ClinGen has not published an FRMD3 gene-disease validity or dosage curation, so FRMD3 findings should remain complex-trait or pathway context unless external clinical review supplies stronger variant-level evidence. The strongest human genetics signal is the noncoding rs1888747/linked FRMD3-region diabetic nephropathy locus: a type 1 diabetes GWAS reported the strongest association near FRMD3, and multiple later studies evaluated rs1888747 in type 2 diabetes kidney cohorts.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Diabetic kidney disease, albuminuria, diabetic nephropathy, renal FRMD3 expression, podocyte/tubule protein localization, and FRMD3-region GWAS replication.",
+        "BMP signaling, transcription-factor binding-site modeling, kidney cytoskeletal organization, membrane-proximal FERM-domain biology, and actomyosin structure context.",
+        "Tumor-suppressor, non-small-cell lung cancer, breast-cancer growth and metastasis, vimentin ubiquitination/degradation, focal adhesion, EMT-like and migration/invasion biology."
+      ]
+    }
+  ]
+}

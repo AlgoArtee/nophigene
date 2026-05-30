@@ -1,0 +1,195 @@
+{
+  "database_name": "NophiGene HFE Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "HFE",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "6p22.2",
+    "chromosome": "6",
+    "gene_region": {
+      "label": "HFE transcribed interval",
+      "start": 26087509,
+      "end": 26098571,
+      "definition": "Canonical HFE genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 26086509,
+      "end": 26087508,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 26087607,
+      "end": 26087607,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "6:26086509-26098571",
+    "gene_summary": "HFE encodes an MHC class I-like iron-regulatory protein that interacts with transferrin receptor biology and contributes to hepcidin-mediated systemic iron balance.",
+    "clinical_context": "The local HFE bundle is hereditary hemochromatosis and iron-metabolism oriented. Penetrance is incomplete and interpretation depends on genotype combination, sex, ferritin/transferrin saturation, ancestry, and clinical context.",
+    "variant_effect_overview": [
+      "C282Y and H63D are common HFE markers with genotype-combination-dependent hemochromatosis relevance.",
+      "Single heterozygous findings often have limited predictive value without iron studies or compound genotype context."
+    ],
+    "condition_research_overview": [
+      "Hereditary hemochromatosis review context",
+      "Iron overload and hepcidin regulation",
+      "Transferrin receptor and iron homeostasis biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg06892726"
+    ],
+    "methylation_interpretation": "HFE methylation should be treated as local regulatory context around a iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for HFE.",
+      "Because HFE biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use HFE promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis.",
+      "Hereditary hemochromatosis review context",
+      "Iron overload and hepcidin regulation"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 3077: HFE",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/3077"
+      },
+      {
+        "label": "UniProt Q30201: HFE_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/Q30201/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000010704: HFE coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000010704"
+      },
+      {
+        "label": "ClinVar HFE variation set",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=HFE%5Bgene%5D"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "HFE biochemical figure starter",
+      "focus": "iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "hemoglobin",
+        "iron metabolism"
+      ],
+      "recommended_icons": [
+        "Vessel cross-section with red  blood cells (anemic)",
+        "Blood vessel (with red  blood cells, anemic)",
+        "Osmoregulation (red blood cell)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests an HFE iron-homeostasis thesis: the individual may carry context relevant to transferrin receptor interaction, hepcidin regulation, iron overload susceptibility, or hereditary hemochromatosis review. Penetrance and clinical meaning depend on genotype combination and iron studies."
+  },
+  "variant_records": [
+    {
+      "variant": "rs1800562",
+      "display_name": "rs1800562 (HFE C282Y)",
+      "common_name": "HFE C282Y iron-overload marker",
+      "lookup_keys": [
+        "rs1800562",
+        "rs1800562 (HFE C282Y)",
+        "HFE:rs1800562",
+        "hfe:rs1800562"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1800562 (HFE C282Y) is curated as a HFE marker for Hereditary hemochromatosis review context, Iron overload and hepcidin regulation. Read it through genotype dosage, phenotype context, and the iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hereditary hemochromatosis review context",
+        "Iron overload and hepcidin regulation",
+        "Transferrin receptor and iron homeostasis biology"
+      ],
+      "research_context": [
+        "Use this marker as a HFE pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "HFE C282Y iron-overload marker",
+      "methylation_interpretation": "Pair rs1800562 (HFE C282Y) with HFE methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar HFE variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=HFE%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "HFE curated evidence set",
+          "genotypes": "rs1800562 (HFE C282Y) or linked HFE locus genotype states",
+          "phenotype": "Hereditary hemochromatosis review context, Iron overload and hepcidin regulation",
+          "finding": "The local curation treats rs1800562 (HFE C282Y) as a gene-specific marker for Hereditary hemochromatosis review context, Iron overload and hepcidin regulation and iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=HFE%5Bgene%5D"
+        }
+      ],
+      "gene_name": "HFE",
+      "chromosome": "6",
+      "relevant_methylation_probe_ids": [
+        "cg06892726"
+      ]
+    },
+    {
+      "variant": "rs1799945",
+      "display_name": "rs1799945 (HFE H63D)",
+      "common_name": "HFE H63D modifier marker",
+      "lookup_keys": [
+        "rs1799945",
+        "rs1799945 (HFE H63D)",
+        "HFE:rs1799945",
+        "hfe:rs1799945"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1799945 (HFE H63D) is curated as a HFE marker for Hereditary hemochromatosis review context, Iron overload and hepcidin regulation. Read it through genotype dosage, phenotype context, and the iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hereditary hemochromatosis review context",
+        "Iron overload and hepcidin regulation",
+        "Transferrin receptor and iron homeostasis biology"
+      ],
+      "research_context": [
+        "Use this marker as a HFE pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "HFE H63D modifier marker",
+      "methylation_interpretation": "Pair rs1799945 (HFE H63D) with HFE methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar HFE variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=HFE%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "HFE curated evidence set",
+          "genotypes": "rs1799945 (HFE H63D) or linked HFE locus genotype states",
+          "phenotype": "Hereditary hemochromatosis review context, Iron overload and hepcidin regulation",
+          "finding": "The local curation treats rs1799945 (HFE H63D) as a gene-specific marker for Hereditary hemochromatosis review context, Iron overload and hepcidin regulation and iron sensing, transferrin receptor interaction, hepcidin regulation, and systemic iron homeostasis.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=HFE%5Bgene%5D"
+        }
+      ],
+      "gene_name": "HFE",
+      "chromosome": "6",
+      "relevant_methylation_probe_ids": [
+        "cg06892726"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "database_name": "NophiGene ARHGAP10 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "ARHGAP10",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "4q31.23",
+    "chromosome": "4",
+    "gene_region": {
+      "label": "ARHGAP10 transcribed interval",
+      "start": 148653239,
+      "end": 148993927,
+      "definition": "Canonical ARHGAP10 genomic interval on GRCh37 / hg19 from NCBI Gene 79658 reports ARHGAP10 on GRCh37.p13 at NC_000004.11:148653239..148993927 and on GRCh38.p14 at NC_000004.12:147732088..148072776; Ensembl GRCh37 reports ENSG00000071205 at chr4:148653214-148993931 on the forward strand."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 148652239,
+      "end": 148653238,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 148652434,
+      "end": 148653539,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "4:148652239-148993927",
+    "gene_summary": "ARHGAP10 encodes Rho GTPase-activating protein 10, also called GRAF2 or PS-GAP. The protein contains BAR, PH, RhoGAP, and SH3 domain architecture and helps turn off Rho-family small-GTPase signaling, including RhoA and Cdc42 contexts that connect the locus to cytoskeletal organization, neurite morphology, endosomal membrane biology, and cell migration.",
+    "clinical_context": "The local ARHGAP10 knowledge base is neuropsychiatric and RhoGAP-pathway research oriented. Rare exonic CNVs and the p.Ser490Pro missense marker have been reported in Japanese schizophrenia cohorts and model systems, but this bundle is not a diagnostic schizophrenia test and should not convert single heterozygous or methylation-only findings into a clinical prediction.",
+    "variant_effect_overview": [
+      "The strongest human genetics signal bundled here is a case-control association between schizophrenia and rare exonic ARHGAP10 CNVs in a Japanese cohort.",
+      "The p.Ser490Pro missense marker is curated because one schizophrenia case carried it with an exonic deletion on the other allele; functional follow-up linked this double-hit model to RhoA binding/signaling and neuronal morphology phenotypes.",
+      "Cancer biology evidence frames ARHGAP10 as a candidate tumor suppressor in ovarian cancer through Cdc42 inactivation, cell-cycle effects, apoptosis, adhesion, migration, and invasion assays."
+    ],
+    "condition_research_overview": [
+      "Schizophrenia rare-variant and exonic copy-number research, especially RhoA/RhoGAP neuronal morphology mechanisms.",
+      "Mouse and iPSC-derived neuron models of ARHGAP10 p.Ser490Pro plus loss-of-function or exonic deletion contexts.",
+      "Ovarian cancer and broader cell-migration biology in which ARHGAP10 regulates Cdc42/Rho-family signaling."
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg09777578",
+      "cg17876581",
+      "cg06802374",
+      "cg24243429",
+      "cg15562399",
+      "cg02693127",
+      "cg26047735",
+      "cg11713658",
+      "cg01003872",
+      "cg01879861"
+    ],
+    "methylation_interpretation": "ARHGAP10 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ARHGAP10 methylation as locus-regulatory context for a large forward-strand RhoGAP gene, not as a validated schizophrenia, cancer, or medication-response biomarker.",
+    "methylation_effects": [
+      "The ARHGAP10 methylation view can summarize promoter-proximal and early-gene-body CpGs near the GRCh37 transcription start.",
+      "No source-backed ARHGAP10 methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, expression, CNV, and sequence evidence."
+    ],
+    "methylation_condition_research": [
+      "Use ARHGAP10 methylation as supportive regulatory context in RhoGAP, neurodevelopmental, neuronal morphology, or cancer-migration research.",
+      "Do not use peripheral EPIC methylation alone to infer ARHGAP10-related schizophrenia risk or tumor behavior."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 79658: ARHGAP10 gene summary, GRCh37/GRCh38 coordinates, RefSeq, and GO context",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/79658"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000071205: ARHGAP10 gene model and forward-strand coordinates",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000071205"
+      },
+      {
+        "label": "UniProt A1A4S6: ARHGAP10 / RHG10_HUMAN protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/A1A4S6/entry"
+      },
+      {
+        "label": "Translational Psychiatry 2020: ARHGAP10 and schizophrenia risk",
+        "url": "https://www.nature.com/articles/s41398-020-00917-z"
+      },
+      {
+        "label": "Molecular Brain 2021: Arhgap10 S490P/NHEJ mouse model",
+        "url": "https://molecularbrain.biomedcentral.com/articles/10.1186/s13041-021-00735-4"
+      },
+      {
+        "label": "PubMed 27010858: ARHGAP10 suppresses ovarian cancer tumorigenicity through Cdc42-linked biology",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27010858/"
+      },
+      {
+        "label": "ClinVar Miner: ARHGAP10 not-provided variants including rs483352828 / p.Ser490Pro",
+        "url": "https://clinvarminer.genetics.utah.edu/variants-by-gene/ARHGAP10/significance/not%20provided"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "ARHGAP10 exonic CNV",
+      "display_name": "ARHGAP10 rare exonic copy-number variant",
+      "common_name": "ARHGAP10 schizophrenia exonic CNV research marker",
+      "position": null,
+      "lookup_keys": [
+        "ARHGAP10 exonic CNV",
+        "ARHGAP10 CNV",
+        "ARHGAP10 deletion",
+        "ARHGAP10 duplication",
+        "ARHGAP10 copy-number variant",
+        "ARHGAP10 copy number variant",
+        "schizophrenia ARHGAP10 CNV"
+      ],
+      "region_class": "structural_region",
+      "interpretation_scope": "Rare exonic CNV research marker / schizophrenia cohort context",
+      "clinical_interpretation": "A 2020 schizophrenia study identified rare exonic ARHGAP10 CNVs in patients and reported a case-control association in a Japanese cohort. Because breakpoints, exon content, assay method, ancestry, psychiatric phenotype, and inheritance matter, this bundled record is structural-variant research context rather than a single-SNV clinical classification.",
+      "clinical_significance": "Research-level schizophrenia CNV association; not a diagnostic ARHGAP10 result.",
+      "functional_effects": [
+        "Reported exonic CNVs overlapped functional ARHGAP10 domains, including BAR, PH, RhoGAP, and SH3 contexts in the cited study.",
+        "Patient-derived and model-system work supports a RhoA/RhoGAP neuronal morphology mechanism when ARHGAP10 function is disrupted."
+      ],
+      "associated_conditions": [
+        "Schizophrenia rare CNV research",
+        "Neuronal morphology and dendritic spine biology",
+        "RhoA/RhoGAP signaling research"
+      ],
+      "research_context": [
+        "Confirm CNV breakpoints, exon overlap, assembly, and copy-number method before using this marker.",
+        "Interpret as cohort-level evidence; do not treat a broad ARHGAP10-region CNV as a deterministic schizophrenia prediction."
+      ],
+      "usual_variant_note": "Rare exonic ARHGAP10 CNV signal reported in Japanese schizophrenia case-control analysis.",
+      "methylation_interpretation": "ARHGAP10 methylation can be paired with CNV status only as regulatory context; it does not establish dosage pathogenicity.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "Translational Psychiatry 2020: exonic ARHGAP10 CNVs and schizophrenia",
+          "url": "https://www.nature.com/articles/s41398-020-00917-z"
+        },
+        {
+          "label": "NCBI Gene 79658: ARHGAP10 gene and domain context",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/79658"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Sekiguchi et al., 2020 (PMID 32699248)",
+          "genotypes": "Rare exonic ARHGAP10 CNVs in schizophrenia cases versus controls",
+          "phenotype": "Schizophrenia in a Japanese case-control cohort",
+          "finding": "The study reported a significant association between exonic ARHGAP10 CNVs and schizophrenia and prioritized RhoGAP signaling as a plausible neuronal-development mechanism.",
+          "url": "https://www.nature.com/articles/s41398-020-00917-z"
+        }
+      ],
+      "gene_name": "ARHGAP10",
+      "chromosome": "4",
+      "relevant_methylation_probe_ids": [
+        "cg09777578",
+        "cg17876581",
+        "cg06802374",
+        "cg24243429",
+        "cg15562399",
+        "cg02693127",
+        "cg26047735",
+        "cg11713658",
+        "cg01003872",
+        "cg01879861"
+      ]
+    },
+    {
+      "variant": "ARHGAP10 p.Ser490Pro",
+      "display_name": "ARHGAP10 c.1468T>C / p.Ser490Pro",
+      "common_name": "S490P ARHGAP10 rare missense schizophrenia research marker",
+      "position": null,
+      "lookup_keys": [
+        "ARHGAP10 p.Ser490Pro",
+        "ARHGAP10 S490P",
+        "p.Ser490Pro",
+        "S490P",
+        "NM_024605.3:c.1468T>C",
+        "NM_024605.3(ARHGAP10):c.1468T>C",
+        "NM_024605.4:c.1468T>C",
+        "NM_024605.4(ARHGAP10):c.1468T>C",
+        "rs483352828"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Rare missense research marker / double-hit schizophrenia model context",
+      "clinical_interpretation": "ARHGAP10 p.Ser490Pro was highlighted in a schizophrenia patient who also carried an exonic ARHGAP10 deletion on the other allele. The cited study located S490P in the RhoGAP domain and reported altered ARHGAP10 interaction with active RhoA; follow-up mouse work used an S490P/NHEJ double-hit model to study striatal, nucleus-accumbens, and cognitive-response phenotypes.",
+      "clinical_significance": "Research-level rare missense marker; not a stand-alone pathogenic clinical classification.",
+      "functional_effects": [
+        "Missense change in the ARHGAP10 RhoGAP domain.",
+        "Reported to affect interaction with active RhoA in the cited schizophrenia study.",
+        "Double-hit Arhgap10 S490P/NHEJ mouse models show neuronal morphology and methamphetamine-vulnerability phenotypes in follow-up studies."
+      ],
+      "associated_conditions": [
+        "Schizophrenia rare-variant research",
+        "RhoA/Rho-kinase signaling",
+        "Neuronal morphology and dendritic spine biology"
+      ],
+      "research_context": [
+        "The strongest interpretation depends on the double-hit context: p.Ser490Pro plus a second ARHGAP10 loss-of-function or exonic deletion event.",
+        "A single heterozygous S490P row should remain a rare-variant research flag unless external clinical evidence changes."
+      ],
+      "usual_variant_note": "ARHGAP10 c.1468T>C / p.Ser490Pro, dbSNP rs483352828, rare missense marker in schizophrenia model literature.",
+      "methylation_interpretation": "Local methylation may add regulatory context but does not substitute for CNV, phase, zygosity, or functional review of S490P.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "Translational Psychiatry 2020: ARHGAP10 p.Ser490Pro double-hit case and RhoA interaction",
+          "url": "https://www.nature.com/articles/s41398-020-00917-z"
+        },
+        {
+          "label": "Molecular Brain 2021: Arhgap10 S490P/NHEJ model and neuronal morphology",
+          "url": "https://molecularbrain.biomedcentral.com/articles/10.1186/s13041-021-00735-4"
+        },
+        {
+          "label": "ClinVar Miner: rs483352828 / NM_024605.4:c.1468T>C (p.Ser490Pro)",
+          "url": "https://clinvarminer.genetics.utah.edu/variants-by-gene/ARHGAP10/significance/not%20provided"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Sekiguchi et al., 2020 (PMID 32699248)",
+          "genotypes": "ARHGAP10 exonic deletion plus p.Ser490Pro in one schizophrenia case",
+          "phenotype": "Schizophrenia, neuronal morphology, and RhoA/RhoGAP functional assays",
+          "finding": "The paper prioritized the double-hit case, reported S490P in the RhoGAP domain, and connected the marker to altered RhoA interaction and neuronal morphology phenotypes.",
+          "url": "https://www.nature.com/articles/s41398-020-00917-z"
+        },
+        {
+          "paper": "Hada et al., 2021 (Molecular Brain 14:21)",
+          "genotypes": "Arhgap10 S490P/NHEJ mouse model",
+          "phenotype": "Striatal and nucleus-accumbens neuronal morphology plus methamphetamine vulnerability",
+          "finding": "The follow-up mouse model showed altered neuronal complexity and spine-density phenotypes and vulnerability of visual-discrimination performance after methamphetamine treatment.",
+          "url": "https://molecularbrain.biomedcentral.com/articles/10.1186/s13041-021-00735-4"
+        }
+      ],
+      "gene_name": "ARHGAP10",
+      "chromosome": "4",
+      "relevant_methylation_probe_ids": [
+        "cg09777578",
+        "cg17876581",
+        "cg06802374",
+        "cg24243429",
+        "cg15562399",
+        "cg02693127",
+        "cg26047735",
+        "cg11713658",
+        "cg01003872",
+        "cg01879861"
+      ]
+    }
+  ]
+}

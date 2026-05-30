@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene PTEN Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled PTEN population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from PTEN PIP3 dephosphorylation, AKT pathway restraint, cell growth control, genomic stability, and tumor-suppressor biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 5728: PTEN",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/5728"
+    },
+    {
+      "label": "UniProt P60484: PTEN_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P60484/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000171862: PTEN coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000171862"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "PTEN biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "PTEN findings should be read against PIP3 dephosphorylation, AKT pathway restraint, cell growth control, genomic stability, and tumor-suppressor biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "PTEN loss-of-function model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "PTEN loss-of-function model is curated as a PTEN marker for PTEN hamartoma tumor syndrome review context, PI3K-AKT pathway regulation; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "PTEN promoter/regulatory loss model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "PTEN promoter/regulatory loss model is curated as a PTEN marker for PTEN hamartoma tumor syndrome review context, PI3K-AKT pathway regulation; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

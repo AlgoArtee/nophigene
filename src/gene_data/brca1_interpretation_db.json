@@ -1,0 +1,224 @@
+{
+  "database_name": "NophiGene BRCA1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "BRCA1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "17q21.31",
+    "chromosome": "17",
+    "gene_region": {
+      "label": "BRCA1 transcribed interval",
+      "start": 41196312,
+      "end": 41277500,
+      "definition": "Canonical BRCA1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 41277501,
+      "end": 41278500,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 41276606,
+      "end": 41277487,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "17:41196312-41278500",
+    "gene_summary": "BRCA1 encodes a tumor-suppressor scaffold for homologous recombination, DNA damage signaling, checkpoint control, replication-fork protection, and chromatin-linked repair.",
+    "clinical_context": "The local BRCA1 bundle is DNA-repair and hereditary cancer oriented. Pathogenic BRCA1 alleles are clinically important, but app-level matches remain research/triage context until confirmed by clinical-grade variant interpretation.",
+    "variant_effect_overview": [
+      "BRCA1 truncating, splice, and damaging missense variants can compromise homologous recombination and hereditary breast/ovarian cancer biology.",
+      "Founder variants and VUS records require zygosity, transcript, classification, ancestry, and family-history context before interpretation."
+    ],
+    "condition_research_overview": [
+      "Hereditary breast and ovarian cancer context",
+      "Homologous recombination repair deficiency",
+      "DNA double-strand break response"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg09441966",
+      "cg17301289",
+      "cg04658354",
+      "cg04110421",
+      "cg21253966",
+      "cg16630982",
+      "cg16963062",
+      "cg15419295",
+      "cg20187250",
+      "cg24806953"
+    ],
+    "methylation_interpretation": "BRCA1 methylation should be treated as local regulatory context around a homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for BRCA1.",
+      "Because BRCA1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use BRCA1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability.",
+      "Hereditary breast and ovarian cancer context",
+      "Homologous recombination repair deficiency"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 672: BRCA1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/672"
+      },
+      {
+        "label": "UniProt P38398: BRCA1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P38398/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000012048: BRCA1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000012048"
+      },
+      {
+        "label": "ClinVar BRCA1 variation set",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "BRCA1 biochemical figure starter",
+      "focus": "homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability",
+      "template_title": "DNA Repair Mechanisms",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-5ee11f56287bce00b20b3f92?source=mcp",
+      "icon_search_terms": [
+        "DNA repair",
+        "genome editing"
+      ],
+      "recommended_icons": [
+        "BRCA1 (schematic)",
+        "BRCA2 (schematic)",
+        "Cytosine base editor"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a BRCA1 homologous-recombination thesis: the individual may carry a signal relevant to DNA double-strand break repair, replication-fork protection, hereditary breast/ovarian cancer review, or HRD pathway biology. Only externally classified pathogenic or likely pathogenic BRCA1 variants should be escalated toward clinical hereditary-cancer risk interpretation."
+  },
+  "variant_records": [
+    {
+      "variant": "BRCA1 c.68_69delAG",
+      "display_name": "BRCA1 c.68_69delAG / 185delAG",
+      "common_name": "BRCA1 frameshift founder marker",
+      "lookup_keys": [
+        "BRCA1 c.68_69delAG",
+        "BRCA1 c.68_69delAG / 185delAG",
+        "BRCA1:BRCA1 c.68_69delAG",
+        "brca1:brca1 c.68_69delag"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "BRCA1 c.68_69delAG / 185delAG is curated as a BRCA1 marker for Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency. Read it through genotype dosage, phenotype context, and the homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hereditary breast and ovarian cancer context",
+        "Homologous recombination repair deficiency",
+        "DNA double-strand break response"
+      ],
+      "research_context": [
+        "Use this marker as a BRCA1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "BRCA1 frameshift founder marker",
+      "methylation_interpretation": "Pair BRCA1 c.68_69delAG / 185delAG with BRCA1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar BRCA1 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "BRCA1 curated evidence set",
+          "genotypes": "BRCA1 c.68_69delAG / 185delAG or linked BRCA1 locus genotype states",
+          "phenotype": "Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency",
+          "finding": "The local curation treats BRCA1 c.68_69delAG / 185delAG as a gene-specific marker for Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency and homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "BRCA1",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg09441966",
+        "cg17301289",
+        "cg04658354",
+        "cg04110421",
+        "cg21253966",
+        "cg16630982",
+        "cg16963062",
+        "cg15419295",
+        "cg20187250",
+        "cg24806953"
+      ]
+    },
+    {
+      "variant": "BRCA1 c.5266dupC",
+      "display_name": "BRCA1 c.5266dupC / 5382insC",
+      "common_name": "BRCA1 frameshift founder marker",
+      "lookup_keys": [
+        "BRCA1 c.5266dupC",
+        "BRCA1 c.5266dupC / 5382insC",
+        "BRCA1:BRCA1 c.5266dupC",
+        "brca1:brca1 c.5266dupc"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "BRCA1 c.5266dupC / 5382insC is curated as a BRCA1 marker for Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency. Read it through genotype dosage, phenotype context, and the homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hereditary breast and ovarian cancer context",
+        "Homologous recombination repair deficiency",
+        "DNA double-strand break response"
+      ],
+      "research_context": [
+        "Use this marker as a BRCA1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "BRCA1 frameshift founder marker",
+      "methylation_interpretation": "Pair BRCA1 c.5266dupC / 5382insC with BRCA1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar BRCA1 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "BRCA1 curated evidence set",
+          "genotypes": "BRCA1 c.5266dupC / 5382insC or linked BRCA1 locus genotype states",
+          "phenotype": "Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency",
+          "finding": "The local curation treats BRCA1 c.5266dupC / 5382insC as a gene-specific marker for Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency and homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "BRCA1",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg09441966",
+        "cg17301289",
+        "cg04658354",
+        "cg04110421",
+        "cg21253966",
+        "cg16630982",
+        "cg16963062",
+        "cg15419295",
+        "cg20187250",
+        "cg24806953"
+      ]
+    }
+  ]
+}

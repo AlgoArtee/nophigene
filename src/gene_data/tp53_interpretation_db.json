@@ -1,0 +1,223 @@
+{
+  "database_name": "NophiGene TP53 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "TP53",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "17p13.1",
+    "chromosome": "17",
+    "gene_region": {
+      "label": "TP53 transcribed interval",
+      "start": 7565097,
+      "end": 7590856,
+      "definition": "Canonical TP53 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 7590857,
+      "end": 7591856,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 7588137,
+      "end": 7590742,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "17:7565097-7591856",
+    "gene_summary": "TP53 encodes the p53 tumor suppressor, a stress-responsive transcription factor that integrates DNA damage, oncogene activation, hypoxia, ribosomal stress, and metabolic stress to control cell-cycle arrest, apoptosis, DNA repair, and senescence programs.",
+    "clinical_context": "The local TP53 bundle is tumor-suppressor and DNA-damage-response oriented. Germline pathogenic variants require clinical review for Li-Fraumeni syndrome context, while common and somatic markers should stay separated from germline risk interpretation.",
+    "variant_effect_overview": [
+      "TP53 interpretation depends heavily on variant class, zygosity, tumor versus germline origin, and whether the event affects the DNA-binding domain or regulatory regions.",
+      "Common polymorphisms such as Arg72Pro are research modifiers; truncating, missense hotspot, or deletion events can have much higher clinical impact when externally classified."
+    ],
+    "condition_research_overview": [
+      "Cancer susceptibility and tumor-suppressor biology",
+      "DNA damage response and apoptosis",
+      "Li-Fraumeni syndrome and somatic oncology context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg14351634",
+      "cg16203911",
+      "cg05348746",
+      "cg02690969",
+      "cg22175811",
+      "cg08119584",
+      "cg26587697",
+      "cg06969407",
+      "cg00566179",
+      "cg02842899"
+    ],
+    "methylation_interpretation": "TP53 methylation should be treated as local regulatory context around a DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for TP53.",
+      "Because TP53 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use TP53 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence.",
+      "Cancer susceptibility and tumor-suppressor biology",
+      "DNA damage response and apoptosis"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 7157: TP53",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/7157"
+      },
+      {
+        "label": "UniProt P04637: TP53_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P04637/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000141510: TP53 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000141510"
+      },
+      {
+        "label": "ClinVar TP53 variation set",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=TP53%5Bgene%5D"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "TP53 biochemical figure starter",
+      "focus": "DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence",
+      "template_title": "DNA Repair Mechanisms",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-5ee11f56287bce00b20b3f92?source=mcp",
+      "icon_search_terms": [
+        "DNA repair",
+        "genome editing"
+      ],
+      "recommended_icons": [
+        "BRCA1 (schematic)",
+        "BRCA2 (schematic)",
+        "Cytosine base editor"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a TP53 stress-response thesis: the individual may carry a marker relevant to DNA-damage checkpoint tone, apoptosis, cell-cycle arrest, senescence, cancer cohort biology, or high-impact tumor-suppressor review depending on the exact allele class. Do not merge benign/common TP53 markers with pathogenic germline or somatic hotspot interpretation without external classification."
+  },
+  "variant_records": [
+    {
+      "variant": "rs1042522",
+      "display_name": "rs1042522 (TP53 Arg72Pro)",
+      "common_name": "TP53 p.Arg72Pro apoptosis/cancer association marker",
+      "lookup_keys": [
+        "rs1042522",
+        "rs1042522 (TP53 Arg72Pro)",
+        "TP53:rs1042522",
+        "tp53:rs1042522"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1042522 (TP53 Arg72Pro) is curated as a TP53 marker for Cancer susceptibility and tumor-suppressor biology, DNA damage response and apoptosis. Read it through genotype dosage, phenotype context, and the DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Cancer susceptibility and tumor-suppressor biology",
+        "DNA damage response and apoptosis",
+        "Li-Fraumeni syndrome and somatic oncology context"
+      ],
+      "research_context": [
+        "Use this marker as a TP53 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TP53 p.Arg72Pro apoptosis/cancer association marker",
+      "methylation_interpretation": "Pair rs1042522 (TP53 Arg72Pro) with TP53 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar TP53 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=TP53%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "TP53 curated evidence set",
+          "genotypes": "rs1042522 (TP53 Arg72Pro) or linked TP53 locus genotype states",
+          "phenotype": "Cancer susceptibility and tumor-suppressor biology, DNA damage response and apoptosis",
+          "finding": "The local curation treats rs1042522 (TP53 Arg72Pro) as a gene-specific marker for Cancer susceptibility and tumor-suppressor biology, DNA damage response and apoptosis and DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=TP53%5Bgene%5D"
+        }
+      ],
+      "gene_name": "TP53",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg14351634",
+        "cg16203911",
+        "cg05348746",
+        "cg02690969",
+        "cg22175811",
+        "cg08119584",
+        "cg26587697",
+        "cg06969407",
+        "cg00566179",
+        "cg02842899"
+      ]
+    },
+    {
+      "variant": "TP53 loss-of-function model",
+      "display_name": "TP53 loss-of-function model",
+      "common_name": "TP53 high-impact tumor-suppressor loss model",
+      "lookup_keys": [
+        "TP53 loss-of-function model",
+        "TP53 loss-of-function model",
+        "TP53:TP53 loss-of-function model",
+        "tp53:tp53 loss-of-function model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TP53 loss-of-function model is curated as a TP53 marker for Cancer susceptibility and tumor-suppressor biology, DNA damage response and apoptosis. Read it through genotype dosage, phenotype context, and the DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Cancer susceptibility and tumor-suppressor biology",
+        "DNA damage response and apoptosis",
+        "Li-Fraumeni syndrome and somatic oncology context"
+      ],
+      "research_context": [
+        "Use this marker as a TP53 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TP53 high-impact tumor-suppressor loss model",
+      "methylation_interpretation": "Pair TP53 loss-of-function model with TP53 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "ClinVar TP53 variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=TP53%5Bgene%5D"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "TP53 curated evidence set",
+          "genotypes": "TP53 loss-of-function model or linked TP53 locus genotype states",
+          "phenotype": "Cancer susceptibility and tumor-suppressor biology, DNA damage response and apoptosis",
+          "finding": "The local curation treats TP53 loss-of-function model as a gene-specific marker for Cancer susceptibility and tumor-suppressor biology, DNA damage response and apoptosis and DNA damage checkpoint, p53 transcriptional control, apoptosis, cell-cycle arrest, and senescence.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=TP53%5Bgene%5D"
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TP53",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg14351634",
+        "cg16203911",
+        "cg05348746",
+        "cg02690969",
+        "cg22175811",
+        "cg08119584",
+        "cg26587697",
+        "cg06969407",
+        "cg00566179",
+        "cg02842899"
+      ]
+    }
+  ]
+}

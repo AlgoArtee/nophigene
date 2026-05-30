@@ -1,0 +1,207 @@
+{
+  "database_name": "NophiGene PIK3CA Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "PIK3CA",
+  "source_interpretation_database": "NophiGene PIK3CA Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "PIK3CA E542K/E545K/H1047R model (PIK3CA activating hotspot model)",
+    "PIK3CA mosaic overgrowth model (PIK3CA-related overgrowth spectrum model)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support.",
+  "variant_prediction_rules": [
+    {
+      "variant": "PIK3CA E542K/E545K/H1047R model",
+      "display_name": "PIK3CA E542K/E545K/H1047R model",
+      "common_name": "PIK3CA activating hotspot model",
+      "lookup_keys": [
+        "PIK3CA E542K/E545K/H1047R model",
+        "PIK3CA E542K/E545K/H1047R model",
+        "PIK3CA:PIK3CA E542K/E545K/H1047R model",
+        "pik3ca:pik3ca e542k/e545k/h1047r model"
+      ],
+      "prediction": "GT-confirmed PIK3CA E542K/E545K/H1047R model dosage suggests this sample carries the PIK3CA prediction context described by the gene-level thesis. The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. This specific marker is curated as PIK3CA activating hotspot model. PIK3CA E542K/E545K/H1047R model is curated as a PIK3CA marker for PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Read it through genotype dosage, phenotype context, and the PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched PIK3CA E542K/E545K/H1047R model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the PIK3CA prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival.",
+      "evidence": []
+    },
+    {
+      "variant": "PIK3CA mosaic overgrowth model",
+      "display_name": "PIK3CA mosaic overgrowth model",
+      "common_name": "PIK3CA-related overgrowth spectrum model",
+      "lookup_keys": [
+        "PIK3CA mosaic overgrowth model",
+        "PIK3CA mosaic overgrowth model",
+        "PIK3CA:PIK3CA mosaic overgrowth model",
+        "pik3ca:pik3ca mosaic overgrowth model"
+      ],
+      "prediction": "GT-confirmed PIK3CA mosaic overgrowth model dosage suggests this sample carries the PIK3CA prediction context described by the gene-level thesis. The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. This specific marker is curated as PIK3CA-related overgrowth spectrum model. PIK3CA mosaic overgrowth model is curated as a PIK3CA marker for PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Read it through genotype dosage, phenotype context, and the PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched PIK3CA mosaic overgrowth model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the PIK3CA prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival.",
+      "evidence": []
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. An observed PIK3CA variant places this sample in the curated PIK3CA research context. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a PIK3CA variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a PIK3CA variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a PIK3CA variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a PIK3CA variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a PIK3CA variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a PIK3CA variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a PIK3CA variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a PIK3CA variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a PIK3CA variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a PIK3CA PI3K pathway signaling thesis: the individual may carry context relevant to PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review. Treat this as pathway triage until the exact allele has external classification and phenotype support. PIK3CA methylation should be treated as local regulatory context around a PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local PIK3CA bundle is PI3K pathway signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. PIK3CA variants can alter or tag PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "PI3K-AKT-mTOR signaling and cancer context",
+        "Overgrowth and mosaic activation review",
+        "Targeted PI3K inhibitor biology"
+      ]
+    }
+  ]
+}

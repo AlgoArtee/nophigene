@@ -1,0 +1,186 @@
+{
+  "database_name": "NophiGene CYP2D6 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "CYP2D6",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "22q13.2",
+    "chromosome": "22",
+    "gene_region": {
+      "label": "CYP2D6 transcribed interval",
+      "start": 42522501,
+      "end": 42526908,
+      "definition": "Canonical CYP2D6 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 42526909,
+      "end": 42527908,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 42526619,
+      "end": 42526699,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "22:42522501-42527908",
+    "gene_summary": "CYP2D6 encodes cytochrome P450 2D6, a polymorphic drug-metabolizing monooxygenase. This bundle emphasizes phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology.",
+    "clinical_context": "The local CYP2D6 bundle is pharmacogenomic drug metabolism oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "CYP2D6 variants can alter or tag phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "CYP2D6 pharmacogenomics context",
+      "Drug exposure and adverse-response biology",
+      "Star-allele and copy-number interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg12720083",
+      "cg10840135"
+    ],
+    "methylation_interpretation": "CYP2D6 methylation should be treated as local regulatory context around a phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for CYP2D6.",
+      "Because CYP2D6 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use CYP2D6 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology.",
+      "CYP2D6 pharmacogenomics context",
+      "Drug exposure and adverse-response biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 1565: CYP2D6",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/1565"
+      },
+      {
+        "label": "UniProt P10635: CYP2D6_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P10635/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000100197: CYP2D6 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000100197"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "CYP2D6 biochemical figure starter",
+      "focus": "CYP2D6: phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "folate metabolism",
+        "protein kinase",
+        "metabolic pathway"
+      ],
+      "recommended_icons": [
+        "Metabolic pathway (in mitochondria)",
+        "Simulated metabolic activity",
+        "PKA bound to cAMP"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a CYP2D6 pharmacogenomic drug metabolism thesis: the individual may carry context relevant to phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology and CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs3892097",
+      "display_name": "rs3892097 (CYP2D6*4 splice marker)",
+      "common_name": "CYP2D6 no-function allele marker",
+      "lookup_keys": [
+        "rs3892097",
+        "rs3892097 (CYP2D6*4 splice marker)",
+        "CYP2D6:rs3892097",
+        "cyp2d6:rs3892097"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs3892097 (CYP2D6*4 splice marker) is curated as a CYP2D6 marker for CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology. Read it through genotype dosage, phenotype context, and the phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "CYP2D6 pharmacogenomics context",
+        "Drug exposure and adverse-response biology",
+        "Star-allele and copy-number interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a CYP2D6 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "CYP2D6 no-function allele marker",
+      "methylation_interpretation": "Pair rs3892097 (CYP2D6*4 splice marker) with CYP2D6 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "CYP2D6 curated evidence set",
+          "genotypes": "rs3892097 (CYP2D6*4 splice marker) or linked CYP2D6 locus genotype states",
+          "phenotype": "CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology",
+          "finding": "The local curation treats rs3892097 (CYP2D6*4 splice marker) as a gene-specific marker for CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology and phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology.",
+          "url": ""
+        }
+      ],
+      "gene_name": "CYP2D6",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg12720083",
+        "cg10840135"
+      ]
+    },
+    {
+      "variant": "CYP2D6 copy-number/star-allele model",
+      "display_name": "CYP2D6 copy-number/star-allele model",
+      "common_name": "CYP2D6 metabolizer phenotype model",
+      "lookup_keys": [
+        "CYP2D6 copy-number/star-allele model",
+        "CYP2D6 copy-number/star-allele model",
+        "CYP2D6:CYP2D6 copy-number/star-allele model",
+        "cyp2d6:cyp2d6 copy-number/star-allele model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "CYP2D6 copy-number/star-allele model is curated as a CYP2D6 marker for CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology. Read it through genotype dosage, phenotype context, and the phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "CYP2D6 pharmacogenomics context",
+        "Drug exposure and adverse-response biology",
+        "Star-allele and copy-number interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a CYP2D6 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "CYP2D6 metabolizer phenotype model",
+      "methylation_interpretation": "Pair CYP2D6 copy-number/star-allele model with CYP2D6 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "CYP2D6 curated evidence set",
+          "genotypes": "CYP2D6 copy-number/star-allele model or linked CYP2D6 locus genotype states",
+          "phenotype": "CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology",
+          "finding": "The local curation treats CYP2D6 copy-number/star-allele model as a gene-specific marker for CYP2D6 pharmacogenomics context, Drug exposure and adverse-response biology and phase I drug oxidation, copy-number and star-allele pharmacogenetics, antidepressant/opioid/beta-blocker metabolism, and poor/ultrarapid metabolizer biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "CYP2D6",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg12720083",
+        "cg10840135"
+      ]
+    }
+  ]
+}

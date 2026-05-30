@@ -1,0 +1,60 @@
+{
+  "database_name": "NophiGene VKORC1 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled VKORC1 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from VKORC1 vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 79001: VKORC1",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/79001"
+    },
+    {
+      "label": "UniProt Q9BQB6: VKORC1_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/Q9BQB6/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000167397: VKORC1 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000167397"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "VKORC1 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "VKORC1 findings should be read against vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "rs9923231 (VKORC1 -1639G>A)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs9923231 (VKORC1 -1639G>A) is curated as a VKORC1 marker for Warfarin dose-sensitivity context, Vitamin K cycle biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

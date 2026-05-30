@@ -1,0 +1,92 @@
+{
+  "database_name": "NophiGene TYW5 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled TYW5 population database is literature oriented and does not include a complete allele-frequency panel. Because TYW5 has no published ClinGen clinical curation and schizophrenia risk is highly polygenic, interpretation should prioritize current GWAS/eQTL evidence, ancestry, genotype dosage, tissue expression, psychiatric phenotype, brain or RNA-modification context, and model-system versus human evidence boundaries.",
+  "gene_population_patterns_intro": "Broader population patterns curated from TYW5 gene, ClinGen, Human Protein Atlas, tRNA-modification enzymology, schizophrenia GWAS/eQTL, neurodevelopment, dendritic-spine, and structural-MRI literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 129450: TYW5 expression, genomic context, and bibliography",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/129450"
+    },
+    {
+      "label": "ClinGen Gene Facts HGNC:26754: no published TYW5 clinical curations",
+      "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A26754"
+    },
+    {
+      "label": "Human Protein Atlas: TYW5 protein class, mitochondria localization, broad RNA expression, and photoreceptor-enriched single-cell context",
+      "url": "https://www.proteinatlas.org/ENSG00000162971-TYW5"
+    },
+    {
+      "label": "PMCID PMC3045595: TYW5 JmjC structure and tRNA-modification mechanism",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3045595/"
+    },
+    {
+      "label": "PubMed 34581804: rs796364/rs281759 TYW5 regulatory schizophrenia study",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/34581804/"
+    },
+    {
+      "label": "PubMed 35527273: TYW5 schizophrenia integrative expression and MRI study",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/35527273/"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "TYW5 expression and protein context",
+      "location_group": "Global pattern",
+      "summary": "NCBI reports ubiquitous expression and cytoplasmic prediction, while Human Protein Atlas frames TYW5 as an intracellular enzyme with protein evidence, mitochondria subcellular localization, low tissue specificity, and single-cell enrichment in cone and rod photoreceptor cells."
+    },
+    {
+      "variant": "TYW5 enzymatic hydroxywybutosine model",
+      "location_group": "Functional biology",
+      "summary": "Structural and biochemical literature supports TYW5 as a homodimeric JmjC Fe(II)/2-oxoglutarate RNA hydroxylase that modifies tRNA(Phe) in the hydroxywybutosine pathway."
+    },
+    {
+      "variant": "rs796364 / rs281759",
+      "location_group": "Schizophrenia regulatory genetics",
+      "summary": "The linked rs796364/rs281759 marker pair is a functional 2q33.1 schizophrenia regulatory signal that alters transcription-factor binding, interacts with TYW5, and modulates brain TYW5 expression in the cited studies."
+    },
+    {
+      "variant": "rs203772",
+      "location_group": "Schizophrenia eQTL and imaging genetics",
+      "summary": "rs203772 is an integrative schizophrenia marker associated with TYW5 expression and structural-MRI phenotypes in the cited BMC Medicine study, but it remains a cohort-level research marker."
+    },
+    {
+      "variant": "TYW5 neurodevelopment and dendritic spine expression model",
+      "location_group": "Functional biology",
+      "summary": "TYW5 overexpression altered neural stem cell proliferation/differentiation and dendritic spine density in schizophrenia-motivated model systems, supporting a pathway mechanism rather than deterministic individual prediction."
+    },
+    {
+      "variant": "TYW5 TSS methylation",
+      "location_group": "Local regulatory context",
+      "summary": "Bundled EPIC probes provide local promoter and gene-body regulatory context, but no population methylation threshold is bundled for schizophrenia, RNA modification, neurodevelopment, retina, MRI, or cancer-expression interpretation."
+    }
+  ]
+}

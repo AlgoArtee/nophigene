@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene PSEN1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "PSEN1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "14q24.2",
+    "chromosome": "14",
+    "gene_region": {
+      "label": "PSEN1 transcribed interval",
+      "start": 73603126,
+      "end": 73690399,
+      "definition": "Canonical PSEN1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 73602126,
+      "end": 73603125,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 73524288,
+      "end": 73706449,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "14:73602126-73690399",
+    "gene_summary": "PSEN1 encodes presenilin-1, the catalytic component of gamma-secretase in amyloid precursor processing. This topic bundle emphasizes neurological and neurodegenerative biology, with interpretation centered on synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+    "clinical_context": "The local PSEN1 bundle is oriented toward neurological and neurodegenerative biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "PSEN1 variants can alter, tag, or contextualize synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+      "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg07773137",
+      "cg06211357",
+      "cg05423001",
+      "cg27250053",
+      "cg11143091",
+      "cg01435493",
+      "cg07747986",
+      "cg13173405",
+      "cg11490446",
+      "cg18345506"
+    ],
+    "methylation_interpretation": "PSEN1 methylation should be treated as local regulatory context around a synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for PSEN1.",
+      "Because PSEN1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use PSEN1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 5663: PSEN1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/5663"
+      },
+      {
+        "label": "UniProt P49768: PSEN1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P49768/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000080815: PSEN1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000080815"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "PSEN1 biochemical figure starter",
+      "focus": "PSEN1: neurological and neurodegenerative biology via synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+      "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+      "icon_search_terms": [
+        "neuron synapse neurodegeneration",
+        "synapse",
+        "microglia"
+      ],
+      "recommended_icons": [
+        "Microglial cell (with Abeta plaque)",
+        "Axonal-dendritic synaptic cleft (3D)",
+        "Myelin sheath (long, degenerating)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a PSEN1 neurological and neurodegenerative biology thesis: the individual may carry context relevant to synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "PSEN1 neurobiology variation model",
+      "display_name": "PSEN1 neurobiology variation model",
+      "common_name": "PSEN1 neurological and neurodegenerative biology pathway model",
+      "lookup_keys": [
+        "PSEN1 neurobiology variation model",
+        "PSEN1 neurobiology variation model",
+        "PSEN1:PSEN1 neurobiology variation model",
+        "psen1:psen1 neurobiology variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "PSEN1 neurobiology variation model is curated as a PSEN1 marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a PSEN1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "PSEN1 neurological and neurodegenerative biology pathway model",
+      "methylation_interpretation": "Pair PSEN1 neurobiology variation model with PSEN1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "PSEN1 curated evidence set",
+          "genotypes": "PSEN1 neurobiology variation model or linked PSEN1 locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats PSEN1 neurobiology variation model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "PSEN1",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg07773137",
+        "cg06211357",
+        "cg05423001",
+        "cg27250053",
+        "cg11143091",
+        "cg01435493",
+        "cg07747986",
+        "cg13173405",
+        "cg11490446",
+        "cg18345506"
+      ]
+    },
+    {
+      "variant": "PSEN1 regulatory expression context model",
+      "display_name": "PSEN1 regulatory expression context model",
+      "common_name": "PSEN1 expression and methylation-context model",
+      "lookup_keys": [
+        "PSEN1 regulatory expression context model",
+        "PSEN1 regulatory expression context model",
+        "PSEN1:PSEN1 regulatory expression context model",
+        "psen1:psen1 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "PSEN1 regulatory expression context model is curated as a PSEN1 marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a PSEN1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "PSEN1 expression and methylation-context model",
+      "methylation_interpretation": "Pair PSEN1 regulatory expression context model with PSEN1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "PSEN1 curated evidence set",
+          "genotypes": "PSEN1 regulatory expression context model or linked PSEN1 locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats PSEN1 regulatory expression context model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "PSEN1",
+      "chromosome": "14",
+      "relevant_methylation_probe_ids": [
+        "cg07773137",
+        "cg06211357",
+        "cg05423001",
+        "cg27250053",
+        "cg11143091",
+        "cg01435493",
+        "cg07747986",
+        "cg13173405",
+        "cg11490446",
+        "cg18345506"
+      ]
+    }
+  ]
+}

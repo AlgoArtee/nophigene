@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene ACD Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled ACD population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from ACD telomere and genome maintenance, stress resilience, NAD-dependent signaling, proteostasis, oxidative response, and senescence biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 65057: ACD",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/65057"
+    },
+    {
+      "label": "UniProt Q96AP0: ACD_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/Q96AP0/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000102977: ACD coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000102977"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "ACD biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "ACD findings should be read against telomere and genome maintenance, stress resilience, NAD-dependent signaling, proteostasis, oxidative response, and senescence biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "ACD aging-maintenance variation model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "ACD aging-maintenance variation model is curated as a ACD marker for Aging, longevity, and cellular maintenance research context, Telomere biology, DNA repair, oxidative stress, and senescence pathways; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "ACD regulatory expression context model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "ACD regulatory expression context model is curated as a ACD marker for Aging, longevity, and cellular maintenance research context, Telomere biology, DNA repair, oxidative stress, and senescence pathways; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

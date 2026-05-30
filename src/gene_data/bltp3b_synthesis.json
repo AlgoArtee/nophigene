@@ -1,0 +1,201 @@
+{
+  "database_name": "NophiGene BLTP3B Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "BLTP3B",
+  "source_interpretation_database": "NophiGene BLTP3B Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs7134216 (BLTP3B/UHRF1BP1L MYP3-region marker) (UHRF1BP1L intronic MYP3 high-grade myopia association marker)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs7134216",
+      "display_name": "rs7134216 (BLTP3B/UHRF1BP1L MYP3-region marker)",
+      "common_name": "UHRF1BP1L intronic MYP3 high-grade myopia association marker",
+      "lookup_keys": [
+        "rs7134216",
+        "12:100430850",
+        "12:100430850:C>T",
+        "12:100430850:T>C",
+        "BLTP3B rs7134216",
+        "UHRF1BP1L rs7134216"
+      ],
+      "prediction": "Observed BLTP3B/UHRF1BP1L rs7134216 suggests a MYP3 high-grade myopia locus thesis: the sample matched an intronic marker reported in association mapping and replicated for quantitative spherical refractive error in an independent high-grade myopia cohort. Keep the prediction cohort-level and research-oriented because the bundled evidence does not establish deterministic myopia risk or a direct BLTP3B protein mechanism.",
+      "sample_change_template": "This sample matched rs7134216 (BLTP3B/UHRF1BP1L MYP3-region marker) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the BLTP3B prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Intronic marker in the legacy UHRF1BP1L/BLTP3B locus used in high-grade myopia association mapping.",
+      "evidence": [
+        {
+          "label": "PMCID PMC3621505: rs7134216 in UHRF1BP1L and MYP3 association mapping",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"
+        },
+        {
+          "label": "NCBI Gene 23074: BLTP3B coordinates and aliases",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/23074"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. An observed BLTP3B variant places this sample in the curated BLTP3B research context. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a BLTP3B variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a BLTP3B variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a BLTP3B variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a BLTP3B variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a BLTP3B variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a BLTP3B variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a BLTP3B variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a BLTP3B variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a BLTP3B variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a BLTP3B/UHRF1BP1L membrane-trafficking and MYP3-locus thesis: the individual may carry a research-grade marker tied to bridge-like lipid transfer, early endosome-to-Golgi traffic, or cohort-level high-grade myopia association context. This is an exploratory locus signal, not a diagnostic myopia prediction or a proven BLTP3B protein-function call. BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay. The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel. Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+        "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+        "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+      ]
+    }
+  ]
+}

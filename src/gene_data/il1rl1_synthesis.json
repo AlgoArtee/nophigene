@@ -1,0 +1,241 @@
+{
+  "database_name": "NophiGene IL1RL1 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "IL1RL1",
+  "source_interpretation_database": "NophiGene IL1RL1 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs3771180 (IL1RL1 asthma and type 2 inflammation locus marker)",
+    "rs13408661 (IL1RL1/IL18R1 cluster asthma marker)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs3771180",
+      "display_name": "rs3771180",
+      "common_name": "IL1RL1 asthma and type 2 inflammation locus marker",
+      "lookup_keys": [
+        "rs3771180",
+        "IL1RL1 asthma and type 2 inflammation locus marker",
+        "IL1RL1:rs3771180",
+        "2:102953617"
+      ],
+      "prediction": "GT-confirmed rs3771180 dosage suggests this sample carries the IL1RL1 prediction context described by the gene-level thesis. The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. This specific marker is curated as IL1RL1 asthma and type 2 inflammation locus marker. rs3771180 is bundled as a IL1RL1 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "sample_change_template": "This sample matched rs3771180 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the IL1RL1 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "May tag regulatory, expression, coding, haplotype, or linked-locus variation around IL1RL1.",
+      "evidence": [
+        {
+          "label": "NCBI Gene 9173: IL1RL1 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/9173"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000115602: IL1RL1 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115602"
+        },
+        {
+          "label": "UniProt Q01638: IL1RL1 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/Q01638/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: IL1RL1",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL1RL1"
+        }
+      ]
+    },
+    {
+      "variant": "rs13408661",
+      "display_name": "rs13408661",
+      "common_name": "IL1RL1/IL18R1 cluster asthma marker",
+      "lookup_keys": [
+        "rs13408661",
+        "IL1RL1/IL18R1 cluster asthma marker",
+        "IL1RL1:rs13408661",
+        "2:102955082"
+      ],
+      "prediction": "GT-confirmed rs13408661 dosage suggests this sample carries the IL1RL1 prediction context described by the gene-level thesis. The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. This specific marker is curated as IL1RL1/IL18R1 cluster asthma marker. rs13408661 is bundled as a IL1RL1 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "sample_change_template": "This sample matched rs13408661 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the IL1RL1 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "May tag regulatory, expression, coding, haplotype, or linked-locus variation around IL1RL1.",
+      "evidence": [
+        {
+          "label": "NCBI Gene 9173: IL1RL1 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/9173"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000115602: IL1RL1 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115602"
+        },
+        {
+          "label": "UniProt Q01638: IL1RL1 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/Q01638/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: IL1RL1",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL1RL1"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. An observed IL1RL1 variant places this sample in the curated IL1RL1 research context. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a IL1RL1 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a IL1RL1 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a IL1RL1 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a IL1RL1 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a IL1RL1 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a IL1RL1 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a IL1RL1 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a IL1RL1 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a IL1RL1 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an IL-33/ST2 receptor thesis: the individual may carry a research-grade modifier of soluble or membrane ST2 biology, eosinophilic airway inflammation, asthma, or atopy. Interpret it with the broader 2q12 IL1 receptor-cluster LD context. IL1RL1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response. The bundled IL1RL1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation. IL1RL1 markers often sit in the broader 2q12 IL1 receptor gene cluster and can tag ST2 expression, soluble ST2 biology, eosinophil traits, asthma, or atopy context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Asthma and eosinophilic airway inflammation",
+        "Atopy and allergic disease",
+        "IL-33/ST2 signaling and soluble ST2 biomarker research"
+      ]
+    }
+  ]
+}

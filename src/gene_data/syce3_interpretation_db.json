@@ -1,0 +1,168 @@
+{
+  "database_name": "NophiGene SYCE3 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "SYCE3",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "22q13.33",
+    "chromosome": "22",
+    "gene_region": {
+      "label": "SYCE3 transcribed interval",
+      "start": 50989541,
+      "end": 51001348,
+      "definition": "Canonical SYCE3 genomic interval on GRCh37 / hg19 from NCBI Gene 644186 reports SYCE3 on GRCh37.p13 at NC_000022.10:50989541..51001348, complement, and on GRCh38.p14 at NC_000022.11:50551112..50562919, complement."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 51001349,
+      "end": 51002348,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 51000048,
+      "end": 51001847,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "22:50989541-51002348",
+    "gene_summary": "SYCE3 encodes synaptonemal complex central element protein 3, a small coiled-coil component of the synaptonemal complex central element. UniProt and structural studies frame SYCE3 as a major meiotic prophase I component that helps assemble central-element lattice structures, recruit other central-element complexes, and initiate synapsis between homologous chromosomes.",
+    "clinical_context": "The local SYCE3 knowledge base is meiotic synapsis, recombination, and fertility research oriented. Mouse Syce3 knockout causes infertility in both sexes through synapsis initiation failure and meiotic arrest, but recent NOA reviews note that confirmed human SYCE3 pathogenic mutations are not yet established; app findings should therefore remain exploratory.",
+    "variant_effect_overview": [
+      "The strongest functional evidence is the Syce3 knockout mouse model, where loss of SYCE3 blocks central-element assembly, prevents synapsis initiation, abolishes MLH1 crossover foci, and causes infertility in both sexes.",
+      "Protein-structure work supports SYCE3 self-assembly and coiled-coil behavior, providing a mechanistic basis for central-element lattice formation.",
+      "Human interpretation is model-informed rather than variant-confirmed: current reviews discuss SYCE3 as biologically plausible for non-obstructive azoospermia and premature ovarian insufficiency contexts, while noting the absence of confirmed human SYCE3 mutations."
+    ],
+    "condition_research_overview": [
+      "Synaptonemal complex central-element assembly, homologous chromosome synapsis, and meiotic recombination.",
+      "Non-obstructive azoospermia, meiotic arrest, premature ovarian insufficiency, and recurrent pregnancy-loss research involving synaptonemal-complex genes.",
+      "Testis-enriched expression and spermatocyte meiotic division/transition cell-type context."
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg12119715",
+      "cg05722611",
+      "cg00349050",
+      "cg25309564",
+      "cg22918043",
+      "cg27023953",
+      "cg25306991",
+      "cg19437142",
+      "cg17824465",
+      "cg19333589"
+    ],
+    "methylation_interpretation": "SYCE3 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use SYCE3 methylation as local regulatory context around a compact reverse-strand meiotic central-element gene, not as a validated infertility, NOA, POI, or recurrent-pregnancy-loss biomarker.",
+    "methylation_effects": [
+      "The SYCE3 methylation view can summarize promoter-proximal and early-gene-body CpGs around the reverse-strand transcription start.",
+      "No source-backed SYCE3 methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, meiotic-cell expression, sequence/CNV evidence, and reproductive phenotype."
+    ],
+    "methylation_condition_research": [
+      "Use SYCE3 methylation as supportive regulatory context in meiotic synapsis, synaptonemal-complex, spermatogenesis, or fertility research.",
+      "Do not infer meiotic arrest or reproductive risk from peripheral EPIC methylation alone."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 644186: SYCE3 gene summary, coordinates, RefSeq, expression, and GO context",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/644186"
+      },
+      {
+        "label": "Ensembl ENSG00000217442: SYCE3 current gene model",
+        "url": "https://www.ensembl.org/id/ENSG00000217442"
+      },
+      {
+        "label": "UniProt A1L190: SYCE3 / SYCE3_HUMAN protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/A1L190/entry"
+      },
+      {
+        "label": "Human Protein Atlas ENSG00000217442: SYCE3 testis-enriched expression context",
+        "url": "https://www.proteinatlas.org/ENSG00000217442-SYCE3"
+      },
+      {
+        "label": "ClinGen Gene Facts HGNC:35245: SYCE3 gene facts and constraint metrics",
+        "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A35245"
+      },
+      {
+        "label": "PMCID PMC3102746: Syce3 knockout mouse central-element loading, recombination, and fertility evidence",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/"
+      },
+      {
+        "label": "PMCID PMC6556580: molecular model for SYCE3 self-assembly",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6556580/"
+      },
+      {
+        "label": "PMCID PMC12676892: NOA review noting SYCE3 mouse phenotype and no confirmed human mutations",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12676892/"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "SYCE3 loss-of-function/deletion model",
+      "display_name": "SYCE3 loss-of-function or deletion model",
+      "common_name": "Syce3 knockout meiotic-arrest fertility model",
+      "position": null,
+      "lookup_keys": [
+        "SYCE3 loss-of-function",
+        "SYCE3 loss of function",
+        "SYCE3 deletion",
+        "SYCE3 LOF",
+        "Syce3 knockout",
+        "Syce3 deficiency",
+        "SYCE3 deficiency"
+      ],
+      "region_class": "structural_region",
+      "interpretation_scope": "Preclinical loss-of-function model / meiotic synapsis and fertility research context",
+      "clinical_interpretation": "Syce3 loss-of-function is included as a model-system marker because knockout mice are infertile in both sexes, fail to initiate homologous chromosome synapsis, and lack MLH1 crossover foci despite apparently normal initiation of recombination. Human translation remains research-grade because current reviews state that confirmed human SYCE3 mutations have not yet been established.",
+      "clinical_significance": "Mouse model-supported meiotic-arrest and fertility research marker; not a curated human pathogenic variant.",
+      "functional_effects": [
+        "Loss of Syce3 blocks loading of synaptonemal-complex central-element proteins in mouse meiocytes.",
+        "Knockout meiocytes show synapsis initiation failure, severely impaired recombination progression, and absence of MLH1 crossover foci.",
+        "SYCE3 self-assembly and coiled-coil structure support a structural central-element mechanism."
+      ],
+      "associated_conditions": [
+        "Male infertility and non-obstructive azoospermia research",
+        "Premature ovarian insufficiency and meiotic-arrest research",
+        "Synaptonemal-complex assembly and homologous chromosome synapsis",
+        "Crossover formation and meiotic recombination"
+      ],
+      "research_context": [
+        "Prioritize CNV breakpoint, predicted LoF consequence, zygosity, reproductive phenotype, meiotic-arrest histology, and orthogonal confirmation.",
+        "Do not use a generic SYCE3 VCF or methylation signal as a diagnostic infertility or POI call."
+      ],
+      "usual_variant_note": "Model-system SYCE3/Syce3 deficiency marker rather than a specific curated human SNV.",
+      "methylation_interpretation": "SYCE3 methylation can provide local regulatory context, but it does not establish loss-of-function, meiotic synapsis failure, or reproductive phenotype causality.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "PMCID PMC3102746: Syce3 knockout infertility, synapsis initiation failure, and absent MLH1 foci",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/"
+        },
+        {
+          "label": "PMCID PMC12676892: SYCE3 NOA review context and no confirmed human mutations",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12676892/"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Schramm et al., 2011 (PMID 21637789)",
+          "genotypes": "Syce3 knockout/deletion mouse model",
+          "phenotype": "Infertility in both sexes, synapsis initiation failure, meiotic arrest, and absent crossover markers",
+          "finding": "The study reported that SYCE3 is a mammalian synaptonemal-complex central-element component required for central-element protein loading, recombination progression, and fertility.",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3102746/"
+        }
+      ],
+      "gene_name": "SYCE3",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg12119715",
+        "cg05722611",
+        "cg00349050",
+        "cg25309564",
+        "cg22918043",
+        "cg27023953",
+        "cg25306991",
+        "cg19437142",
+        "cg17824465",
+        "cg19333589"
+      ]
+    }
+  ]
+}

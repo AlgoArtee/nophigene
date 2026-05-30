@@ -18,6 +18,180 @@ from src.analysis import (
 )
 
 
+BIOCHEMISTRY_GENES = {
+    "TP53": 7565097,
+    "BRCA1": 41196312,
+    "EGFR": 55086714,
+    "APOE": 45409011,
+    "ACE2": 15579156,
+    "CFTR": 117105838,
+    "PCSK9": 55505221,
+    "LDLR": 11200038,
+    "HBB": 5246694,
+    "HFE": 26087509,
+    "ALDH2": 112204691,
+    "MTHFR": 11845780,
+    "LCT": 136545410,
+    "BDNF": 27676440,
+    "COMT": 19929130,
+    "CACNA1C": 2079952,
+    "SCN5A": 38589548,
+    "MYH7": 23881947,
+    "NTRK1": 156785432,
+    "PPARG": 12328867,
+    "KRAS": 25357723,
+    "BRAF": 140419127,
+    "PIK3CA": 178865902,
+    "PTEN": 89622870,
+    "AKT1": 105235686,
+    "ALK": 29415640,
+    "ROS1": 117609463,
+    "RET": 43572475,
+    "MET": 116312444,
+    "ERBB2": 37844167,
+    "ESR1": 151977826,
+    "AR": 66764465,
+    "VHL": 10182692,
+    "APC": 112043195,
+    "MLH1": 37034823,
+    "MSH2": 47630108,
+    "MSH6": 47922669,
+    "PMS2": 6012870,
+    "ATM": 108093211,
+    "CHEK2": 29083731,
+    "PALB2": 23614488,
+    "BRCA2": 32889611,
+    "RYR1": 38924339,
+    "KCNQ1": 2465914,
+    "KCNH2": 150642049,
+    "APOB": 21224301,
+    "F5": 169483404,
+    "F2": 46740730,
+    "SERPINA1": 94843084,
+    "G6PD": 153759606,
+    "CYP2D6": 42522501,
+    "CYP2C19": 96447911,
+    "CYP2C9": 96698415,
+    "SLCO1B1": 21284136,
+    "VKORC1": 31102163,
+    "DPYD": 97543299,
+    "TPMT": 18128542,
+    "UGT1A1": 234668894,
+    "IFNG": 68548548,
+    "TNF": 31543344,
+    "IL6": 22765503,
+    "CRP": 159682079,
+    "VDR": 48235320,
+    "FTO": 53737875,
+    "LEP": 127881337,
+    "MC4R": 58038564,
+    "HNF1A": 121416346,
+    "GCK": 44183872,
+    "KCNJ11": 17407406,
+    "TTR": 29171689,
+    "FCER1A": 159259504,
+    "FCER1G": 161185024,
+    "FCER2": 7753644,
+    "MS4A2": 59855734,
+    "TPSAB1": 1290697,
+    "TPSB2": 1277272,
+    "CMA1": 24974559,
+    "CPA3": 148583043,
+    "KIT": 55524085,
+    "IL5": 131877136,
+    "IL5RA": 3111233,
+    "CCL11": 32612687,
+    "CCR3": 46205096,
+    "CCL17": 57438679,
+    "CCL22": 57392684,
+    "CCR4": 32993066,
+    "IL8": 74606223,
+    "CXCR2": 218990012,
+    "NFKB1": 103422486,
+    "NFKBIA": 35870717,
+    "RELA": 65421067,
+    "JAK1": 65298912,
+    "JAK2": 4985033,
+    "TYK2": 10461209,
+    "STAT3": 40465342,
+    "MC1R": 89978527,
+    "TYR": 88910620,
+    "TYRP1": 12685439,
+    "DCT": 95089558,
+    "OCA2": 28000021,
+    "SLC45A2": 33944721,
+    "SLC24A5": 48413169,
+    "IRF4": 391739,
+    "MITF": 69788586,
+    "PAX3": 223064607,
+    "SOX10": 38366693,
+    "KITLG": 88886570,
+    "EDNRB": 78469616,
+    "EDN3": 57875482,
+    "ASIP": 32782375,
+    "BCL2": 60790579,
+    "PMEL": 56347889,
+    "GPR143": 9693386,
+    "MLANA": 5890802,
+    "SLC24A4": 92788925,
+    "SIRT1": 69644427,
+    "SIRT2": 39369197,
+    "SIRT3": 215458,
+    "SIRT7": 79869815,
+    "KL": 33590207,
+    "WRN": 30891317,
+    "LMNA": 156052364,
+    "TERF1": 73921099,
+    "POT1": 124462440,
+    "RTEL1": 62289163,
+    "PARN": 14529558,
+    "DKC1": 153991031,
+    "TINF2": 24708849,
+    "ACD": 67691415,
+    "PARP1": 226548392,
+    "NFE2L2": 178092323,
+    "KEAP1": 10596796,
+    "FOXO1": 41129804,
+    "FOXO4": 70316047,
+    "CDKN1A": 36644305,
+    "APP": 27252861,
+    "PSEN1": 73603126,
+    "PSEN2": 227057885,
+    "MAPT": 43971748,
+    "SNCA": 90645250,
+    "LRRK2": 40590546,
+    "PINK1": 20959948,
+    "PARK2": 161768452,
+    "GBA": 155204243,
+    "GRIN2A": 9852376,
+    "GRIN2B": 13693165,
+    "SLC6A4": 28521337,
+    "MAOA": 43515467,
+    "HTR2A": 47405685,
+    "GABRA1": 161274197,
+    "SHANK3": 51112843,
+    "MECP2": 153287024,
+    "FMR1": 146993469,
+    "HTT": 3076408,
+    "SCN1A": 166845670,
+    "FUT2": 49199228,
+    "NOD2": 50727514,
+    "ATG16L1": 234118697,
+    "CARD9": 139256355,
+    "IL23R": 67632083,
+    "TNFSF15": 117546915,
+    "PNLIP": 118305443,
+    "AMY1A": 104197912,
+    "SI": 164696686,
+    "ALPI": 233320833,
+    "MUC2": 1074875,
+    "TFF3": 43731777,
+    "SLC5A1": 32439019,
+    "SLC2A2": 170714137,
+    "SLC10A2": 103696350,
+}
+
+
 CURATED_GENES = {
     "FOXO3": 108881028,
     "GLP1R": 39016574,
@@ -63,6 +237,7 @@ CURATED_GENES = {
     "IL18R1": 102927989,
     "IL18RAP": 103035149,
 }
+CURATED_GENES.update(BIOCHEMISTRY_GENES)
 
 
 @pytest.mark.parametrize("gene_name,gene_start", CURATED_GENES.items())
@@ -91,6 +266,21 @@ def test_curated_gene_bundle_loads_with_manifest_subset(gene_name: str, gene_sta
     assert subset_path.exists()
     manifest_subset = pd.read_csv(subset_path)
     assert not manifest_subset.empty
+
+
+@pytest.mark.parametrize("gene_name", BIOCHEMISTRY_GENES)
+def test_biochemistry_gene_bundle_exposes_biorender_visual_starter(gene_name: str) -> None:
+    """New biochemistry-focused bundles should carry BioRender template/icon metadata."""
+    knowledge_base = load_gene_interpretation_database(gene_name)
+    assert knowledge_base is not None
+
+    visuals = knowledge_base["gene_context"].get("biorender_visuals")
+    assert visuals is not None
+    assert visuals["provider"] == "BioRender"
+    assert visuals["template_url"].startswith("https://app.biorender.com/biorender-templates/details/")
+    assert visuals["recommended_icons"]
+    assert visuals["icon_search_terms"]
+    assert knowledge_base["gene_context"]["concrete_variant_prediction"]
 
 
 def test_foxo3_curated_bundle_drives_interpretation_and_population_helpers() -> None:
@@ -200,6 +390,120 @@ def test_glp1r_curated_bundle_drives_prediction_helpers() -> None:
         "reduced gliptin-response thesis" in row["prediction"]
         for row in predictive_theses["variant_prediction_rows"]
     )
+
+
+def test_il33_rs1342326_catalog_has_literature_grounded_allele_context() -> None:
+    """IL33 rs1342326 should explain the A/C marker, strand notation, and upstream locus context."""
+    knowledge_base = load_gene_interpretation_database("IL33")
+    population_database = load_gene_population_database("IL33")
+    synthesis_database = load_gene_synthesis_database("IL33")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+
+    rs1342326_record = next(
+        record
+        for record in knowledge_base["variant_records"]
+        if record["variant"] == "rs1342326"
+    )
+    assert "9:6190076:A>C" in rs1342326_record["lookup_keys"]
+    assert "reverse-complement" in rs1342326_record["clinical_interpretation"]
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "9",
+                "id": "rs1342326",
+                "pos": 6190076,
+                "ref": "A",
+                "alt": "C",
+                "gt_raw": "0/1",
+                "ad": [17, 12],
+                "dp": 29,
+                "gq": 67,
+                "qual": 99.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="9:6188000-6192000",
+    )
+
+    assert interpretation["matched_records"][0]["variant"] == "rs1342326"
+    assert "upstream/flanking A/C" in interpretation["matched_records"][0]["clinical_interpretation"]
+
+    catalog_marker = next(
+        item
+        for item in interpretation["curated_named_markers"]
+        if item["variant"] == "rs1342326"
+    )
+    assert catalog_marker["genome_location"] == "GRCh37 / hg19 chr9:6,190,076"
+    assert catalog_marker["nucleotide_change"] == "A>C"
+    assert catalog_marker["nucleotide_change_basis"] == "genomic REF/ALT alias"
+    assert catalog_marker["reference_allele"] == "A"
+    assert catalog_marker["alternate_allele"] == "C"
+    assert catalog_marker["marker_type"] == "Single-nucleotide variant"
+    assert catalog_marker["rsids"] == ["rs1342326"]
+    assert "25.7 kb upstream" in " ".join(rs1342326_record["research_context"])
+    assert any("Moffatt" in link["label"] for link in catalog_marker["research_links"])
+    assert any("Ensembl GRCh37" in link["label"] for link in catalog_marker["research_links"])
+    assert any("T/G" in link["label"] for link in catalog_marker["research_links"])
+
+
+def test_coordinate_only_rs_marker_catalog_is_not_labeled_structural() -> None:
+    """Coordinate-only rsID markers should say the local bundle lacks alleles, not imply CNV/model biology."""
+    knowledge_base = {
+        "database_name": "Synthetic marker database",
+        "gene_context": {
+            "gene_name": "TEST",
+            "assembly": "GRCh37 / hg19",
+            "cytoband": "1p36",
+            "chromosome": "1",
+            "gene_region": {
+                "start": 1000,
+                "end": 2000,
+                "definition": "Synthetic gene interval.",
+            },
+            "promoter_review_region": {
+                "start": 900,
+                "end": 999,
+                "definition": "Synthetic promoter interval.",
+            },
+            "promoter_hotspot_region": {
+                "start": 900,
+                "end": 999,
+                "definition": "Synthetic promoter hotspot.",
+            },
+        },
+        "variant_records": [
+            {
+                "variant": "rs12345",
+                "display_name": "rs12345",
+                "position": 950,
+                "chromosome": "1",
+                "lookup_keys": ["rs12345", "1:950"],
+                "clinical_significance": "Synthetic research marker.",
+                "is_assayable_in_snp_vcf": True,
+            }
+        ],
+    }
+
+    interpretation = build_variant_interpretations(
+        pd.DataFrame(columns=["chrom", "id", "pos", "ref", "alt"]),
+        knowledge_base,
+        region="1:900-2000",
+    )
+
+    catalog_marker = interpretation["curated_named_markers"][0]
+    assert catalog_marker["marker_type"] == "Single-nucleotide marker (alleles not bundled)"
+    assert catalog_marker["nucleotide_change"] == "Exact REF/ALT not bundled for this rsID"
+    assert catalog_marker["nucleotide_change_basis"] == "rsID and coordinate marker; exact REF/ALT not bundled locally"
 
 
 def test_cdkn2a_curated_bundle_distinguishes_common_and_pathogenic_markers() -> None:

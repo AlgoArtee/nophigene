@@ -1,0 +1,189 @@
+{
+  "database_name": "NophiGene BRAF Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "BRAF",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "7q34",
+    "chromosome": "7",
+    "gene_region": {
+      "label": "BRAF transcribed interval",
+      "start": 140419127,
+      "end": 140624564,
+      "definition": "Canonical BRAF genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 140624565,
+      "end": 140625564,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 140624462,
+      "end": 140624470,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "7:140419127-140625564",
+    "gene_summary": "BRAF encodes B-Raf serine/threonine kinase, a core RAF family MAPK pathway effector. This bundle emphasizes RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology.",
+    "clinical_context": "The local BRAF bundle is MAPK kinase signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "BRAF variants can alter or tag RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Somatic oncology and kinase-inhibitor context",
+      "RASopathy and developmental signaling review",
+      "MAPK pathway activation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg14094063",
+      "cg26956263",
+      "cg20200035"
+    ],
+    "methylation_interpretation": "BRAF methylation should be treated as local regulatory context around a RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for BRAF.",
+      "Because BRAF biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use BRAF promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology.",
+      "Somatic oncology and kinase-inhibitor context",
+      "RASopathy and developmental signaling review"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 673: BRAF",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/673"
+      },
+      {
+        "label": "UniProt P15056: BRAF_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P15056/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000157764: BRAF coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000157764"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "BRAF biochemical figure starter",
+      "focus": "BRAF: RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology",
+      "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+      "icon_search_terms": [
+        "growth factor receptor",
+        "EGFR"
+      ],
+      "recommended_icons": [
+        "EGFR in endosome (ubiquitinated)",
+        "EGF (pathway)",
+        "VEGFR2 (dimer, schematic)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a BRAF MAPK kinase signaling thesis: the individual may carry context relevant to RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology and Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "BRAF V600E model",
+      "display_name": "BRAF V600E model",
+      "common_name": "BRAF activating kinase hotspot model",
+      "lookup_keys": [
+        "BRAF V600E model",
+        "BRAF V600E model",
+        "BRAF:BRAF V600E model",
+        "braf:braf v600e model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "BRAF V600E model is curated as a BRAF marker for Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review. Read it through genotype dosage, phenotype context, and the RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Somatic oncology and kinase-inhibitor context",
+        "RASopathy and developmental signaling review",
+        "MAPK pathway activation"
+      ],
+      "research_context": [
+        "Use this marker as a BRAF pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "BRAF activating kinase hotspot model",
+      "methylation_interpretation": "Pair BRAF V600E model with BRAF methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "BRAF curated evidence set",
+          "genotypes": "BRAF V600E model or linked BRAF locus genotype states",
+          "phenotype": "Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review",
+          "finding": "The local curation treats BRAF V600E model as a gene-specific marker for Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review and RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "BRAF",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg14094063",
+        "cg26956263",
+        "cg20200035"
+      ]
+    },
+    {
+      "variant": "BRAF non-V600 kinase-altered model",
+      "display_name": "BRAF non-V600 kinase-altered model",
+      "common_name": "BRAF non-V600 signaling model",
+      "lookup_keys": [
+        "BRAF non-V600 kinase-altered model",
+        "BRAF non-V600 kinase-altered model",
+        "BRAF:BRAF non-V600 kinase-altered model",
+        "braf:braf non-v600 kinase-altered model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "BRAF non-V600 kinase-altered model is curated as a BRAF marker for Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review. Read it through genotype dosage, phenotype context, and the RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Somatic oncology and kinase-inhibitor context",
+        "RASopathy and developmental signaling review",
+        "MAPK pathway activation"
+      ],
+      "research_context": [
+        "Use this marker as a BRAF pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "BRAF non-V600 signaling model",
+      "methylation_interpretation": "Pair BRAF non-V600 kinase-altered model with BRAF methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "BRAF curated evidence set",
+          "genotypes": "BRAF non-V600 kinase-altered model or linked BRAF locus genotype states",
+          "phenotype": "Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review",
+          "finding": "The local curation treats BRAF non-V600 kinase-altered model as a gene-specific marker for Somatic oncology and kinase-inhibitor context, RASopathy and developmental signaling review and RAF kinase activation, MEK-ERK signaling, proliferation, differentiation, and kinase-inhibitor response biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "BRAF",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg14094063",
+        "cg26956263",
+        "cg20200035"
+      ]
+    }
+  ]
+}

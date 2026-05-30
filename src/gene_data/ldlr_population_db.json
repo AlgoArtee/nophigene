@@ -1,0 +1,69 @@
+{
+  "database_name": "NophiGene LDLR Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled LDLR population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from LDLR LDL particle binding, receptor-mediated endocytosis, cholesterol uptake, and familial hypercholesterolemia biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 3949: LDLR",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/3949"
+    },
+    {
+      "label": "UniProt P01130: LDLR_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P01130/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000130164: LDLR coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000130164"
+    },
+    {
+      "label": "ClinVar LDLR variation set",
+      "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=LDLR%5Bgene%5D"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "LDLR biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "LDLR findings should be read against LDL particle binding, receptor-mediated endocytosis, cholesterol uptake, and familial hypercholesterolemia biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "rs688",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs688 is curated as a LDLR marker for Familial hypercholesterolemia review context, LDL-C and apoB lipoprotein uptake; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "LDLR loss-of-function model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "LDLR loss-of-function model is curated as a LDLR marker for Familial hypercholesterolemia review context, LDL-C and apoB lipoprotein uptake; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

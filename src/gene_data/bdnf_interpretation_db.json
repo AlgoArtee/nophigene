@@ -1,0 +1,162 @@
+{
+  "database_name": "NophiGene BDNF Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "BDNF",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "11p14.1",
+    "chromosome": "11",
+    "gene_region": {
+      "label": "BDNF transcribed interval",
+      "start": 27676440,
+      "end": 27743605,
+      "definition": "Canonical BDNF genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 27743606,
+      "end": 27744605,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 27720709,
+      "end": 27743580,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "11:27676440-27744605",
+    "gene_summary": "BDNF encodes brain-derived neurotrophic factor, a secreted neurotrophin that supports neuronal survival, synaptic plasticity, dendritic architecture, learning, memory, mood, and metabolic-neural crosstalk research.",
+    "clinical_context": "The local BDNF bundle is neuroplasticity and neuropsychiatric-research oriented. Common BDNF variants are trait modifiers and should not be treated as deterministic psychiatric or cognitive predictions.",
+    "variant_effect_overview": [
+      "Val66Met is studied for activity-dependent BDNF secretion, synaptic plasticity, memory, stress, mood, and exercise-response contexts.",
+      "Direction and magnitude are cohort, phenotype, and ancestry dependent."
+    ],
+    "condition_research_overview": [
+      "Synaptic plasticity and learning/memory research",
+      "Mood, stress, and neuropsychiatric association context",
+      "Neurotrophin signaling and neuronal survival"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg16257091",
+      "cg01642653",
+      "cg02527472",
+      "cg27351358",
+      "cg07704699",
+      "cg04106006",
+      "cg10635145",
+      "cg06684850",
+      "cg12448003",
+      "cg01225698"
+    ],
+    "methylation_interpretation": "BDNF methylation should be treated as local regulatory context around a neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for BDNF.",
+      "Because BDNF biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use BDNF promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival.",
+      "Synaptic plasticity and learning/memory research",
+      "Mood, stress, and neuropsychiatric association context"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 627: BDNF",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/627"
+      },
+      {
+        "label": "UniProt P23560: BDNF_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P23560/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000176697: BDNF coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000176697"
+      },
+      {
+        "label": "UniProt BDNF function annotation",
+        "url": "https://www.uniprot.org/uniprotkb/P23560/entry"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "BDNF biochemical figure starter",
+      "focus": "neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival",
+      "template_title": "CREB Signaling Pathway",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-608c41c359b80e00a38478b4?source=mcp",
+      "icon_search_terms": [
+        "synapse",
+        "neurotrophin"
+      ],
+      "recommended_icons": [
+        "Synaptic vesicle with neurotransmitters (medium)",
+        "Pre-synaptic membrane (with cycling vesicles)",
+        "Post-synaptic membrane (3D, dendrite)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a BDNF neurotrophin-plasticity thesis: the individual may carry context relevant to activity-dependent BDNF secretion, synaptic plasticity, memory, mood/stress association studies, exercise-response biology, or TrkB pathway signaling. This is not a psychiatric or cognitive diagnosis."
+  },
+  "variant_records": [
+    {
+      "variant": "rs6265",
+      "display_name": "rs6265 (BDNF Val66Met)",
+      "common_name": "BDNF activity-dependent secretion marker",
+      "lookup_keys": [
+        "rs6265",
+        "rs6265 (BDNF Val66Met)",
+        "BDNF:rs6265",
+        "bdnf:rs6265"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs6265 (BDNF Val66Met) is curated as a BDNF marker for Synaptic plasticity and learning/memory research, Mood, stress, and neuropsychiatric association context. Read it through genotype dosage, phenotype context, and the neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Synaptic plasticity and learning/memory research",
+        "Mood, stress, and neuropsychiatric association context",
+        "Neurotrophin signaling and neuronal survival"
+      ],
+      "research_context": [
+        "Use this marker as a BDNF pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "BDNF activity-dependent secretion marker",
+      "methylation_interpretation": "Pair rs6265 (BDNF Val66Met) with BDNF methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "UniProt BDNF function annotation",
+          "url": "https://www.uniprot.org/uniprotkb/P23560/entry"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "BDNF curated evidence set",
+          "genotypes": "rs6265 (BDNF Val66Met) or linked BDNF locus genotype states",
+          "phenotype": "Synaptic plasticity and learning/memory research, Mood, stress, and neuropsychiatric association context",
+          "finding": "The local curation treats rs6265 (BDNF Val66Met) as a gene-specific marker for Synaptic plasticity and learning/memory research, Mood, stress, and neuropsychiatric association context and neurotrophin signaling, TrkB activation, synaptic plasticity, dendritic remodeling, and activity-dependent neuronal survival.",
+          "url": "https://www.uniprot.org/uniprotkb/P23560/entry"
+        }
+      ],
+      "gene_name": "BDNF",
+      "chromosome": "11",
+      "relevant_methylation_probe_ids": [
+        "cg16257091",
+        "cg01642653",
+        "cg02527472",
+        "cg27351358",
+        "cg07704699",
+        "cg04106006",
+        "cg10635145",
+        "cg06684850",
+        "cg12448003",
+        "cg01225698"
+      ]
+    }
+  ]
+}

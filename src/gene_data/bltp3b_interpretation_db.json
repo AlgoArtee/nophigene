@@ -1,0 +1,148 @@
+{
+  "database_name": "NophiGene BLTP3B Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "BLTP3B",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "12q23.1",
+    "chromosome": "12",
+    "gene_region": {
+      "label": "BLTP3B transcribed interval",
+      "start": 100430850,
+      "end": 100536652,
+      "definition": "Canonical BLTP3B genomic interval on GRCh37 / hg19 from NCBI Gene 23074 reports BLTP3B, formerly UHRF1BP1L/SHIP164, on GRCh37.p13 at NC_000012.11:100430850..100536652, complement."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 100536653,
+      "end": 100537652,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 100536419,
+      "end": 100537267,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "12:100430850-100537652",
+    "gene_summary": "BLTP3B, historically known as UHRF1BP1L or SHIP164, encodes bridge-like lipid transfer protein family member 3B. The protein is a large chorein-motif lipid-transfer factor linked to early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and intermembrane lipid transfer biology.",
+    "clinical_context": "The local BLTP3B knowledge base is membrane-trafficking and research-association oriented. It focuses on lipid-transfer/endosome-Golgi biology and on MYP3 high-grade myopia locus evidence for the former UHRF1BP1L symbol, not on a validated high-penetrance diagnostic BLTP3B variant panel.",
+    "variant_effect_overview": [
+      "Most interpretable inherited BLTP3B signals in this bundle are research association markers rather than diagnostic pathogenic variants.",
+      "Functional interpretation centers on bridge-like lipid transfer, early endosome-to-Golgi trafficking, and syntaxin-6/GARP-associated sorting biology.",
+      "MYP3 locus markers near or within BLTP3B/UHRF1BP1L should remain cohort-level high-grade myopia context unless independent clinical evidence is added."
+    ],
+    "condition_research_overview": [
+      "Early endosome-to-Golgi traffic, GARP/syntaxin-6-associated sorting, and bulk lipid-transfer biology.",
+      "High-grade myopia and MYP3 chromosome 12q21-q23 association-mapping studies.",
+      "Membrane-contact-site and VPS13/ATG2-like bridge lipid transport research."
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg02392575",
+      "cg16466203",
+      "cg22215783",
+      "cg03823305",
+      "cg01474603",
+      "cg00395697",
+      "cg21336876",
+      "cg10568931",
+      "cg23840562",
+      "cg05319880"
+    ],
+    "methylation_interpretation": "BLTP3B is a reverse-strand gene and the bundled EPIC slice intentionally includes the 1 kb downstream promoter/TSS window. Many manifest rows still use the legacy UHRF1BP1L annotation; the curated whitelist therefore anchors interpretation by probe ID around the BLTP3B TSS. Treat beta values as promoter-proximal regulatory context, not as a validated BLTP3B disease methylation assay.",
+    "methylation_effects": [
+      "The bundled BLTP3B whitelist prioritizes TSS200/TSS1500 and 5'UTR/first-exon EPIC probes around the reverse-strand TSS at 100536652.",
+      "No source-backed BLTP3B methylation threshold is bundled; high or low beta values should be interpreted alongside tissue, cell composition, expression, and variant evidence."
+    ],
+    "methylation_condition_research": [
+      "Use BLTP3B methylation as a local regulatory layer when investigating membrane-trafficking, ocular-development, or MYP3-locus hypotheses.",
+      "Because vendor annotations often use UHRF1BP1L, probe-ID whitelist matching is preferred over gene-name-only matching for this locus."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 23074: BLTP3B gene summary and GRCh37 coordinates",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/23074"
+      },
+      {
+        "label": "UniProt A0JNW5: BLTP3B / SHIP164 protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/A0JNW5/entry"
+      },
+      {
+        "label": "PMCID PMC9067936: SHIP164 lipid-transfer and endosome-Golgi traffic study",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9067936/"
+      },
+      {
+        "label": "PMCID PMC3621505: high-grade myopia MYP3 association mapping",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "rs7134216",
+      "display_name": "rs7134216 (BLTP3B/UHRF1BP1L MYP3-region marker)",
+      "common_name": "UHRF1BP1L intronic MYP3 high-grade myopia association marker",
+      "position": 100430850,
+      "lookup_keys": [
+        "rs7134216",
+        "12:100430850",
+        "12:100430850:C>T",
+        "12:100430850:T>C",
+        "BLTP3B rs7134216",
+        "UHRF1BP1L rs7134216"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Research association / MYP3 high-grade myopia locus marker",
+      "clinical_interpretation": "rs7134216 was reported as an intronic UHRF1BP1L marker in the MYP3 high-grade myopia association-mapping study and replicated for the quantitative sphere trait in an independent high-grade myopia cohort. The local database treats a match as ocular-development and MYP3-locus research context, not as a diagnostic or deterministic myopia-risk call.",
+      "clinical_significance": "Research association marker; not a pathogenic clinical BLTP3B allele.",
+      "functional_effects": [
+        "Intronic marker in the legacy UHRF1BP1L/BLTP3B locus used in high-grade myopia association mapping.",
+        "No bundled functional mechanism directly assigns this SNP to altered BLTP3B protein function."
+      ],
+      "associated_conditions": [
+        "High-grade myopia / MYP3 locus research",
+        "Quantitative spherical refractive error association studies"
+      ],
+      "research_context": [
+        "Interpret through cohort, ancestry, linkage, and local LD context rather than as a monogenic BLTP3B result.",
+        "Use current dbSNP/gnomAD/clinical databases before escalating this marker beyond exploratory research context."
+      ],
+      "usual_variant_note": "MYP3 high-grade myopia association marker in the legacy UHRF1BP1L locus.",
+      "methylation_interpretation": "Nearby BLTP3B/UHRF1BP1L TSS methylation can provide local regulatory context but does not establish the effect direction of rs7134216.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "PMCID PMC3621505: rs7134216 in UHRF1BP1L and MYP3 association mapping",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"
+        },
+        {
+          "label": "NCBI Gene 23074: BLTP3B coordinates and aliases",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/23074"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Hawthorne et al., 2013 (PMCID PMC3621505)",
+          "genotypes": "rs7134216 in the UHRF1BP1L/BLTP3B locus",
+          "phenotype": "High-grade myopia and quantitative spherical refractive error",
+          "finding": "The study reported rs7134216 as an intronic UHRF1BP1L marker in the MYP3 locus and observed replication for the quantitative sphere trait in an independent high-grade myopia cohort.",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3621505/"
+        }
+      ],
+      "gene_name": "BLTP3B",
+      "chromosome": "12",
+      "relevant_methylation_probe_ids": [
+        "cg02392575",
+        "cg16466203",
+        "cg22215783",
+        "cg03823305",
+        "cg01474603",
+        "cg00395697",
+        "cg21336876",
+        "cg10568931",
+        "cg23840562",
+        "cg05319880"
+      ]
+    }
+  ]
+}

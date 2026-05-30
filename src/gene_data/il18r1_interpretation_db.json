@@ -1,0 +1,229 @@
+{
+  "database_name": "NophiGene IL18R1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "IL18R1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "2q12.1",
+    "chromosome": "2",
+    "gene_region": {
+      "label": "IL18R1 transcribed interval",
+      "start": 102927989,
+      "end": 103015218,
+      "definition": "Canonical IL18R1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup for ENSG00000115604 on the primary assembly, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 102926989,
+      "end": 102927988,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 102972331,
+      "end": 102972737,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "2:102926989-103015218",
+    "gene_summary": "IL18R1 encodes the IL-18 receptor alpha chain, a cytokine receptor in the 2q12 IL1 receptor cluster that supports IL-18-driven Th1, NK-cell, inflammatory, and asthma/eosinophil research biology.",
+    "clinical_context": "The bundled IL18R1 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation.",
+    "variant_effect_overview": [
+      "IL18R1 markers often sit in LD with IL1RL1 and IL18RAP cluster signals and should be interpreted at the 2q12 receptor-cluster level when needed.",
+      "Variant signals may relate to asthma, eosinophils, immune activation, or inflammatory disease, but causal gene assignment is often unresolved."
+    ],
+    "condition_research_overview": [
+      "Asthma and eosinophil trait research",
+      "IL-18 receptor signaling and Th1/NK-cell inflammation",
+      "2q12 IL1 receptor-cluster association context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg19969733",
+      "cg04242580",
+      "cg11916609",
+      "cg16386158",
+      "cg17738684",
+      "cg21232331",
+      "cg27520210",
+      "cg26810323",
+      "cg22871718",
+      "cg09128380"
+    ],
+    "methylation_interpretation": "IL18R1 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response.",
+    "methylation_effects": [
+      "Promoter-proximal methylation may suggest a more restrained or permissive local regulatory state for IL18R1 expression potential.",
+      "Interpret methylation with tissue, cell composition, environmental exposure, disease state, medication history, and genotype context."
+    ],
+    "methylation_condition_research": [
+      "Asthma, allergy, atopic dermatitis, eosinophilic inflammation, and airway epithelial studies.",
+      "Immune-cell, epithelial-barrier, cytokine-signaling, and inflammatory-disease epigenetic research."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 8809: IL18R1 gene summary",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/8809"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000115604: IL18R1 coordinates and transcripts",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115604"
+      },
+      {
+        "label": "UniProt Q13478: IL18R1 protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/Q13478/entry"
+      },
+      {
+        "label": "GWAS Catalog gene page: IL18R1",
+        "url": "https://www.ebi.ac.uk/gwas/genes/IL18R1"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "rs3771166",
+      "display_name": "rs3771166",
+      "common_name": "IL18R1 asthma/eosinophil receptor-cluster marker",
+      "position": 102986222,
+      "lookup_keys": [
+        "rs3771166",
+        "IL18R1 asthma/eosinophil receptor-cluster marker",
+        "IL18R1:rs3771166",
+        "2:102986222"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs3771166 is bundled as a IL18R1 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around IL18R1.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "Asthma and eosinophil trait research",
+        "IL-18 receptor signaling and Th1/NK-cell inflammation",
+        "2q12 IL1 receptor-cluster association context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "IL18R1 marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "IL18R1 methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs3771166.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 8809: IL18R1 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/8809"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000115604: IL18R1 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115604"
+        },
+        {
+          "label": "UniProt Q13478: IL18R1 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/Q13478/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: IL18R1",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18R1"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs3771166 or linked IL18R1 locus genotype states",
+          "phenotype": "Asthma and eosinophil trait research, IL-18 receptor signaling and Th1/NK-cell inflammation, 2q12 IL1 receptor-cluster association context",
+          "finding": "The local curation treats rs3771166 as a research-grade IL18R1 signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18R1"
+        }
+      ],
+      "gene_name": "IL18R1",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg19969733",
+        "cg04242580",
+        "cg11916609",
+        "cg16386158",
+        "cg17738684",
+        "cg21232331",
+        "cg27520210",
+        "cg26810323",
+        "cg22871718",
+        "cg09128380"
+      ]
+    },
+    {
+      "variant": "rs13408661",
+      "display_name": "rs13408661",
+      "common_name": "IL1RL1/IL18R1 receptor-cluster asthma marker",
+      "position": 102955082,
+      "lookup_keys": [
+        "rs13408661",
+        "IL1RL1/IL18R1 receptor-cluster asthma marker",
+        "IL18R1:rs13408661",
+        "2:102955082"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs13408661 is bundled as a IL18R1 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around IL18R1.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "Asthma and eosinophil trait research",
+        "IL-18 receptor signaling and Th1/NK-cell inflammation",
+        "2q12 IL1 receptor-cluster association context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "IL18R1 marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "IL18R1 methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs13408661.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 8809: IL18R1 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/8809"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000115604: IL18R1 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000115604"
+        },
+        {
+          "label": "UniProt Q13478: IL18R1 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/Q13478/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: IL18R1",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18R1"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs13408661 or linked IL18R1 locus genotype states",
+          "phenotype": "Asthma and eosinophil trait research, IL-18 receptor signaling and Th1/NK-cell inflammation, 2q12 IL1 receptor-cluster association context",
+          "finding": "The local curation treats rs13408661 as a research-grade IL18R1 signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/IL18R1"
+        }
+      ],
+      "gene_name": "IL18R1",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg19969733",
+        "cg04242580",
+        "cg11916609",
+        "cg16386158",
+        "cg17738684",
+        "cg21232331",
+        "cg27520210",
+        "cg26810323",
+        "cg22871718",
+        "cg09128380"
+      ]
+    }
+  ]
+}

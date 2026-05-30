@@ -1,0 +1,207 @@
+{
+  "database_name": "NophiGene HNF1A Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "HNF1A",
+  "source_interpretation_database": "NophiGene HNF1A Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "HNF1A MODY3 loss-of-function model (HNF1A beta-cell transcription loss model)",
+    "rs1169288 (HNF1A I27L) (HNF1A cardiometabolic association marker)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support.",
+  "variant_prediction_rules": [
+    {
+      "variant": "HNF1A MODY3 loss-of-function model",
+      "display_name": "HNF1A MODY3 loss-of-function model",
+      "common_name": "HNF1A beta-cell transcription loss model",
+      "lookup_keys": [
+        "HNF1A MODY3 loss-of-function model",
+        "HNF1A MODY3 loss-of-function model",
+        "HNF1A:HNF1A MODY3 loss-of-function model",
+        "hnf1a:hnf1a mody3 loss-of-function model"
+      ],
+      "prediction": "GT-confirmed HNF1A MODY3 loss-of-function model dosage suggests this sample carries the HNF1A prediction context described by the gene-level thesis. The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. This specific marker is curated as HNF1A beta-cell transcription loss model. HNF1A MODY3 loss-of-function model is curated as a HNF1A marker for MODY3 review context, Beta-cell function and glycemic trait biology. Read it through genotype dosage, phenotype context, and the pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched HNF1A MODY3 loss-of-function model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HNF1A prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations.",
+      "evidence": []
+    },
+    {
+      "variant": "rs1169288",
+      "display_name": "rs1169288 (HNF1A I27L)",
+      "common_name": "HNF1A cardiometabolic association marker",
+      "lookup_keys": [
+        "rs1169288",
+        "rs1169288 (HNF1A I27L)",
+        "HNF1A:rs1169288",
+        "hnf1a:rs1169288"
+      ],
+      "prediction": "GT-confirmed rs1169288 (HNF1A I27L) dosage suggests this sample carries the HNF1A prediction context described by the gene-level thesis. The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. This specific marker is curated as HNF1A cardiometabolic association marker. rs1169288 (HNF1A I27L) is curated as a HNF1A marker for MODY3 review context, Beta-cell function and glycemic trait biology. Read it through genotype dosage, phenotype context, and the pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched rs1169288 (HNF1A I27L) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HNF1A prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations.",
+      "evidence": []
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. An observed HNF1A variant places this sample in the curated HNF1A research context. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a HNF1A variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a HNF1A variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a HNF1A variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a HNF1A variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a HNF1A variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a HNF1A variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a HNF1A variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a HNF1A variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a HNF1A variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a HNF1A diabetes transcription-factor review thesis: the individual may carry context relevant to pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and MODY3 review context, Beta-cell function and glycemic trait biology. Treat this as pathway triage until the exact allele has external classification and phenotype support. HNF1A methylation should be treated as local regulatory context around a pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local HNF1A bundle is diabetes transcription-factor review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls. HNF1A variants can alter or tag pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "MODY3 review context",
+        "Beta-cell function and glycemic trait biology",
+        "Hepatic transcriptional regulation"
+      ]
+    }
+  ]
+}

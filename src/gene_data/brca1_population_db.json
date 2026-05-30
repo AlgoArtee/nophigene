@@ -1,0 +1,69 @@
+{
+  "database_name": "NophiGene BRCA1 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled BRCA1 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from BRCA1 homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 672: BRCA1",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/672"
+    },
+    {
+      "label": "UniProt P38398: BRCA1_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P38398/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000012048: BRCA1 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000012048"
+    },
+    {
+      "label": "ClinVar BRCA1 variation set",
+      "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=BRCA1%5Bgene%5D"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "BRCA1 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "BRCA1 findings should be read against homologous recombination repair, DNA double-strand break response, replication-fork protection, and genome stability; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "BRCA1 c.68_69delAG / 185delAG",
+      "location_group": "Marker and cohort pattern",
+      "summary": "BRCA1 c.68_69delAG / 185delAG is curated as a BRCA1 marker for Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "BRCA1 c.5266dupC / 5382insC",
+      "location_group": "Marker and cohort pattern",
+      "summary": "BRCA1 c.5266dupC / 5382insC is curated as a BRCA1 marker for Hereditary breast and ovarian cancer context, Homologous recombination repair deficiency; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

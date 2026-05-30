@@ -1,0 +1,209 @@
+{
+  "database_name": "NophiGene CHEK2 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "CHEK2",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "22q12.1",
+    "chromosome": "22",
+    "gene_region": {
+      "label": "CHEK2 transcribed interval",
+      "start": 29083731,
+      "end": 29138410,
+      "definition": "Canonical CHEK2 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 29138411,
+      "end": 29139410,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 29136685,
+      "end": 29138271,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "22:29083731-29139410",
+    "gene_summary": "CHEK2 encodes CHK2, a checkpoint kinase downstream of ATM. This bundle emphasizes DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology.",
+    "clinical_context": "The local CHEK2 bundle is checkpoint kinase review oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "CHEK2 variants can alter or tag DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Hereditary cancer susceptibility context",
+      "DNA damage checkpoint biology",
+      "Breast, colorectal, and prostate cancer association research"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg01875775",
+      "cg16189954",
+      "cg16247644",
+      "cg13497074",
+      "cg16926844",
+      "cg17257676",
+      "cg07364676",
+      "cg04776735",
+      "cg23369563",
+      "cg05718343"
+    ],
+    "methylation_interpretation": "CHEK2 methylation should be treated as local regulatory context around a DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for CHEK2.",
+      "Because CHEK2 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use CHEK2 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology.",
+      "Hereditary cancer susceptibility context",
+      "DNA damage checkpoint biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 11200: CHEK2",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/11200"
+      },
+      {
+        "label": "UniProt O96017: CHEK2_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/O96017/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000183765: CHEK2 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000183765"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "CHEK2 biochemical figure starter",
+      "focus": "CHEK2: DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology",
+      "template_title": "DNA Repair Mechanisms",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-5ee11f56287bce00b20b3f92?source=mcp",
+      "icon_search_terms": [
+        "DNA repair",
+        "genome editing"
+      ],
+      "recommended_icons": [
+        "BRCA1 (schematic)",
+        "BRCA2 (schematic)",
+        "Cytosine base editor"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a CHEK2 checkpoint kinase review thesis: the individual may carry context relevant to DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology and Hereditary cancer susceptibility context, DNA damage checkpoint biology. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "CHEK2 c.1100delC model",
+      "display_name": "CHEK2 c.1100delC model",
+      "common_name": "CHEK2 truncating founder model",
+      "lookup_keys": [
+        "CHEK2 c.1100delC model",
+        "CHEK2 c.1100delC model",
+        "CHEK2:CHEK2 c.1100delC model",
+        "chek2:chek2 c.1100delc model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "CHEK2 c.1100delC model is curated as a CHEK2 marker for Hereditary cancer susceptibility context, DNA damage checkpoint biology. Read it through genotype dosage, phenotype context, and the DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hereditary cancer susceptibility context",
+        "DNA damage checkpoint biology",
+        "Breast, colorectal, and prostate cancer association research"
+      ],
+      "research_context": [
+        "Use this marker as a CHEK2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "CHEK2 truncating founder model",
+      "methylation_interpretation": "Pair CHEK2 c.1100delC model with CHEK2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "CHEK2 curated evidence set",
+          "genotypes": "CHEK2 c.1100delC model or linked CHEK2 locus genotype states",
+          "phenotype": "Hereditary cancer susceptibility context, DNA damage checkpoint biology",
+          "finding": "The local curation treats CHEK2 c.1100delC model as a gene-specific marker for Hereditary cancer susceptibility context, DNA damage checkpoint biology and DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "CHEK2",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg01875775",
+        "cg16189954",
+        "cg16247644",
+        "cg13497074",
+        "cg16926844",
+        "cg17257676",
+        "cg07364676",
+        "cg04776735",
+        "cg23369563",
+        "cg05718343"
+      ]
+    },
+    {
+      "variant": "rs17879961",
+      "display_name": "rs17879961 (CHEK2 I157T)",
+      "common_name": "CHEK2 missense modifier marker",
+      "lookup_keys": [
+        "rs17879961",
+        "rs17879961 (CHEK2 I157T)",
+        "CHEK2:rs17879961",
+        "chek2:rs17879961"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs17879961 (CHEK2 I157T) is curated as a CHEK2 marker for Hereditary cancer susceptibility context, DNA damage checkpoint biology. Read it through genotype dosage, phenotype context, and the DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hereditary cancer susceptibility context",
+        "DNA damage checkpoint biology",
+        "Breast, colorectal, and prostate cancer association research"
+      ],
+      "research_context": [
+        "Use this marker as a CHEK2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "CHEK2 missense modifier marker",
+      "methylation_interpretation": "Pair rs17879961 (CHEK2 I157T) with CHEK2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "CHEK2 curated evidence set",
+          "genotypes": "rs17879961 (CHEK2 I157T) or linked CHEK2 locus genotype states",
+          "phenotype": "Hereditary cancer susceptibility context, DNA damage checkpoint biology",
+          "finding": "The local curation treats rs17879961 (CHEK2 I157T) as a gene-specific marker for Hereditary cancer susceptibility context, DNA damage checkpoint biology and DNA damage checkpoint signaling, p53 and BRCA pathway crosstalk, cell-cycle arrest, and hereditary cancer modifier biology.",
+          "url": ""
+        }
+      ],
+      "gene_name": "CHEK2",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg01875775",
+        "cg16189954",
+        "cg16247644",
+        "cg13497074",
+        "cg16926844",
+        "cg17257676",
+        "cg07364676",
+        "cg04776735",
+        "cg23369563",
+        "cg05718343"
+      ]
+    }
+  ]
+}

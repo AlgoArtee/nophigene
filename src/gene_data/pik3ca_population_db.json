@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene PIK3CA Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled PIK3CA population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from PIK3CA PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 5290: PIK3CA",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/5290"
+    },
+    {
+      "label": "UniProt P42336: PIK3CA_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P42336/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000121879: PIK3CA coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000121879"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "PIK3CA biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "PIK3CA findings should be read against PI3K lipid kinase signaling, PIP3 production, AKT-mTOR activation, cell growth, metabolism, and survival; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "PIK3CA E542K/E545K/H1047R model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "PIK3CA E542K/E545K/H1047R model is curated as a PIK3CA marker for PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "PIK3CA mosaic overgrowth model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "PIK3CA mosaic overgrowth model is curated as a PIK3CA marker for PI3K-AKT-mTOR signaling and cancer context, Overgrowth and mosaic activation review; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

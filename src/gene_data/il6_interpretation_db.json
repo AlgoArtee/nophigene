@@ -1,0 +1,147 @@
+{
+  "database_name": "NophiGene IL6 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "IL6",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "7p15.3",
+    "chromosome": "7",
+    "gene_region": {
+      "label": "IL6 transcribed interval",
+      "start": 22765503,
+      "end": 22771621,
+      "definition": "Canonical IL6 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 22764503,
+      "end": 22765502,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 22765723,
+      "end": 22767314,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "7:22764503-22771621",
+    "gene_summary": "IL6 encodes interleukin-6, a pleiotropic inflammatory cytokine. This bundle emphasizes IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk.",
+    "clinical_context": "The local IL6 bundle is inflammatory cytokine signaling oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "IL6 variants can alter or tag IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Inflammation and acute-phase response context",
+      "Autoimmune and infection association research",
+      "JAK-STAT3 cytokine signaling"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg00175482",
+      "cg10140158",
+      "cg01770232",
+      "cg21785978",
+      "cg00087425",
+      "cg03601896",
+      "cg20509117"
+    ],
+    "methylation_interpretation": "IL6 methylation should be treated as local regulatory context around a IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for IL6.",
+      "Because IL6 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use IL6 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk.",
+      "Inflammation and acute-phase response context",
+      "Autoimmune and infection association research"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 3569: IL6",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/3569"
+      },
+      {
+        "label": "UniProt P05231: IL6_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P05231/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000136244: IL6 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000136244"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "IL6 biochemical figure starter",
+      "focus": "IL6: IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk",
+      "template_title": "Intracellular Layout - Receptor Signaling from Plasma Membrane to Nucleus (2)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61748edc02c76300a75f7771?source=mcp",
+      "icon_search_terms": [
+        "growth factor receptor",
+        "EGFR"
+      ],
+      "recommended_icons": [
+        "EGFR in endosome (ubiquitinated)",
+        "EGF (pathway)",
+        "VEGFR2 (dimer, schematic)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a IL6 inflammatory cytokine signaling thesis: the individual may carry context relevant to IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk and Inflammation and acute-phase response context, Autoimmune and infection association research. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs1800795",
+      "display_name": "rs1800795 (IL6 -174G>C)",
+      "common_name": "IL6 promoter association marker",
+      "lookup_keys": [
+        "rs1800795",
+        "rs1800795 (IL6 -174G>C)",
+        "IL6:rs1800795",
+        "il6:rs1800795"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs1800795 (IL6 -174G>C) is curated as a IL6 marker for Inflammation and acute-phase response context, Autoimmune and infection association research. Read it through genotype dosage, phenotype context, and the IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Inflammation and acute-phase response context",
+        "Autoimmune and infection association research",
+        "JAK-STAT3 cytokine signaling"
+      ],
+      "research_context": [
+        "Use this marker as a IL6 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "IL6 promoter association marker",
+      "methylation_interpretation": "Pair rs1800795 (IL6 -174G>C) with IL6 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "IL6 curated evidence set",
+          "genotypes": "rs1800795 (IL6 -174G>C) or linked IL6 locus genotype states",
+          "phenotype": "Inflammation and acute-phase response context, Autoimmune and infection association research",
+          "finding": "The local curation treats rs1800795 (IL6 -174G>C) as a gene-specific marker for Inflammation and acute-phase response context, Autoimmune and infection association research and IL-6 receptor/gp130 signaling, JAK-STAT3 activation, acute-phase response, inflammation, and metabolic immune crosstalk.",
+          "url": ""
+        }
+      ],
+      "gene_name": "IL6",
+      "chromosome": "7",
+      "relevant_methylation_probe_ids": [
+        "cg00175482",
+        "cg10140158",
+        "cg01770232",
+        "cg21785978",
+        "cg00087425",
+        "cg03601896",
+        "cg20509117"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,302 @@
+{
+  "database_name": "NophiGene TMEM218 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "TMEM218",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "11q24.2",
+    "chromosome": "11",
+    "gene_region": {
+      "label": "TMEM218 transcribed interval",
+      "start": 124964285,
+      "end": 124981522,
+      "definition": "Canonical TMEM218 genomic interval on GRCh37 / hg19 from NCBI Gene 219854 reports TMEM218 on GRCh37.p13 at NC_000011.9:124964285..124981522, complement, and on GRCh38.p14 at NC_000011.10:125094389..125111626, complement; ClinGen Gene Facts HGNC:27344 reports GRCh37 chr11:124964285-124981522 and GRCh38 chr11:125094389-125111626."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 124981523,
+      "end": 124982522,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 124981343,
+      "end": 124981912,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "11:124964285-124982522",
+    "gene_summary": "TMEM218 encodes transmembrane protein 218, a small multi-pass membrane protein linked to ciliary transition-zone biology. NCBI, UniProt, Human Protein Atlas, and ciliary-disease studies frame TMEM218 as a cilium/membrane protein that participates in transition-zone function, MKS-module biology, and ciliary membrane diffusion-barrier control.",
+    "clinical_context": "The local TMEM218 knowledge base is Joubert syndrome 39, Meckel syndrome, and broader syndromic-ciliopathy research oriented. Reported human disease is autosomal recessive: TMEM218 findings should be interpreted with phase, zygosity, variant classification, phenotype, and transcript context, and a single heterozygous finding should generally be treated as carrier or research context.",
+    "variant_effect_overview": [
+      "Biallelic rare deleterious TMEM218 variants have been reported in families with Joubert-Meckel spectrum phenotypes including molar tooth sign, retinal dystrophy, occipital encephalocele, polycystic kidneys, and polydactyly.",
+      "Epting et al. reported biallelic missense and nonsense TMEM218 variants in Bardet-Biedl-like, Joubert, and Meckel-Gruber phenotypes and showed that p.Arg37Ser reduced interaction with the MKS-module protein TMEM67/Meckelin.",
+      "Functional work supports TMEM218 as a ciliary transition-zone and diffusion-barrier component: TMEM218-knockout cells mislocalize ciliary membrane proteins, and MKS-associated variants can fail to restore transition-zone integrity.",
+      "Genotype-phenotype severity appears variant specific: truncating or severe transition-zone-disruptive alleles are enriched toward lethal Meckel syndrome, while some missense combinations are reported in Joubert-spectrum presentations."
+    ],
+    "condition_research_overview": [
+      "Joubert syndrome 39, Meckel syndrome, Bardet-Biedl-like ciliopathy features, and Joubert-Meckel-nephronophthisis spectrum research.",
+      "Ciliary transition-zone assembly, MKS and NPHP module interaction, TMEM67/Meckelin interaction, ARL13B/GPR161 ciliary membrane localization, and ciliary diffusion-barrier function.",
+      "Retinal dystrophy, molar tooth sign, occipital encephalocele, cystic or polycystic kidneys, polydactyly, nephronophthisis-like kidney and retina model phenotypes, and severe fetal ciliopathy context."
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg19645210",
+      "cg17569390",
+      "cg09410014",
+      "cg01963620",
+      "cg05665562",
+      "cg14874299",
+      "cg00406870",
+      "cg27122659",
+      "cg15037467",
+      "cg24853428"
+    ],
+    "methylation_interpretation": "TMEM218 has a promoter-plus-gene EPIC slice from the local hg19 manifest. Use TMEM218 methylation as local regulatory context around a reverse-strand ciliary transition-zone gene, not as a validated Joubert syndrome, Meckel syndrome, retinal dystrophy, renal ciliopathy, or diffusion-barrier biomarker.",
+    "methylation_effects": [
+      "Promoter-proximal and gene-body methylation may help frame local TMEM218 regulatory context in samples where sequence, expression, or ciliary phenotype evidence is also available.",
+      "No source-backed TMEM218 methylation threshold is bundled; beta values should be interpreted alongside tissue, developmental timing, cell composition, variant phase, zygosity, consequence, and current ClinVar/gnomAD evidence."
+    ],
+    "methylation_condition_research": [
+      "Use TMEM218 methylation as supportive local regulatory context in ciliopathy, transition-zone, retina, kidney, fetal-development, or ciliary membrane trafficking research.",
+      "Do not infer Joubert syndrome, Meckel syndrome, nephronophthisis, retinal dystrophy, polydactyly, encephalocele, or ciliary diffusion-barrier failure from peripheral EPIC methylation alone."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 219854: TMEM218 gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, associated Joubert syndrome 39 context",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/219854"
+      },
+      {
+        "label": "Ensembl ENSG00000150433: TMEM218 current gene model and reverse-strand coordinates",
+        "url": "https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000150433"
+      },
+      {
+        "label": "UniProt A2RU14: TMEM218 / transmembrane protein 218 entry",
+        "url": "https://www.uniprot.org/uniprotkb/A2RU14/entry"
+      },
+      {
+        "label": "Human Protein Atlas ENSG00000150433-TMEM218: expression, predicted location, and protein-structure context",
+        "url": "https://www.proteinatlas.org/ENSG00000150433-TMEM218"
+      },
+      {
+        "label": "ClinGen Gene Facts HGNC:27344: TMEM218 coordinates, MANE transcript, constraint, and GenCC classification",
+        "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A27344/external-resources"
+      },
+      {
+        "label": "ClinVar RCV002223152: NM_001258244.2(TMEM218):c.111G>T (p.Arg37Ser) likely pathogenic for Joubert syndrome 39",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/"
+      },
+      {
+        "label": "PubMed 33791682: TMEM218 dysfunction causes ciliopathies, including Joubert and Meckel syndromes",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/33791682/"
+      },
+      {
+        "label": "PubMed 35137054: TMEM218 transition-zone protein, NPHP-module interaction, and syndromic ciliopathies",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/"
+      },
+      {
+        "label": "Human Molecular Genetics 2024: TMEM218 ciliopathy variants disrupt ciliary transition-zone diffusion-barrier function",
+        "url": "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982"
+      },
+      {
+        "label": "PubMed 26982032: MKS5/CEP290 transition-zone assembly pathway identifies TMEM-218 as an MKS-module-associated transition-zone protein",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26982032/"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "TMEM218 c.111G>T / p.Arg37Ser",
+      "display_name": "TMEM218 c.111G>T / p.Arg37Ser",
+      "common_name": "TMEM218 R37S likely pathogenic JBTS39 marker",
+      "position": 124971199,
+      "lookup_keys": [
+        "TMEM218 c.111G>T",
+        "TMEM218 p.Arg37Ser",
+        "TMEM218 Arg37Ser",
+        "TMEM218 R37S",
+        "NM_001080546.3:c.111G>T",
+        "NM_001258244.2:c.111G>T",
+        "NP_001074015.1:p.Arg37Ser",
+        "rs1248550491",
+        "11:124971199",
+        "11:124971199:C>A",
+        "NC_000011.9:g.124971199C>A"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Likely pathogenic autosomal-recessive Joubert syndrome 39 marker / ciliary transition-zone research context",
+      "clinical_interpretation": "TMEM218 c.111G>T / p.Arg37Ser is included because ClinVar curates it as likely pathogenic for Joubert syndrome 39 and Epting et al. reported the homozygous missense variant in a patient with syndromic ciliopathy features. Functional evidence showed reduced interaction of p.Arg37Ser TMEM218 with TMEM67/MKS3/Meckelin, supporting an MKS-module transition-zone mechanism.",
+      "clinical_significance": "Likely pathogenic Joubert syndrome 39 marker; autosomal-recessive interpretation depends on biallelic dosage, phase, phenotype, and current clinical review.",
+      "functional_effects": [
+        "Missense variant at a conserved TMEM218 arginine residue reported in a homozygous affected individual with Bardet-Biedl-like/Joubert-spectrum features.",
+        "Co-immunoprecipitation evidence showed reduced interaction between p.Arg37Ser TMEM218 and TMEM67/MKS3/Meckelin.",
+        "ClinVar lists the GRCh37 coordinate as chr11:124971199 and the HGVS as NM_001258244.2:c.111G>T / p.Arg37Ser with likely pathogenic classification for JBTS39."
+      ],
+      "associated_conditions": [
+        "Joubert syndrome 39",
+        "Bardet-Biedl-like and Joubert-Meckel syndromic ciliopathy features",
+        "Ciliary transition-zone and MKS-module interaction research"
+      ],
+      "research_context": [
+        "Prioritize homozygous or compound-heterozygous TMEM218 context, parental segregation, transcript version, phenotype fit, and current variant classification.",
+        "A single heterozygous observation should generally be reported as carrier or research context unless paired with another pathogenic TMEM218 allele.",
+        "Interpret alongside neurological imaging, retinal, renal, polydactyly, encephalocele, and fetal or perinatal phenotype data when available."
+      ],
+      "usual_variant_note": "Likely pathogenic JBTS39 missense marker; disease interpretation requires biallelic autosomal-recessive context.",
+      "methylation_interpretation": "TMEM218 methylation can provide local regulatory context, but it does not establish p.Arg37Ser dosage, phase, pathogenicity, TMEM67 interaction, or ciliary transition-zone function.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar RCV002223152: p.Arg37Ser likely pathogenic for Joubert syndrome 39",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/"
+        },
+        {
+          "label": "PubMed 35137054: p.Arg37Ser TMEM218 in syndromic ciliopathy and reduced MKS3/TMEM67 interaction",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/"
+        },
+        {
+          "label": "NCBI Gene 219854: TMEM218 coordinates and JBTS39 context",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/219854"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Epting et al., 2022 (PMID 35137054)",
+          "genotypes": "Homozygous TMEM218 c.111G>T / p.Arg37Ser in an affected individual; heterozygous carrier parents",
+          "phenotype": "Bardet-Biedl-like, Joubert, and syndromic ciliopathy features including molar tooth sign and polydactyly context",
+          "finding": "The study reported p.Arg37Ser as a TMEM218 disease variant and showed reduced interaction with the MKS-module protein TMEM67/MKS3/Meckelin.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/"
+        },
+        {
+          "paper": "ClinVar RCV002223152",
+          "genotypes": "NM_001258244.2(TMEM218):c.111G>T / p.Arg37Ser",
+          "phenotype": "Joubert syndrome 39",
+          "finding": "ClinVar classifies the variant as likely pathogenic for JBTS39 with single-submitter criteria-provided review status.",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV002223152/"
+        }
+      ],
+      "gene_name": "TMEM218",
+      "chromosome": "11",
+      "relevant_methylation_probe_ids": [
+        "cg19645210",
+        "cg17569390",
+        "cg09410014",
+        "cg01963620",
+        "cg05665562",
+        "cg14874299",
+        "cg00406870",
+        "cg27122659",
+        "cg15037467",
+        "cg24853428"
+      ]
+    },
+    {
+      "variant": "TMEM218 biallelic Joubert-Meckel ciliopathy model",
+      "display_name": "TMEM218 biallelic loss or reduced-function ciliopathy model",
+      "common_name": "TMEM218 transition-zone Joubert-Meckel model",
+      "position": null,
+      "lookup_keys": [
+        "TMEM218 loss-of-function",
+        "TMEM218 loss of function",
+        "TMEM218 LOF",
+        "TMEM218 deletion",
+        "TMEM218 biallelic",
+        "TMEM218 Joubert syndrome",
+        "TMEM218 Meckel syndrome",
+        "TMEM218 Joubert-Meckel",
+        "TMEM218 transition zone",
+        "TMEM218 diffusion barrier",
+        "TMEM218 c.175C>T",
+        "TMEM218 p.Arg59Ter",
+        "TMEM218 p.Arg59*",
+        "TMEM218 R59*",
+        "TMEM218 p.Gly44Val",
+        "TMEM218 G44V",
+        "TMEM218 p.Arg94Ter",
+        "TMEM218 p.Arg94*",
+        "TMEM218 R94*",
+        "TMEM218 p.Arg115Cys",
+        "TMEM218 R115C",
+        "TMEM218 p.Arg115His",
+        "TMEM218 R115H"
+      ],
+      "region_class": "structural_region",
+      "interpretation_scope": "Autosomal-recessive disease mechanism / ciliary transition-zone diffusion-barrier model",
+      "clinical_interpretation": "TMEM218 biallelic loss, reduced-function, and transition-zone-disruptive variants are curated as a Joubert-Meckel ciliopathy mechanism because human genetic reports and functional studies link TMEM218 dysfunction to primary cilium transition-zone biology. Reported phenotypes span Joubert syndrome with retinal dystrophy, Meckel syndrome, severe fetal or perinatal presentations, cystic kidney disease, encephalocele, polydactyly, and Bardet-Biedl-like overlap.",
+      "clinical_significance": "Strong autosomal-recessive Joubert-Meckel ciliopathy model; variant-level classification, phase, and phenotype fit are required before clinical escalation.",
+      "functional_effects": [
+        "Biallelic rare deleterious variants were reported across six families with Joubert-Meckel spectrum phenotypes in the 2021 gene-discovery study.",
+        "The p.Arg59Ter truncating variant and related severe alleles were associated with fetal or perinatal Meckel-Gruber presentations in later TMEM218 reports.",
+        "TMEM218 participates in ciliary transition-zone biology and interacts genetically or physically with MKS/NPHP-module components including TMEM67/MKS3 and Nphp4.",
+        "TMEM218-knockout cell work showed impaired ciliary membrane protein localization, with MKS-associated variants such as R94* and R115C failing to restore barrier function in the cited model."
+      ],
+      "associated_conditions": [
+        "Joubert syndrome 39",
+        "Meckel syndrome / Meckel-Gruber syndrome",
+        "Joubert-Meckel-nephronophthisis spectrum ciliopathy",
+        "Retinal dystrophy, cystic kidney disease, polydactyly, and occipital encephalocele research context"
+      ],
+      "research_context": [
+        "Use this broad model for biallelic pathogenic, likely pathogenic, or strongly supported TMEM218 loss/reduced-function evidence rather than isolated benign or VUS calls.",
+        "Pair variant calls with segregation, copy-number or transcript evidence, phenotype fit, neuroimaging, renal and retinal assessment, and updated clinical variant resources.",
+        "Variant severity should be assessed cautiously because R115C/R115H and other residue-level observations suggest cellular rescue and clinical severity can differ by amino-acid substitution."
+      ],
+      "usual_variant_note": "Autosomal-recessive TMEM218 ciliopathy mechanism; not directly assayable as a single SNP unless a specific pathogenic allele is observed.",
+      "methylation_interpretation": "TMEM218 methylation can support local regulatory review, but it does not prove biallelic loss, transition-zone diffusion-barrier failure, or Joubert-Meckel disease causality.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "PubMed 33791682: biallelic TMEM218 variants in Joubert-Meckel spectrum ciliopathies",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33791682/"
+        },
+        {
+          "label": "PubMed 35137054: biallelic missense/nonsense TMEM218 variants and NPHP-module interaction",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/"
+        },
+        {
+          "label": "Human Molecular Genetics 2024: TMEM218 variant severity and transition-zone diffusion-barrier defects",
+          "url": "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982"
+        },
+        {
+          "label": "PubMed 26982032: TMEM-218 as a transition-zone MKS-module-associated protein",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/26982032/"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Van De Weghe et al., 2021 (PMID 33791682)",
+          "genotypes": "Biallelic rare deleterious TMEM218 variants across Joubert-Meckel spectrum families",
+          "phenotype": "Joubert syndrome with retinal dystrophy and Meckel syndrome, including molar tooth sign, encephalocele, retinal dystrophy, polycystic kidneys, and polydactyly",
+          "finding": "The study made a strong human-genetic case that TMEM218 dysfunction causes ciliopathy phenotypes in the Joubert-Meckel spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33791682/"
+        },
+        {
+          "paper": "Epting et al., 2022 (PMID 35137054)",
+          "genotypes": "Biallelic missense and nonsense TMEM218 variants including c.111G>T / p.Arg37Ser and c.175C>T / p.Arg59Ter",
+          "phenotype": "Bardet-Biedl-like, Joubert, and Meckel-Gruber syndromic ciliopathy presentations",
+          "finding": "The study characterized TMEM218 as a ciliary transition-zone protein interacting with the NPHP module and TMEM67/MKS3 biology.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/35137054/"
+        },
+        {
+          "paper": "Fujii et al., 2024 (DOI 10.1093/hmg/ddae083)",
+          "genotypes": "TMEM218(G44V), TMEM218(R94*), TMEM218(R115C), and TMEM218(R115H) cellular rescue models",
+          "phenotype": "Ciliary transition-zone integrity and membrane-protein diffusion-barrier function",
+          "finding": "The study linked cellular diffusion-barrier rescue severity to the clinical severity of TMEM218-associated MKS and JBTS variants.",
+          "url": "https://academic.oup.com/hmg/article-abstract/33/16/1442/7673982"
+        }
+      ],
+      "gene_name": "TMEM218",
+      "chromosome": "11",
+      "relevant_methylation_probe_ids": [
+        "cg19645210",
+        "cg17569390",
+        "cg09410014",
+        "cg01963620",
+        "cg05665562",
+        "cg14874299",
+        "cg00406870",
+        "cg27122659",
+        "cg15037467",
+        "cg24853428"
+      ]
+    }
+  ]
+}

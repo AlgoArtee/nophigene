@@ -1,0 +1,60 @@
+{
+  "database_name": "NophiGene F2 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled F2 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from F2 thrombin generation, fibrin clot formation, platelet activation, and prothrombotic regulatory biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 2147: F2",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/2147"
+    },
+    {
+      "label": "UniProt P00734: F2_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P00734/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000180210: F2 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000180210"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "F2 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "F2 findings should be read against thrombin generation, fibrin clot formation, platelet activation, and prothrombotic regulatory biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "rs1799963 (F2 G20210A)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs1799963 (F2 G20210A) is curated as a F2 marker for Prothrombin thrombophilia context, Venous thromboembolism association research; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

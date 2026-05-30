@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene PMEL Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled PMEL population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from PMEL melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 6490: PMEL",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/6490"
+    },
+    {
+      "label": "UniProt P40967: PMEL_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P40967/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000185664: PMEL coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000185664"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "PMEL biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "PMEL findings should be read against melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "PMEL pigmentation variation model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "PMEL pigmentation variation model is curated as a PMEL marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "PMEL regulatory expression context model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "PMEL regulatory expression context model is curated as a PMEL marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

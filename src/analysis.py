@@ -1568,12 +1568,15 @@ def _extract_alleles_from_nucleotide_changes(changes: Iterable[str]) -> tuple[li
 def _build_marker_type(record: dict[str, Any], genomic_changes: list[dict[str, Any]]) -> str:
     """Classify a curated marker for compact catalog display."""
     marker_text = " ".join(_variant_record_text_candidates(record)).casefold()
+    rsids = _extract_record_rsids(record)
     if "copy-number" in marker_text or "copy number" in marker_text or "cnv" in marker_text:
         return "Copy-number / structural marker"
     if "deletion" in marker_text or "duplication" in marker_text:
         return "Deletion / duplication marker"
     if genomic_changes:
         return "Single-nucleotide variant"
+    if rsids and record.get("position") is not None:
+        return "Single-nucleotide marker (alleles not bundled)"
     if "model" in marker_text:
         return "Functional or haplotype model"
     return "Curated sequence marker"
@@ -1641,6 +1644,7 @@ def _build_curated_marker_metadata(
     genomic_changes = _extract_record_genomic_changes(record)
     transcript_changes = _extract_transcript_nucleotide_changes(record)
     protein_changes = _extract_protein_changes(record)
+    rsids = _extract_record_rsids(record)
     marker_type = _build_marker_type(record, genomic_changes)
 
     if genomic_changes:
@@ -1653,6 +1657,11 @@ def _build_curated_marker_metadata(
         nucleotide_change = "; ".join(transcript_changes)
         refs, alts = _extract_alleles_from_nucleotide_changes(transcript_changes)
         nucleotide_change_basis = "transcript or mitochondrial HGVS"
+    elif rsids and record.get("position") is not None:
+        nucleotide_change = "Exact REF/ALT not bundled for this rsID"
+        refs = []
+        alts = []
+        nucleotide_change_basis = "rsID and coordinate marker; exact REF/ALT not bundled locally"
     else:
         nucleotide_change = "Not a bundled single-nucleotide change"
         refs = []
@@ -1681,7 +1690,7 @@ def _build_curated_marker_metadata(
         "alternate_allele": "/".join(alts) if alts else "Not specified",
         "coding_change": "; ".join(transcript_changes) if transcript_changes else "Not bundled",
         "protein_change": "; ".join(protein_changes) if protein_changes else "Not bundled",
-        "rsids": _extract_record_rsids(record),
+        "rsids": rsids,
         "marker_type": marker_type,
         "assayability": assayability,
         "clinical_parameter_summary": clinical_parameter_summary,
@@ -2734,6 +2743,7 @@ def build_variant_interpretations(
         "clinical_context": gene_context.get("clinical_context", ""),
         "variant_effect_overview": gene_context.get("variant_effect_overview", []),
         "condition_research_overview": gene_context.get("condition_research_overview", []),
+        "biorender_visuals": gene_context.get("biorender_visuals"),
         "sample_highlights": _build_sample_variant_highlights(
             matched_records=matched_records,
             promoter_analysis=promoter_analysis,
@@ -4954,6 +4964,37 @@ def _render_variant_interpretation_report(
                     ],
                 ),
                 "Sample Results",
+                rows=None,
+            )
+        )
+
+    biorender_visuals = variant_interpretations.get("biorender_visuals") or {}
+    if biorender_visuals:
+        nested_sections.append(
+            _render_section_table(
+                _report_df_from_rows(
+                    [
+                        {
+                            "provider": biorender_visuals.get("provider", "BioRender"),
+                            "focus": biorender_visuals.get("focus", ""),
+                            "template_title": biorender_visuals.get("template_title", ""),
+                            "template_url": biorender_visuals.get("template_url", ""),
+                            "recommended_icons": biorender_visuals.get("recommended_icons", []),
+                            "icon_search_terms": biorender_visuals.get("icon_search_terms", []),
+                            "usage_note": biorender_visuals.get("usage_note", ""),
+                        }
+                    ],
+                    [
+                        ("provider", "Provider"),
+                        ("focus", "Figure focus"),
+                        ("template_title", "BioRender template"),
+                        ("template_url", "Template URL"),
+                        ("recommended_icons", "Recommended icons"),
+                        ("icon_search_terms", "Icon search terms"),
+                        ("usage_note", "Usage note"),
+                    ],
+                ),
+                "BioRender Figure Starter",
                 rows=None,
             )
         )

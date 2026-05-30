@@ -1,0 +1,227 @@
+{
+  "database_name": "NophiGene STAT6 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "STAT6",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "12q13.3",
+    "chromosome": "12",
+    "gene_region": {
+      "label": "STAT6 transcribed interval",
+      "start": 57489191,
+      "end": 57525922,
+      "definition": "Canonical STAT6 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup for ENSG00000166888 on the primary assembly, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 57525923,
+      "end": 57526922,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 57521080,
+      "end": 57522813,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "12:57489191-57526922",
+    "gene_summary": "STAT6 encodes the transcription factor activated downstream of IL-4 and IL-13 signaling, regulating type 2 immune differentiation, IgE-related programs, epithelial remodeling, and allergic inflammation.",
+    "clinical_context": "The bundled STAT6 knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation.",
+    "variant_effect_overview": [
+      "STAT6 variants are studied as modifiers of IL-4/IL-13 transcriptional signaling, asthma, atopy, and allergic sensitization.",
+      "Interpretation should focus on pathway tuning rather than high-penetrance disease prediction."
+    ],
+    "condition_research_overview": [
+      "Asthma and allergic sensitization",
+      "Type 2 cytokine signaling",
+      "IgE, eosinophilia, and epithelial remodeling research"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg06160973",
+      "cg14398899",
+      "cg05531258",
+      "cg14799114",
+      "cg23981730",
+      "cg27031632",
+      "cg04109278",
+      "cg23731687",
+      "cg06531661",
+      "cg15238467"
+    ],
+    "methylation_interpretation": "STAT6 methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response.",
+    "methylation_effects": [
+      "Promoter-proximal methylation may suggest a more restrained or permissive local regulatory state for STAT6 expression potential.",
+      "Interpret methylation with tissue, cell composition, environmental exposure, disease state, medication history, and genotype context."
+    ],
+    "methylation_condition_research": [
+      "Asthma, allergy, atopic dermatitis, eosinophilic inflammation, and airway epithelial studies.",
+      "Immune-cell, epithelial-barrier, cytokine-signaling, and inflammatory-disease epigenetic research."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 6778: STAT6 gene summary",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/6778"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000166888: STAT6 coordinates and transcripts",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000166888"
+      },
+      {
+        "label": "UniProt P42226: STAT6 protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/P42226/entry"
+      },
+      {
+        "label": "GWAS Catalog gene page: STAT6",
+        "url": "https://www.ebi.ac.uk/gwas/genes/STAT6"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "rs324011",
+      "display_name": "rs324011",
+      "common_name": "STAT6 regulatory asthma/atopy marker",
+      "position": null,
+      "lookup_keys": [
+        "rs324011",
+        "STAT6 regulatory asthma/atopy marker",
+        "STAT6:rs324011"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs324011 is bundled as a STAT6 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around STAT6.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "Asthma and allergic sensitization",
+        "Type 2 cytokine signaling",
+        "IgE, eosinophilia, and epithelial remodeling research"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "STAT6 marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "STAT6 methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs324011.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 6778: STAT6 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/6778"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000166888: STAT6 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000166888"
+        },
+        {
+          "label": "UniProt P42226: STAT6 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P42226/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: STAT6",
+          "url": "https://www.ebi.ac.uk/gwas/genes/STAT6"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs324011 or linked STAT6 locus genotype states",
+          "phenotype": "Asthma and allergic sensitization, Type 2 cytokine signaling, IgE, eosinophilia, and epithelial remodeling research",
+          "finding": "The local curation treats rs324011 as a research-grade STAT6 signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/STAT6"
+        }
+      ],
+      "gene_name": "STAT6",
+      "chromosome": "12",
+      "relevant_methylation_probe_ids": [
+        "cg06160973",
+        "cg14398899",
+        "cg05531258",
+        "cg14799114",
+        "cg23981730",
+        "cg27031632",
+        "cg04109278",
+        "cg23731687",
+        "cg06531661",
+        "cg15238467"
+      ]
+    },
+    {
+      "variant": "rs3024974",
+      "display_name": "rs3024974",
+      "common_name": "STAT6 allergic-disease association marker",
+      "position": null,
+      "lookup_keys": [
+        "rs3024974",
+        "STAT6 allergic-disease association marker",
+        "STAT6:rs3024974"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs3024974 is bundled as a STAT6 research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Research-level allergic and immune-inflammatory association marker; not a deterministic clinical allele.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around STAT6.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "Asthma and allergic sensitization",
+        "Type 2 cytokine signaling",
+        "IgE, eosinophilia, and epithelial remodeling research"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "STAT6 marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "STAT6 methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs3024974.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 6778: STAT6 gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/6778"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000166888: STAT6 coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000166888"
+        },
+        {
+          "label": "UniProt P42226: STAT6 protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P42226/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: STAT6",
+          "url": "https://www.ebi.ac.uk/gwas/genes/STAT6"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs3024974 or linked STAT6 locus genotype states",
+          "phenotype": "Asthma and allergic sensitization, Type 2 cytokine signaling, IgE, eosinophilia, and epithelial remodeling research",
+          "finding": "The local curation treats rs3024974 as a research-grade STAT6 signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/STAT6"
+        }
+      ],
+      "gene_name": "STAT6",
+      "chromosome": "12",
+      "relevant_methylation_probe_ids": [
+        "cg06160973",
+        "cg14398899",
+        "cg05531258",
+        "cg14799114",
+        "cg23981730",
+        "cg27031632",
+        "cg04109278",
+        "cg23731687",
+        "cg06531661",
+        "cg15238467"
+      ]
+    }
+  ]
+}

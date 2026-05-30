@@ -1,0 +1,212 @@
+{
+  "database_name": "NophiGene ASIP Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "ASIP",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "20q11.22",
+    "chromosome": "20",
+    "gene_region": {
+      "label": "ASIP transcribed interval",
+      "start": 32782375,
+      "end": 32857150,
+      "definition": "Canonical ASIP genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 32781375,
+      "end": 32782374,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 32699976,
+      "end": 32952045,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "20:32781375-32857150",
+    "gene_summary": "ASIP encodes agouti signaling protein, an MC1R antagonist that shifts pigment toward pheomelanin. This topic bundle emphasizes hair pigmentation and graying, with interpretation centered on melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+    "clinical_context": "The local ASIP bundle is oriented toward hair pigmentation and graying. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "ASIP variants can alter, tag, or contextualize melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Hair pigmentation, skin pigmentation, and graying research context",
+      "Melanocyte development, survival, and melanosome biology",
+      "Pigmentary trait, albinism, melanoma-lineage, and follicle biology"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg00375430",
+      "cg08240466",
+      "cg12307818",
+      "cg01562356",
+      "cg04697784",
+      "cg14668180",
+      "cg17301506",
+      "cg14356946",
+      "cg17055717",
+      "cg13419083"
+    ],
+    "methylation_interpretation": "ASIP methylation should be treated as local regulatory context around a melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for ASIP.",
+      "Because ASIP biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use ASIP promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+      "Hair pigmentation, skin pigmentation, and graying research context",
+      "Melanocyte development, survival, and melanosome biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 434: ASIP",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/434"
+      },
+      {
+        "label": "UniProt P42127: ASIP_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P42127/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000101440: ASIP coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000101440"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "ASIP biochemical figure starter",
+      "focus": "ASIP: hair pigmentation and graying via melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology",
+      "template_title": "Hair Follicle Anatomy",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-641dc82b59511ede76dc7b32?source=mcp",
+      "icon_search_terms": [
+        "melanocyte",
+        "melanin",
+        "hair follicle",
+        "skin epidermis hair follicle"
+      ],
+      "recommended_icons": [
+        "Skin (epidermis)",
+        "Epithelial layers (skin)",
+        "Male balding (stage 0, lateral)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a ASIP hair pigmentation and graying thesis: the individual may carry context relevant to melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "ASIP pigmentation variation model",
+      "display_name": "ASIP pigmentation variation model",
+      "common_name": "ASIP hair pigmentation and graying pathway model",
+      "lookup_keys": [
+        "ASIP pigmentation variation model",
+        "ASIP pigmentation variation model",
+        "ASIP:ASIP pigmentation variation model",
+        "asip:asip pigmentation variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "ASIP pigmentation variation model is curated as a ASIP marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology. Read it through genotype dosage, phenotype context, and the melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hair pigmentation, skin pigmentation, and graying research context",
+        "Melanocyte development, survival, and melanosome biology",
+        "Pigmentary trait, albinism, melanoma-lineage, and follicle biology"
+      ],
+      "research_context": [
+        "Use this marker as a ASIP pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "ASIP hair pigmentation and graying pathway model",
+      "methylation_interpretation": "Pair ASIP pigmentation variation model with ASIP methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "ASIP curated evidence set",
+          "genotypes": "ASIP pigmentation variation model or linked ASIP locus genotype states",
+          "phenotype": "Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology",
+          "finding": "The local curation treats ASIP pigmentation variation model as a gene-specific marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology and melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "ASIP",
+      "chromosome": "20",
+      "relevant_methylation_probe_ids": [
+        "cg00375430",
+        "cg08240466",
+        "cg12307818",
+        "cg01562356",
+        "cg04697784",
+        "cg14668180",
+        "cg17301506",
+        "cg14356946",
+        "cg17055717",
+        "cg13419083"
+      ]
+    },
+    {
+      "variant": "ASIP regulatory expression context model",
+      "display_name": "ASIP regulatory expression context model",
+      "common_name": "ASIP expression and methylation-context model",
+      "lookup_keys": [
+        "ASIP regulatory expression context model",
+        "ASIP regulatory expression context model",
+        "ASIP:ASIP regulatory expression context model",
+        "asip:asip regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "ASIP regulatory expression context model is curated as a ASIP marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology. Read it through genotype dosage, phenotype context, and the melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Hair pigmentation, skin pigmentation, and graying research context",
+        "Melanocyte development, survival, and melanosome biology",
+        "Pigmentary trait, albinism, melanoma-lineage, and follicle biology"
+      ],
+      "research_context": [
+        "Use this marker as a ASIP pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "ASIP expression and methylation-context model",
+      "methylation_interpretation": "Pair ASIP regulatory expression context model with ASIP methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "ASIP curated evidence set",
+          "genotypes": "ASIP regulatory expression context model or linked ASIP locus genotype states",
+          "phenotype": "Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology",
+          "finding": "The local curation treats ASIP regulatory expression context model as a gene-specific marker for Hair pigmentation, skin pigmentation, and graying research context, Melanocyte development, survival, and melanosome biology and melanocyte development, melanin synthesis and trafficking, hair-follicle pigmentation, melanocyte stem-cell maintenance, and graying biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "ASIP",
+      "chromosome": "20",
+      "relevant_methylation_probe_ids": [
+        "cg00375430",
+        "cg08240466",
+        "cg12307818",
+        "cg01562356",
+        "cg04697784",
+        "cg14668180",
+        "cg17301506",
+        "cg14356946",
+        "cg17055717",
+        "cg13419083"
+      ]
+    }
+  ]
+}

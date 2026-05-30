@@ -1,0 +1,70 @@
+{
+  "database_name": "NophiGene MT-RNR1 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled MT-RNR1 population database is literature and guideline oriented. Mitochondrial variants are not represented like diploid nuclear variants in many exome/genome population panels, and interpretation should consider heteroplasmy, haplogroup background, and maternal inheritance.",
+  "gene_population_patterns_intro": "Broader population patterns curated from MT-RNR1 pharmacogenetic, hearing-loss, and maternal-lineage literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 4549: MT-RNR1 gene summary and literature links",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/4549"
+    },
+    {
+      "label": "NCBI Bookshelf: Gentamicin therapy and MT-RNR1 genotype",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK285956/"
+    },
+    {
+      "label": "PharmGKB VIP summary for MT-RNR1",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5083147/"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "m.1555A>G",
+      "location_group": "Global pattern",
+      "summary": "m.1555A>G is the most widely reported MT-RNR1 aminoglycoside ototoxicity allele, with prevalence and penetrance shaped by population background, aminoglycoside exposure, heteroplasmy, and modifying variants."
+    },
+    {
+      "variant": "m.1494C>T",
+      "location_group": "Disease cohorts",
+      "summary": "m.1494C>T is rarer than m.1555A>G but has strong guideline support as an increased-risk allele; many reported families and cohorts are East Asian, especially Chinese, though it is not exclusive to that ancestry."
+    },
+    {
+      "variant": "m.1095T>C",
+      "location_group": "Disease cohorts",
+      "summary": "m.1095T>C is curated as a CPIC increased-risk allele with more moderate evidence, so population interpretation should preserve uncertainty around penetrance and study size."
+    },
+    {
+      "variant": "m.827A>G",
+      "location_group": "Global pattern",
+      "summary": "m.827A>G is included as a normal-risk contrast allele in CPIC aminoglycoside recommendations; this helps separate hearing-loss literature signals from expert pharmacogenetic risk categories."
+    }
+  ]
+}

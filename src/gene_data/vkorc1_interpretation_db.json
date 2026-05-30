@@ -1,0 +1,154 @@
+{
+  "database_name": "NophiGene VKORC1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "VKORC1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "16p11.2",
+    "chromosome": "16",
+    "gene_region": {
+      "label": "VKORC1 transcribed interval",
+      "start": 31102163,
+      "end": 31107301,
+      "definition": "Canonical VKORC1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 31107302,
+      "end": 31108301,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 31105982,
+      "end": 31107073,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "16:31102163-31108301",
+    "gene_summary": "VKORC1 encodes vitamin K epoxide reductase complex subunit 1, the warfarin target. This bundle emphasizes vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics.",
+    "clinical_context": "The local VKORC1 bundle is warfarin pharmacogenomics oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "VKORC1 variants can alter or tag vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Warfarin dose-sensitivity context",
+      "Vitamin K cycle biology",
+      "Anticoagulation pharmacogenetics"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg24770845",
+      "cg01305745",
+      "cg09155044",
+      "cg08421448",
+      "cg19254463",
+      "cg25047102",
+      "cg09818930",
+      "cg13737969",
+      "cg04200835",
+      "cg27610764"
+    ],
+    "methylation_interpretation": "VKORC1 methylation should be treated as local regulatory context around a vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for VKORC1.",
+      "Because VKORC1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use VKORC1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics.",
+      "Warfarin dose-sensitivity context",
+      "Vitamin K cycle biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 79001: VKORC1",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/79001"
+      },
+      {
+        "label": "UniProt Q9BQB6: VKORC1_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/Q9BQB6/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000167397: VKORC1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000167397"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "VKORC1 biochemical figure starter",
+      "focus": "VKORC1: vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "folate metabolism",
+        "protein kinase",
+        "metabolic pathway"
+      ],
+      "recommended_icons": [
+        "Metabolic pathway (in mitochondria)",
+        "Simulated metabolic activity",
+        "PKA bound to cAMP"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a VKORC1 warfarin pharmacogenomics thesis: the individual may carry context relevant to vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics and Warfarin dose-sensitivity context, Vitamin K cycle biology. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs9923231",
+      "display_name": "rs9923231 (VKORC1 -1639G>A)",
+      "common_name": "VKORC1 warfarin sensitivity marker",
+      "lookup_keys": [
+        "rs9923231",
+        "rs9923231 (VKORC1 -1639G>A)",
+        "VKORC1:rs9923231",
+        "vkorc1:rs9923231"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs9923231 (VKORC1 -1639G>A) is curated as a VKORC1 marker for Warfarin dose-sensitivity context, Vitamin K cycle biology. Read it through genotype dosage, phenotype context, and the vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Warfarin dose-sensitivity context",
+        "Vitamin K cycle biology",
+        "Anticoagulation pharmacogenetics"
+      ],
+      "research_context": [
+        "Use this marker as a VKORC1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "VKORC1 warfarin sensitivity marker",
+      "methylation_interpretation": "Pair rs9923231 (VKORC1 -1639G>A) with VKORC1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "VKORC1 curated evidence set",
+          "genotypes": "rs9923231 (VKORC1 -1639G>A) or linked VKORC1 locus genotype states",
+          "phenotype": "Warfarin dose-sensitivity context, Vitamin K cycle biology",
+          "finding": "The local curation treats rs9923231 (VKORC1 -1639G>A) as a gene-specific marker for Warfarin dose-sensitivity context, Vitamin K cycle biology and vitamin K recycling, gamma-carboxylation support, warfarin sensitivity, and anticoagulant pharmacogenomics.",
+          "url": ""
+        }
+      ],
+      "gene_name": "VKORC1",
+      "chromosome": "16",
+      "relevant_methylation_probe_ids": [
+        "cg24770845",
+        "cg01305745",
+        "cg09155044",
+        "cg08421448",
+        "cg19254463",
+        "cg25047102",
+        "cg09818930",
+        "cg13737969",
+        "cg04200835",
+        "cg27610764"
+      ]
+    }
+  ]
+}

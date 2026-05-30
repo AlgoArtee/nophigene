@@ -1,0 +1,207 @@
+{
+  "database_name": "NophiGene FLG Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "FLG",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "1q21.3",
+    "chromosome": "1",
+    "gene_region": {
+      "label": "FLG transcribed interval",
+      "start": 152274651,
+      "end": 152297679,
+      "definition": "Canonical FLG genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup for ENSG00000143631 on the primary assembly, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 152297680,
+      "end": 152298679,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 152285765,
+      "end": 152297873,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "1:152274651-152298679",
+    "gene_summary": "FLG encodes filaggrin, a key epidermal barrier protein whose loss-of-function variants are strongly linked to ichthyosis vulgaris, atopic dermatitis, allergic sensitization, and asthma risk in barrier-impaired contexts.",
+    "clinical_context": "The bundled FLG knowledge base is focused on asthma, allergy, atopic dermatitis, airway inflammation, epithelial-barrier biology, and immune-regulatory research. Seeded markers and locus models are intended as research context and should not be promoted to diagnostic, prognostic, or treatment-selection claims without external clinical curation.",
+    "variant_effect_overview": [
+      "FLG loss-of-function alleles are higher-impact barrier-disruption markers than most common allergic-disease GWAS SNPs.",
+      "Asthma interpretation is usually strongest when atopic dermatitis, eczema, or barrier dysfunction is also present."
+    ],
+    "condition_research_overview": [
+      "Atopic dermatitis and ichthyosis vulgaris",
+      "Epidermal barrier dysfunction",
+      "Allergic sensitization and atopic asthma context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg19855573",
+      "cg22719314",
+      "cg27004939"
+    ],
+    "methylation_interpretation": "FLG methylation should be read as local regulatory context around an allergic-inflammation gene. Promoter-proximal or gene-body beta values may help frame accessibility or expression hypotheses, but they are not validated stand-alone biomarkers for asthma, eczema, allergy, immune activation, or treatment response.",
+    "methylation_effects": [
+      "Promoter-proximal methylation may suggest a more restrained or permissive local regulatory state for FLG expression potential.",
+      "Interpret methylation with tissue, cell composition, environmental exposure, disease state, medication history, and genotype context."
+    ],
+    "methylation_condition_research": [
+      "Asthma, allergy, atopic dermatitis, eosinophilic inflammation, and airway epithelial studies.",
+      "Immune-cell, epithelial-barrier, cytokine-signaling, and inflammatory-disease epigenetic research."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 2312: FLG gene summary",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/2312"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000143631: FLG coordinates and transcripts",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000143631"
+      },
+      {
+        "label": "UniProt P20930: FLG protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/P20930/entry"
+      },
+      {
+        "label": "GWAS Catalog gene page: FLG",
+        "url": "https://www.ebi.ac.uk/gwas/genes/FLG"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "rs61816761",
+      "display_name": "rs61816761 (FLG R501X)",
+      "common_name": "FLG loss-of-function barrier marker",
+      "position": null,
+      "lookup_keys": [
+        "rs61816761",
+        "rs61816761 (FLG R501X)",
+        "FLG loss-of-function barrier marker",
+        "FLG:rs61816761"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "rs61816761 (FLG R501X) is bundled as a FLG research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Clinically important FLG loss-of-function research and barrier-risk marker; classification still depends on zygosity and external clinical review.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around FLG.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "Atopic dermatitis and ichthyosis vulgaris",
+        "Epidermal barrier dysfunction",
+        "Allergic sensitization and atopic asthma context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "FLG marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "FLG methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for rs61816761 (FLG R501X).",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 2312: FLG gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/2312"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000143631: FLG coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000143631"
+        },
+        {
+          "label": "UniProt P20930: FLG protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P20930/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: FLG",
+          "url": "https://www.ebi.ac.uk/gwas/genes/FLG"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "rs61816761 (FLG R501X) or linked FLG locus genotype states",
+          "phenotype": "Atopic dermatitis and ichthyosis vulgaris, Epidermal barrier dysfunction, Allergic sensitization and atopic asthma context",
+          "finding": "The local curation treats rs61816761 (FLG R501X) as a research-grade FLG signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/FLG"
+        }
+      ],
+      "gene_name": "FLG",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg19855573",
+        "cg22719314",
+        "cg27004939"
+      ]
+    },
+    {
+      "variant": "FLG 2282del4",
+      "display_name": "FLG 2282del4",
+      "common_name": "FLG recurrent loss-of-function deletion marker",
+      "position": null,
+      "lookup_keys": [
+        "FLG 2282del4",
+        "FLG recurrent loss-of-function deletion marker",
+        "FLG:FLG 2282del4"
+      ],
+      "region_class": "regulatory_locus",
+      "interpretation_scope": "Research association / immune-airway regulatory context",
+      "clinical_interpretation": "FLG 2282del4 is bundled as a FLG research marker for allergic disease, asthma, eczema, airway inflammation, or immune-regulatory cohort literature. Treat it as low-penetrance, cohort-aware association context rather than as a diagnostic or treatment-selection allele.",
+      "clinical_significance": "Clinically important FLG loss-of-function research and barrier-risk marker; classification still depends on zygosity and external clinical review.",
+      "functional_effects": [
+        "May tag regulatory, expression, coding, haplotype, or linked-locus variation around FLG.",
+        "Reported effects should be interpreted with ancestry, phenotype definition, tissue, and genotype dosage in mind."
+      ],
+      "associated_conditions": [
+        "Atopic dermatitis and ichthyosis vulgaris",
+        "Epidermal barrier dysfunction",
+        "Allergic sensitization and atopic asthma context"
+      ],
+      "research_context": [
+        "Use this marker as a research context flag and not as a stand-alone diagnosis.",
+        "Direction and effect size can vary across asthma, eczema, allergy, immune, epithelial, and ancestry-specific cohorts.",
+        "Confirm exact allele, build, zygosity, QC, and LD/haplotype context before drawing marker-level conclusions."
+      ],
+      "usual_variant_note": "FLG marker used for allergic-inflammation research context.",
+      "methylation_interpretation": "FLG methylation can provide local regulatory context, but it does not establish the variant, haplotype, expression state, or phenotype direction for FLG 2282del4.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "NCBI Gene 2312: FLG gene summary",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/2312"
+        },
+        {
+          "label": "Ensembl GRCh37 ENSG00000143631: FLG coordinates and transcripts",
+          "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000143631"
+        },
+        {
+          "label": "UniProt P20930: FLG protein entry",
+          "url": "https://www.uniprot.org/uniprotkb/P20930/entry"
+        },
+        {
+          "label": "GWAS Catalog gene page: FLG",
+          "url": "https://www.ebi.ac.uk/gwas/genes/FLG"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Asthma, allergy, and immune-trait GWAS and functional follow-up literature",
+          "genotypes": "FLG 2282del4 or linked FLG locus genotype states",
+          "phenotype": "Atopic dermatitis and ichthyosis vulgaris, Epidermal barrier dysfunction, Allergic sensitization and atopic asthma context",
+          "finding": "The local curation treats FLG 2282del4 as a research-grade FLG signal for allergic, airway, epithelial-barrier, or immune-inflammatory biology.",
+          "url": "https://www.ebi.ac.uk/gwas/genes/FLG"
+        }
+      ],
+      "gene_name": "FLG",
+      "chromosome": "1",
+      "relevant_methylation_probe_ids": [
+        "cg19855573",
+        "cg22719314",
+        "cg27004939"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene SLC6A4 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "SLC6A4",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "17q11.2",
+    "chromosome": "17",
+    "gene_region": {
+      "label": "SLC6A4 transcribed interval",
+      "start": 28521337,
+      "end": 28563020,
+      "definition": "Canonical SLC6A4 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 28563021,
+      "end": 28564020,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 28442480,
+      "end": 28620601,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "17:28521337-28564020",
+    "gene_summary": "SLC6A4 encodes the serotonin transporter that clears serotonin from synapses. This topic bundle emphasizes neurological and neurodegenerative biology, with interpretation centered on synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+    "clinical_context": "The local SLC6A4 bundle is oriented toward neurological and neurodegenerative biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "SLC6A4 variants can alter, tag, or contextualize synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+      "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg25725890",
+      "cg26741280",
+      "cg10901968",
+      "cg05016953",
+      "cg06373684",
+      "cg18584905",
+      "cg26438554",
+      "cg14692377",
+      "cg03363743",
+      "cg22584138"
+    ],
+    "methylation_interpretation": "SLC6A4 methylation should be treated as local regulatory context around a synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for SLC6A4.",
+      "Because SLC6A4 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use SLC6A4 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+      "Neurological, neurodevelopmental, and neurodegenerative disease context",
+      "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 6532: SLC6A4",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/6532"
+      },
+      {
+        "label": "UniProt P31645: SLC6A4_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P31645/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000108576: SLC6A4 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000108576"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "SLC6A4 biochemical figure starter",
+      "focus": "SLC6A4: neurological and neurodegenerative biology via synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology",
+      "template_title": "Microglial Activation and Neurodegeneration Linked to Aging and Inflammation",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-6995911c0580ae042d7236bc?source=mcp",
+      "icon_search_terms": [
+        "neuron synapse neurodegeneration",
+        "synapse",
+        "microglia"
+      ],
+      "recommended_icons": [
+        "Microglial cell (with Abeta plaque)",
+        "Axonal-dendritic synaptic cleft (3D)",
+        "Myelin sheath (long, degenerating)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a SLC6A4 neurological and neurodegenerative biology thesis: the individual may carry context relevant to synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "SLC6A4 neurobiology variation model",
+      "display_name": "SLC6A4 neurobiology variation model",
+      "common_name": "SLC6A4 neurological and neurodegenerative biology pathway model",
+      "lookup_keys": [
+        "SLC6A4 neurobiology variation model",
+        "SLC6A4 neurobiology variation model",
+        "SLC6A4:SLC6A4 neurobiology variation model",
+        "slc6a4:slc6a4 neurobiology variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SLC6A4 neurobiology variation model is curated as a SLC6A4 marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a SLC6A4 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SLC6A4 neurological and neurodegenerative biology pathway model",
+      "methylation_interpretation": "Pair SLC6A4 neurobiology variation model with SLC6A4 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SLC6A4 curated evidence set",
+          "genotypes": "SLC6A4 neurobiology variation model or linked SLC6A4 locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats SLC6A4 neurobiology variation model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SLC6A4",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg25725890",
+        "cg26741280",
+        "cg10901968",
+        "cg05016953",
+        "cg06373684",
+        "cg18584905",
+        "cg26438554",
+        "cg14692377",
+        "cg03363743",
+        "cg22584138"
+      ]
+    },
+    {
+      "variant": "SLC6A4 regulatory expression context model",
+      "display_name": "SLC6A4 regulatory expression context model",
+      "common_name": "SLC6A4 expression and methylation-context model",
+      "lookup_keys": [
+        "SLC6A4 regulatory expression context model",
+        "SLC6A4 regulatory expression context model",
+        "SLC6A4:SLC6A4 regulatory expression context model",
+        "slc6a4:slc6a4 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SLC6A4 regulatory expression context model is curated as a SLC6A4 marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology. Read it through genotype dosage, phenotype context, and the synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Neurological, neurodevelopmental, and neurodegenerative disease context",
+        "Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+        "Cognitive, movement-disorder, epilepsy, and psychiatric association review"
+      ],
+      "research_context": [
+        "Use this marker as a SLC6A4 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SLC6A4 expression and methylation-context model",
+      "methylation_interpretation": "Pair SLC6A4 regulatory expression context model with SLC6A4 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SLC6A4 curated evidence set",
+          "genotypes": "SLC6A4 regulatory expression context model or linked SLC6A4 locus genotype states",
+          "phenotype": "Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology",
+          "finding": "The local curation treats SLC6A4 regulatory expression context model as a gene-specific marker for Neurological, neurodevelopmental, and neurodegenerative disease context, Synaptic signaling, excitability, neurotransmitter, and protein-homeostasis biology and synaptic signaling, neurotransmission, protein aggregation, neuronal survival, neurodevelopment, and neurodegeneration biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SLC6A4",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg25725890",
+        "cg26741280",
+        "cg10901968",
+        "cg05016953",
+        "cg06373684",
+        "cg18584905",
+        "cg26438554",
+        "cg14692377",
+        "cg03363743",
+        "cg22584138"
+      ]
+    }
+  ]
+}

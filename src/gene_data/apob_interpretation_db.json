@@ -1,0 +1,183 @@
+{
+  "database_name": "NophiGene APOB Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "APOB",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "2p24.1",
+    "chromosome": "2",
+    "gene_region": {
+      "label": "APOB transcribed interval",
+      "start": 21224301,
+      "end": 21266945,
+      "definition": "Canonical APOB genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 21266946,
+      "end": 21267945,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 21266886,
+      "end": 21266886,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "2:21224301-21267945",
+    "gene_summary": "APOB encodes apolipoprotein B, the structural apolipoprotein of LDL and other atherogenic lipoproteins. This bundle emphasizes LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology.",
+    "clinical_context": "The local APOB bundle is atherogenic lipoprotein biology oriented. Interpret markers through exact allele class, zygosity, ancestry, phenotype, and assay context rather than as stand-alone deterministic calls.",
+    "variant_effect_overview": [
+      "APOB variants can alter or tag LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology; effect direction depends on allele class, tissue, dosage, and biological context.",
+      "Common markers, pharmacogenetic alleles, structural events, and high-impact pathogenic variants should be kept separate during interpretation."
+    ],
+    "condition_research_overview": [
+      "Familial hypercholesterolemia review context",
+      "LDL cholesterol and atherosclerosis biology",
+      "Hypobetalipoproteinemia context"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg17067405"
+    ],
+    "methylation_interpretation": "APOB methylation should be treated as local regulatory context around a LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for APOB.",
+      "Because APOB biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use APOB promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology.",
+      "Familial hypercholesterolemia review context",
+      "LDL cholesterol and atherosclerosis biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 338: APOB",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/338"
+      },
+      {
+        "label": "UniProt P04114: APOB_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/P04114/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000084674: APOB coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000084674"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "APOB biochemical figure starter",
+      "focus": "APOB: LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology",
+      "template_title": "Intracellular Metabolic Pathway Comparison (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-61f9dec1241da3009dcc4c2c?source=mcp",
+      "icon_search_terms": [
+        "lipid metabolism",
+        "APOE",
+        "LDL receptor"
+      ],
+      "recommended_icons": [
+        "Apolipoprotein A brush (kringle)",
+        "Vessel (atherosclerosis, cross-section)",
+        "Atherosclerosis (with hypoxia, cross-section)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a APOB atherogenic lipoprotein biology thesis: the individual may carry context relevant to LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology and Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology. Treat this as pathway triage until the exact allele has external classification and phenotype support."
+  },
+  "variant_records": [
+    {
+      "variant": "rs693",
+      "display_name": "rs693 (APOB lipid association marker)",
+      "common_name": "APOB common lipid marker",
+      "lookup_keys": [
+        "rs693",
+        "rs693 (APOB lipid association marker)",
+        "APOB:rs693",
+        "apob:rs693"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "rs693 (APOB lipid association marker) is curated as a APOB marker for Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology. Read it through genotype dosage, phenotype context, and the LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Familial hypercholesterolemia review context",
+        "LDL cholesterol and atherosclerosis biology",
+        "Hypobetalipoproteinemia context"
+      ],
+      "research_context": [
+        "Use this marker as a APOB pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "APOB common lipid marker",
+      "methylation_interpretation": "Pair rs693 (APOB lipid association marker) with APOB methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "APOB curated evidence set",
+          "genotypes": "rs693 (APOB lipid association marker) or linked APOB locus genotype states",
+          "phenotype": "Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology",
+          "finding": "The local curation treats rs693 (APOB lipid association marker) as a gene-specific marker for Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology and LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology.",
+          "url": ""
+        }
+      ],
+      "gene_name": "APOB",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg17067405"
+      ]
+    },
+    {
+      "variant": "APOB familial-hypercholesterolemia model",
+      "display_name": "APOB familial-hypercholesterolemia model",
+      "common_name": "APOB LDLR-binding disruption model",
+      "lookup_keys": [
+        "APOB familial-hypercholesterolemia model",
+        "APOB familial-hypercholesterolemia model",
+        "APOB:APOB familial-hypercholesterolemia model",
+        "apob:apob familial-hypercholesterolemia model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "APOB familial-hypercholesterolemia model is curated as a APOB marker for Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology. Read it through genotype dosage, phenotype context, and the LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Familial hypercholesterolemia review context",
+        "LDL cholesterol and atherosclerosis biology",
+        "Hypobetalipoproteinemia context"
+      ],
+      "research_context": [
+        "Use this marker as a APOB pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "APOB LDLR-binding disruption model",
+      "methylation_interpretation": "Pair APOB familial-hypercholesterolemia model with APOB methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "APOB curated evidence set",
+          "genotypes": "APOB familial-hypercholesterolemia model or linked APOB locus genotype states",
+          "phenotype": "Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology",
+          "finding": "The local curation treats APOB familial-hypercholesterolemia model as a gene-specific marker for Familial hypercholesterolemia review context, LDL cholesterol and atherosclerosis biology and LDL particle structure, apoB-LDLR binding, triglyceride-rich lipoprotein metabolism, and familial hypercholesterolemia biology.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "APOB",
+      "chromosome": "2",
+      "relevant_methylation_probe_ids": [
+        "cg17067405"
+      ]
+    }
+  ]
+}

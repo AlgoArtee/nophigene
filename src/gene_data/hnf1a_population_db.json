@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene HNF1A Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled HNF1A population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from HNF1A pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 6927: HNF1A",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/6927"
+    },
+    {
+      "label": "UniProt P20823: HNF1A_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P20823/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000135100: HNF1A coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000135100"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "HNF1A biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "HNF1A findings should be read against pancreatic beta-cell transcription, hepatic gene regulation, MODY biology, glycemic control, and CRP/lipid trait associations; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "HNF1A MODY3 loss-of-function model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "HNF1A MODY3 loss-of-function model is curated as a HNF1A marker for MODY3 review context, Beta-cell function and glycemic trait biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "rs1169288 (HNF1A I27L)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs1169288 (HNF1A I27L) is curated as a HNF1A marker for MODY3 review context, Beta-cell function and glycemic trait biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

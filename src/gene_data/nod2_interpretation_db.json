@@ -1,0 +1,211 @@
+{
+  "database_name": "NophiGene NOD2 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "NOD2",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "16q12.1",
+    "chromosome": "16",
+    "gene_region": {
+      "label": "NOD2 transcribed interval",
+      "start": 50727514,
+      "end": 50766988,
+      "definition": "Canonical NOD2 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 50726514,
+      "end": 50727513,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 50774659,
+      "end": 50777964,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "16:50726514-50766988",
+    "gene_summary": "NOD2 encodes an intracellular muramyl dipeptide sensor involved in Crohn disease and bacterial-response biology. This topic bundle emphasizes digestion and gut barrier biology, with interpretation centered on intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+    "clinical_context": "The local NOD2 bundle is oriented toward digestion and gut barrier biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "NOD2 variants can alter, tag, or contextualize intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+      "Inflammatory bowel disease and mucosal immune pathway biology",
+      "Nutrient transport, digestive enzyme, and epithelial repair review"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg16901027",
+      "cg16771652",
+      "cg08554257",
+      "cg26954174",
+      "cg18177814",
+      "cg19513593",
+      "cg10444583",
+      "cg06181567",
+      "cg05146293",
+      "cg02817770"
+    ],
+    "methylation_interpretation": "NOD2 methylation should be treated as local regulatory context around a intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for NOD2.",
+      "Because NOD2 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use NOD2 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+      "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+      "Inflammatory bowel disease and mucosal immune pathway biology"
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 64127: NOD2",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/64127"
+      },
+      {
+        "label": "UniProt Q9HC29: NOD2_HUMAN",
+        "url": "https://www.uniprot.org/uniprotkb/Q9HC29/entry"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000167207: NOD2 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000167207"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "NOD2 biochemical figure starter",
+      "focus": "NOD2: digestion and gut barrier biology via intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling",
+      "template_title": "Intestinal Barrier Structure with Microbiota",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-69eded0a2c5ddd9536c15eda?source=mcp",
+      "icon_search_terms": [
+        "intestinal barrier gut epithelium",
+        "digestion",
+        "microbiome"
+      ],
+      "recommended_icons": [
+        "Intestinal epithelium (Peyer's patch)",
+        "Colon epithelium",
+        "Colon epithelium (mucous)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a NOD2 digestion and gut barrier biology thesis: the individual may carry context relevant to intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "NOD2 gut-digestion variation model",
+      "display_name": "NOD2 gut-digestion variation model",
+      "common_name": "NOD2 digestion and gut barrier biology pathway model",
+      "lookup_keys": [
+        "NOD2 gut-digestion variation model",
+        "NOD2 gut-digestion variation model",
+        "NOD2:NOD2 gut-digestion variation model",
+        "nod2:nod2 gut-digestion variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "NOD2 gut-digestion variation model is curated as a NOD2 marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology. Read it through genotype dosage, phenotype context, and the intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+        "Inflammatory bowel disease and mucosal immune pathway biology",
+        "Nutrient transport, digestive enzyme, and epithelial repair review"
+      ],
+      "research_context": [
+        "Use this marker as a NOD2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "NOD2 digestion and gut barrier biology pathway model",
+      "methylation_interpretation": "Pair NOD2 gut-digestion variation model with NOD2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "NOD2 curated evidence set",
+          "genotypes": "NOD2 gut-digestion variation model or linked NOD2 locus genotype states",
+          "phenotype": "Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology",
+          "finding": "The local curation treats NOD2 gut-digestion variation model as a gene-specific marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology and intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "NOD2",
+      "chromosome": "16",
+      "relevant_methylation_probe_ids": [
+        "cg16901027",
+        "cg16771652",
+        "cg08554257",
+        "cg26954174",
+        "cg18177814",
+        "cg19513593",
+        "cg10444583",
+        "cg06181567",
+        "cg05146293",
+        "cg02817770"
+      ]
+    },
+    {
+      "variant": "NOD2 regulatory expression context model",
+      "display_name": "NOD2 regulatory expression context model",
+      "common_name": "NOD2 expression and methylation-context model",
+      "lookup_keys": [
+        "NOD2 regulatory expression context model",
+        "NOD2 regulatory expression context model",
+        "NOD2:NOD2 regulatory expression context model",
+        "nod2:nod2 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "NOD2 regulatory expression context model is curated as a NOD2 marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology. Read it through genotype dosage, phenotype context, and the intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Digestion, malabsorption, gut barrier, and microbiome interaction context",
+        "Inflammatory bowel disease and mucosal immune pathway biology",
+        "Nutrient transport, digestive enzyme, and epithelial repair review"
+      ],
+      "research_context": [
+        "Use this marker as a NOD2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "NOD2 expression and methylation-context model",
+      "methylation_interpretation": "Pair NOD2 regulatory expression context model with NOD2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "NOD2 curated evidence set",
+          "genotypes": "NOD2 regulatory expression context model or linked NOD2 locus genotype states",
+          "phenotype": "Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology",
+          "finding": "The local curation treats NOD2 regulatory expression context model as a gene-specific marker for Digestion, malabsorption, gut barrier, and microbiome interaction context, Inflammatory bowel disease and mucosal immune pathway biology and intestinal epithelial barrier function, digestion and nutrient transport, mucus and microbial interface biology, bile-acid handling, and gut immune signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "NOD2",
+      "chromosome": "16",
+      "relevant_methylation_probe_ids": [
+        "cg16901027",
+        "cg16771652",
+        "cg08554257",
+        "cg26954174",
+        "cg18177814",
+        "cg19513593",
+        "cg10444583",
+        "cg06181567",
+        "cg05146293",
+        "cg02817770"
+      ]
+    }
+  ]
+}

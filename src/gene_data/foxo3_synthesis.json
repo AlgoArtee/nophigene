@@ -1,0 +1,228 @@
+{
+  "database_name": "NophiGene FOXO3 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "FOXO3",
+  "source_interpretation_database": "NophiGene FOXO3 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs2802292 (longevity-associated intronic enhancer SNP)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs2802292",
+      "display_name": "rs2802292",
+      "common_name": "longevity-associated intronic enhancer SNP",
+      "lookup_keys": [
+        "rs2802292",
+        "foxo3:rs2802292"
+      ],
+      "prediction": "GT-confirmed rs2802292 dosage suggests this sample carries the FOXO3 prediction context described by the gene-level thesis. The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. This specific marker is curated as longevity-associated intronic enhancer SNP. rs2802292 is the best-known common FOXO3 longevity marker. The G allele has been associated with survival to advanced age in multiple cohorts and is interpreted here as a research-grade healthy-aging modifier rather than as a pathogenic or diagnostic allele.",
+      "sample_change_template": "This sample matched rs2802292 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the FOXO3 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [
+        {
+          "prediction": "This sample row reports G as the observed alternate allele at FOXO3 rs2802292. The bundled longevity literature treats G as the healthy-aging-associated state and mechanistic follow-up links it to stress-responsive FOXO3 enhancer behavior. The prediction is a modest resilience and stress-response pathway thesis, not a guaranteed lifespan prediction.",
+          "basis": "Observed ALT G at rs2802292, the FOXO3 allele associated with longevity and stress-responsive enhancer behavior.",
+          "evidence": [
+            {
+              "label": "PMCID PMC5403515: FOXO3 longevity review",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5403515/"
+            },
+            {
+              "label": "PubMed 29497356: rs2802292 enhancer mechanism",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/29497356/"
+            }
+          ],
+          "alt_allele": "G"
+        },
+        {
+          "prediction": "This sample row reports T as the observed alternate allele at FOXO3 rs2802292. T is the contrast state to the G-linked longevity and stress-responsive enhancer findings in the local bundle, so the sample should not be labelled as carrying the G-direction FOXO3 longevity signal from this row alone. Keep the interpretation as general FOXO3 pathway context.",
+          "basis": "Observed ALT T at rs2802292, interpreted as the contrast state to the G-linked longevity evidence.",
+          "evidence": [
+            {
+              "label": "PMCID PMC5403515: FOXO3 longevity review",
+              "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5403515/"
+            },
+            {
+              "label": "PubMed 29497356: rs2802292 enhancer mechanism",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/29497356/"
+            }
+          ],
+          "alt_allele": "T"
+        }
+      ],
+      "basis": "The longevity-associated allele has been linked to stress-responsive enhancer behavior and higher FOXO3 expression under cellular stress.",
+      "evidence": [
+        {
+          "label": "PMCID PMC5403515: FOXO3 longevity review",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5403515/"
+        },
+        {
+          "label": "PubMed 29497356: rs2802292 enhancer mechanism",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/29497356/"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. An observed FOXO3 variant places this sample in the curated FOXO3 research context. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a FOXO3 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a FOXO3 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a FOXO3 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a FOXO3 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a FOXO3 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a FOXO3 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a FOXO3 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a FOXO3 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a FOXO3 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a FOXO3 healthy-aging and stress-resilience thesis: the individual may carry a longevity-associated regulatory background, especially if the matched marker is rs2802292-like, because FOXO3 controls stress response, autophagy, inflammation, and metabolic adaptation. This predicts a cohort-level resilience signal, not guaranteed lifespan. FOXO3 methylation is best interpreted as chromatin and regulatory context around a stress-response transcription factor. Promoter-proximal methylation or broader locus methylation can inform whether the sampled tissue appears permissive or restrained, but it should not be treated as a direct readout of any one longevity SNP. The bundled FOXO3 database is intended for pathway and longevity research context rather than for monogenic disease reporting. FOXO3 is one of the most replicated human longevity genes, but common variants are interpreted as modest effect-size healthy-aging modifiers. The strongest common FOXO3 signals involve intronic enhancer or haplotype markers rather than protein-truncating alleles.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "FOXO3 is repeatedly linked to exceptional longevity and survival to advanced age across multiple cohort designs.",
+        "The gene is also studied in cardiometabolic resilience, oxidative-stress biology, immune regulation, and stem-cell maintenance.",
+        "FOXO3 sits in the broader insulin-IGF-AMPK-mTOR longevity network, so interpretation benefits from pathway-level context."
+      ]
+    }
+  ]
+}

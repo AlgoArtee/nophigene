@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene FCER2 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled FCER2 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from FCER2 IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 2208: FCER2",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/2208"
+    },
+    {
+      "label": "UniProt P06734: FCER2_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P06734/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000104921: FCER2 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000104921"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "FCER2 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "FCER2 findings should be read against IgE receptor biology, mast-cell and eosinophil activation, cytokine and chemokine signaling, NF-kappaB control, and JAK-STAT inflammatory regulation; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "FCER2 immune-response variation model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "FCER2 immune-response variation model is curated as a FCER2 marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "FCER2 regulatory expression context model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "FCER2 regulatory expression context model is curated as a FCER2 marker for Allergy, asthma, atopy, and inflammatory disease context, Mast-cell, eosinophil, cytokine, and chemokine pathway biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

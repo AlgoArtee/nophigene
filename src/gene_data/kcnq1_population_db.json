@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene KCNQ1 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled KCNQ1 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from KCNQ1 cardiac repolarization, IKs potassium current, beta-cell electrophysiology, imprinting-region context, and channel pharmacology and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 3784: KCNQ1",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/3784"
+    },
+    {
+      "label": "UniProt P51787: KCNQ1_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P51787/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000053918: KCNQ1 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000053918"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "KCNQ1 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "KCNQ1 findings should be read against cardiac repolarization, IKs potassium current, beta-cell electrophysiology, imprinting-region context, and channel pharmacology; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "KCNQ1 long-QT model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "KCNQ1 long-QT model is curated as a KCNQ1 marker for Long-QT syndrome review context, Cardiac repolarization biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "rs2237892",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs2237892 is curated as a KCNQ1 marker for Long-QT syndrome review context, Cardiac repolarization biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

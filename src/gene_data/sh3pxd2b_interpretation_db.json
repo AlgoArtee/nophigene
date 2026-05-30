@@ -1,0 +1,271 @@
+{
+  "database_name": "NophiGene SH3PXD2B Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "SH3PXD2B",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "5q35.1",
+    "chromosome": "5",
+    "gene_region": {
+      "label": "SH3PXD2B transcribed interval",
+      "start": 171752185,
+      "end": 171881529,
+      "definition": "Canonical SH3PXD2B genomic interval on GRCh37 / hg19 from NCBI Gene 285590 reports SH3PXD2B on GRCh37.p13 at NC_000005.9:171752185..171881529, complement, and on GRCh38.p14 at NC_000005.10:172325181..172454525, complement; Ensembl GRCh37 reports ENSG00000174705 at chr5:171752185-171881527 on the reverse strand."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 171881530,
+      "end": 171882529,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 171881426,
+      "end": 171882240,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "5:171752185-171882529",
+    "gene_summary": "SH3PXD2B, also known as TKS4, encodes SH3 and PX domain-containing protein 2B, a Src-phosphorylated adaptor with one PX domain and four SH3 domains. The protein organizes podosome and invadopodia biology, binds phosphoinositides, matrix-remodeling proteins, and NADPH oxidase components, and helps coordinate extracellular-matrix degradation, cell adhesion, migration, ROS localization, and developmental tissue remodeling.",
+    "clinical_context": "The local SH3PXD2B knowledge base is rare autosomal-recessive Frank-ter Haar syndrome and overlapping Borrone dermato-cardio-skeletal syndrome oriented, with supporting podosome, collagen-remodeling, ocular, skeletal, cardiac, craniofacial, dermal, fibrosis, and cancer-cell-migration biology. ClinGen lists a definitive autosomal-recessive SH3PXD2B-Frank-ter Haar syndrome gene-disease validity curation, but app-level findings still require zygosity, phase, variant classification, breakpoint, phenotype, and clinical-grade confirmation review.",
+    "variant_effect_overview": [
+      "Biallelic SH3PXD2B loss-of-function, splice, or deletion variants disrupt the TKS4 podosome adaptor mechanism and are an established cause of Frank-ter Haar syndrome, including skeletal, ocular, cardiac, craniofacial, and connective-tissue findings.",
+      "SH3PXD2B-related Borrone dermato-cardio-skeletal syndrome is best treated as an overlapping FTHS-spectrum phenotype rather than a separate deterministic entity; the cited linkage and fibroblast work showed complete loss of SH3PXD2B in mutation-positive families.",
+      "Functional studies support TKS4 as required for full podosome formation, MT1-MMP recruitment, extracellular-matrix degradation, collagen remodeling, and cell migration; animal models support skeletal, ocular, cardiac, dermal fibrosis, and contracture biology.",
+      "Single heterozygous, benign, or VUS SH3PXD2B findings should not be upgraded to a rare-disease prediction without a second pathogenic allele, phase/inheritance support, and phenotype consistency."
+    ],
+    "condition_research_overview": [
+      "Autosomal-recessive Frank-ter Haar syndrome / Ter Haar syndrome and overlapping Borrone dermato-cardio-skeletal syndrome.",
+      "Podosome and invadopodia formation, extracellular-matrix degradation, collagen remodeling, developmental skeletal and connective-tissue biology, ocular pressure/glaucoma, and cardiac/craniofacial development.",
+      "Cancer-cell migration, EMT-like epithelial plasticity, Src signaling, NADPH oxidase/ROS localization, adipocyte differentiation, and broader cell-adhesion research contexts."
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg08854128",
+      "cg05224707",
+      "cg26528541",
+      "cg00591781",
+      "cg24904925",
+      "cg18629270",
+      "cg23786077",
+      "cg05252940",
+      "cg15926342",
+      "cg25513933"
+    ],
+    "methylation_interpretation": "SH3PXD2B has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use SH3PXD2B methylation as local regulatory context around a reverse-strand podosome-adaptor gene, not as a validated FTHS, BDCS, glaucoma, fibrosis, cancer-invasion, or collagen-remodeling biomarker.",
+    "methylation_effects": [
+      "The SH3PXD2B methylation view can summarize promoter-proximal and gene-body CpGs around the reverse-strand transcription start.",
+      "No source-backed SH3PXD2B methylation threshold is bundled; beta values should be interpreted alongside tissue, cell composition, expression, sequence/CNV evidence, inheritance, and phenotype."
+    ],
+    "methylation_condition_research": [
+      "Use SH3PXD2B methylation as supportive regulatory context in podosome, collagen-remodeling, connective-tissue, ocular, skeletal, cardiac, or cancer-cell-migration research.",
+      "Do not infer biallelic SH3PXD2B loss, Frank-ter Haar syndrome, Borrone dermato-cardio-skeletal syndrome, glaucoma, fibrosis, or invasive cancer behavior from peripheral EPIC methylation alone."
+    ],
+    "evidence": [
+      {
+        "label": "NCBI Gene 285590: SH3PXD2B gene summary, GRCh37/GRCh38 coordinates, expression, RefSeq, GO, and phenotype context",
+        "url": "https://www.ncbi.nlm.nih.gov/gene/285590"
+      },
+      {
+        "label": "Ensembl GRCh37 ENSG00000174705: SH3PXD2B gene model and reverse-strand coordinates",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000174705"
+      },
+      {
+        "label": "UniProt A1X283: SH3PXD2B / SPD2B_HUMAN protein entry",
+        "url": "https://www.uniprot.org/uniprotkb/A1X283/entry"
+      },
+      {
+        "label": "Human Protein Atlas ENSG00000174705-SH3PXD2B: expression and subcellular localization context",
+        "url": "https://www.proteinatlas.org/ENSG00000174705-SH3PXD2B"
+      },
+      {
+        "label": "ClinGen Gene Facts HGNC:29242: definitive SH3PXD2B-Frank-ter Haar syndrome gene-disease validity curation",
+        "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A29242"
+      },
+      {
+        "label": "ClinVar RCV000000214: SH3PXD2B c.76-2A>C / rs775217258 pathogenic splice-acceptor variant",
+        "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000000214/"
+      },
+      {
+        "label": "PMCID PMC2820172: SH3PXD2B disruption causes skeletal, eye, and cardiac abnormalities of Frank-ter Haar syndrome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"
+      },
+      {
+        "label": "PubMed 19144821: Tks4/SH3PXD2B is required for functional podosome formation",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/19144821/"
+      },
+      {
+        "label": "PMCID PMC3532175: SH3PXD2B exon 13 deletion in FTHS with craniosynostosis and raised intracranial pressure",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3532175/"
+      },
+      {
+        "label": "European Journal of Human Genetics 2014: SH3PXD2B mutations cause Borrone dermato-cardio-skeletal syndrome",
+        "url": "https://www.nature.com/articles/ejhg2013229"
+      },
+      {
+        "label": "PMCID PMC7790187: sh3pxd2b zebrafish model and collagen-remodeling/fibrosis biology",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7790187/"
+      }
+    ]
+  },
+  "variant_records": [
+    {
+      "variant": "SH3PXD2B c.76-2A>C",
+      "display_name": "SH3PXD2B c.76-2A>C splice acceptor",
+      "common_name": "rs775217258 / FTHS splice-acceptor variant",
+      "position": 171849502,
+      "lookup_keys": [
+        "rs775217258",
+        "SH3PXD2B c.76-2A>C",
+        "NM_001017995.3:c.76-2A>C",
+        "NM_001017995.2:c.76-2A>C",
+        "NC_000005.9:g.171849502T>G",
+        "5:171849502",
+        "5:171849502:T>G"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Pathogenic splice-acceptor marker / autosomal-recessive Frank-ter Haar syndrome context",
+      "clinical_interpretation": "ClinVar/OMIM literature curates SH3PXD2B c.76-2A>C / rs775217258 as a pathogenic splice-acceptor variant for Frank-ter Haar syndrome. Iqbal et al. reported homozygosity for this splice-site change in an affected male patient; unaffected parents were heterozygous and the variant was absent from 210 control chromosomes in that report.",
+      "clinical_significance": "Pathogenic Frank-ter Haar syndrome splice-acceptor variant; autosomal-recessive interpretation depends on biallelic dosage, phase, and phenotype.",
+      "functional_effects": [
+        "Splice-acceptor disruption at the conserved intronic c.76-2 position is expected to disrupt SH3PXD2B/TKS4 transcript processing.",
+        "The TKS4 disease mechanism centers on impaired podosome/invadopodia organization and extracellular-matrix remodeling."
+      ],
+      "associated_conditions": [
+        "Frank-ter Haar syndrome / Ter Haar syndrome",
+        "Borrone dermato-cardio-skeletal syndrome spectrum",
+        "Skeletal dysplasia, ocular anomalies, cardiac findings, craniofacial anomalies, and connective-tissue remodeling"
+      ],
+      "research_context": [
+        "A single heterozygous call should be treated as carrier context unless a second pathogenic allele is found in trans.",
+        "Check transcript, strand, HGVS normalization, phase, depth, and phenotype before any clinical interpretation."
+      ],
+      "usual_variant_note": "Known pathogenic SH3PXD2B splice-acceptor marker in the FTHS/BDCS autosomal-recessive spectrum.",
+      "methylation_interpretation": "SH3PXD2B methylation can provide local regulatory context, but it does not determine whether this splice variant is present, biallelic, or pathogenic in the sample.",
+      "is_assayable_in_snp_vcf": true,
+      "evidence": [
+        {
+          "label": "ClinVar RCV000000214: SH3PXD2B c.76-2A>C / rs775217258 pathogenic classification and GRCh37 coordinate",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/RCV000000214/"
+        },
+        {
+          "label": "PMCID PMC2820172: original FTHS SH3PXD2B mutation report",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"
+        },
+        {
+          "label": "ClinGen Gene Facts HGNC:29242: definitive SH3PXD2B-FTHS curation",
+          "url": "https://search.clinicalgenome.org/kb/genes/HGNC%3A29242"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Iqbal et al., 2010 (PMID 20137777)",
+          "genotypes": "Homozygous SH3PXD2B c.76-2A>C splice-acceptor variant; heterozygous carrier parents",
+          "phenotype": "Frank-ter Haar syndrome with skeletal, eye, and cardiac abnormalities",
+          "finding": "The study identified SH3PXD2B disruption as a cause of FTHS and reported this splice-acceptor change as homozygous in an affected patient.",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"
+        }
+      ],
+      "gene_name": "SH3PXD2B",
+      "chromosome": "5",
+      "relevant_methylation_probe_ids": [
+        "cg08854128",
+        "cg05224707",
+        "cg26528541",
+        "cg00591781",
+        "cg24904925",
+        "cg18629270",
+        "cg23786077",
+        "cg05252940",
+        "cg15926342",
+        "cg25513933"
+      ]
+    },
+    {
+      "variant": "SH3PXD2B loss-of-function/deletion model",
+      "display_name": "SH3PXD2B exon deletion or biallelic loss-of-function model",
+      "common_name": "TKS4 podosome-loss FTHS/BDCS model",
+      "position": null,
+      "lookup_keys": [
+        "SH3PXD2B loss-of-function",
+        "SH3PXD2B loss of function",
+        "SH3PXD2B LOF",
+        "SH3PXD2B deletion",
+        "SH3PXD2B exon 13 deletion",
+        "TKS4 exon 13 deletion",
+        "FTHS SH3PXD2B deletion",
+        "BDCS SH3PXD2B mutation"
+      ],
+      "region_class": "structural_region",
+      "interpretation_scope": "Biallelic loss-of-function / exon-deletion rare-disease mechanism",
+      "clinical_interpretation": "Biallelic SH3PXD2B loss-of-function and deletion evidence supports an established autosomal-recessive FTHS/BDCS mechanism. The 2010 FTHS report identified multiple homozygous SH3PXD2B mutations and a homozygous deletion in mutation-positive families; an exon 13 deletion was later reported in siblings with FTHS and craniosynostosis; the BDCS study reported homozygous SH3PXD2B mutations with complete protein loss in patient fibroblasts.",
+      "clinical_significance": "Clinically established autosomal-recessive SH3PXD2B loss-of-function mechanism; zygosity, phase, and breakpoint confirmation are essential.",
+      "functional_effects": [
+        "TKS4 loss impairs functional podosome formation, MT1-MMP recruitment, and extracellular-matrix degradation.",
+        "Disease-model work connects SH3PXD2B loss to defective collagen remodeling, dermal fibrosis, contractures, skeletal abnormalities, ocular findings, and cardiac/craniofacial development."
+      ],
+      "associated_conditions": [
+        "Frank-ter Haar syndrome / Ter Haar syndrome",
+        "Borrone dermato-cardio-skeletal syndrome spectrum",
+        "Defective collagen remodeling spectrum, dermal fibrosis, contractures, glaucoma/ocular hypertension, skeletal dysplasia, craniosynostosis, and cardiac valve/septal findings"
+      ],
+      "research_context": [
+        "Use this marker for confirmed or strongly suspected loss-of-function, exon deletion, or structural loss records rather than generic SH3PXD2B SNPs.",
+        "Breakpoints, transcript effect, copy number, phase, family segregation, phenotype, and clinical confirmation drive interpretation."
+      ],
+      "usual_variant_note": "Mechanism-level biallelic SH3PXD2B/TKS4 loss marker rather than one specific SNV.",
+      "methylation_interpretation": "SH3PXD2B methylation can provide local regulatory context, but it does not establish a deletion, loss-of-function allele, or biallelic disease state.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [
+        {
+          "label": "PMCID PMC2820172: multiple SH3PXD2B mutations/deletion and FTHS mechanism",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2820172/"
+        },
+        {
+          "label": "PMCID PMC3532175: SH3PXD2B exon 13 deletion in FTHS siblings",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3532175/"
+        },
+        {
+          "label": "European Journal of Human Genetics 2014: SH3PXD2B mutations and protein loss in BDCS",
+          "url": "https://www.nature.com/articles/ejhg2013229"
+        },
+        {
+          "label": "PubMed 19144821: Tks4 loss and defective podosome/ECM degradation biology",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/19144821/"
+        },
+        {
+          "label": "PMCID PMC7790187: sh3pxd2b model and collagen-remodeling/fibrosis biology",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7790187/"
+        }
+      ],
+      "literature_findings": [
+        {
+          "paper": "Bendon et al., 2012 (PMID 23140272)",
+          "genotypes": "Homozygous SH3PXD2B exon 13 deletion in three affected siblings",
+          "phenotype": "Frank-ter Haar syndrome with sagittal craniosynostosis and raised intracranial pressure",
+          "finding": "The report expanded the FTHS phenotype and tied exon-level SH3PXD2B deletion to craniosynostosis and raised intracranial pressure in affected siblings.",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3532175/"
+        },
+        {
+          "paper": "Wilson et al., 2014 (PMID 24105371)",
+          "genotypes": "Homozygous SH3PXD2B mutations with loss of SH3PXD2B protein in fibroblasts",
+          "phenotype": "Borrone dermato-cardio-skeletal syndrome",
+          "finding": "The study showed that a subset of BDCS and FTHS cases are allelic and connected SH3PXD2B mutation-positive BDCS to complete TKS4 protein loss.",
+          "url": "https://www.nature.com/articles/ejhg2013229"
+        }
+      ],
+      "gene_name": "SH3PXD2B",
+      "chromosome": "5",
+      "relevant_methylation_probe_ids": [
+        "cg08854128",
+        "cg05224707",
+        "cg26528541",
+        "cg00591781",
+        "cg24904925",
+        "cg18629270",
+        "cg23786077",
+        "cg05252940",
+        "cg15926342",
+        "cg25513933"
+      ]
+    }
+  ]
+}

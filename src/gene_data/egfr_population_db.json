@@ -1,0 +1,74 @@
+{
+  "database_name": "NophiGene EGFR Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled EGFR population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from EGFR receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 1956: EGFR",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/1956"
+    },
+    {
+      "label": "UniProt P00533: EGFR_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P00533/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000146648: EGFR coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000146648"
+    },
+    {
+      "label": "ClinVar EGFR variation set",
+      "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "EGFR biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "EGFR findings should be read against receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "EGFR L858R",
+      "location_group": "Marker and cohort pattern",
+      "summary": "EGFR L858R is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "EGFR exon 19 deletion model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "EGFR exon 19 deletion model is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "EGFR T790M",
+      "location_group": "Marker and cohort pattern",
+      "summary": "EGFR T790M is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

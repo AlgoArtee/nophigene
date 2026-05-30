@@ -994,8 +994,14 @@ def _collect_research_focus(knowledge_base: dict[str, Any]) -> list[str]:
     return _dedupe_text_items(focus_items)[:4]
 
 
-def _concrete_variant_prediction_for_gene(gene_name: str) -> str:
+def _concrete_variant_prediction_for_gene(gene_name: str, knowledge_base: dict[str, Any]) -> str:
     """Return a concrete gene-level variant prediction text."""
+    curated_prediction = _clean_text(
+        knowledge_base.get("gene_context", {}).get("concrete_variant_prediction", "")
+    )
+    if curated_prediction:
+        return curated_prediction
+
     return GENE_CONCRETE_VARIANT_PREDICTIONS.get(
         gene_name,
         (
@@ -1188,7 +1194,7 @@ def build_synthesis_database(knowledge_base: dict[str, Any]) -> dict[str, Any]:
         *(gene_context.get("methylation_effects", []) or []),
         f"{gene_name} methylation is best interpreted as regulatory context rather than as a standalone biomarker.",
     )
-    concrete_variant_prediction = _concrete_variant_prediction_for_gene(gene_name)
+    concrete_variant_prediction = _concrete_variant_prediction_for_gene(gene_name, knowledge_base)
     variant_prediction_rules = _build_variant_prediction_rules(
         knowledge_base,
         concrete_variant_prediction=concrete_variant_prediction,

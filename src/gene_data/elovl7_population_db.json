@@ -1,0 +1,83 @@
+{
+  "database_name": "NophiGene ELOVL7 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled ELOVL7 population database is literature oriented and does not include a complete allele-frequency panel. Interpretation should prioritize current ClinVar/gnomAD status for sequence calls, tissue expression, lipidomics, tumor or infection context, fibrosis phenotype, and the negative coding-variant/CNV follow-up evidence in MSA.",
+  "gene_population_patterns_intro": "Broader population patterns curated from ELOVL7 fatty-acid elongase, prostate-cancer, HCMV, liver-fibrosis, necroptosis, and MSA-locus literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 79993: ELOVL7 expression, GO context, and bibliography",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/79993"
+    },
+    {
+      "label": "Human Protein Atlas: ELOVL7 expression and protein-function context",
+      "url": "https://www.proteinatlas.org/ENSG00000164181"
+    },
+    {
+      "label": "PubMed 19826053: ELOVL7 prostate-cancer lipid metabolism",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19826053/"
+    },
+    {
+      "label": "PMCID PMC4354725: ELOVL7 HCMV lipid remodeling",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4354725/"
+    },
+    {
+      "label": "PMCID PMC7983070: ELOVL7 MSA coding-variant follow-up",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983070/"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "ELOVL7 expression",
+      "location_group": "Global pattern",
+      "summary": "NCBI and Human Protein Atlas resources frame ELOVL7 as broadly expressed with prostate and skin expression in NCBI, membrane/metabolic protein annotations, and vessel-prominent cytoplasmic protein staining."
+    },
+    {
+      "variant": "ELOVL7 prostate-cancer lipid metabolism",
+      "location_group": "Cancer cohorts",
+      "summary": "Prostate-cancer studies support a lipid-biosynthesis thesis in which ELOVL7 participates in saturated VLCFA metabolism, androgen/SREBP1 pathways, and tumor-growth models."
+    },
+    {
+      "variant": "ELOVL7 HCMV/necroptosis VLCFA remodeling",
+      "location_group": "Functional biology",
+      "summary": "Cell-model evidence supports ELOVL7 as a VLCFA remodeling node for HCMV replication and necroptotic membrane permeabilization."
+    },
+    {
+      "variant": "rs7715147 and rare coding variants",
+      "location_group": "Disease cohorts",
+      "summary": "ELOVL7 rs7715147 remains an intronic MSA locus-context marker, but follow-up coding-variant and copy-number work did not support ELOVL7 coding variants or CNV as a major MSA risk driver."
+    },
+    {
+      "variant": "ELOVL7 TSS methylation",
+      "location_group": "Local regulatory context",
+      "summary": "Bundled EPIC probes provide local promoter and gene-body methylation context, but no population methylation threshold is bundled for VLCFA flux, prostate cancer, HCMV replication, fibrosis, necroptosis, or MSA interpretation."
+    }
+  ]
+}

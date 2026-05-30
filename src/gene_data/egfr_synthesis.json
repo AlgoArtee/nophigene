@@ -1,0 +1,239 @@
+{
+  "database_name": "NophiGene EGFR Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "EGFR",
+  "source_interpretation_database": "NophiGene EGFR Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "EGFR L858R (EGFR activating kinase-domain marker)",
+    "EGFR exon 19 deletion model (EGFR activating exon 19 deletion class)",
+    "EGFR T790M (EGFR resistance-gatekeeper marker)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification.",
+  "variant_prediction_rules": [
+    {
+      "variant": "EGFR p.Leu858Arg",
+      "display_name": "EGFR L858R",
+      "common_name": "EGFR activating kinase-domain marker",
+      "lookup_keys": [
+        "EGFR p.Leu858Arg",
+        "EGFR L858R",
+        "EGFR:EGFR p.Leu858Arg",
+        "egfr:egfr p.leu858arg"
+      ],
+      "prediction": "GT-confirmed EGFR L858R dosage suggests this sample carries the EGFR prediction context described by the gene-level thesis. The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. This specific marker is curated as EGFR activating kinase-domain marker. EGFR L858R is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context. Read it through genotype dosage, phenotype context, and the receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched EGFR L858R at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the EGFR prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+      "evidence": [
+        {
+          "label": "ClinVar EGFR variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ]
+    },
+    {
+      "variant": "EGFR exon 19 deletion model",
+      "display_name": "EGFR exon 19 deletion model",
+      "common_name": "EGFR activating exon 19 deletion class",
+      "lookup_keys": [
+        "EGFR exon 19 deletion model",
+        "EGFR exon 19 deletion model",
+        "EGFR:EGFR exon 19 deletion model",
+        "egfr:egfr exon 19 deletion model"
+      ],
+      "prediction": "GT-confirmed EGFR exon 19 deletion model dosage suggests this sample carries the EGFR prediction context described by the gene-level thesis. The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. This specific marker is curated as EGFR activating exon 19 deletion class. EGFR exon 19 deletion model is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context. Read it through genotype dosage, phenotype context, and the receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched EGFR exon 19 deletion model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the EGFR prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+      "evidence": [
+        {
+          "label": "ClinVar EGFR variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ]
+    },
+    {
+      "variant": "EGFR p.Thr790Met",
+      "display_name": "EGFR T790M",
+      "common_name": "EGFR resistance-gatekeeper marker",
+      "lookup_keys": [
+        "EGFR p.Thr790Met",
+        "EGFR T790M",
+        "EGFR:EGFR p.Thr790Met",
+        "egfr:egfr p.thr790met"
+      ],
+      "prediction": "GT-confirmed EGFR T790M dosage suggests this sample carries the EGFR prediction context described by the gene-level thesis. The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. This specific marker is curated as EGFR resistance-gatekeeper marker. EGFR T790M is curated as a EGFR marker for Receptor tyrosine kinase signaling, Non-small cell lung cancer somatic driver context. Read it through genotype dosage, phenotype context, and the receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched EGFR T790M at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the EGFR prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways.",
+      "evidence": [
+        {
+          "label": "ClinVar EGFR variation set",
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/?term=EGFR%5Bgene%5D"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. An observed EGFR variant places this sample in the curated EGFR research context. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a EGFR variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a EGFR variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a EGFR variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a EGFR variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a EGFR variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a EGFR variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a EGFR variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a EGFR variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a EGFR variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an EGFR receptor-tyrosine-kinase thesis: the sample may carry a signal relevant to growth-factor signaling, receptor phosphorylation, endosomal trafficking, or somatic oncology driver/resistance review. Therapy-facing EGFR interpretation requires tumor context, assay validation, and exact variant classification. EGFR methylation should be treated as local regulatory context around a receptor tyrosine kinase signaling through RAS-MAPK, PI3K-AKT, PLC-gamma, endocytosis, and growth-control pathways gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local EGFR bundle is signaling and somatic-oncology oriented. Canonical activating and resistance mutations are therapy-relevant in tumor testing, while germline VCF context should be interpreted cautiously. EGFR exon 19 deletions and L858R-like mutations are activating somatic markers in selected cancers, especially lung adenocarcinoma.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Receptor tyrosine kinase signaling",
+        "Non-small cell lung cancer somatic driver context",
+        "EGFR inhibitor sensitivity and resistance research"
+      ]
+    }
+  ]
+}

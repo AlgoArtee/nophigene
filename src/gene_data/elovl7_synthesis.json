@@ -1,0 +1,243 @@
+{
+  "database_name": "NophiGene ELOVL7 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "ELOVL7",
+  "source_interpretation_database": "NophiGene ELOVL7 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs7715147 (ELOVL7 intronic MSA locus marker) (ELOVL7 MSA GWAS-interest intronic marker)",
+    "ELOVL7 expression or knockdown lipid-elongation model (ELOVL7 VLCFA remodeling functional model)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs7715147",
+      "display_name": "rs7715147 (ELOVL7 intronic MSA locus marker)",
+      "common_name": "ELOVL7 MSA GWAS-interest intronic marker",
+      "lookup_keys": [
+        "rs7715147",
+        "ELOVL7:rs7715147",
+        "ELOVL7 rs7715147",
+        "MSA ELOVL7 rs7715147"
+      ],
+      "prediction": "Observed ELOVL7 rs7715147 suggests an MSA GWAS-interest lipid-dyshomeostasis locus thesis: the sample matched an intronic marker retained for neurogenetic research context around ELOVL7 and very-long-chain fatty-acid biology. Keep this locus-level and non-diagnostic because follow-up sequencing and copy-number work did not support rare ELOVL7 coding variants or CNV as a major MSA risk driver.",
+      "sample_change_template": "This sample matched rs7715147 (ELOVL7 intronic MSA locus marker) at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the ELOVL7 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Intronic locus marker; no direct coding effect is bundled.",
+      "evidence": [
+        {
+          "label": "PMCID PMC7983070: ELOVL7 coding variants in MSA follow-up study",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983070/"
+        },
+        {
+          "label": "NCBI Gene 79993: ELOVL7 locus and variation resources",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/79993"
+        }
+      ]
+    },
+    {
+      "variant": "ELOVL7 functional lipid-elongation model",
+      "display_name": "ELOVL7 expression or knockdown lipid-elongation model",
+      "common_name": "ELOVL7 VLCFA remodeling functional model",
+      "lookup_keys": [
+        "ELOVL7 functional model",
+        "ELOVL7 knockdown",
+        "ELOVL7 overexpression",
+        "ELOVL7 upregulation",
+        "ELOVL7 lipid elongation",
+        "ELOVL7 VLCFA remodeling",
+        "ELOVL7 prostate cancer",
+        "ELOVL7 HCMV",
+        "ELOVL7 liver fibrosis",
+        "ELOVL7 necroptosis"
+      ],
+      "prediction": "Observed ELOVL7 functional or expression context suggests a VLCFA-remodeling thesis: the sample matched a model class tied to ER fatty-acid elongation, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane disruption, or liver-fibrosis expression studies. Treat this as pathway and regulatory biology rather than a specific inherited variant or stand-alone disease prediction.",
+      "sample_change_template": "This sample matched ELOVL7 expression or knockdown lipid-elongation model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the ELOVL7 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Purified ELOVL7 shows high activity toward C18 acyl-CoA substrates in VLCFA elongation assays.",
+      "evidence": [
+        {
+          "label": "PubMed 19826053: ELOVL7 prostate-cancer saturated lipid metabolism",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/19826053/"
+        },
+        {
+          "label": "Oncogene 2018: ELOVL7 silencing and CRPC xenograft regression context",
+          "url": "https://www.nature.com/articles/onc2017385"
+        },
+        {
+          "label": "PMCID PMC4354725: ELOVL7 and HCMV lipidome remodeling",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4354725/"
+        },
+        {
+          "label": "PubMed 31490656: ELOVL7 and necroptotic membrane disruption",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31490656/"
+        },
+        {
+          "label": "PubMed 36930494: ELOVL7 as advanced liver fibrosis marker",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/36930494/"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. An observed ELOVL7 variant places this sample in the curated ELOVL7 research context. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a ELOVL7 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a ELOVL7 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a ELOVL7 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a ELOVL7 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a ELOVL7 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a ELOVL7 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a ELOVL7 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a ELOVL7 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a ELOVL7 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests an ELOVL7 ER fatty-acid elongase and VLCFA-remodeling thesis: the individual may carry a research-grade signal relevant to saturated or polyunsaturated very-long-chain fatty-acid metabolism, prostate-cancer lipid biosynthesis, HCMV lipidome remodeling, necroptotic membrane biology, liver-fibrosis expression context, or MSA locus research. This is lipid-metabolism and locus context, not a diagnostic cancer, infection, fibrosis, neurodegenerative-disease, or inherited-disorder prediction. ELOVL7 has a bundled promoter-plus-gene EPIC slice from the local hg19 manifest. Use ELOVL7 methylation as local regulatory context around a reverse-strand ER lipid-elongase gene, not as a validated prostate-cancer, viral replication, liver-fibrosis, necroptosis, or MSA biomarker. The local ELOVL7 knowledge base is lipid-metabolism, prostate-cancer, viral lipid-remodeling, liver-fibrosis, necroptosis, and neurogenetics research oriented. ELOVL7 is not bundled here as a deterministic diagnostic gene; even in multiple-system-atrophy follow-up sequencing, rare coding variants and copy-number changes did not significantly explain disease risk. Biochemical and structural literature supports ELOVL7 as a membrane-bound fatty-acid elongase that preferentially processes C18 acyl-CoA substrates and participates in VLCFA elongation.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Very-long-chain fatty acid elongation, saturated/polyunsaturated lipid metabolism, sphingolipid and membrane lipid remodeling.",
+        "Prostate cancer, androgen receptor and SREBP1-regulated lipid biosynthesis, and castration-resistant prostate-cancer progression.",
+        "Human cytomegalovirus replication, necroptotic membrane permeabilization, hepatic stellate-cell activation, chronic hepatitis B liver fibrosis, and synucleinopathy/MSA locus research."
+      ]
+    }
+  ]
+}

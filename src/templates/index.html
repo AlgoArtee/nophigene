@@ -3308,6 +3308,20 @@
                                 {% endfor %}
                               </ul>
                               {% endif %}
+                              {% if result.variant_interpretations.biorender_visuals %}
+                              <h4>BioRender figure starter</h4>
+                              <p>{{ result.variant_interpretations.biorender_visuals.focus }}</p>
+                              <div class="protein-source-links">
+                                <a href="{{ result.variant_interpretations.biorender_visuals.template_url }}" target="_blank" rel="noreferrer">{{ result.variant_interpretations.biorender_visuals.template_title }}</a>
+                              </div>
+                              {% if result.variant_interpretations.biorender_visuals.recommended_icons %}
+                              <div class="badge-row">
+                                {% for item in result.variant_interpretations.biorender_visuals.recommended_icons %}
+                                <span class="muted-badge">{{ item }}</span>
+                                {% endfor %}
+                              </div>
+                              {% endif %}
+                              {% endif %}
                               <div class="stat-grid">
                                 <div class="stat-card">
                                   <span>Current search</span>
@@ -4295,6 +4309,23 @@
                   `
                   : "";
 
+                const biorenderVisuals = protein.biorender_visuals
+                  ? `
+                    <div>
+                      <p class="protein-section-label">BioRender figure starter</p>
+                      <div class="diagram-note">
+                        <strong>${escapeHtml(protein.biorender_visuals.focus || protein.biorender_visuals.label || "Biochemical pathway figure")}</strong>
+                        ${protein.biorender_visuals.template_url ? `<div class="protein-source-links" style="margin-top: 10px;"><a href="${escapeHtml(protein.biorender_visuals.template_url)}" target="_blank" rel="noreferrer">${escapeHtml(protein.biorender_visuals.template_title || "Open BioRender template")}</a></div>` : ""}
+                        ${protein.biorender_visuals.recommended_icons && protein.biorender_visuals.recommended_icons.length ? `
+                          <div class="badge-row" style="margin-top: 10px;">
+                            ${protein.biorender_visuals.recommended_icons.map((item) => `<span class="muted-badge">${escapeHtml(item)}</span>`).join("")}
+                          </div>
+                        ` : ""}
+                      </div>
+                    </div>
+                  `
+                  : "";
+
                 const sourceLinks = [
                   protein.uniprot_url ? `<a href="${escapeHtml(protein.uniprot_url)}" target="_blank" rel="noreferrer">UniProt entry</a>` : "",
                   protein.alphafold_url ? `<a href="${escapeHtml(protein.alphafold_url)}" target="_blank" rel="noreferrer">AlphaFold structure</a>` : "",
@@ -4333,6 +4364,7 @@
                       ${subcellularLocations}
                       ${alternativeNames}
                       ${geneSynonyms}
+                      ${biorenderVisuals}
                       ${sourceLinks ? `<div class="protein-source-links">${sourceLinks}</div>` : ""}
                     </div>
                   </details>

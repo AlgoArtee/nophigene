@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene MC4R Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled MC4R population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from MC4R melanocortin GPCR signaling, appetite suppression, energy balance, obesity biology, and receptor trafficking and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 4160: MC4R",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/4160"
+    },
+    {
+      "label": "UniProt P32245: MC4R_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/P32245/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000166603: MC4R coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000166603"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "MC4R biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "MC4R findings should be read against melanocortin GPCR signaling, appetite suppression, energy balance, obesity biology, and receptor trafficking; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "rs17782313 (near MC4R obesity marker)",
+      "location_group": "Marker and cohort pattern",
+      "summary": "rs17782313 (near MC4R obesity marker) is curated as a MC4R marker for Monogenic obesity review context, Appetite and energy-balance biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "MC4R loss-of-function model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "MC4R loss-of-function model is curated as a MC4R marker for Monogenic obesity review context, Appetite and energy-balance biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}

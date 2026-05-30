@@ -1,0 +1,65 @@
+{
+  "database_name": "NophiGene ALK Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled ALK population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from ALK ALK receptor kinase signaling, fusion activation, MAPK/PI3K/JAK pathway output, and kinase-inhibitor response and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "NCBI Gene 238: ALK",
+      "url": "https://www.ncbi.nlm.nih.gov/gene/238"
+    },
+    {
+      "label": "UniProt Q9UM73: ALK_HUMAN",
+      "url": "https://www.uniprot.org/uniprotkb/Q9UM73/entry"
+    },
+    {
+      "label": "Ensembl GRCh37 ENSG00000171094: ALK coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000171094"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "ALK biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "ALK findings should be read against ALK receptor kinase signaling, fusion activation, MAPK/PI3K/JAK pathway output, and kinase-inhibitor response; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "ALK fusion model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "ALK fusion model is curated as a ALK marker for ALK fusion and somatic oncology context, Neuroblastoma predisposition review context; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "ALK activating kinase-domain model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "ALK activating kinase-domain model is curated as a ALK marker for ALK fusion and somatic oncology context, Neuroblastoma predisposition review context; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}
