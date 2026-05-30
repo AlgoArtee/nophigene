@@ -1,0 +1,341 @@
+{
+  "database_name": "NophiGene HERC2 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "HERC2",
+  "source_interpretation_database": "NophiGene HERC2 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "rs12913832 (HERC2/OCA2 enhancer rs12913832)",
+    "rs1129038 (HERC2/OCA2 linked pigmentation haplotype marker)",
+    "rs7170852 (Secondary HERC2 eye-colour marker)",
+    "rs916977 (HERC2 iris-colour cline marker)",
+    "rs11636232 (Additional HERC2 eye-colour panel marker)"
+  ],
+  "concrete_variant_prediction": "A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result.",
+  "variant_prediction_rules": [
+    {
+      "variant": "rs12913832",
+      "display_name": "rs12913832",
+      "common_name": "HERC2/OCA2 enhancer rs12913832",
+      "lookup_keys": [
+        "rs12913832",
+        "HERC2:rs12913832",
+        "15:28365618",
+        "15:28365618:A>G",
+        "15:28365618:G>A"
+      ],
+      "prediction": "GT-decoded rs12913832 is the strongest concrete prediction in this bundle: in the forward-strand A/G representation used here, G dosage supports a lighter or blue-eye tendency and A dosage supports a darker or brown-eye-compatible tendency because this enhancer variant changes HERC2-OCA2 looping and OCA2-driven iris melanin production. A/G should reduce certainty relative to G/G, and a small SNP subset should never be treated as a final eye-colour call.",
+      "sample_change_template": "This sample matched rs12913832 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HERC2 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [
+        {
+          "prediction": "This sample's rs12913832 site definition is A -> G, and interpretation now depends on the decoded GT dosage rather than ALT presence alone. In the forward-strand hg19 A/G representation used by this workbench, G dosage is the light-eye-associated state: it reduces HERC2 enhancer support for OCA2 expression, lowers iris melanin biology, and therefore directionally supports a blue or lighter-eye tendency. If GT is A/G rather than G/G, reduce certainty and keep brown or hazel plausible.",
+          "basis": "GT-confirmed G dosage at rs12913832, the HERC2/OCA2 enhancer state associated with reduced OCA2 expression and lighter iris pigmentation.",
+          "evidence": [
+            {
+              "label": "PubMed 18252222: rs12913832 predicts blue-brown eye colour",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/18252222/"
+            },
+            {
+              "label": "PubMed 22234890: enhancer looping and OCA2 expression",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/22234890/"
+            }
+          ],
+          "change": "A -> G",
+          "alt_allele": "G"
+        },
+        {
+          "prediction": "This sample's rs12913832 site definition is G -> A, and interpretation now depends on decoded GT dosage rather than ALT presence alone. In the forward-strand hg19 A/G representation used by this workbench, A is the darker-eye-compatible state: it is compatible with stronger enhancer-promoter contact, higher OCA2 expression, and greater iris melanin biology, so A dosage supports a brown or darker-eye tendency. This remains probabilistic because eye colour is polygenic.",
+          "basis": "GT-confirmed A dosage at rs12913832, the HERC2/OCA2 enhancer state associated with stronger OCA2 expression and darker iris pigmentation.",
+          "evidence": [
+            {
+              "label": "PubMed 18252222: rs12913832 predicts blue-brown eye colour",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/18252222/"
+            },
+            {
+              "label": "PubMed 22234890: enhancer looping and OCA2 expression",
+              "url": "https://pubmed.ncbi.nlm.nih.gov/22234890/"
+            }
+          ],
+          "change": "G -> A",
+          "alt_allele": "A"
+        }
+      ],
+      "basis": "Changes enhancer support for HERC2-OCA2 chromatin looping and OCA2 promoter activity.",
+      "evidence": [
+        {
+          "label": "PubMed 18252222: rs12913832 predicts blue-brown eye colour",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/18252222/"
+        },
+        {
+          "label": "PubMed 22234890: enhancer looping and OCA2 expression",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/22234890/"
+        }
+      ]
+    },
+    {
+      "variant": "rs1129038",
+      "display_name": "rs1129038",
+      "common_name": "HERC2/OCA2 linked pigmentation haplotype marker",
+      "lookup_keys": [
+        "rs1129038",
+        "HERC2:rs1129038",
+        "15:28356859",
+        "15:28356859:C>T",
+        "15:28356859:T>C"
+      ],
+      "prediction": "Observed rs1129038 suggests the sample carries the linked HERC2/OCA2 pigmentation haplotype used in light-versus-dark eye-colour prediction models. It refines the brown/blue eye-colour thesis mainly through linkage with rs12913832 rather than through a stronger independent mechanism.",
+      "sample_change_template": "This sample matched rs1129038 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HERC2 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Tags the HERC2/OCA2 regulatory haplotype used in eye-colour prediction models.",
+      "evidence": [
+        {
+          "label": "PubMed 18252222: HERC2/OCA2 haplotypes and eye colour",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/18252222/"
+        },
+        {
+          "label": "PubMed 20457063: HERC2 eye-colour marker panel",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20457063/"
+        }
+      ]
+    },
+    {
+      "variant": "rs7170852",
+      "display_name": "rs7170852",
+      "common_name": "Secondary HERC2 eye-colour marker",
+      "lookup_keys": [
+        "rs7170852",
+        "HERC2:rs7170852",
+        "15:28427986",
+        "15:28427986:T>A",
+        "15:28427986:A>T"
+      ],
+      "prediction": "Observed rs7170852 suggests secondary HERC2 eye-colour prediction context: it can support a pigmentation-haplotype thesis, but it should not override rs12913832 because its independent effect is weaker and cohort dependent.",
+      "sample_change_template": "This sample matched rs7170852 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HERC2 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Adds supporting genotype context for HERC2/OCA2 pigmentation haplotypes.",
+      "evidence": [
+        {
+          "label": "PubMed 20457063: rs7170852 and HERC2/OCA2 eye-colour panel",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20457063/"
+        },
+        {
+          "label": "PubMed 22065085: global OCA2-HERC2 pigmentation view",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/22065085/"
+        }
+      ]
+    },
+    {
+      "variant": "rs916977",
+      "display_name": "rs916977",
+      "common_name": "HERC2 iris-colour cline marker",
+      "lookup_keys": [
+        "rs916977",
+        "HERC2:rs916977",
+        "15:28513364",
+        "15:28513364:T>C",
+        "15:28513364:C>T"
+      ],
+      "prediction": "Observed rs916977 suggests a HERC2 pigmentation-background thesis with European iris-colour cline evidence and pigmentation-linked skin-cancer context. It is a secondary light-versus-dark eye-colour marker rather than the main causal enhancer call.",
+      "sample_change_template": "This sample matched rs916977 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HERC2 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Marks a HERC2 haplotype correlated with iris-colour variation across European populations.",
+      "evidence": [
+        {
+          "label": "PubMed 18252221: HERC2 rs916977 and iris-colour GWAS",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/18252221/"
+        },
+        {
+          "label": "PubMed 28878084: OCA2/HERC2 variants and cSCC timing",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/28878084/"
+        }
+      ]
+    },
+    {
+      "variant": "rs11636232",
+      "display_name": "rs11636232",
+      "common_name": "Additional HERC2 eye-colour panel marker",
+      "lookup_keys": [
+        "rs11636232",
+        "HERC2:rs11636232",
+        "15:28386626",
+        "15:28386626:C>T",
+        "15:28386626:T>C"
+      ],
+      "prediction": "Observed rs11636232 suggests a secondary HERC2/OCA2 eye-colour prediction signal that can sharpen multilocus pigmentation models, especially when read with rs12913832 and rs1129038.",
+      "sample_change_template": "This sample matched rs11636232 at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the HERC2 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Adds marker-panel context for HERC2/OCA2 eye-colour discrimination.",
+      "evidence": [
+        {
+          "label": "PubMed 20457063: rs11636232 and HERC2/OCA2 eye-colour panel",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/20457063/"
+        },
+        {
+          "label": "PMCID PMC10454093: forensic eye-colour marker review",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10454093/"
+        }
+      ]
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. An observed HERC2 variant places this sample in the curated HERC2 research context. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a HERC2 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a HERC2 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a HERC2 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a HERC2 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a HERC2 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a HERC2 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a HERC2 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a HERC2 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a HERC2 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result. HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone. The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci. The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Human iris pigmentation and forensic DNA phenotyping.",
+        "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+        "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes."
+      ]
+    }
+  ]
+}

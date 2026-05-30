@@ -918,6 +918,434 @@ GENE_DEFINITIONS: list[dict[str, Any]] = [
         ],
     },
     {
+        "gene_name": "HERC2",
+        "cytoband": "15q13.1",
+        "chromosome": "15",
+        "start": 28356186,
+        "end": 28567325,
+        "strand": "-",
+        "coordinate_source": "NCBI Gene 8924 GRCh37.p13 interval NC_000015.9:28356186..28567325, complement",
+        "curated_methylation_probe_ids": [
+            "cg14091419",
+            "cg14549093",
+            "cg12605148",
+            "cg14390018",
+            "cg15464645",
+            "cg21575005",
+            "cg16895086",
+            "cg00855398",
+            "cg23040946",
+            "cg07567273",
+        ],
+        "gene_summary": (
+            "HERC2 encodes a large HECT and RCC1-like-domain E3 ubiquitin-protein ligase involved in protein trafficking, DNA-damage response biology, and neurodevelopmental disease when rare biallelic pathogenic variants are present. "
+            "This local bundle focuses on the well-studied HERC2 intronic regulatory interval that controls the neighboring OCA2 promoter and strongly shapes human iris pigmentation."
+        ),
+        "clinical_context": (
+            "The bundled HERC2 database is trait-prediction and pigmentation-research oriented. Common HERC2/OCA2 markers such as rs12913832 can support probabilistic blue-versus-brown eye-colour inference, "
+            "but this is not a diagnosis, and visible eye colour remains polygenic, ancestry dependent, and modified by additional OCA2 and pigmentation loci."
+        ),
+        "variant_effect_overview": [
+            "The HERC2/OCA2 rs12913832 enhancer marker is the strongest single local predictor for blue-versus-brown iris pigmentation in many European-ancestry cohorts.",
+            "The forward-strand G allele representation used by this app is interpreted as the lighter-eye-associated state because it weakens enhancer-promoter support for OCA2 expression and reduces iris melanin biology.",
+            "Secondary markers such as rs1129038, rs7170852, rs916977, and rs11636232 should refine, not replace, the rs12913832 genotype-dosage thesis.",
+        ],
+        "condition_research_overview": [
+            "Human iris pigmentation and forensic DNA phenotyping.",
+            "HERC2 enhancer regulation of OCA2 expression and melanocyte melanin production.",
+            "Population structure and ancestry-aware interpretation of pigmentation-associated haplotypes.",
+        ],
+        "methylation_interpretation": (
+            "HERC2 methylation should be read as regulatory context near the HERC2/OCA2 pigmentation interval. "
+            "A CpG signal can support local chromatin-accessibility review, but eye-colour prediction in this app is anchored to GT-decoded HERC2/OCA2 SNP dosage rather than methylation alone."
+        ),
+        "methylation_effects": [
+            "Promoter-proximal or enhancer-near methylation can suggest a more restrained or permissive local regulatory state for the HERC2/OCA2 interval.",
+            "Because the main eye-colour signal is genotype driven, methylation is supporting context and not a substitute for rs12913832 dosage.",
+            "Combined SNP and methylation evidence is most useful when interpreted as pigmentation pathway context rather than a deterministic appearance call.",
+        ],
+        "methylation_condition_research": [
+            "Epigenetic regulation around HERC2 and OCA2 in melanocyte and pigmentation biology.",
+            "Variant-plus-methylation review for iris pigmentation, hair pigmentation, and OCA2 expression context.",
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 8924: HERC2 GRCh37 coordinate source", "https://www.ncbi.nlm.nih.gov/gene/8924"),
+            _evidence("UniProt O95714: HERC2_HUMAN", "https://www.uniprot.org/uniprotkb/O95714/entry"),
+            _evidence("PubMed 18252222: rs12913832 predicts blue-brown eye colour", "https://pubmed.ncbi.nlm.nih.gov/18252222/"),
+            _evidence("PubMed 22234890: rs12913832 enhancer attenuates HERC2-OCA2 chromatin looping", "https://pubmed.ncbi.nlm.nih.gov/22234890/"),
+            _evidence("PubMed 20457063: HERC2 and OCA2 eye-colour markers", "https://pubmed.ncbi.nlm.nih.gov/20457063/"),
+        ],
+        "concrete_variant_prediction": (
+            "A GT-confirmed HERC2/OCA2 genotype can support a pigmentation prediction rather than a HERC2 protein-disease prediction. "
+            "For rs12913832, genotype dosage matters: A/A, A/G, and G/G should be interpreted separately. The forward-strand G allele used by this workbench supports a lighter or blue-eye tendency because it weakens HERC2 enhancer looping to the OCA2 promoter, lowers OCA2 expression, and reduces iris melanin, while A is the darker-eye-compatible contrast state. "
+            "Linked HERC2 markers should be read as probabilistic light-versus-dark eye-colour haplotype evidence, with ancestry and additional OCA2/pigmentation variants able to modify the visible result."
+        ),
+        "variants": [
+            {
+                "variant": "rs12913832",
+                "display_name": "rs12913832",
+                "common_name": "HERC2/OCA2 enhancer rs12913832",
+                "position": 28365618,
+                "lookup_keys": [
+                    "rs12913832",
+                    "HERC2:rs12913832",
+                    "15:28365618",
+                    "15:28365618:A>G",
+                    "15:28365618:G>A",
+                ],
+                "region_class": "intronic_enhancer",
+                "interpretation_scope": "Regulatory pigmentation marker",
+                "clinical_interpretation": (
+                    "rs12913832 lies in a conserved HERC2 intronic enhancer that regulates OCA2 expression. "
+                    "In the app's forward-strand A/G representation, G dosage supports a lighter or blue-eye tendency and A dosage supports a darker-eye-compatible tendency, with heterozygotes kept explicitly probabilistic."
+                ),
+                "clinical_significance": "Research marker for iris pigmentation biology; not a disease-pathogenicity call.",
+                "functional_effects": [
+                    "Changes enhancer support for HERC2-OCA2 chromatin looping and OCA2 promoter activity.",
+                    "Lower OCA2 expression reduces iris melanin biology and supports lighter-eye pigmentation in appropriate ancestry context.",
+                ],
+                "associated_conditions": [
+                    "Blue-versus-brown iris pigmentation",
+                    "Forensic eye-colour prediction",
+                    "OCA2 expression and melanocyte melanin biology",
+                ],
+                "research_context": [
+                    "Use decoded GT dosage rather than ALT presence alone.",
+                    "Interpret with ancestry, eye-colour phenotype, and additional OCA2/pigmentation markers.",
+                ],
+                "usual_variant_note": "Best-known HERC2/OCA2 eye-colour enhancer marker.",
+                "methylation_interpretation": (
+                    "Pair rs12913832 with HERC2/OCA2 methylation as regulatory context only; the main prediction is genotype-dosage driven."
+                ),
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 18252222: rs12913832 predicts blue-brown eye colour", "https://pubmed.ncbi.nlm.nih.gov/18252222/"),
+                    _evidence("PubMed 22234890: enhancer looping and OCA2 expression", "https://pubmed.ncbi.nlm.nih.gov/22234890/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Sturm et al., 2008 (PMID 18252222)",
+                        "genotypes": "HERC2 rs12913832 genotype classes",
+                        "phenotype": "Blue-brown eye-colour prediction",
+                        "finding": "The study identified rs12913832 as the strongest tested HERC2/OCA2 predictor of blue-brown eye colour in European-ancestry cohorts.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/18252222/",
+                    },
+                    {
+                        "paper": "Visser et al., 2012 (PMID 22234890)",
+                        "genotypes": "rs12913832 enhancer alleles",
+                        "phenotype": "OCA2 expression and melanocyte pigmentation",
+                        "finding": "The functional study showed allele-specific enhancer looping to the OCA2 promoter and reduced OCA2 expression in lightly pigmented melanocytes.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/22234890/",
+                    },
+                ],
+            },
+            {
+                "variant": "rs1129038",
+                "display_name": "rs1129038",
+                "common_name": "HERC2/OCA2 linked pigmentation haplotype marker",
+                "position": 28356859,
+                "lookup_keys": [
+                    "rs1129038",
+                    "HERC2:rs1129038",
+                    "15:28356859",
+                    "15:28356859:C>T",
+                    "15:28356859:T>C",
+                ],
+                "region_class": "intronic_regulatory",
+                "interpretation_scope": "Linked pigmentation haplotype marker",
+                "clinical_interpretation": (
+                    "rs1129038 is strongly linked to the HERC2/OCA2 eye-colour haplotype and is useful as secondary support for the rs12913832 pigmentation thesis. "
+                    "The T allele is treated as the lighter-eye-supporting state in the local genotype-dosage model."
+                ),
+                "clinical_significance": "Research marker for iris pigmentation biology; secondary to rs12913832.",
+                "functional_effects": [
+                    "Tags the HERC2/OCA2 regulatory haplotype used in eye-colour prediction models.",
+                    "Adds secondary genotype-dosage support for light-versus-dark pigmentation inference.",
+                ],
+                "associated_conditions": [
+                    "Blue-versus-brown iris pigmentation",
+                    "HERC2/OCA2 haplotype prediction",
+                ],
+                "research_context": [
+                    "Use as a supporting marker, especially when rs12913832 is present or ambiguous.",
+                ],
+                "usual_variant_note": "Linked HERC2/OCA2 pigmentation marker.",
+                "methylation_interpretation": "Use HERC2 methylation as local regulatory context, not as proof of rs1129038 functional direction.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 18252222: HERC2/OCA2 haplotypes and eye colour", "https://pubmed.ncbi.nlm.nih.gov/18252222/"),
+                    _evidence("PubMed 20457063: HERC2 eye-colour marker panel", "https://pubmed.ncbi.nlm.nih.gov/20457063/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Sturm et al., 2008 (PMID 18252222)",
+                        "genotypes": "rs1129038-rs12913832 haplotypes",
+                        "phenotype": "Blue and nonblue eye colour",
+                        "finding": "The paper reported strong eye-colour separation for linked HERC2/OCA2 haplotypes containing rs1129038 and rs12913832.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/18252222/",
+                    }
+                ],
+            },
+            {
+                "variant": "rs7170852",
+                "display_name": "rs7170852",
+                "common_name": "Secondary HERC2 eye-colour marker",
+                "position": 28427986,
+                "lookup_keys": [
+                    "rs7170852",
+                    "HERC2:rs7170852",
+                    "15:28427986",
+                    "15:28427986:T>A",
+                    "15:28427986:A>T",
+                ],
+                "region_class": "intronic_regulatory",
+                "interpretation_scope": "Secondary pigmentation marker",
+                "clinical_interpretation": (
+                    "rs7170852 is included as a secondary HERC2 marker reported in eye-colour association panels. "
+                    "The A allele is treated as additional lighter-eye-supporting evidence in the local three-marker HERC2 dosage model."
+                ),
+                "clinical_significance": "Research marker for iris pigmentation biology; secondary and cohort dependent.",
+                "functional_effects": [
+                    "Adds supporting genotype context for HERC2/OCA2 pigmentation haplotypes.",
+                    "Should not override rs12913832 because its independent effect is weaker and cohort dependent.",
+                ],
+                "associated_conditions": [
+                    "Iris pigmentation",
+                    "Forensic eye-colour prediction panels",
+                ],
+                "research_context": [
+                    "Interpret alongside rs12913832 and rs1129038 rather than as a single-marker prediction.",
+                ],
+                "usual_variant_note": "Secondary HERC2 pigmentation marker.",
+                "methylation_interpretation": "Use HERC2 methylation as broad regulatory context for the pigmentation interval.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 20457063: rs7170852 and HERC2/OCA2 eye-colour panel", "https://pubmed.ncbi.nlm.nih.gov/20457063/"),
+                    _evidence("PubMed 22065085: global OCA2-HERC2 pigmentation view", "https://pubmed.ncbi.nlm.nih.gov/22065085/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Mengel-From et al., 2010 (PMID 20457063)",
+                        "genotypes": "HERC2 rs7170852 sequence variation",
+                        "phenotype": "Human eye colour",
+                        "finding": "The study reported additional eye-colour association for rs7170852 beyond the major HERC2/OCA2 marker context.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/20457063/",
+                    }
+                ],
+            },
+            {
+                "variant": "rs916977",
+                "display_name": "rs916977",
+                "common_name": "HERC2 iris-colour cline marker",
+                "position": 28513364,
+                "lookup_keys": [
+                    "rs916977",
+                    "HERC2:rs916977",
+                    "15:28513364",
+                    "15:28513364:T>C",
+                    "15:28513364:C>T",
+                ],
+                "region_class": "intronic_regulatory",
+                "interpretation_scope": "Population-stratified iris-colour marker",
+                "clinical_interpretation": (
+                    "rs916977 is a HERC2 iris-colour marker reported with a clinal European allele distribution. "
+                    "It is useful as secondary population-aware pigmentation context but should not be treated as the main enhancer mechanism when rs12913832 is available."
+                ),
+                "clinical_significance": "Research marker for iris pigmentation and population-pattern review.",
+                "functional_effects": [
+                    "Marks a HERC2 haplotype correlated with iris-colour variation across European populations.",
+                    "Provides ancestry-aware supporting evidence for light-versus-dark eye-colour models.",
+                ],
+                "associated_conditions": [
+                    "Iris pigmentation",
+                    "Population structure in eye-colour prediction",
+                    "Pigmentation-linked skin-cancer context",
+                ],
+                "research_context": [
+                    "Use with ancestry context because rs916977 has reported European geographic clines.",
+                ],
+                "usual_variant_note": "HERC2 iris-colour cline marker.",
+                "methylation_interpretation": "Use methylation around HERC2 as a regulatory-context layer, not as a direct rs916977 effect readout.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 18252221: HERC2 rs916977 and iris-colour GWAS", "https://pubmed.ncbi.nlm.nih.gov/18252221/"),
+                    _evidence("PubMed 28878084: OCA2/HERC2 variants and cSCC timing", "https://pubmed.ncbi.nlm.nih.gov/28878084/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Kayser et al., 2008 (PMID 18252221)",
+                        "genotypes": "HERC2 rs916977 genotypes",
+                        "phenotype": "Human iris colour across European cohorts",
+                        "finding": "The study reported rs916977 as a major HERC2 iris-colour marker with a clinal allele distribution across European populations.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/18252221/",
+                    }
+                ],
+            },
+            {
+                "variant": "rs11636232",
+                "display_name": "rs11636232",
+                "common_name": "Additional HERC2 eye-colour panel marker",
+                "position": 28386626,
+                "lookup_keys": [
+                    "rs11636232",
+                    "HERC2:rs11636232",
+                    "15:28386626",
+                    "15:28386626:C>T",
+                    "15:28386626:T>C",
+                ],
+                "region_class": "intronic_or_synonymous_marker",
+                "interpretation_scope": "Secondary eye-colour panel marker",
+                "clinical_interpretation": (
+                    "rs11636232 is included as a secondary HERC2/OCA2 eye-colour panel marker. "
+                    "It can sharpen multilocus pigmentation models but remains subordinate to rs12913832 genotype dosage."
+                ),
+                "clinical_significance": "Research marker for iris pigmentation biology; secondary and cohort dependent.",
+                "functional_effects": [
+                    "Adds marker-panel context for HERC2/OCA2 eye-colour discrimination.",
+                    "May improve light-versus-dark eye-colour separation in selected multilocus models.",
+                ],
+                "associated_conditions": [
+                    "Iris pigmentation",
+                    "Forensic eye-colour prediction panels",
+                ],
+                "research_context": [
+                    "Interpret only with exact genotype, ancestry, and the stronger HERC2/OCA2 markers.",
+                ],
+                "usual_variant_note": "Additional HERC2/OCA2 eye-colour marker.",
+                "methylation_interpretation": "Use HERC2 methylation as broad locus context rather than a variant-specific effect readout.",
+                "is_assayable_in_snp_vcf": True,
+                "evidence": [
+                    _evidence("PubMed 20457063: rs11636232 and HERC2/OCA2 eye-colour panel", "https://pubmed.ncbi.nlm.nih.gov/20457063/"),
+                    _evidence("PMCID PMC10454093: forensic eye-colour marker review", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10454093/"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Mengel-From et al., 2010 (PMID 20457063)",
+                        "genotypes": "HERC2 rs11636232 sequence variation",
+                        "phenotype": "Human eye colour",
+                        "finding": "The study included rs11636232 as an additional HERC2 marker associated with eye-colour variation beyond the strongest HERC2/OCA2 site.",
+                        "url": "https://pubmed.ncbi.nlm.nih.gov/20457063/",
+                    }
+                ],
+            },
+        ],
+        "population_intro": "Broader population patterns curated from HERC2/OCA2 pigmentation, iris-colour, and forensic DNA phenotyping literature.",
+        "population_coverage_note": (
+            "The bundled HERC2 population database provides compact 1000 Genomes-style superpopulation frequency context for selected pigmentation markers. "
+            "It is meant for ancestry-aware interpretation, not for deterministic eye-colour prediction."
+        ),
+        "population_sources": [
+            _evidence("1000 Genomes Project phase 3 reference context", "https://www.internationalgenome.org/category/phase-3/"),
+            _evidence("PubMed 18252222: rs12913832 and HERC2/OCA2 haplotypes", "https://pubmed.ncbi.nlm.nih.gov/18252222/"),
+            _evidence("PubMed 18252221: rs916977 European cline", "https://pubmed.ncbi.nlm.nih.gov/18252221/"),
+            _evidence("PubMed 22065085: global OCA2-HERC2 pigmentation view", "https://pubmed.ncbi.nlm.nih.gov/22065085/"),
+        ],
+        "variant_population_records": [
+            {
+                "variant": "rs12913832",
+                "display_name": "rs12913832",
+                "common_name": "HERC2/OCA2 enhancer rs12913832",
+                "effect_allele": "G",
+                "focus_alleles": ["A", "G"],
+                "effect_summary": "G is the lighter-eye-associated allele in the app's forward-strand A/G representation.",
+                "source_url": "https://pubmed.ncbi.nlm.nih.gov/18252222/",
+                "top_level_location_frequencies": [
+                    {"population_code": "AFR", "location_group": "African ancestry", "label": "African ancestry", "granularity": "superpopulation", "allele_frequencies": {"A": 0.96, "G": 0.04}},
+                    {"population_code": "AMR", "location_group": "Admixed American ancestry", "label": "Admixed American ancestry", "granularity": "superpopulation", "allele_frequencies": {"A": 0.55, "G": 0.45}},
+                    {"population_code": "EAS", "location_group": "East Asian ancestry", "label": "East Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"A": 0.99, "G": 0.01}},
+                    {"population_code": "EUR", "location_group": "European ancestry", "label": "European ancestry", "granularity": "superpopulation", "allele_frequencies": {"A": 0.30, "G": 0.70}},
+                    {"population_code": "SAS", "location_group": "South Asian ancestry", "label": "South Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"A": 0.73, "G": 0.27}},
+                ],
+                "detailed_population_frequencies": [],
+            },
+            {
+                "variant": "rs1129038",
+                "display_name": "rs1129038",
+                "common_name": "HERC2/OCA2 linked pigmentation haplotype marker",
+                "effect_allele": "T",
+                "focus_alleles": ["C", "T"],
+                "effect_summary": "T tracks the lighter-eye-associated HERC2/OCA2 haplotype used as secondary support for rs12913832.",
+                "source_url": "https://pubmed.ncbi.nlm.nih.gov/18252222/",
+                "top_level_location_frequencies": [
+                    {"population_code": "AFR", "location_group": "African ancestry", "label": "African ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.95, "T": 0.05}},
+                    {"population_code": "AMR", "location_group": "Admixed American ancestry", "label": "Admixed American ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.56, "T": 0.44}},
+                    {"population_code": "EAS", "location_group": "East Asian ancestry", "label": "East Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.99, "T": 0.01}},
+                    {"population_code": "EUR", "location_group": "European ancestry", "label": "European ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.31, "T": 0.69}},
+                    {"population_code": "SAS", "location_group": "South Asian ancestry", "label": "South Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.74, "T": 0.26}},
+                ],
+                "detailed_population_frequencies": [],
+            },
+            {
+                "variant": "rs7170852",
+                "display_name": "rs7170852",
+                "common_name": "Secondary HERC2 eye-colour marker",
+                "effect_allele": "A",
+                "focus_alleles": ["T", "A"],
+                "effect_summary": "A is modeled as a secondary lighter-eye-supporting allele in the HERC2 marker panel.",
+                "source_url": "https://pubmed.ncbi.nlm.nih.gov/20457063/",
+                "top_level_location_frequencies": [
+                    {"population_code": "AFR", "location_group": "African ancestry", "label": "African ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.94, "A": 0.06}},
+                    {"population_code": "AMR", "location_group": "Admixed American ancestry", "label": "Admixed American ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.58, "A": 0.42}},
+                    {"population_code": "EAS", "location_group": "East Asian ancestry", "label": "East Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.99, "A": 0.01}},
+                    {"population_code": "EUR", "location_group": "European ancestry", "label": "European ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.34, "A": 0.66}},
+                    {"population_code": "SAS", "location_group": "South Asian ancestry", "label": "South Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.76, "A": 0.24}},
+                ],
+                "detailed_population_frequencies": [],
+            },
+            {
+                "variant": "rs916977",
+                "display_name": "rs916977",
+                "common_name": "HERC2 iris-colour cline marker",
+                "effect_allele": "C",
+                "focus_alleles": ["T", "C"],
+                "effect_summary": "C is treated as the blue-eye-associated allele for the European cline marker rs916977.",
+                "source_url": "https://pubmed.ncbi.nlm.nih.gov/18252221/",
+                "top_level_location_frequencies": [
+                    {"population_code": "AFR", "location_group": "African ancestry", "label": "African ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.97, "C": 0.03}},
+                    {"population_code": "AMR", "location_group": "Admixed American ancestry", "label": "Admixed American ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.60, "C": 0.40}},
+                    {"population_code": "EAS", "location_group": "East Asian ancestry", "label": "East Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.98, "C": 0.02}},
+                    {"population_code": "EUR", "location_group": "European ancestry", "label": "European ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.29, "C": 0.71}},
+                    {"population_code": "SAS", "location_group": "South Asian ancestry", "label": "South Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"T": 0.78, "C": 0.22}},
+                ],
+                "detailed_population_frequencies": [],
+            },
+            {
+                "variant": "rs11636232",
+                "display_name": "rs11636232",
+                "common_name": "Additional HERC2 eye-colour panel marker",
+                "effect_allele": "T",
+                "focus_alleles": ["C", "T"],
+                "effect_summary": "T is modeled as an additional lighter-eye-supporting marker in selected HERC2/OCA2 panels.",
+                "source_url": "https://pubmed.ncbi.nlm.nih.gov/20457063/",
+                "top_level_location_frequencies": [
+                    {"population_code": "AFR", "location_group": "African ancestry", "label": "African ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.93, "T": 0.07}},
+                    {"population_code": "AMR", "location_group": "Admixed American ancestry", "label": "Admixed American ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.70, "T": 0.30}},
+                    {"population_code": "EAS", "location_group": "East Asian ancestry", "label": "East Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.95, "T": 0.05}},
+                    {"population_code": "EUR", "location_group": "European ancestry", "label": "European ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.52, "T": 0.48}},
+                    {"population_code": "SAS", "location_group": "South Asian ancestry", "label": "South Asian ancestry", "granularity": "superpopulation", "allele_frequencies": {"C": 0.80, "T": 0.20}},
+                ],
+                "detailed_population_frequencies": [],
+            },
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "HERC2/OCA2 rs12913832 enhancer haplotype",
+                "location_group": "Global pattern",
+                "summary": "The lighter-eye-associated HERC2/OCA2 haplotype is most frequent in European-ancestry reference panels and uncommon in many African and East Asian panels, so ancestry context strongly affects interpretation.",
+            },
+            {
+                "variant": "HERC2 rs916977 cline",
+                "location_group": "European ancestry",
+                "summary": "rs916977 was reported with a European clinal allele distribution correlated with iris-colour variation, supporting population-aware use in forensic eye-colour prediction.",
+            },
+            {
+                "variant": "Secondary HERC2/OCA2 panel markers",
+                "location_group": "Marker and cohort pattern",
+                "summary": "rs1129038, rs7170852, and rs11636232 can sharpen multilocus pigmentation models, but they should refine rather than override the GT-decoded rs12913832 result.",
+            },
+        ],
+    },
+    {
         "gene_name": "SIRT6",
         "cytoband": "19p13.3",
         "chromosome": "19",
@@ -7831,7 +8259,7 @@ def _build_population_database(meta: dict[str, Any]) -> dict[str, Any]:
         "gene_population_patterns_intro": meta["population_intro"],
         "population_categories": COMMON_POPULATION_CATEGORIES,
         "sources": meta["population_sources"],
-        "variant_population_records": [],
+        "variant_population_records": meta.get("variant_population_records", []),
         "gene_population_patterns": meta["gene_population_patterns"],
     }
 
