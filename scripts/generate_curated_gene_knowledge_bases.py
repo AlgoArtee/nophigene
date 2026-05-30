@@ -6071,6 +6071,12 @@ BIORENDER_VISUAL_LIBRARY: dict[str, dict[str, Any]] = {
         "icon_search_terms": ["intestinal barrier gut epithelium", "digestion", "microbiome"],
         "recommended_icons": ["Intestinal epithelium (Peyer's patch)", "Colon epithelium", "Colon epithelium (mucous)"],
     },
+    "systems_crosstalk": {
+        "template_title": "Pathway and Genetic Markers (Layout)",
+        "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+        "icon_search_terms": ["cell signaling", "rare disease", "gene pathway", "immune metabolism"],
+        "recommended_icons": ["Signal transduction pathway", "Cytokine (2D)", "Metabolic pathway (in mitochondria)"],
+    },
 }
 
 
@@ -6093,14 +6099,19 @@ def _build_biorender_visuals(gene_name: str, visual_key: str, figure_focus: str)
 
 def _build_biochemistry_evidence(config: dict[str, Any]) -> list[dict[str, str]]:
     gene_name = str(config["gene_name"])
-    evidence = [
-        _evidence(f"NCBI Gene {config['ncbi_id']}: {gene_name}", f"https://www.ncbi.nlm.nih.gov/gene/{config['ncbi_id']}"),
-        _evidence(f"UniProt {config['uniprot_id']}: {gene_name}_HUMAN", f"https://www.uniprot.org/uniprotkb/{config['uniprot_id']}/entry"),
+    ncbi_id = str(config.get("ncbi_id") or "").strip()
+    uniprot_id = str(config.get("uniprot_id") or "").strip()
+    evidence = []
+    if ncbi_id:
+        evidence.append(_evidence(f"NCBI Gene {ncbi_id}: {gene_name}", f"https://www.ncbi.nlm.nih.gov/gene/{ncbi_id}"))
+    if uniprot_id:
+        evidence.append(_evidence(f"UniProt {uniprot_id}: {gene_name}_HUMAN", f"https://www.uniprot.org/uniprotkb/{uniprot_id}/entry"))
+    evidence.append(
         _evidence(
             f"Ensembl GRCh37 {config['ensembl_id']}: {gene_name} coordinate source",
             f"https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g={config['ensembl_id']}",
-        ),
-    ]
+        )
+    )
     evidence.extend(config.get("evidence", []))
     return evidence
 
@@ -7879,6 +7890,17 @@ TOPIC_BIOLOGY_DEFAULTS: dict[str, dict[str, Any]] = {
         "visual_key": "gut_barrier",
         "variant_label": "gut-digestion",
     },
+    "obscure_surprising": {
+        "label": "obscure high-impact biology",
+        "axis": "rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases",
+        "conditions": [
+            "Obscure or underappreciated genes with surprising phenotype impact",
+            "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+            "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation",
+        ],
+        "visual_key": "systems_crosstalk",
+        "variant_label": "surprising-impact",
+    },
 }
 
 
@@ -8056,6 +8078,111 @@ TOPIC_BIOLOGY_GENE_ROWS: list[tuple[str, str, str, str, str, str, int, int, str,
     ("SLC2A2", "ENSG00000163581", "6514", "P11168", "3q26.2", "3", 170714137, 170744539, "-", "digestion_gut", "GLUT2, a glucose transporter in liver, pancreas, kidney, and intestinal nutrient handling"),
     ("SLC10A2", "ENSG00000125255", "6555", "Q12908", "13q33.1", "13", 103696350, 103719196, "-", "digestion_gut", "ASBT, the ileal sodium-bile acid cotransporter required for enterohepatic bile-acid recycling"),
 ]
+
+OBSCURE_SURPRISING_GENE_ROWS: list[tuple[str, str, str, str, str, str, int, int, str, str, str]] = [
+    ("TRPA1", "ENSG00000104321", "", "", "chr8", "8", 72932152, 72987852, "-", "obscure_surprising", "a chemically activated nociceptor ion channel that senses irritants, cold, and inflammatory electrophiles"),
+    ("SCN9A", "ENSG00000169432", "", "", "chr2", "2", 167051695, 167232503, "-", "obscure_surprising", "Nav1.7, a sensory-neuron sodium channel whose dosage can shift pain perception from insensitivity to extreme pain syndromes"),
+    ("SCN10A", "ENSG00000185313", "", "", "chr3", "3", 38738293, 38835501, "-", "obscure_surprising", "Nav1.8, a peripheral sodium channel linking nociceptor excitability, visceral pain, and cardiac conduction traits"),
+    ("SCN11A", "ENSG00000168356", "", "", "chr3", "3", 38887260, 38992052, "-", "obscure_surprising", "Nav1.9, a sodium channel that tunes resting sensory-neuron excitability and pain-autonomic phenotypes"),
+    ("PRDM12", "ENSG00000130711", "", "", "chr9", "9", 133539981, 133558368, "+", "obscure_surprising", "a chromatin regulator required for nociceptor development and congenital pain perception"),
+    ("NTRK2", "ENSG00000148053", "", "", "chr9", "9", 87283466, 87638505, "+", "obscure_surprising", "the TrkB neurotrophin receptor for BDNF that links synaptic plasticity, appetite, and neurodevelopmental resilience"),
+    ("KCNK18", "ENSG00000186795", "", "", "chr10", "10", 118957000, 118969810, "+", "obscure_surprising", "TRESK, a two-pore-domain potassium channel associated with migraine susceptibility and sensory-neuron excitability"),
+    ("KCNT1", "ENSG00000107147", "", "", "chr9", "9", 138594031, 138684992, "+", "obscure_surprising", "a sodium-activated potassium channel with high-impact epilepsy and neurodevelopmental phenotypes"),
+    ("KCNMA1", "ENSG00000156113", "", "", "chr10", "10", 78629359, 79398353, "-", "obscure_surprising", "the BK calcium-activated potassium channel shaping neuronal, smooth-muscle, and circadian excitability"),
+    ("SLC6A3", "ENSG00000142319", "", "", "chr5", "5", 1392909, 1445545, "-", "obscure_surprising", "the dopamine transporter that controls synaptic dopamine clearance and reward-motor signaling tone"),
+    ("TACR1", "ENSG00000115353", "", "", "chr2", "2", 75273590, 75426826, "-", "obscure_surprising", "the substance P neurokinin-1 receptor coupling nociception, nausea, stress, and neuroimmune signaling"),
+    ("TAS2R38", "ENSG00000257138", "", "", "chr7", "7", 141672431, 141673573, "-", "obscure_surprising", "a bitter taste receptor influencing taste perception, airway innate responses, and diet-microbiome behaviors"),
+    ("TAS1R3", "ENSG00000169962", "", "", "chr1", "1", 1266694, 1270686, "+", "obscure_surprising", "a sweet and umami taste receptor subunit linking oral taste signaling to nutrient sensing"),
+    ("OR7D4", "ENSG00000174667", "", "", "chr19", "19", 9324526, 9325542, "-", "obscure_surprising", "an odorant receptor that changes perception of androstenone and social-odor chemistry"),
+    ("ABCC11", "ENSG00000121270", "", "", "chr16", "16", 48200821, 48281479, "-", "obscure_surprising", "an apocrine transporter determining earwax type, axillary odor precursors, and secretion traits"),
+    ("CHRNB2", "ENSG00000160716", "", "", "chr1", "1", 154540257, 154552502, "+", "obscure_surprising", "a beta-2 nicotinic receptor subunit involved in sleep-related epilepsy and cholinergic arousal"),
+    ("CHRNA4", "ENSG00000101204", "", "", "chr20", "20", 61975420, 62009753, "-", "obscure_surprising", "an alpha-4 nicotinic receptor subunit linked to nocturnal frontal-lobe epilepsy and attention circuits"),
+    ("GABRB3", "ENSG00000166206", "", "", "chr15", "15", 26788693, 27184686, "-", "obscure_surprising", "a GABA-A receptor beta-3 subunit whose dosage can alter inhibitory signaling and neurodevelopmental traits"),
+    ("CACNA1H", "ENSG00000196557", "", "", "chr16", "16", 1203241, 1271771, "+", "obscure_surprising", "a T-type calcium channel that affects thalamocortical excitability, absence epilepsy, and endocrine signaling"),
+    ("HCN4", "ENSG00000138622", "", "", "chr15", "15", 73612200, 73661605, "-", "obscure_surprising", "a hyperpolarization-activated channel with sinoatrial rhythm and brain excitability effects"),
+    ("PNPLA3", "ENSG00000100344", "", "", "chr22", "22", 44319619, 44360368, "+", "obscure_surprising", "a lipid-droplet lipase/adiponutrin whose variant effects can strongly redirect liver-fat and fibrosis risk"),
+    ("TM6SF2", "ENSG00000213996", "", "", "chr19", "19", 19375173, 19384200, "-", "obscure_surprising", "an ER-Golgi lipidation factor linked to the hepatic-fat versus circulating-lipoprotein tradeoff"),
+    ("APOA5", "ENSG00000110243", "", "", "chr11", "11", 116660083, 116663136, "-", "obscure_surprising", "apolipoprotein A-V, a potent regulator of triglyceride-rich lipoprotein clearance"),
+    ("ANGPTL3", "ENSG00000132855", "", "", "chr1", "1", 63063158, 63071830, "+", "obscure_surprising", "a secreted inhibitor of lipoprotein and endothelial lipases with broad lipid and angiocrine effects"),
+    ("ANGPTL4", "ENSG00000167772", "", "", "chr19", "19", 8428173, 8439257, "+", "obscure_surprising", "a fasting and adipose-derived inhibitor of lipoprotein lipase that links lipid handling to inflammation"),
+    ("GIPR", "ENSG00000010310", "", "", "chr19", "19", 46171502, 46186982, "+", "obscure_surprising", "the glucose-dependent insulinotropic polypeptide receptor coupling gut incretins to insulin, adiposity, and bone biology"),
+    ("GHRL", "ENSG00000157017", "", "", "chr3", "3", 10327359, 10334631, "-", "obscure_surprising", "the ghrelin and obestatin precursor connecting hunger, growth hormone release, motility, and reward biology"),
+    ("NPY", "ENSG00000122585", "", "", "chr7", "7", 24323782, 24331484, "+", "obscure_surprising", "neuropeptide Y, a stress-responsive appetite and autonomic peptide with vascular and immune effects"),
+    ("POMC", "ENSG00000115138", "", "", "chr2", "2", 25383722, 25391772, "-", "obscure_surprising", "the melanocortin peptide precursor that influences appetite, adrenal function, pigmentation, and pain modulation"),
+    ("UCP1", "ENSG00000109424", "", "", "chr4", "4", 141480588, 141489959, "-", "obscure_surprising", "the brown-fat mitochondrial uncoupler that converts proton motive force into adaptive heat production"),
+    ("ADRA2A", "ENSG00000150594", "", "", "chr10", "10", 112836790, 112840658, "+", "obscure_surprising", "the alpha-2A adrenergic receptor regulating sympathetic tone, insulin secretion, attention, and stress responses"),
+    ("ADRB3", "ENSG00000188778", "", "", "chr8", "8", 37820516, 37824483, "-", "obscure_surprising", "the beta-3 adrenergic receptor involved in adipose lipolysis, thermogenesis, and bladder smooth-muscle tone"),
+    ("CPS1", "ENSG00000021826", "", "", "chr2", "2", 211342406, 211543831, "+", "obscure_surprising", "mitochondrial carbamoyl-phosphate synthetase 1, the entry enzyme of the urea cycle and nitric-oxide related metabolism"),
+    ("SLC22A12", "ENSG00000197891", "", "", "chr11", "11", 64358113, 64369820, "+", "obscure_surprising", "URAT1, a renal urate transporter that can swing serum urate and gout biology"),
+    ("SLC2A9", "ENSG00000109667", "", "", "chr4", "4", 9772777, 10056560, "-", "obscure_surprising", "GLUT9, a urate and fructose transporter with unexpectedly large effects on urate levels"),
+    ("UMOD", "ENSG00000169344", "", "", "chr16", "16", 20344374, 20367623, "-", "obscure_surprising", "uromodulin, a kidney thick-ascending-limb protein influencing salt handling, infection defense, and kidney disease risk"),
+    ("HSD11B2", "ENSG00000176387", "", "", "chr16", "16", 67464555, 67471456, "+", "obscure_surprising", "the cortisol-inactivating enzyme that protects mineralocorticoid receptors and shapes salt-sensitive blood pressure"),
+    ("CYP1A2", "ENSG00000140505", "", "", "chr15", "15", 75041185, 75048543, "+", "obscure_surprising", "a hepatic cytochrome P450 enzyme affecting caffeine, xenobiotic, and inflammatory mediator metabolism"),
+    ("NAT2", "ENSG00000156006", "", "", "chr8", "8", 18248755, 18258728, "+", "obscure_surprising", "an arylamine N-acetyltransferase whose slow and rapid acetylator states alter drug and carcinogen handling"),
+    ("BCHE", "ENSG00000114200", "", "", "chr3", "3", 165490692, 165555260, "-", "obscure_surprising", "butyrylcholinesterase, a plasma esterase affecting anesthesia response, pesticide sensitivity, and cholinergic balance"),
+    ("MCM6", "ENSG00000076003", "", "", "chr2", "2", 136597196, 136633996, "-", "obscure_surprising", "a replication-licensing gene that contains regulatory elements controlling LCT expression and lactase persistence"),
+    ("DEFA5", "ENSG00000164816", "", "", "chr8", "8", 6912831, 6914256, "-", "obscure_surprising", "a Paneth-cell alpha defensin that shapes small-intestinal antimicrobial defense and microbial ecology"),
+    ("DEFB1", "ENSG00000164825", "", "", "chr8", "8", 6728097, 6735544, "-", "obscure_surprising", "an epithelial beta defensin involved in mucosal, skin, airway, and oral antimicrobial defense"),
+    ("REG3A", "ENSG00000172016", "", "", "chr2", "2", 79384132, 79386879, "-", "obscure_surprising", "an antimicrobial C-type lectin and epithelial repair signal at the gut-microbe interface"),
+    ("AQP8", "ENSG00000103375", "", "", "chr16", "16", 25227052, 25240261, "+", "obscure_surprising", "a water channel expressed in intestinal and hepatic epithelia with roles in fluid handling and secretion"),
+    ("SLC26A3", "ENSG00000091138", "", "", "chr7", "7", 107405912, 107443670, "-", "obscure_surprising", "an intestinal chloride-bicarbonate exchanger required for stool electrolyte balance and barrier physiology"),
+    ("SLC9A3", "ENSG00000066230", "", "", "chr5", "5", 473425, 524447, "-", "obscure_surprising", "an intestinal and renal sodium-hydrogen exchanger involved in salt absorption, diarrhea biology, and pH control"),
+    ("CFB", "ENSG00000243649", "", "", "chr6", "6", 31895475, 31919861, "+", "obscure_surprising", "complement factor B, a central alternative-pathway amplifier at mucosal and systemic inflammatory surfaces"),
+    ("CLDN2", "ENSG00000165376", "", "", "chrX", "X", 106143394, 106174091, "+", "obscure_surprising", "a pore-forming tight-junction claudin that changes epithelial permeability and inflammatory barrier behavior"),
+    ("DUOX2", "ENSG00000140279", "", "", "chr15", "15", 45384848, 45406542, "-", "obscure_surprising", "an epithelial dual oxidase generating hydrogen peroxide for mucosal defense and thyroid hormone synthesis"),
+    ("DUOXA2", "ENSG00000140274", "", "", "chr15", "15", 45406519, 45410619, "+", "obscure_surprising", "a maturation factor required for DUOX2 oxidase trafficking and epithelial reactive-oxygen defense"),
+    ("TGM2", "ENSG00000198959", "", "", "chr20", "20", 36756863, 36794980, "-", "obscure_surprising", "transglutaminase 2, the celiac autoantigen and matrix-crosslinking enzyme with repair and fibrosis roles"),
+    ("CEL", "ENSG00000170835", "", "", "chr9", "9", 135937365, 135947248, "+", "obscure_surprising", "carboxyl ester lipase, a digestive enzyme affecting lipid digestion and pancreatic beta-cell stress biology"),
+    ("PRSS1", "ENSG00000204983", "", "", "chr7", "7", 142457319, 142460923, "+", "obscure_surprising", "cationic trypsinogen, whose gain-of-function can initiate hereditary pancreatitis cascades"),
+    ("SPINK1", "ENSG00000164266", "", "", "chr5", "5", 147204131, 147211349, "-", "obscure_surprising", "a pancreatic trypsin inhibitor that buffers premature trypsin activation and pancreatitis susceptibility"),
+    ("CLEC7A", "ENSG00000172243", "", "", "chr12", "12", 10269376, 10282857, "-", "obscure_surprising", "dectin-1, a fungal beta-glucan receptor coordinating antifungal immunity and inflammatory tone"),
+    ("TLR7", "ENSG00000196664", "", "", "chrX", "X", 12885202, 12908499, "+", "obscure_surprising", "an endosomal RNA sensor whose dosage affects antiviral immunity, autoimmunity, and sex-biased immune responses"),
+    ("TLR8", "ENSG00000101916", "", "", "chrX", "X", 12924739, 12941288, "+", "obscure_surprising", "an endosomal RNA sensor linking monocyte activation, antiviral defense, and inflammatory cytokine release"),
+    ("MBL2", "ENSG00000165471", "", "", "chr10", "10", 54525140, 54531460, "-", "obscure_surprising", "mannose-binding lectin, a soluble pattern-recognition molecule that modulates complement activation"),
+    ("FCGR2A", "ENSG00000143226", "", "", "chr1", "1", 161475220, 161493803, "+", "obscure_surprising", "a low-affinity IgG receptor whose allele states can alter immune-complex handling and platelet-neutrophil inflammation"),
+    ("FCGR3A", "ENSG00000203747", "", "", "chr1", "1", 161511549, 161600917, "-", "obscure_surprising", "CD16a, an IgG receptor influencing natural-killer cell antibody-dependent cytotoxicity and immune-complex responses"),
+    ("NLRP3", "ENSG00000162711", "", "", "chr1", "1", 247579458, 247612410, "+", "obscure_surprising", "an inflammasome sensor whose activation threshold affects fever, sterile inflammation, and autoinflammatory disease"),
+    ("NLRC4", "ENSG00000091106", "", "", "chr2", "2", 32449522, 32490923, "-", "obscure_surprising", "an inflammasome sensor for bacterial flagellin and type III secretion signals with high-impact enterocolitis phenotypes"),
+    ("AIRE", "ENSG00000160224", "", "", "chr21", "21", 45705721, 45718531, "+", "obscure_surprising", "a thymic transcriptional regulator required for central immune tolerance and endocrine autoimmunity prevention"),
+    ("DOCK8", "ENSG00000107099", "", "", "chr9", "9", 214854, 465259, "+", "obscure_surprising", "an immune-cell cytoskeletal adaptor needed for antiviral, allergy, and lymphocyte survival programs"),
+    ("LRBA", "ENSG00000198589", "", "", "chr4", "4", 151185594, 151936879, "-", "obscure_surprising", "a vesicle-trafficking regulator that preserves CTLA4 availability and immune checkpoint restraint"),
+    ("CTLA4", "ENSG00000163599", "", "", "chr2", "2", 204732509, 204738683, "+", "obscure_surprising", "an inhibitory immune checkpoint receptor that restrains T-cell activation and systemic autoimmunity"),
+    ("PTPN22", "ENSG00000134242", "", "", "chr1", "1", 114356433, 114414381, "-", "obscure_surprising", "a lymphoid tyrosine phosphatase whose variants can redirect autoimmune risk across multiple tissues"),
+    ("IFIH1", "ENSG00000115267", "", "", "chr2", "2", 163123589, 163175213, "-", "obscure_surprising", "MDA5, a viral RNA sensor balancing antiviral defense against interferon-driven autoimmunity"),
+    ("TNFAIP3", "ENSG00000118503", "", "", "chr6", "6", 138188351, 138204449, "+", "obscure_surprising", "A20, a ubiquitin-editing brake on NF-kappaB and cell-death inflammatory signaling"),
+    ("TYROBP", "ENSG00000011600", "", "", "chr19", "19", 36395303, 36399197, "-", "obscure_surprising", "DAP12, an adaptor in microglia, natural-killer cells, and osteoclasts linking immune receptors to tissue remodeling"),
+    ("IRAK4", "ENSG00000198001", "", "", "chr12", "12", 44152747, 44183346, "+", "obscure_surprising", "an innate immune kinase downstream of TLR and IL-1 receptors with strong infection-susceptibility effects"),
+    ("MYD88", "ENSG00000172936", "", "", "chr3", "3", 38179969, 38184513, "+", "obscure_surprising", "the core adaptor for many TLR and IL-1 receptor pathways, coupling pathogen sensing to NF-kappaB activation"),
+    ("C5", "ENSG00000106804", "", "", "chr9", "9", 123714616, 123812554, "-", "obscure_surprising", "complement component C5, the source of C5a and C5b with inflammatory and membrane-attack complex consequences"),
+    ("C7", "ENSG00000112936", "", "", "chr5", "5", 40909354, 40983041, "+", "obscure_surprising", "a terminal complement component required for membrane-attack complex assembly and Neisseria defense"),
+    ("AIFM1", "ENSG00000156709", "", "", "chrX", "X", 129263337, 129299861, "-", "obscure_surprising", "a mitochondrial flavoprotein that links respiratory-chain stress to caspase-independent cell-death signaling"),
+    ("OPA1", "ENSG00000198836", "", "", "chr3", "3", 193310933, 193415612, "+", "obscure_surprising", "a mitochondrial inner-membrane dynamin controlling cristae structure, fusion, optic-nerve resilience, and apoptosis priming"),
+    ("MFN2", "ENSG00000116688", "", "", "chr1", "1", 12040238, 12073571, "+", "obscure_surprising", "a mitochondrial outer-membrane fusion GTPase connecting axonal maintenance, ER contacts, and energy distribution"),
+    ("POLG", "ENSG00000140521", "", "", "chr15", "15", 89859534, 89878092, "-", "obscure_surprising", "mitochondrial DNA polymerase gamma, the main enzyme for mtDNA replication and repair"),
+    ("NDUFS4", "ENSG00000164258", "", "", "chr5", "5", 52856463, 52979168, "+", "obscure_surprising", "a complex I accessory subunit whose loss exposes brain-specific vulnerability to respiratory-chain failure"),
+    ("SUCLA2", "ENSG00000136143", "", "", "chr13", "13", 48510622, 48612125, "-", "obscure_surprising", "the ADP-forming succinyl-CoA ligase beta subunit linking the TCA cycle to mitochondrial nucleotide balance"),
+    ("ETHE1", "ENSG00000105755", "", "", "chr19", "19", 44010871, 44031396, "-", "obscure_surprising", "a mitochondrial sulfur dioxygenase that detoxifies sulfide and protects energy metabolism"),
+    ("SLC25A4", "ENSG00000151729", "", "", "chr4", "4", 186064395, 186071536, "+", "obscure_surprising", "ANT1, a mitochondrial ADP-ATP carrier coupling oxidative phosphorylation to cytosolic energy demand"),
+    ("HSPA1A", "ENSG00000204389", "", "", "chr6", "6", 31783291, 31785723, "+", "obscure_surprising", "inducible Hsp70, a stress chaperone that buffers proteotoxic, heat, immune, and ischemic stress"),
+    ("HSPB1", "ENSG00000106211", "", "", "chr7", "7", 75931861, 75933612, "+", "obscure_surprising", "Hsp27, a small heat-shock protein regulating cytoskeletal stress tolerance and motor-neuron resilience"),
+    ("BAG3", "ENSG00000151929", "", "", "chr10", "10", 121410882, 121437331, "+", "obscure_surprising", "a co-chaperone that routes damaged proteins through chaperone-assisted selective autophagy"),
+    ("SQSTM1", "ENSG00000161011", "", "", "chr5", "5", 179233388, 179265078, "+", "obscure_surprising", "p62, an autophagy receptor and signaling scaffold linking proteostasis, NRF2, NF-kappaB, and bone biology"),
+    ("VCP", "ENSG00000165280", "", "", "chr9", "9", 35056061, 35073246, "-", "obscure_surprising", "an AAA ATPase segregase that extracts ubiquitinated proteins for proteasomal and autophagy pathways"),
+    ("OPTN", "ENSG00000123240", "", "", "chr10", "10", 13141449, 13180291, "+", "obscure_surprising", "optineurin, an autophagy and vesicle adaptor bridging mitochondrial quality control, inflammation, and neurodegeneration"),
+    ("TBK1", "ENSG00000183735", "", "", "chr12", "12", 64845660, 64895888, "+", "obscure_surprising", "a kinase linking innate immune signaling, mitophagy, autophagy, and frontotemporal neurodegeneration pathways"),
+    ("CHCHD10", "ENSG00000250479", "", "", "chr22", "22", 24108021, 24110630, "-", "obscure_surprising", "a mitochondrial cristae protein tied to motor-neuron, myopathy, and mitochondrial stress phenotypes"),
+    ("SPG7", "ENSG00000197912", "", "", "chr16", "16", 89557325, 89624176, "+", "obscure_surprising", "a mitochondrial AAA protease involved in protein quality control, axonal maintenance, and spastic paraplegia biology"),
+    ("ALDH3A2", "ENSG00000072210", "", "", "chr17", "17", 19551449, 19580911, "+", "obscure_surprising", "fatty aldehyde dehydrogenase, a lipid-detoxification enzyme with skin, neurologic, and barrier consequences"),
+    ("SLC30A8", "ENSG00000164756", "", "", "chr8", "8", 117962512, 118188953, "+", "obscure_surprising", "the pancreatic beta-cell zinc transporter ZnT8, linking insulin granule biology to diabetes risk"),
+    ("FMO3", "ENSG00000007933", "", "", "chr1", "1", 171060018, 171086959, "+", "obscure_surprising", "flavin monooxygenase 3, the trimethylamine-oxidizing enzyme behind fish-odor chemistry and xenobiotic handling"),
+    ("ALPL", "ENSG00000162551", "", "", "chr1", "1", 21835858, 21904905, "+", "obscure_surprising", "tissue-nonspecific alkaline phosphatase, controlling extracellular pyrophosphate and mineralization biology"),
+    ("TMEM173", "ENSG00000184584", "", "", "chr5", "5", 138855119, 138862520, "-", "obscure_surprising", "STING, the cytosolic DNA-sensing adaptor connecting infection, interferon tone, vasculopathy, and autoinflammation"),
+    ("PLCG2", "ENSG00000197943", "", "", "chr16", "16", 81772702, 81991899, "+", "obscure_surprising", "phospholipase C gamma 2, a B-cell and myeloid signaling enzyme with immune dysregulation and microglial effects"),
+    ("CX3CR1", "ENSG00000168329", "", "", "chr3", "3", 39304985, 39323226, "-", "obscure_surprising", "the fractalkine receptor coordinating microglial surveillance, monocyte trafficking, and neuroimmune communication"),
+    ("GPR35", "ENSG00000178623", "", "", "chr2", "2", 241544848, 241570676, "+", "obscure_surprising", "an orphan and tryptophan-metabolite-responsive GPCR implicated in gut, immune, pain, and cardiovascular signaling"),
+]
+
+TOPIC_BIOLOGY_GENE_ROWS.extend(OBSCURE_SURPRISING_GENE_ROWS)
 
 
 BIOCHEMISTRY_GENE_CONFIGS.extend(

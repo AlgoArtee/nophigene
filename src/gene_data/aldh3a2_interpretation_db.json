@@ -1,0 +1,204 @@
+{
+  "database_name": "NophiGene ALDH3A2 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "ALDH3A2",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "chr17",
+    "chromosome": "17",
+    "gene_region": {
+      "label": "ALDH3A2 transcribed interval",
+      "start": 19551449,
+      "end": 19580911,
+      "definition": "Canonical ALDH3A2 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 19550449,
+      "end": 19551448,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 19550687,
+      "end": 19650069,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "17:19550449-19580911",
+    "gene_summary": "ALDH3A2 encodes fatty aldehyde dehydrogenase, a lipid-detoxification enzyme with skin, neurologic, and barrier consequences. This topic bundle emphasizes obscure high-impact biology, with interpretation centered on rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+    "clinical_context": "The local ALDH3A2 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "ALDH3A2 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+      "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg16828657",
+      "cg14091025",
+      "cg07319402",
+      "cg22767735",
+      "cg02632015",
+      "cg15646911",
+      "cg20774722",
+      "cg14396505",
+      "cg18308351",
+      "cg27203309"
+    ],
+    "methylation_interpretation": "ALDH3A2 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for ALDH3A2.",
+      "Because ALDH3A2 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use ALDH3A2 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review"
+    ],
+    "evidence": [
+      {
+        "label": "Ensembl GRCh37 ENSG00000072210: ALDH3A2 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000072210"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "ALDH3A2 biochemical figure starter",
+      "focus": "ALDH3A2: obscure high-impact biology via rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "cell signaling",
+        "rare disease",
+        "gene pathway",
+        "immune metabolism"
+      ],
+      "recommended_icons": [
+        "Signal transduction pathway",
+        "Cytokine (2D)",
+        "Metabolic pathway (in mitochondria)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a ALDH3A2 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "ALDH3A2 surprising-impact variation model",
+      "display_name": "ALDH3A2 surprising-impact variation model",
+      "common_name": "ALDH3A2 obscure high-impact biology pathway model",
+      "lookup_keys": [
+        "ALDH3A2 surprising-impact variation model",
+        "ALDH3A2 surprising-impact variation model",
+        "ALDH3A2:ALDH3A2 surprising-impact variation model",
+        "aldh3a2:aldh3a2 surprising-impact variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "ALDH3A2 surprising-impact variation model is curated as a ALDH3A2 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a ALDH3A2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "ALDH3A2 obscure high-impact biology pathway model",
+      "methylation_interpretation": "Pair ALDH3A2 surprising-impact variation model with ALDH3A2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "ALDH3A2 curated evidence set",
+          "genotypes": "ALDH3A2 surprising-impact variation model or linked ALDH3A2 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats ALDH3A2 surprising-impact variation model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "ALDH3A2",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg16828657",
+        "cg14091025",
+        "cg07319402",
+        "cg22767735",
+        "cg02632015",
+        "cg15646911",
+        "cg20774722",
+        "cg14396505",
+        "cg18308351",
+        "cg27203309"
+      ]
+    },
+    {
+      "variant": "ALDH3A2 regulatory expression context model",
+      "display_name": "ALDH3A2 regulatory expression context model",
+      "common_name": "ALDH3A2 expression and methylation-context model",
+      "lookup_keys": [
+        "ALDH3A2 regulatory expression context model",
+        "ALDH3A2 regulatory expression context model",
+        "ALDH3A2:ALDH3A2 regulatory expression context model",
+        "aldh3a2:aldh3a2 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "ALDH3A2 regulatory expression context model is curated as a ALDH3A2 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a ALDH3A2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "ALDH3A2 expression and methylation-context model",
+      "methylation_interpretation": "Pair ALDH3A2 regulatory expression context model with ALDH3A2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "ALDH3A2 curated evidence set",
+          "genotypes": "ALDH3A2 regulatory expression context model or linked ALDH3A2 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats ALDH3A2 regulatory expression context model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "ALDH3A2",
+      "chromosome": "17",
+      "relevant_methylation_probe_ids": [
+        "cg16828657",
+        "cg14091025",
+        "cg07319402",
+        "cg22767735",
+        "cg02632015",
+        "cg15646911",
+        "cg20774722",
+        "cg14396505",
+        "cg18308351",
+        "cg27203309"
+      ]
+    }
+  ]
+}

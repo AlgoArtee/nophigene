@@ -1,0 +1,204 @@
+{
+  "database_name": "NophiGene AIFM1 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "AIFM1",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "chrX",
+    "chromosome": "X",
+    "gene_region": {
+      "label": "AIFM1 transcribed interval",
+      "start": 129263337,
+      "end": 129299861,
+      "definition": "Canonical AIFM1 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 129299862,
+      "end": 129300861,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 129243062,
+      "end": 129306129,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "X:129263337-129300861",
+    "gene_summary": "AIFM1 encodes a mitochondrial flavoprotein that links respiratory-chain stress to caspase-independent cell-death signaling. This topic bundle emphasizes obscure high-impact biology, with interpretation centered on rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+    "clinical_context": "The local AIFM1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "AIFM1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+      "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg07393670",
+      "cg05045028",
+      "cg15769969",
+      "cg06252876",
+      "cg11633086",
+      "cg09636905",
+      "cg25317260",
+      "cg27519679",
+      "cg03392764",
+      "cg01913024"
+    ],
+    "methylation_interpretation": "AIFM1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for AIFM1.",
+      "Because AIFM1 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use AIFM1 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review"
+    ],
+    "evidence": [
+      {
+        "label": "Ensembl GRCh37 ENSG00000156709: AIFM1 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000156709"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "AIFM1 biochemical figure starter",
+      "focus": "AIFM1: obscure high-impact biology via rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "cell signaling",
+        "rare disease",
+        "gene pathway",
+        "immune metabolism"
+      ],
+      "recommended_icons": [
+        "Signal transduction pathway",
+        "Cytokine (2D)",
+        "Metabolic pathway (in mitochondria)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a AIFM1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "AIFM1 surprising-impact variation model",
+      "display_name": "AIFM1 surprising-impact variation model",
+      "common_name": "AIFM1 obscure high-impact biology pathway model",
+      "lookup_keys": [
+        "AIFM1 surprising-impact variation model",
+        "AIFM1 surprising-impact variation model",
+        "AIFM1:AIFM1 surprising-impact variation model",
+        "aifm1:aifm1 surprising-impact variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "AIFM1 surprising-impact variation model is curated as a AIFM1 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a AIFM1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "AIFM1 obscure high-impact biology pathway model",
+      "methylation_interpretation": "Pair AIFM1 surprising-impact variation model with AIFM1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "AIFM1 curated evidence set",
+          "genotypes": "AIFM1 surprising-impact variation model or linked AIFM1 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats AIFM1 surprising-impact variation model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "AIFM1",
+      "chromosome": "X",
+      "relevant_methylation_probe_ids": [
+        "cg07393670",
+        "cg05045028",
+        "cg15769969",
+        "cg06252876",
+        "cg11633086",
+        "cg09636905",
+        "cg25317260",
+        "cg27519679",
+        "cg03392764",
+        "cg01913024"
+      ]
+    },
+    {
+      "variant": "AIFM1 regulatory expression context model",
+      "display_name": "AIFM1 regulatory expression context model",
+      "common_name": "AIFM1 expression and methylation-context model",
+      "lookup_keys": [
+        "AIFM1 regulatory expression context model",
+        "AIFM1 regulatory expression context model",
+        "AIFM1:AIFM1 regulatory expression context model",
+        "aifm1:aifm1 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "AIFM1 regulatory expression context model is curated as a AIFM1 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a AIFM1 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "AIFM1 expression and methylation-context model",
+      "methylation_interpretation": "Pair AIFM1 regulatory expression context model with AIFM1 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "AIFM1 curated evidence set",
+          "genotypes": "AIFM1 regulatory expression context model or linked AIFM1 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats AIFM1 regulatory expression context model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "AIFM1",
+      "chromosome": "X",
+      "relevant_methylation_probe_ids": [
+        "cg07393670",
+        "cg05045028",
+        "cg15769969",
+        "cg06252876",
+        "cg11633086",
+        "cg09636905",
+        "cg25317260",
+        "cg27519679",
+        "cg03392764",
+        "cg01913024"
+      ]
+    }
+  ]
+}
