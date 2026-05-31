@@ -12,6 +12,7 @@ from src.analysis import (
     build_population_insights,
     build_methylation_insights,
     build_variant_interpretations,
+    list_available_gene_data_files,
     load_gene_interpretation_database,
     load_gene_population_database,
     load_gene_synthesis_database,
@@ -106,10 +107,8 @@ def test_mt_rnr1_scope_regions_include_low_coordinate_mitochondrial_calls() -> N
 
 def test_all_local_interpretation_databases_have_valid_combined_regions() -> None:
     """Every bundled promoter+gene recommendation should cover promoter and gene body."""
-    gene_data_dir = Path(__file__).resolve().parents[1] / "src" / "gene_data"
-
-    for database_path in gene_data_dir.glob("*_interpretation_db.json"):
-        gene_name = database_path.name.removesuffix("_interpretation_db.json")
+    for database_filename in list_available_gene_data_files("_interpretation_db.json"):
+        gene_name = database_filename.removesuffix("_interpretation_db.json")
         knowledge_base = load_gene_interpretation_database(gene_name)
         assert knowledge_base is not None
         gene_context = knowledge_base["gene_context"]
@@ -119,7 +118,7 @@ def test_all_local_interpretation_databases_have_valid_combined_regions() -> Non
         gene_region = gene_context["gene_region"]
         promoter_region = gene_context["promoter_review_region"]
 
-        assert combined_start <= combined_end, database_path.name
+        assert combined_start <= combined_end, database_filename
         assert str(gene_context["chromosome"]).removeprefix("chr") == combined_chrom
         assert combined_start <= min(gene_region["start"], gene_region["end"])
         assert combined_end >= max(gene_region["start"], gene_region["end"])

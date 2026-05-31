@@ -15,12 +15,15 @@ from __future__ import annotations
 import argparse
 import gzip
 import html
+import io
 import json
 import logging
 import os
 import re
 import sys
+import zipfile
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -60,6 +63,7 @@ ANALYSIS_SCOPE_OPTIONS = {
 }
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 GENE_DATA_DIR = Path(__file__).resolve().parent / "gene_data"
+GENE_DATA_BUNDLE_PATH = GENE_DATA_DIR / "gene_data_bundle.zip"
 INTERPRETATION_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_interpretation_db.json"
 POPULATION_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_population_db.json"
 SYNTHESIS_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_synthesis.json"
@@ -189,18 +193,96 @@ def _candidate_gene_database_paths(gene_name: str, suffix: str) -> list[Path]:
     ]
 
     unique_candidates: list[Path] = []
-    seen_paths: set[Path] = set()
+    seen_paths: set[str] = set()
     for path in candidates:
-        if path in seen_paths:
+        path_key = str(path)
+        if path_key in seen_paths:
             continue
-        seen_paths.add(path)
+        seen_paths.add(path_key)
         unique_candidates.append(path)
     return unique_candidates
+
+
+def _candidate_gene_data_filenames(gene_name: str, suffix: str) -> list[str]:
+    """Return likely bundled filenames for a per-gene artifact."""
+    return [candidate.name for candidate in _candidate_gene_database_paths(gene_name, suffix)]
+
+
+def _candidate_gene_manifest_paths(gene_name: str, genome_build: str = "hg19") -> list[Path]:
+    """Return likely per-gene manifest subset paths in priority order."""
+    return _candidate_gene_database_paths(gene_name, f"epigenetics_{genome_build}.csv")
+
+
+@lru_cache(maxsize=8)
+def _gene_data_bundle_members(bundle_path: str) -> frozenset[str]:
+    """Return member names from the compressed gene-data bundle."""
+    path = Path(bundle_path)
+    if not path.exists():
+        return frozenset()
+    with zipfile.ZipFile(path) as bundle:
+        return frozenset(info.filename for info in bundle.infolist() if not info.is_dir())
+
+
+@lru_cache(maxsize=4096)
+def _read_gene_data_bundle_member_bytes(bundle_path: str, member_name: str) -> bytes | None:
+    """Read one member from the compressed gene-data bundle, if present."""
+    if member_name not in _gene_data_bundle_members(bundle_path):
+        return None
+    with zipfile.ZipFile(bundle_path) as bundle:
+        return bundle.read(member_name)
+
+
+def clear_gene_data_bundle_cache() -> None:
+    """Clear cached bundle membership/content; useful after rebuilding the archive in-process."""
+    _gene_data_bundle_members.cache_clear()
+    _read_gene_data_bundle_member_bytes.cache_clear()
+
+
+def list_gene_data_bundle_members(suffix: str | None = None) -> list[str]:
+    """List bundled archive members, optionally filtered by filename suffix."""
+    members = sorted(_gene_data_bundle_members(str(GENE_DATA_BUNDLE_PATH)))
+    if suffix is None:
+        return members
+    return [member for member in members if member.endswith(suffix)]
+
+
+def list_available_gene_data_files(suffix: str | None = None) -> list[str]:
+    """List gene-data filenames available either loose on disk or inside the archive."""
+    loose_files = {path.name for path in GENE_DATA_DIR.iterdir() if path.is_file()} if GENE_DATA_DIR.exists() else set()
+    bundled_files = set(_gene_data_bundle_members(str(GENE_DATA_BUNDLE_PATH)))
+    filenames = sorted(loose_files | bundled_files)
+    if suffix is None:
+        return filenames
+    return [filename for filename in filenames if filename.endswith(suffix)]
+
+
+def _gene_data_bundle_has_member(filename: str) -> bool:
+    """Return whether the compressed bundle contains the requested filename."""
+    return filename in _gene_data_bundle_members(str(GENE_DATA_BUNDLE_PATH))
+
+
+def _read_gene_data_text(filename: str) -> str | None:
+    """Read a gene-data text artifact, preferring loose files over the archive."""
+    loose_path = GENE_DATA_DIR / filename
+    if loose_path.exists():
+        return loose_path.read_text(encoding="utf-8")
+    bundled_bytes = _read_gene_data_bundle_member_bytes(str(GENE_DATA_BUNDLE_PATH), filename)
+    if bundled_bytes is None:
+        return None
+    return bundled_bytes.decode("utf-8")
 
 
 def find_gene_database_path(gene_name: str, suffix: str) -> Path | None:
     """Locate a bundled per-gene database when one is available."""
     for candidate in _candidate_gene_database_paths(gene_name, suffix):
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def find_gene_manifest_path(gene_name: str, genome_build: str = "hg19") -> Path | None:
+    """Locate a loose per-gene manifest subset when one is available."""
+    for candidate in _candidate_gene_manifest_paths(gene_name, genome_build):
         if candidate.exists():
             return candidate
     return None
@@ -366,11 +448,22 @@ def _load_json_database(
 ) -> dict[str, Any]:
     """Load a JSON-backed local database with a consistent error surface."""
     payload_path = Path(database_path)
-    if not payload_path.exists():
+    payload_text: str | None
+    if payload_path.exists():
+        try:
+            payload_text = payload_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            raise AnalysisError(f"{missing_label}: {payload_path}") from exc
+    elif payload_path.parent == GENE_DATA_DIR:
+        payload_text = _read_gene_data_text(payload_path.name)
+    else:
+        payload_text = None
+
+    if payload_text is None:
         raise AnalysisError(f"{missing_label}: {payload_path}")
 
     try:
-        return json.loads(payload_path.read_text(encoding="utf-8"))
+        return json.loads(payload_text)
     except json.JSONDecodeError as exc:
         raise AnalysisError(f"{invalid_label}: {payload_path}") from exc
 
@@ -422,26 +515,37 @@ def load_synthesis_database(database_path: str | Path = SYNTHESIS_DB_PATH) -> di
 
 def load_gene_interpretation_database(gene_name: str) -> dict[str, Any] | None:
     """Load a bundled gene-specific interpretation database when one exists."""
-    database_path = find_gene_database_path(gene_name, "interpretation_db.json")
-    if database_path is None:
-        return None
-    return load_interpretation_database(database_path)
+    for database_path in _candidate_gene_database_paths(gene_name, "interpretation_db.json"):
+        if database_path.exists() or _gene_data_bundle_has_member(database_path.name):
+            return load_interpretation_database(database_path)
+    return None
 
 
 def load_gene_population_database(gene_name: str) -> dict[str, Any] | None:
     """Load a bundled gene-specific population database when one exists."""
-    database_path = find_gene_database_path(gene_name, "population_db.json")
-    if database_path is None:
-        return None
-    return load_population_database(database_path)
+    for database_path in _candidate_gene_database_paths(gene_name, "population_db.json"):
+        if database_path.exists() or _gene_data_bundle_has_member(database_path.name):
+            return load_population_database(database_path)
+    return None
 
 
 def load_gene_synthesis_database(gene_name: str) -> dict[str, Any] | None:
     """Load a bundled gene-specific predictive synthesis database when one exists."""
-    database_path = find_gene_database_path(gene_name, "synthesis.json")
-    if database_path is None:
-        return None
-    return load_synthesis_database(database_path)
+    for database_path in _candidate_gene_database_paths(gene_name, "synthesis.json"):
+        if database_path.exists() or _gene_data_bundle_has_member(database_path.name):
+            return load_synthesis_database(database_path)
+    return None
+
+
+def load_gene_epigenetics_manifest(gene_name: str, genome_build: str = "hg19") -> pd.DataFrame | None:
+    """Load a bundled gene-specific epigenetics manifest subset when one exists."""
+    for manifest_path in _candidate_gene_manifest_paths(gene_name, genome_build):
+        if manifest_path.exists():
+            return pd.read_csv(manifest_path)
+        bundled_bytes = _read_gene_data_bundle_member_bytes(str(GENE_DATA_BUNDLE_PATH), manifest_path.name)
+        if bundled_bytes is not None:
+            return pd.read_csv(io.BytesIO(bundled_bytes))
+    return None
 
 
 def _decode_scalar(value: Any) -> Any:
@@ -2336,15 +2440,14 @@ def _load_gene_manifest_probe_lookup(
     if not probe_ids:
         return {}
 
-    manifest_path = GENE_DATA_DIR / _gene_manifest_filename(gene_name)
-    if not manifest_path.exists():
-        logger.warning("Bundled manifest subset is missing for %s: %s", gene_name, manifest_path)
-        return {}
-
     try:
-        manifest = pd.read_csv(manifest_path)
+        manifest = load_gene_epigenetics_manifest(gene_name)
     except Exception:
         logger.exception("Failed to read bundled manifest subset for %s", gene_name)
+        return {}
+    if manifest is None:
+        manifest_path = GENE_DATA_DIR / _gene_manifest_filename(gene_name)
+        logger.warning("Bundled manifest subset is missing for %s: %s", gene_name, manifest_path)
         return {}
 
     manifest = manifest.rename(columns={"IlmnID": "probe_id", "CHR": "chrom", "MAPINFO": "pos"})
@@ -4713,9 +4816,14 @@ def load_methylation(
     beta_df = beta_df.rename(columns={beta_df.columns[0]: "probe_id"})
     logger.debug("First 5 rows of beta-values DataFrame after renaming:\n%s", beta_df.head(5))
     try:
-        manifest_region = pd.read_csv(region_manifest_file)
+        if region_manifest_file.exists():
+            manifest_region = pd.read_csv(region_manifest_file)
+        else:
+            manifest_region = load_gene_epigenetics_manifest(normalized_gene_name)
     except Exception as exc:
         raise AnalysisError(f"Failed to read region manifest file '{region_manifest_file}': {exc}") from exc
+    if manifest_region is None:
+        raise AnalysisError(f"Failed to read region manifest file '{region_manifest_file}': file not found")
 
     if {"CHR", "MAPINFO"}.issubset(manifest_region.columns):
         region_chrom, region_start, region_end = parse_region_string(region)

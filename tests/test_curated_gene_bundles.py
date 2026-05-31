@@ -12,6 +12,7 @@ from src.analysis import (
     build_population_insights,
     build_predictive_theses,
     build_variant_interpretations,
+    load_gene_epigenetics_manifest,
     load_gene_interpretation_database,
     load_gene_population_database,
     load_gene_synthesis_database,
@@ -694,9 +695,8 @@ def test_curated_gene_bundle_loads_with_manifest_subset(gene_name: str, gene_sta
     if knowledge_base["variant_records"]:
         assert synthesis_database["variant_prediction_rules"]
 
-    subset_path = Path("src/gene_data") / f"{gene_name}_epigenetics_hg19.csv"
-    assert subset_path.exists()
-    manifest_subset = pd.read_csv(subset_path)
+    manifest_subset = load_gene_epigenetics_manifest(gene_name)
+    assert manifest_subset is not None
     assert not manifest_subset.empty
 
 
@@ -2030,9 +2030,9 @@ def test_poteb3_bundle_is_grch38_paralog_context_without_epic_probes() -> None:
     assert knowledge_base["gene_context"]["relevant_methylation_probe_ids"] == []
     assert "POTEB3/POTE-family structural-region thesis" in synthesis_database["concrete_variant_prediction"]
 
-    subset_path = Path("src/gene_data") / "POTEB3_epigenetics_hg19.csv"
-    assert subset_path.exists()
-    assert pd.read_csv(subset_path).empty
+    manifest_subset = load_gene_epigenetics_manifest("POTEB3")
+    assert manifest_subset is not None
+    assert manifest_subset.empty
 
     variant_ids = {record["variant"] for record in knowledge_base["variant_records"]}
     assert "15q11.1-q11.2 CNV including POTEB3" in variant_ids

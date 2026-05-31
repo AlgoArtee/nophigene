@@ -4,11 +4,14 @@
 from __future__ import annotations
 
 import json
+import zipfile
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 GENE_DATA_DIR = PROJECT_ROOT / "src" / "gene_data"
+GENE_DATA_BUNDLE_PATH = GENE_DATA_DIR / "gene_data_bundle.zip"
 VERSION = "2026-04-18"
 TARGET_GENES = [
     "HERC2",
@@ -943,11 +946,35 @@ def _candidate_interpretation_paths(gene_name: str) -> list[Path]:
     ]
 
 
+@lru_cache(maxsize=1)
+def _gene_data_bundle_members() -> tuple[str, ...]:
+    """Return sorted gene-data bundle member names, or an empty tuple when absent."""
+    if not GENE_DATA_BUNDLE_PATH.exists():
+        return ()
+    try:
+        with zipfile.ZipFile(GENE_DATA_BUNDLE_PATH) as bundle:
+            return tuple(sorted(name for name in bundle.namelist() if not name.endswith("/")))
+    except zipfile.BadZipFile:
+        return ()
+
+
+def _read_gene_data_bundle_text(member_name: str) -> str | None:
+    """Read a text member from the gene-data bundle if present."""
+    if member_name not in _gene_data_bundle_members():
+        return None
+    with zipfile.ZipFile(GENE_DATA_BUNDLE_PATH) as bundle:
+        return bundle.read(member_name).decode("utf-8")
+
+
 def _load_interpretation_database(gene_name: str) -> dict[str, Any]:
     """Load the bundled interpretation database for a gene."""
     for path in _candidate_interpretation_paths(gene_name):
         if path.exists():
             return json.loads(path.read_text(encoding="utf-8"))
+    for path in _candidate_interpretation_paths(gene_name):
+        payload = _read_gene_data_bundle_text(path.name)
+        if payload is not None:
+            return json.loads(payload)
     raise FileNotFoundError(f"No interpretation database found for {gene_name}")
 
 
@@ -957,6 +984,19 @@ def _discover_interpretation_genes() -> list[str]:
     for path in sorted(GENE_DATA_DIR.glob("*_interpretation_db.json")):
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        gene_name = _clean_text(payload.get("gene_context", {}).get("gene_name"))
+        if gene_name:
+            discovered.append(gene_name)
+    for member_name in _gene_data_bundle_members():
+        if not member_name.endswith("_interpretation_db.json"):
+            continue
+        payload_text = _read_gene_data_bundle_text(member_name)
+        if payload_text is None:
+            continue
+        try:
+            payload = json.loads(payload_text)
         except json.JSONDecodeError:
             continue
         gene_name = _clean_text(payload.get("gene_context", {}).get("gene_name"))
