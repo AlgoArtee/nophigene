@@ -64,6 +64,7 @@ ANALYSIS_SCOPE_OPTIONS = {
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 GENE_DATA_DIR = Path(__file__).resolve().parent / "gene_data"
 GENE_DATA_BUNDLE_PATH = GENE_DATA_DIR / "gene_data_bundle.zip"
+GENE_DATA_INDEX_PATH = GENE_DATA_DIR / "gene_data_index.json"
 INTERPRETATION_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_interpretation_db.json"
 POPULATION_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_population_db.json"
 SYNTHESIS_DB_PATH = Path(__file__).resolve().parent / "gene_data" / "drd4_synthesis.json"
@@ -232,10 +233,66 @@ def _read_gene_data_bundle_member_bytes(bundle_path: str, member_name: str) -> b
         return bundle.read(member_name)
 
 
+@lru_cache(maxsize=8)
+def _gene_data_index(index_path: str) -> dict[str, Any]:
+    """Return the sharded bulk gene-data index, or an empty index when absent."""
+    path = Path(index_path)
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        logger.warning("Bulk gene-data index could not be read: %s", path, exc_info=True)
+        return {}
+
+
+@lru_cache(maxsize=8)
+def _bulk_gene_data_members(index_path: str) -> frozenset[str]:
+    """Return sharded bulk archive member names from the index."""
+    files = _gene_data_index(index_path).get("files", {})
+    if not isinstance(files, dict):
+        return frozenset()
+    return frozenset(str(filename) for filename in files)
+
+
+def _bulk_gene_data_shard_path(index_path: str, gene_data_dir: str, filename: str) -> Path | None:
+    """Return the shard path for one bulk archive member when indexed."""
+    index = _gene_data_index(index_path)
+    files = index.get("files", {})
+    shards = index.get("shards", {})
+    if not isinstance(files, dict) or not isinstance(shards, dict):
+        return None
+    shard_name = files.get(filename)
+    if not isinstance(shard_name, str):
+        return None
+    shard_info = shards.get(shard_name, {})
+    relative_path = shard_info.get("path") if isinstance(shard_info, dict) else None
+    if not isinstance(relative_path, str):
+        relative_path = f"bulk_gene_data_shards/{shard_name}"
+    return Path(gene_data_dir) / relative_path
+
+
+@lru_cache(maxsize=4096)
+def _read_bulk_gene_data_member_bytes(index_path: str, gene_data_dir: str, member_name: str) -> bytes | None:
+    """Read one member from the sharded bulk gene-data archives, if indexed."""
+    shard_path = _bulk_gene_data_shard_path(index_path, gene_data_dir, member_name)
+    if shard_path is None or not shard_path.exists():
+        return None
+    try:
+        with zipfile.ZipFile(shard_path) as bundle:
+            return bundle.read(member_name)
+    except (OSError, zipfile.BadZipFile, KeyError):
+        logger.warning("Bulk gene-data member could not be read: %s in %s", member_name, shard_path, exc_info=True)
+        return None
+
+
 def clear_gene_data_bundle_cache() -> None:
     """Clear cached bundle membership/content; useful after rebuilding the archive in-process."""
     _gene_data_bundle_members.cache_clear()
     _read_gene_data_bundle_member_bytes.cache_clear()
+    _gene_data_index.cache_clear()
+    _bulk_gene_data_members.cache_clear()
+    _read_bulk_gene_data_member_bytes.cache_clear()
 
 
 def list_gene_data_bundle_members(suffix: str | None = None) -> list[str]:
@@ -246,11 +303,20 @@ def list_gene_data_bundle_members(suffix: str | None = None) -> list[str]:
     return [member for member in members if member.endswith(suffix)]
 
 
+def list_gene_data_bulk_members(suffix: str | None = None) -> list[str]:
+    """List sharded bulk archive members, optionally filtered by filename suffix."""
+    members = sorted(_bulk_gene_data_members(str(GENE_DATA_INDEX_PATH)))
+    if suffix is None:
+        return members
+    return [member for member in members if member.endswith(suffix)]
+
+
 def list_available_gene_data_files(suffix: str | None = None) -> list[str]:
     """List gene-data filenames available either loose on disk or inside the archive."""
     loose_files = {path.name for path in GENE_DATA_DIR.iterdir() if path.is_file()} if GENE_DATA_DIR.exists() else set()
     bundled_files = set(_gene_data_bundle_members(str(GENE_DATA_BUNDLE_PATH)))
-    filenames = sorted(loose_files | bundled_files)
+    bulk_files = set(_bulk_gene_data_members(str(GENE_DATA_INDEX_PATH)))
+    filenames = sorted(loose_files | bundled_files | bulk_files)
     if suffix is None:
         return filenames
     return [filename for filename in filenames if filename.endswith(suffix)]
@@ -261,15 +327,23 @@ def _gene_data_bundle_has_member(filename: str) -> bool:
     return filename in _gene_data_bundle_members(str(GENE_DATA_BUNDLE_PATH))
 
 
+def _bulk_gene_data_has_member(filename: str) -> bool:
+    """Return whether the sharded bulk archives contain the requested filename."""
+    return filename in _bulk_gene_data_members(str(GENE_DATA_INDEX_PATH))
+
+
 def _read_gene_data_text(filename: str) -> str | None:
-    """Read a gene-data text artifact, preferring loose files over the archive."""
+    """Read a gene-data text artifact, preferring loose files over curated and bulk archives."""
     loose_path = GENE_DATA_DIR / filename
     if loose_path.exists():
         return loose_path.read_text(encoding="utf-8")
     bundled_bytes = _read_gene_data_bundle_member_bytes(str(GENE_DATA_BUNDLE_PATH), filename)
-    if bundled_bytes is None:
-        return None
-    return bundled_bytes.decode("utf-8")
+    if bundled_bytes is not None:
+        return bundled_bytes.decode("utf-8")
+    bulk_bytes = _read_bulk_gene_data_member_bytes(str(GENE_DATA_INDEX_PATH), str(GENE_DATA_DIR), filename)
+    if bulk_bytes is not None:
+        return bulk_bytes.decode("utf-8")
+    return None
 
 
 def find_gene_database_path(gene_name: str, suffix: str) -> Path | None:
@@ -516,7 +590,11 @@ def load_synthesis_database(database_path: str | Path = SYNTHESIS_DB_PATH) -> di
 def load_gene_interpretation_database(gene_name: str) -> dict[str, Any] | None:
     """Load a bundled gene-specific interpretation database when one exists."""
     for database_path in _candidate_gene_database_paths(gene_name, "interpretation_db.json"):
-        if database_path.exists() or _gene_data_bundle_has_member(database_path.name):
+        if (
+            database_path.exists()
+            or _gene_data_bundle_has_member(database_path.name)
+            or _bulk_gene_data_has_member(database_path.name)
+        ):
             return load_interpretation_database(database_path)
     return None
 
@@ -524,7 +602,11 @@ def load_gene_interpretation_database(gene_name: str) -> dict[str, Any] | None:
 def load_gene_population_database(gene_name: str) -> dict[str, Any] | None:
     """Load a bundled gene-specific population database when one exists."""
     for database_path in _candidate_gene_database_paths(gene_name, "population_db.json"):
-        if database_path.exists() or _gene_data_bundle_has_member(database_path.name):
+        if (
+            database_path.exists()
+            or _gene_data_bundle_has_member(database_path.name)
+            or _bulk_gene_data_has_member(database_path.name)
+        ):
             return load_population_database(database_path)
     return None
 
@@ -532,7 +614,11 @@ def load_gene_population_database(gene_name: str) -> dict[str, Any] | None:
 def load_gene_synthesis_database(gene_name: str) -> dict[str, Any] | None:
     """Load a bundled gene-specific predictive synthesis database when one exists."""
     for database_path in _candidate_gene_database_paths(gene_name, "synthesis.json"):
-        if database_path.exists() or _gene_data_bundle_has_member(database_path.name):
+        if (
+            database_path.exists()
+            or _gene_data_bundle_has_member(database_path.name)
+            or _bulk_gene_data_has_member(database_path.name)
+        ):
             return load_synthesis_database(database_path)
     return None
 
@@ -545,6 +631,9 @@ def load_gene_epigenetics_manifest(gene_name: str, genome_build: str = "hg19") -
         bundled_bytes = _read_gene_data_bundle_member_bytes(str(GENE_DATA_BUNDLE_PATH), manifest_path.name)
         if bundled_bytes is not None:
             return pd.read_csv(io.BytesIO(bundled_bytes))
+        bulk_bytes = _read_bulk_gene_data_member_bytes(str(GENE_DATA_INDEX_PATH), str(GENE_DATA_DIR), manifest_path.name)
+        if bulk_bytes is not None:
+            return pd.read_csv(io.BytesIO(bulk_bytes))
     return None
 
 
