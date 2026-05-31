@@ -1,0 +1,205 @@
+{
+  "database_name": "NophiGene TRIOBP Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "TRIOBP",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "chr22",
+    "chromosome": "22",
+    "gene_region": {
+      "label": "TRIOBP transcribed interval",
+      "start": 38093011,
+      "end": 38172563,
+      "definition": "Canonical TRIOBP genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 38092011,
+      "end": 38093010,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 38003120,
+      "end": 38245447,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "22:38092011-38172563",
+    "gene_summary": "TRIOBP encodes an auditory or vestibular sensory gene involved in hair-cell mechanotransduction, cochlear ionic balance, stereocilia structure, or ribbon-synapse signaling. This topic bundle emphasizes human sensory biology, with interpretation centered on visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+    "clinical_context": "The local TRIOBP bundle is oriented toward human sensory biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "TRIOBP variants can alter, tag, or contextualize visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Human senses, sensory transduction, and sensory-neuron research context",
+      "Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology",
+      "Candidate-gene triage where sensory organ, receptor class, channel gating, tissue expression, and phenotype timing change interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg12379720",
+      "cg05691152",
+      "cg06594770",
+      "cg13897416",
+      "cg06644488",
+      "cg12325455",
+      "cg14268632",
+      "cg03360992",
+      "cg11540735",
+      "cg11679014"
+    ],
+    "methylation_interpretation": "TRIOBP methylation should be treated as local regulatory context around a visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for TRIOBP.",
+      "Because TRIOBP biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use TRIOBP promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+      "Human senses, sensory transduction, and sensory-neuron research context",
+      "Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology"
+    ],
+    "evidence": [
+      {
+        "label": "Ensembl GRCh37 ENSG00000100106: TRIOBP coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000100106"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "TRIOBP biochemical figure starter",
+      "focus": "TRIOBP: human sensory biology via visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling",
+      "template_title": "Types of Cellular Receptors",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-60ba45fff7aa2e00a8b7081c?source=mcp",
+      "icon_search_terms": [
+        "sensory neuron",
+        "photoreceptor",
+        "hair cell",
+        "olfactory receptor",
+        "taste receptor"
+      ],
+      "recommended_icons": [
+        "Ion channel (ligand-gated, open, schematic)",
+        "Synaptic vesicle with neurotransmitters (medium)",
+        "Signal transduction pathway"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a TRIOBP human sensory biology thesis: the individual may carry context relevant to visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "TRIOBP human-senses variation model",
+      "display_name": "TRIOBP human-senses variation model",
+      "common_name": "TRIOBP human sensory biology pathway model",
+      "lookup_keys": [
+        "TRIOBP human-senses variation model",
+        "TRIOBP human-senses variation model",
+        "TRIOBP:TRIOBP human-senses variation model",
+        "triobp:triobp human-senses variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TRIOBP human-senses variation model is curated as a TRIOBP marker for Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology. Read it through genotype dosage, phenotype context, and the visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Human senses, sensory transduction, and sensory-neuron research context",
+        "Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology",
+        "Candidate-gene triage where sensory organ, receptor class, channel gating, tissue expression, and phenotype timing change interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a TRIOBP pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TRIOBP human sensory biology pathway model",
+      "methylation_interpretation": "Pair TRIOBP human-senses variation model with TRIOBP methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TRIOBP curated evidence set",
+          "genotypes": "TRIOBP human-senses variation model or linked TRIOBP locus genotype states",
+          "phenotype": "Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology",
+          "finding": "The local curation treats TRIOBP human-senses variation model as a gene-specific marker for Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology and visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TRIOBP",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg12379720",
+        "cg05691152",
+        "cg06594770",
+        "cg13897416",
+        "cg06644488",
+        "cg12325455",
+        "cg14268632",
+        "cg03360992",
+        "cg11540735",
+        "cg11679014"
+      ]
+    },
+    {
+      "variant": "TRIOBP regulatory expression context model",
+      "display_name": "TRIOBP regulatory expression context model",
+      "common_name": "TRIOBP expression and methylation-context model",
+      "lookup_keys": [
+        "TRIOBP regulatory expression context model",
+        "TRIOBP regulatory expression context model",
+        "TRIOBP:TRIOBP regulatory expression context model",
+        "triobp:triobp regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "TRIOBP regulatory expression context model is curated as a TRIOBP marker for Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology. Read it through genotype dosage, phenotype context, and the visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Human senses, sensory transduction, and sensory-neuron research context",
+        "Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology",
+        "Candidate-gene triage where sensory organ, receptor class, channel gating, tissue expression, and phenotype timing change interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a TRIOBP pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "TRIOBP expression and methylation-context model",
+      "methylation_interpretation": "Pair TRIOBP regulatory expression context model with TRIOBP methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "TRIOBP curated evidence set",
+          "genotypes": "TRIOBP regulatory expression context model or linked TRIOBP locus genotype states",
+          "phenotype": "Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology",
+          "finding": "The local curation treats TRIOBP regulatory expression context model as a gene-specific marker for Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology and visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "TRIOBP",
+      "chromosome": "22",
+      "relevant_methylation_probe_ids": [
+        "cg12379720",
+        "cg05691152",
+        "cg06594770",
+        "cg13897416",
+        "cg06644488",
+        "cg12325455",
+        "cg14268632",
+        "cg03360992",
+        "cg11540735",
+        "cg11679014"
+      ]
+    }
+  ]
+}

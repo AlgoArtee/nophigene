@@ -1,0 +1,57 @@
+{
+  "database_name": "NophiGene LOXHD1 Population Database",
+  "version": "2026-04-15",
+  "assembly": "GRCh37 / hg19",
+  "coverage_note": "The bundled LOXHD1 population database stores gene-level and marker-level interpretation notes, but does not embed a full ancestry-frequency matrix for these markers yet.",
+  "gene_population_patterns_intro": "Broader population patterns curated from LOXHD1 visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling and condition-association literature.",
+  "population_categories": [
+    {
+      "key": "Global pattern",
+      "label": "Global pattern"
+    },
+    {
+      "key": "Longevity cohorts",
+      "label": "Longevity and healthy-aging cohorts"
+    },
+    {
+      "key": "Disease cohorts",
+      "label": "Disease-focused cohorts"
+    },
+    {
+      "key": "Cancer cohorts",
+      "label": "Cancer-focused cohorts"
+    },
+    {
+      "key": "Metabolic cohorts",
+      "label": "Metabolic and endocrine cohorts"
+    },
+    {
+      "key": "Rare disease families",
+      "label": "Rare-disease and familial series"
+    }
+  ],
+  "sources": [
+    {
+      "label": "Ensembl GRCh37 ENSG00000167210: LOXHD1 coordinate source",
+      "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000167210"
+    }
+  ],
+  "variant_population_records": [],
+  "gene_population_patterns": [
+    {
+      "variant": "LOXHD1 biochemical pathway context",
+      "location_group": "Global pattern",
+      "summary": "LOXHD1 findings should be read against visual phototransduction, auditory and vestibular hair-cell mechanics, olfactory and gustatory chemosensation, somatosensory ion channels, pain, itch, temperature, proprioception, and interoceptive sensory signaling; population frequency, ascertainment, and phenotype definition can change the apparent effect size."
+    },
+    {
+      "variant": "LOXHD1 human-senses variation model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "LOXHD1 human-senses variation model is curated as a LOXHD1 marker for Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology; interpret ancestry and cohort patterns before assigning biological direction."
+    },
+    {
+      "variant": "LOXHD1 regulatory expression context model",
+      "location_group": "Marker and cohort pattern",
+      "summary": "LOXHD1 regulatory expression context model is curated as a LOXHD1 marker for Human senses, sensory transduction, and sensory-neuron research context, Vision, hearing, balance, smell, taste, touch, pain, itch, temperature, proprioception, and interoception pathway biology; interpret ancestry and cohort patterns before assigning biological direction."
+    }
+  ]
+}
