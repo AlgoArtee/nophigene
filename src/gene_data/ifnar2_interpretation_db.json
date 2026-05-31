@@ -1,0 +1,204 @@
+{
+  "database_name": "NophiGene IFNAR2 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "IFNAR2",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "chr21",
+    "chromosome": "21",
+    "gene_region": {
+      "label": "IFNAR2 transcribed interval",
+      "start": 34602206,
+      "end": 34637980,
+      "definition": "Canonical IFNAR2 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 34601206,
+      "end": 34602205,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 34601686,
+      "end": 34697369,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "21:34601206-34637980",
+    "gene_summary": "IFNAR2 encodes a type I interferon receptor chain tuning antiviral signaling strength and inflammatory antiviral states. This topic bundle emphasizes obscure high-impact biology, with interpretation centered on rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+    "clinical_context": "The local IFNAR2 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "IFNAR2 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+      "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg21355791",
+      "cg00937568",
+      "cg05770313",
+      "cg10309613",
+      "cg20215695",
+      "cg26110456",
+      "cg21980821",
+      "cg22454603",
+      "cg18656581",
+      "cg17725807"
+    ],
+    "methylation_interpretation": "IFNAR2 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for IFNAR2.",
+      "Because IFNAR2 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use IFNAR2 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review"
+    ],
+    "evidence": [
+      {
+        "label": "Ensembl GRCh37 ENSG00000159110: IFNAR2 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000159110"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "IFNAR2 biochemical figure starter",
+      "focus": "IFNAR2: obscure high-impact biology via rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "cell signaling",
+        "rare disease",
+        "gene pathway",
+        "immune metabolism"
+      ],
+      "recommended_icons": [
+        "Signal transduction pathway",
+        "Cytokine (2D)",
+        "Metabolic pathway (in mitochondria)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a IFNAR2 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "IFNAR2 surprising-impact variation model",
+      "display_name": "IFNAR2 surprising-impact variation model",
+      "common_name": "IFNAR2 obscure high-impact biology pathway model",
+      "lookup_keys": [
+        "IFNAR2 surprising-impact variation model",
+        "IFNAR2 surprising-impact variation model",
+        "IFNAR2:IFNAR2 surprising-impact variation model",
+        "ifnar2:ifnar2 surprising-impact variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "IFNAR2 surprising-impact variation model is curated as a IFNAR2 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a IFNAR2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "IFNAR2 obscure high-impact biology pathway model",
+      "methylation_interpretation": "Pair IFNAR2 surprising-impact variation model with IFNAR2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "IFNAR2 curated evidence set",
+          "genotypes": "IFNAR2 surprising-impact variation model or linked IFNAR2 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats IFNAR2 surprising-impact variation model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "IFNAR2",
+      "chromosome": "21",
+      "relevant_methylation_probe_ids": [
+        "cg21355791",
+        "cg00937568",
+        "cg05770313",
+        "cg10309613",
+        "cg20215695",
+        "cg26110456",
+        "cg21980821",
+        "cg22454603",
+        "cg18656581",
+        "cg17725807"
+      ]
+    },
+    {
+      "variant": "IFNAR2 regulatory expression context model",
+      "display_name": "IFNAR2 regulatory expression context model",
+      "common_name": "IFNAR2 expression and methylation-context model",
+      "lookup_keys": [
+        "IFNAR2 regulatory expression context model",
+        "IFNAR2 regulatory expression context model",
+        "IFNAR2:IFNAR2 regulatory expression context model",
+        "ifnar2:ifnar2 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "IFNAR2 regulatory expression context model is curated as a IFNAR2 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a IFNAR2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "IFNAR2 expression and methylation-context model",
+      "methylation_interpretation": "Pair IFNAR2 regulatory expression context model with IFNAR2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "IFNAR2 curated evidence set",
+          "genotypes": "IFNAR2 regulatory expression context model or linked IFNAR2 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats IFNAR2 regulatory expression context model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "IFNAR2",
+      "chromosome": "21",
+      "relevant_methylation_probe_ids": [
+        "cg21355791",
+        "cg00937568",
+        "cg05770313",
+        "cg10309613",
+        "cg20215695",
+        "cg26110456",
+        "cg21980821",
+        "cg22454603",
+        "cg18656581",
+        "cg17725807"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "database_name": "NophiGene SLC5A2 Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "SLC5A2",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "chr16",
+    "chromosome": "16",
+    "gene_region": {
+      "label": "SLC5A2 transcribed interval",
+      "start": 31494323,
+      "end": 31502181,
+      "definition": "Canonical SLC5A2 genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 31493323,
+      "end": 31494322,
+      "definition": "A practical 1 kb upstream window used by this app to flag promoter-adjacent coverage before the canonical gene interval begins."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 31439672,
+      "end": 31581309,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "16:31493323-31502181",
+    "gene_summary": "SLC5A2 encodes SGLT2, the renal glucose cotransporter whose inhibition changes glycemia, kidney stress, and heart-failure biology. This topic bundle emphasizes obscure high-impact biology, with interpretation centered on rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+    "clinical_context": "The local SLC5A2 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "SLC5A2 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+      "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg01171858",
+      "cg24567507",
+      "cg23950331",
+      "cg01406145",
+      "cg17570533",
+      "cg13473336",
+      "cg18998363",
+      "cg14196599",
+      "cg11215870",
+      "cg23910243"
+    ],
+    "methylation_interpretation": "SLC5A2 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for SLC5A2.",
+      "Because SLC5A2 biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use SLC5A2 promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review"
+    ],
+    "evidence": [
+      {
+        "label": "Ensembl GRCh37 ENSG00000140675: SLC5A2 coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000140675"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "SLC5A2 biochemical figure starter",
+      "focus": "SLC5A2: obscure high-impact biology via rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "cell signaling",
+        "rare disease",
+        "gene pathway",
+        "immune metabolism"
+      ],
+      "recommended_icons": [
+        "Signal transduction pathway",
+        "Cytokine (2D)",
+        "Metabolic pathway (in mitochondria)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a SLC5A2 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "SLC5A2 surprising-impact variation model",
+      "display_name": "SLC5A2 surprising-impact variation model",
+      "common_name": "SLC5A2 obscure high-impact biology pathway model",
+      "lookup_keys": [
+        "SLC5A2 surprising-impact variation model",
+        "SLC5A2 surprising-impact variation model",
+        "SLC5A2:SLC5A2 surprising-impact variation model",
+        "slc5a2:slc5a2 surprising-impact variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SLC5A2 surprising-impact variation model is curated as a SLC5A2 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a SLC5A2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SLC5A2 obscure high-impact biology pathway model",
+      "methylation_interpretation": "Pair SLC5A2 surprising-impact variation model with SLC5A2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SLC5A2 curated evidence set",
+          "genotypes": "SLC5A2 surprising-impact variation model or linked SLC5A2 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats SLC5A2 surprising-impact variation model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SLC5A2",
+      "chromosome": "16",
+      "relevant_methylation_probe_ids": [
+        "cg01171858",
+        "cg24567507",
+        "cg23950331",
+        "cg01406145",
+        "cg17570533",
+        "cg13473336",
+        "cg18998363",
+        "cg14196599",
+        "cg11215870",
+        "cg23910243"
+      ]
+    },
+    {
+      "variant": "SLC5A2 regulatory expression context model",
+      "display_name": "SLC5A2 regulatory expression context model",
+      "common_name": "SLC5A2 expression and methylation-context model",
+      "lookup_keys": [
+        "SLC5A2 regulatory expression context model",
+        "SLC5A2 regulatory expression context model",
+        "SLC5A2:SLC5A2 regulatory expression context model",
+        "slc5a2:slc5a2 regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "SLC5A2 regulatory expression context model is curated as a SLC5A2 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a SLC5A2 pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "SLC5A2 expression and methylation-context model",
+      "methylation_interpretation": "Pair SLC5A2 regulatory expression context model with SLC5A2 methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "SLC5A2 curated evidence set",
+          "genotypes": "SLC5A2 regulatory expression context model or linked SLC5A2 locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats SLC5A2 regulatory expression context model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "SLC5A2",
+      "chromosome": "16",
+      "relevant_methylation_probe_ids": [
+        "cg01171858",
+        "cg24567507",
+        "cg23950331",
+        "cg01406145",
+        "cg17570533",
+        "cg13473336",
+        "cg18998363",
+        "cg14196599",
+        "cg11215870",
+        "cg23910243"
+      ]
+    }
+  ]
+}

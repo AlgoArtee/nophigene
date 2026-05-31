@@ -1,0 +1,207 @@
+{
+  "database_name": "NophiGene TRPV1 Predictive Synthesis Database",
+  "version": "2026-04-18",
+  "gene_name": "TRPV1",
+  "source_interpretation_database": "NophiGene TRPV1 Interpretation Database",
+  "matching_rule": "One base case matches when a promoter or gene-body variant is visible in the current sample. Three additional case families match when the whitelist mean beta, the gene-name-related mean beta, or the all-numeric mean beta resolves to low, medium, or high methylation. Variant prediction rules receive the decoded sample GT, zygosity, ALT dosage, and site REF -> ALT definition; curated allele rules take precedence only when the sample genotype carries the relevant allele dosage.",
+  "disclaimer": "Predictive theses in this database are literature-guided research summaries derived from the bundled gene interpretation bundle. They are designed for exploratory synthesis in the UI and should not be treated as diagnostic or therapeutic claims.",
+  "seeded_markers": [
+    "TRPV1 surprising-impact variation model (TRPV1 obscure high-impact biology pathway model)",
+    "TRPV1 regulatory expression context model (TRPV1 expression and methylation-context model)"
+  ],
+  "concrete_variant_prediction": "The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed.",
+  "variant_prediction_rules": [
+    {
+      "variant": "TRPV1 surprising-impact variation model",
+      "display_name": "TRPV1 surprising-impact variation model",
+      "common_name": "TRPV1 obscure high-impact biology pathway model",
+      "lookup_keys": [
+        "TRPV1 surprising-impact variation model",
+        "TRPV1 surprising-impact variation model",
+        "TRPV1:TRPV1 surprising-impact variation model",
+        "trpv1:trpv1 surprising-impact variation model"
+      ],
+      "prediction": "GT-confirmed TRPV1 surprising-impact variation model dosage suggests this sample carries the TRPV1 prediction context described by the gene-level thesis. The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. This specific marker is curated as TRPV1 obscure high-impact biology pathway model. TRPV1 surprising-impact variation model is curated as a TRPV1 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched TRPV1 surprising-impact variation model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the TRPV1 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "evidence": []
+    },
+    {
+      "variant": "TRPV1 regulatory expression context model",
+      "display_name": "TRPV1 regulatory expression context model",
+      "common_name": "TRPV1 expression and methylation-context model",
+      "lookup_keys": [
+        "TRPV1 regulatory expression context model",
+        "TRPV1 regulatory expression context model",
+        "TRPV1:TRPV1 regulatory expression context model",
+        "trpv1:trpv1 regulatory expression context model"
+      ],
+      "prediction": "GT-confirmed TRPV1 regulatory expression context model dosage suggests this sample carries the TRPV1 prediction context described by the gene-level thesis. The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. This specific marker is curated as TRPV1 expression and methylation-context model. TRPV1 regulatory expression context model is curated as a TRPV1 marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "sample_change_template": "This sample matched TRPV1 regulatory expression context model at site definition {change} with GT {gt_raw} decoded as {genotype} ({zygosity}). Anchor the TRPV1 prediction to genotype dosage {allele_dosage} rather than REF -> ALT presence alone. Dosage-specific conclusions should be softened when GT, depth, balance, or genotype quality are uncertain.",
+      "allele_change_rules": [],
+      "basis": "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "evidence": []
+    }
+  ],
+  "case_count": 10,
+  "methylation_sources": [
+    {
+      "key": "whitelist",
+      "label": "Whitelist mean beta",
+      "description": "Uses the curated whitelist probes stored in the interpretation database for the current gene."
+    },
+    {
+      "key": "gene_name_related",
+      "label": "Gene-name-related mean beta",
+      "description": "Uses rows whose gene annotation explicitly names the current gene."
+    },
+    {
+      "key": "all_numeric",
+      "label": "All numeric-row mean beta",
+      "description": "Uses every numeric beta value that survived preprocessing for the current sample."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "gene_variant_found",
+      "label": "Gene variant found",
+      "requires_variant": true,
+      "methylation_source": null,
+      "methylation_band": null,
+      "prediction": "The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. An observed TRPV1 variant places this sample in the curated TRPV1 research context. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "This is the base thesis that activates as soon as any promoter or gene-body variant is visible in the current sample.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__high",
+      "label": "Gene variant found + high whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "high",
+      "prediction": "When a TRPV1 variant is paired with high methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__medium",
+      "label": "Gene variant found + medium whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "medium",
+      "prediction": "When a TRPV1 variant is paired with medium methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__whitelist__low",
+      "label": "Gene variant found + low whitelist mean beta",
+      "requires_variant": true,
+      "methylation_source": "whitelist",
+      "methylation_band": "low",
+      "prediction": "When a TRPV1 variant is paired with low methylation in the whitelist mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses the curated whitelist probes stored in the interpretation database for the current gene.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__high",
+      "label": "Gene variant found + high gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "high",
+      "prediction": "When a TRPV1 variant is paired with high methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__medium",
+      "label": "Gene variant found + medium gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "medium",
+      "prediction": "When a TRPV1 variant is paired with medium methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__gene_name_related__low",
+      "label": "Gene variant found + low gene-name-related mean beta",
+      "requires_variant": true,
+      "methylation_source": "gene_name_related",
+      "methylation_band": "low",
+      "prediction": "When a TRPV1 variant is paired with low methylation in the gene-name-related mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses rows whose gene annotation explicitly names the current gene.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__high",
+      "label": "Gene variant found + high all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "high",
+      "prediction": "When a TRPV1 variant is paired with high methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward stronger regulatory restraint or reduced local accessibility around the locus. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__medium",
+      "label": "Gene variant found + medium all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "medium",
+      "prediction": "When a TRPV1 variant is paired with medium methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern suggests an intermediate or mixed regulatory state rather than a strongly polarized epigenetic signal. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    },
+    {
+      "case_id": "gene_variant_found__all_numeric__low",
+      "label": "Gene variant found + low all numeric-row mean beta",
+      "requires_variant": true,
+      "methylation_source": "all_numeric",
+      "methylation_band": "low",
+      "prediction": "When a TRPV1 variant is paired with low methylation in the all numeric-row mean beta, the sample best fits a combined regulatory-context thesis. This pattern leans toward a more permissive or less methylated local regulatory state. The variant side of the thesis is: The variant observed in this sample suggests a TRPV1 obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed. TRPV1 methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data. The local TRPV1 bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation. TRPV1 variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "rationale": "Uses every numeric beta value that survived preprocessing for the current sample.",
+      "research_focus": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ]
+    }
+  ]
+}

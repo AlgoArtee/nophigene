@@ -1,0 +1,204 @@
+{
+  "database_name": "NophiGene CPT1A Interpretation Database",
+  "version": "2026-04-15",
+  "gene_context": {
+    "gene_name": "CPT1A",
+    "assembly": "GRCh37 / hg19",
+    "cytoband": "chr11",
+    "chromosome": "11",
+    "gene_region": {
+      "label": "CPT1A transcribed interval",
+      "start": 68522088,
+      "end": 68611878,
+      "definition": "Canonical CPT1A genomic interval on GRCh37 / hg19 from Ensembl GRCh37 lookup, aligned to the hg19 coordinate system used by this app."
+    },
+    "promoter_review_region": {
+      "label": "Operational promoter review window",
+      "start": 68611879,
+      "end": 68612878,
+      "definition": "A practical 1 kb upstream window relative to the reverse-strand transcription start, used to flag promoter-adjacent coverage before the canonical gene interval."
+    },
+    "promoter_hotspot_region": {
+      "label": "Promoter-associated CpG review window",
+      "start": 68450618,
+      "end": 68672207,
+      "definition": "Promoter-proximal CpG-focused span represented by the bundled EPIC subset and used here as the main methylation-review hotspot."
+    },
+    "recommended_promoter_plus_gene_region": "11:68522088-68612878",
+    "gene_summary": "CPT1A encodes the liver carnitine palmitoyltransferase controlling mitochondrial long-chain fatty-acid entry and fasting adaptation. This topic bundle emphasizes obscure high-impact biology, with interpretation centered on rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+    "clinical_context": "The local CPT1A bundle is oriented toward obscure high-impact biology. Use it for pathway triage, phenotype review, and candidate-gene context; external variant classification is required before clinical interpretation.",
+    "variant_effect_overview": [
+      "CPT1A variants can alter, tag, or contextualize rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context."
+    ],
+    "condition_research_overview": [
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+      "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+    ],
+    "relevant_methylation_probe_ids": [
+      "cg13786863",
+      "cg24366211",
+      "cg25890640",
+      "cg18445292",
+      "cg15616358",
+      "cg12691334",
+      "cg19596755",
+      "cg02617757",
+      "cg23404110",
+      "cg22345647"
+    ],
+    "methylation_interpretation": "CPT1A methylation should be treated as local regulatory context around a rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases gene. Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data.",
+    "methylation_effects": [
+      "Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for CPT1A.",
+      "Because CPT1A biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
+      "Combined sequence plus methylation findings are most useful when interpreted against rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases."
+    ],
+    "methylation_condition_research": [
+      "Epigenetic regulation studies that use CPT1A promoter or gene-body methylation as expression-context evidence.",
+      "Variant-plus-methylation review for rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+      "Obscure or underappreciated genes with surprising phenotype impact",
+      "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review"
+    ],
+    "evidence": [
+      {
+        "label": "Ensembl GRCh37 ENSG00000110090: CPT1A coordinate source",
+        "url": "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000110090"
+      }
+    ],
+    "biorender_visuals": {
+      "provider": "BioRender",
+      "label": "CPT1A biochemical figure starter",
+      "focus": "CPT1A: obscure high-impact biology via rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases",
+      "template_title": "Pathway and Genetic Markers (Layout)",
+      "template_url": "https://app.biorender.com/biorender-templates/details/t-62e6fb114bd49370e5f33be2?source=mcp",
+      "icon_search_terms": [
+        "cell signaling",
+        "rare disease",
+        "gene pathway",
+        "immune metabolism"
+      ],
+      "recommended_icons": [
+        "Signal transduction pathway",
+        "Cytokine (2D)",
+        "Metabolic pathway (in mitochondria)"
+      ],
+      "usage_note": "BioRender template and icon-library search results are bundled as figure starters. Open the template link in BioRender, then add or replace the listed icons to make a gene-specific biochemical pathway image."
+    },
+    "concrete_variant_prediction": "The variant observed in this sample suggests a CPT1A obscure high-impact biology thesis: the individual may carry context relevant to rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases. Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+  },
+  "variant_records": [
+    {
+      "variant": "CPT1A surprising-impact variation model",
+      "display_name": "CPT1A surprising-impact variation model",
+      "common_name": "CPT1A obscure high-impact biology pathway model",
+      "lookup_keys": [
+        "CPT1A surprising-impact variation model",
+        "CPT1A surprising-impact variation model",
+        "CPT1A:CPT1A surprising-impact variation model",
+        "cpt1a:cpt1a surprising-impact variation model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "CPT1A surprising-impact variation model is curated as a CPT1A marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a CPT1A pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "CPT1A obscure high-impact biology pathway model",
+      "methylation_interpretation": "Pair CPT1A surprising-impact variation model with CPT1A methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "CPT1A curated evidence set",
+          "genotypes": "CPT1A surprising-impact variation model or linked CPT1A locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats CPT1A surprising-impact variation model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "CPT1A",
+      "chromosome": "11",
+      "relevant_methylation_probe_ids": [
+        "cg13786863",
+        "cg24366211",
+        "cg25890640",
+        "cg18445292",
+        "cg15616358",
+        "cg12691334",
+        "cg19596755",
+        "cg02617757",
+        "cg23404110",
+        "cg22345647"
+      ]
+    },
+    {
+      "variant": "CPT1A regulatory expression context model",
+      "display_name": "CPT1A regulatory expression context model",
+      "common_name": "CPT1A expression and methylation-context model",
+      "lookup_keys": [
+        "CPT1A regulatory expression context model",
+        "CPT1A regulatory expression context model",
+        "CPT1A:CPT1A regulatory expression context model",
+        "cpt1a:cpt1a regulatory expression context model"
+      ],
+      "region_class": "gene_body",
+      "interpretation_scope": "Biochemistry research marker / clinical-context marker",
+      "clinical_interpretation": "CPT1A regulatory expression context model is curated as a CPT1A marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review. Read it through genotype dosage, phenotype context, and the rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases pathway rather than as a stand-alone deterministic result.",
+      "clinical_significance": "Curated research and clinical-context marker; external clinical classification is required for diagnostic use.",
+      "functional_effects": [
+        "Can modify or tag rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+        "Best interpreted with tissue, ancestry, phenotype, and assay context."
+      ],
+      "associated_conditions": [
+        "Obscure or underappreciated genes with surprising phenotype impact",
+        "Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+        "Candidate-gene triage where exact allele class, dosage, tissue, ancestry, and phenotype can flip interpretation"
+      ],
+      "research_context": [
+        "Use this marker as a CPT1A pathway-context signal, not as a stand-alone diagnosis.",
+        "Sequence, methylation, expression, and protein data may point in different directions and should be reconciled."
+      ],
+      "usual_variant_note": "CPT1A expression and methylation-context model",
+      "methylation_interpretation": "Pair CPT1A regulatory expression context model with CPT1A methylation only as local regulatory context; methylation does not prove the variant's biochemical effect.",
+      "is_assayable_in_snp_vcf": false,
+      "evidence": [],
+      "literature_findings": [
+        {
+          "paper": "CPT1A curated evidence set",
+          "genotypes": "CPT1A regulatory expression context model or linked CPT1A locus genotype states",
+          "phenotype": "Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review",
+          "finding": "The local curation treats CPT1A regulatory expression context model as a gene-specific marker for Obscure or underappreciated genes with surprising phenotype impact, Rare disease, trait modifier, sensory, metabolic, immune, digestive, and neurobehavioral pathway review and rare-variant mechanisms, unexpected pathway crosstalk, sensory perception, mitochondrial stress, neuroimmune signaling, epithelial defense, and metabolic edge cases.",
+          "url": ""
+        }
+      ],
+      "clinical_parameter_summary": "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row.",
+      "gene_name": "CPT1A",
+      "chromosome": "11",
+      "relevant_methylation_probe_ids": [
+        "cg13786863",
+        "cg24366211",
+        "cg25890640",
+        "cg18445292",
+        "cg15616358",
+        "cg12691334",
+        "cg19596755",
+        "cg02617757",
+        "cg23404110",
+        "cg22345647"
+      ]
+    }
+  ]
+}
