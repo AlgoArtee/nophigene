@@ -16,6 +16,16 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.uv-cache/
+
+# Local browser and UI-render captures
+.playwright-cli/
+.codex_live_*.html
+/post_manifest.html
+/post_preprocess.html
+
+# Temporary directories created at the repository root
+/tmp????????/
 
 # Data and results
 data/

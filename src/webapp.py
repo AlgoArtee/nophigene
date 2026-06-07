@@ -7,8 +7,10 @@ import json
 import os
 import re
 import traceback
+import zipfile
 from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +25,7 @@ try:
         DEFAULT_GENE_NAME,
         DEFAULT_REGION,
         DEFAULT_REPORT_NAME,
+        GENE_DATA_BUNDLE_PATH,
         GENERAL_ANALYSIS_DATABASE_COLUMNS,
         _prepare_methylation_table_for_output,
         _prepare_variant_table_for_output,
@@ -56,6 +59,7 @@ except ImportError:
         DEFAULT_GENE_NAME,
         DEFAULT_REGION,
         DEFAULT_REPORT_NAME,
+        GENE_DATA_BUNDLE_PATH,
         GENERAL_ANALYSIS_DATABASE_COLUMNS,
         _prepare_methylation_table_for_output,
         _prepare_variant_table_for_output,
@@ -110,6 +114,234 @@ GENERIC_PROCESSED_GENE_TOKENS = {
     "results",
     "summary",
 }
+FUNCTIONAL_FAMILY_DEFINITIONS = [
+    {
+        "key": "longevity",
+        "label": "Longevity & Healthy Aging",
+        "description": "Aging, senescence, telomeres, genome maintenance, and resilience pathways.",
+        "keywords": {
+            "longevity": 12,
+            "healthy aging": 12,
+            "centenarian": 12,
+            "aging": 7,
+            "senescence": 6,
+            "telomere": 6,
+            "genome maintenance": 6,
+            "progeroid": 6,
+            "sirtuin": 5,
+        },
+    },
+    {
+        "key": "senses",
+        "label": "Senses & Sensory Signaling",
+        "description": "Vision, hearing, smell, taste, touch, pain, itch, and sensory transduction.",
+        "keywords": {
+            "human sensory biology": 14,
+            "human senses": 14,
+            "sensory transduction": 12,
+            "phototransduction": 10,
+            "retina": 7,
+            "hearing": 7,
+            "auditory": 7,
+            "olfactory": 7,
+            "gustatory": 7,
+            "taste receptor": 7,
+            "nocicept": 6,
+            "pain": 4,
+            "itch": 4,
+        },
+    },
+    {
+        "key": "asthma_allergy",
+        "label": "Asthma, Allergy & Airways",
+        "description": "Airway biology, type 2 inflammation, mast cells, eosinophils, and epithelial barriers.",
+        "keywords": {
+            "asthma": 14,
+            "allergic": 12,
+            "allergy": 12,
+            "atopic": 10,
+            "airway": 8,
+            "eosinophil": 8,
+            "mast cell": 8,
+            "ige": 7,
+            "type 2 inflammation": 8,
+        },
+    },
+    {
+        "key": "cancer",
+        "label": "Cancer & Genome Integrity",
+        "description": "Tumor biology, DNA repair, cell-cycle control, and cancer predisposition.",
+        "keywords": {
+            "cancer": 10,
+            "tumor": 9,
+            "oncology": 9,
+            "carcinoma": 8,
+            "melanoma": 8,
+            "leukemia": 8,
+            "dna repair": 7,
+            "tumor suppressor": 9,
+            "oncogene": 8,
+            "malign": 7,
+        },
+    },
+    {
+        "key": "metabolism",
+        "label": "Metabolism & Endocrinology",
+        "description": "Glucose, lipid, energy, hormone, obesity, and diabetes pathways.",
+        "keywords": {
+            "metabolic": 8,
+            "metabolism": 7,
+            "diabetes": 9,
+            "glucose": 7,
+            "insulin": 7,
+            "lipid": 7,
+            "obesity": 8,
+            "endocrine": 7,
+            "adipose": 6,
+            "cholesterol": 6,
+        },
+    },
+    {
+        "key": "neurobiology",
+        "label": "Brain, Behavior & Sleep",
+        "description": "Neurodevelopment, neurotransmission, cognition, behavior, and sleep biology.",
+        "keywords": {
+            "neurobiology": 10,
+            "neuronal": 8,
+            "neuron": 7,
+            "brain": 7,
+            "schizophrenia": 9,
+            "parkinson": 9,
+            "alzheimer": 9,
+            "neurodevelopment": 8,
+            "neurotrans": 7,
+            "synaptic": 7,
+            "sleep": 8,
+            "circadian": 8,
+            "behavior": 6,
+        },
+    },
+    {
+        "key": "immunity",
+        "label": "Immunity & Inflammation",
+        "description": "Innate and adaptive immunity, cytokines, infection, and inflammatory signaling.",
+        "keywords": {
+            "immune": 7,
+            "immunity": 7,
+            "inflammation": 7,
+            "inflammatory": 7,
+            "cytokine": 7,
+            "interferon": 7,
+            "autoimmune": 8,
+            "antiviral": 7,
+            "pathogen": 6,
+            "inflammasome": 8,
+        },
+    },
+    {
+        "key": "cardiovascular",
+        "label": "Heart, Circulation & Blood",
+        "description": "Cardiac rhythm, muscle, vessels, blood pressure, coagulation, and hematology.",
+        "keywords": {
+            "cardiovascular": 9,
+            "cardiac": 8,
+            "heart": 7,
+            "vascular": 7,
+            "blood pressure": 8,
+            "coagulation": 8,
+            "thromb": 7,
+            "cardiomyopathy": 9,
+            "arrhythm": 8,
+            "hematolog": 7,
+        },
+    },
+    {
+        "key": "digestion",
+        "label": "Digestion, Liver & Gut",
+        "description": "Digestion, intestinal barriers, liver, pancreas, nutrients, and microbiome-facing biology.",
+        "keywords": {
+            "digestion": 9,
+            "digestive": 8,
+            "intestinal": 8,
+            "gut": 8,
+            "gastro": 7,
+            "pancrea": 7,
+            "liver": 7,
+            "hepatic": 7,
+            "bowel": 7,
+            "microbiome": 7,
+            "nutrient": 5,
+        },
+    },
+    {
+        "key": "pigmentation_skin",
+        "label": "Pigmentation, Skin & Hair",
+        "description": "Melanin, melanocytes, epidermal barriers, hair, and ectodermal traits.",
+        "keywords": {
+            "pigmentation": 11,
+            "melanin": 10,
+            "melanocyte": 10,
+            "skin": 7,
+            "epiderm": 8,
+            "hair": 7,
+            "keratin": 8,
+            "ectoderm": 8,
+        },
+    },
+    {
+        "key": "mitochondria_stress",
+        "label": "Mitochondria & Cellular Stress",
+        "description": "Mitochondrial function, redox balance, proteostasis, and cellular stress responses.",
+        "keywords": {
+            "mitochond": 10,
+            "oxidative stress": 8,
+            "redox": 8,
+            "proteostasis": 7,
+            "ferropt": 8,
+            "respiratory chain": 8,
+            "heat shock": 7,
+        },
+    },
+    {
+        "key": "development_reproduction",
+        "label": "Development & Reproduction",
+        "description": "Embryonic development, cilia, fertility, meiosis, and tissue patterning.",
+        "keywords": {
+            "development": 6,
+            "developmental": 7,
+            "embry": 8,
+            "fertility": 8,
+            "reproduct": 8,
+            "meiosis": 9,
+            "spermi": 9,
+            "ciliary": 8,
+            "cilia": 7,
+            "laterality": 8,
+            "morphogenesis": 7,
+        },
+    },
+    {
+        "key": "pharmacogenomics",
+        "label": "Pharmacogenomics & Detoxification",
+        "description": "Drug response, metabolism, toxicity, and treatment-modifying variation.",
+        "keywords": {
+            "pharmacogen": 12,
+            "drug response": 10,
+            "treatment response": 9,
+            "medication": 8,
+            "drug metabolism": 10,
+            "toxicity": 8,
+            "detox": 8,
+            "adverse": 5,
+        },
+    },
+    {
+        "key": "systems",
+        "label": "Rare & Systems Biology",
+        "description": "Cross-system, rare-disease, and emerging functional biology not captured above.",
+        "keywords": {},
+    },
+]
 
 app = Flask(__name__, template_folder=str(Path(__file__).resolve().parent / "templates"))
 app.secret_key = os.environ.get("NOPHIGENE_SECRET_KEY", "nophigene-local-dev")
@@ -779,6 +1011,140 @@ def discover_report_history() -> list[dict[str, str]]:
 
     sortable_entries.sort(key=lambda item: item[0], reverse=True)
     return [entry for _, entry in sortable_entries]
+
+
+def _classify_functional_family(search_text: str) -> str:
+    """Assign one primary functional family from curated biological context."""
+    normalized_text = " ".join(str(search_text or "").lower().split())
+    best_key = "systems"
+    best_score = 0
+
+    for family in FUNCTIONAL_FAMILY_DEFINITIONS:
+        score = sum(
+            weight * normalized_text.count(keyword)
+            for keyword, weight in family["keywords"].items()
+        )
+        if score > best_score:
+            best_key = str(family["key"])
+            best_score = score
+
+    return best_key
+
+
+@lru_cache(maxsize=1)
+def _load_functional_gene_catalog() -> tuple[dict[str, str], ...]:
+    """Load concise metadata for every bundled interpretation knowledge base."""
+    payloads_by_gene: dict[str, dict[str, Any]] = {}
+
+    if GENE_DATA_BUNDLE_PATH.exists():
+        try:
+            with zipfile.ZipFile(GENE_DATA_BUNDLE_PATH) as bundle:
+                for member_name in bundle.namelist():
+                    if not member_name.endswith("_interpretation_db.json"):
+                        continue
+                    try:
+                        payload = json.loads(bundle.read(member_name))
+                    except (KeyError, UnicodeDecodeError, json.JSONDecodeError):
+                        continue
+                    gene_context = payload.get("gene_context", {})
+                    gene_name = str(gene_context.get("gene_name", "")).strip().upper()
+                    if gene_name:
+                        payloads_by_gene[gene_name] = payload
+        except (OSError, zipfile.BadZipFile):
+            pass
+
+    if PREPROCESSED_MANIFEST_DIR.exists():
+        for database_path in PREPROCESSED_MANIFEST_DIR.glob("*_interpretation_db.json"):
+            try:
+                payload = json.loads(database_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            gene_context = payload.get("gene_context", {})
+            gene_name = str(gene_context.get("gene_name", "")).strip().upper()
+            if gene_name:
+                payloads_by_gene[gene_name] = payload
+
+    catalog: list[dict[str, str]] = []
+    for gene_name, payload in payloads_by_gene.items():
+        gene_context = payload.get("gene_context", {})
+        condition_overview = gene_context.get("condition_research_overview", [])
+        if not isinstance(condition_overview, list):
+            condition_overview = []
+        summary = " ".join(str(gene_context.get("gene_summary", "")).split())
+        classification_text = " ".join(
+            [
+                str(payload.get("database_name", "")),
+                summary,
+                str(gene_context.get("clinical_context", "")),
+                " ".join(str(item) for item in condition_overview),
+                " ".join(str(item) for item in gene_context.get("variant_effect_overview", []) or []),
+            ]
+        )
+        gene_region = _format_interval_from_record(
+            gene_context.get("gene_region"),
+            default_chrom=str(gene_context.get("chromosome", "")),
+        )
+        catalog.append(
+            {
+                "gene_name": gene_name,
+                "summary": summary or "Curated local interpretation knowledge base.",
+                "family_key": _classify_functional_family(classification_text),
+                "assembly": str(gene_context.get("assembly", "")).strip() or "Genome build not stated",
+                "gene_region": gene_region,
+                "database_name": str(payload.get("database_name", "")).strip(),
+            }
+        )
+
+    catalog.sort(key=lambda item: item["gene_name"])
+    return tuple(catalog)
+
+
+def _build_functional_map(report_history: list[dict[str, str]]) -> dict[str, Any]:
+    """Join knowledge-base genes to functional families and generated reports."""
+    newest_html_reports: dict[str, dict[str, str]] = {}
+    for report in report_history:
+        if str(report.get("report_type", "")).upper() != "HTML":
+            continue
+        gene_name = _normalize_processed_gene_symbol(report.get("processed_gene_symbol", ""))
+        if gene_name and gene_name not in newest_html_reports:
+            newest_html_reports[gene_name] = report
+
+    genes_by_family: dict[str, list[dict[str, Any]]] = {
+        str(family["key"]): [] for family in FUNCTIONAL_FAMILY_DEFINITIONS
+    }
+    processed_gene_count = 0
+    for catalog_gene in _load_functional_gene_catalog():
+        gene = dict(catalog_gene)
+        report = newest_html_reports.get(gene["gene_name"])
+        gene["report_url"] = str(report.get("report_url", "")) if report else ""
+        gene["report_name"] = str(report.get("report_name", "")) if report else ""
+        gene["processed"] = bool(gene["report_url"])
+        if gene["processed"]:
+            processed_gene_count += 1
+        genes_by_family.setdefault(str(gene["family_key"]), []).append(gene)
+
+    families: list[dict[str, Any]] = []
+    for family_definition in FUNCTIONAL_FAMILY_DEFINITIONS:
+        family_genes = genes_by_family.get(str(family_definition["key"]), [])
+        if not family_genes:
+            continue
+        families.append(
+            {
+                "key": family_definition["key"],
+                "label": family_definition["label"],
+                "description": family_definition["description"],
+                "genes": family_genes,
+                "gene_count": len(family_genes),
+                "processed_count": sum(1 for gene in family_genes if gene["processed"]),
+            }
+        )
+
+    return {
+        "families": families,
+        "gene_count": sum(family["gene_count"] for family in families),
+        "family_count": len(families),
+        "processed_gene_count": processed_gene_count,
+    }
 
 
 def discover_processed_gene_symbols(
@@ -1510,6 +1876,16 @@ def result_artifact(artifact_path: str) -> Any:
     return send_from_directory(str(RESULTS_DIR), artifact_path, as_attachment=False)
 
 
+@app.get("/functional-map")
+def functional_map_page() -> str:
+    """Render the standalone functional-family map for curated genes."""
+    report_history = discover_report_history()
+    return render_template(
+        "functional_map.html",
+        functional_map=_build_functional_map(report_history),
+    )
+
+
 @app.route("/", methods=["GET", "POST"])
 def index() -> str:
     """Render the landing page and handle preprocessing and analysis submissions."""
@@ -1549,7 +1925,97 @@ def index() -> str:
     if request.method == "POST":
         workflow = request.form.get("workflow", "analysis").strip()
 
-        if workflow == "preprocess":
+        if workflow == "functional_map":
+            requested_gene_name = request.form.get("functional_gene_name", "").strip().upper()
+            try:
+                knowledge_base = load_gene_interpretation_database(requested_gene_name)
+                if knowledge_base is None:
+                    raise AnalysisError(
+                        f"No curated interpretation knowledge base was found for {requested_gene_name or 'that gene'}."
+                    )
+
+                gene_context = knowledge_base.get("gene_context", {})
+                selected_gene_region = _format_interval_from_record(
+                    gene_context.get("gene_region"),
+                    default_chrom=str(gene_context.get("chromosome", "")),
+                )
+                if not selected_gene_region:
+                    raise AnalysisError(
+                        f"The {requested_gene_name} knowledge base does not contain a usable gene interval."
+                    )
+
+                preprocess_state = _empty_preprocess_state(manifest_files)
+                extraction_state = _empty_extraction_state(bam_files)
+                scope_regions = _build_analysis_scope_regions(
+                    requested_gene_name,
+                    selected_gene_region,
+                )
+                selected_region = str(
+                    scope_regions.get(DEFAULT_ANALYSIS_SCOPE) or selected_gene_region
+                )
+                preprocess_state.update(
+                    {
+                        "gene_name": requested_gene_name,
+                        "region": selected_region,
+                        "analysis_scope": DEFAULT_ANALYSIS_SCOPE,
+                        "scope_regions": scope_regions,
+                        "scope_region_source": "Functional Map curated knowledge base",
+                        "region_candidates": [
+                            {
+                                "source": "Functional Map curated knowledge base",
+                                "region": selected_gene_region,
+                            }
+                        ],
+                        "selected_sources": ["Functional Map curated knowledge base"],
+                        "region_ready": True,
+                        "region_recently_updated": True,
+                        "build": (
+                            "hg38"
+                            if _knowledge_base_uses_genome_build(requested_gene_name, "hg38")
+                            else "hg19"
+                        ),
+                    }
+                )
+                _append_preprocess_log(
+                    preprocess_state,
+                    (
+                        f"Selected {requested_gene_name} from Functional Map and loaded "
+                        f"curated promoter+gene region {selected_region}."
+                    ),
+                )
+                preprocess_notice = (
+                    f"Selected {requested_gene_name} from Functional Map. "
+                    f"Curated promoter+gene region {selected_region} is ready."
+                )
+                if _gene_needs_hg38_extraction(requested_gene_name):
+                    hg38_message = (
+                        f"{requested_gene_name} uses a GRCh38/hg38 knowledge-base interval. "
+                        "Use the Extraction tab with a GRCh38-aligned BAM to create the regional VCF."
+                    )
+                    preprocess_state["hg38_extraction_suggested"] = True
+                    preprocess_state["hg38_extraction_message"] = hg38_message
+                    preprocess_state["hg38_extraction_region"] = selected_region
+                    _prefill_extraction_state_from_hg38_preprocessing(
+                        extraction_state,
+                        gene_name=requested_gene_name,
+                        scope_regions=scope_regions,
+                        selected_sources=list(preprocess_state["selected_sources"]),
+                        region_candidates=list(preprocess_state["region_candidates"]),
+                    )
+                    _append_preprocess_log(preprocess_state, hg38_message)
+                    preprocess_notice = f"{preprocess_notice} {hg38_message}"
+
+                _store_preprocess_state(preprocess_state)
+                _store_extraction_state(extraction_state)
+                initial_tab = "preprocessing"
+                analysis_unlocked = False
+                form = _empty_form_state()
+                _apply_preprocessing_defaults(form, preprocess_state)
+            except (AnalysisError, ValueError) as exc:
+                preprocess_error = str(exc)
+                initial_tab = "preprocessing"
+
+        elif workflow == "preprocess":
             initial_tab = "preprocessing"
             previous_gene_name = str(preprocess_state.get("gene_name", DEFAULT_GENE_NAME)).strip().upper()
             requested_gene_name = (
@@ -2131,7 +2597,15 @@ def index() -> str:
     processed_gene_symbols = discover_processed_gene_symbols(report_history, general_database)
     analysis_scope_options = _build_analysis_scope_options(preprocess_state)
     extraction_scope_options = _build_extraction_scope_options(extraction_state)
-    available_tabs = ["overview", "preprocessing", "extraction", "central_database", "history", "proteins", "structure"]
+    available_tabs = [
+        "overview",
+        "preprocessing",
+        "extraction",
+        "central_database",
+        "history",
+        "proteins",
+        "structure",
+    ]
     if analysis_unlocked:
         available_tabs.insert(3, "analysis")
     if result and result.get("predictive_theses"):

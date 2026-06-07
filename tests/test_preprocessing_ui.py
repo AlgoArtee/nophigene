@@ -7,13 +7,17 @@ from types import SimpleNamespace
 
 import pandas as pd
 
-from src.webapp import app
+from src.webapp import _classify_functional_family, app
 
 
 def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     """The loading helper should preserve the clicked preprocessing action."""
     template_path = Path(__file__).resolve().parent.parent / "src" / "templates" / "index.html"
     template_text = template_path.read_text(encoding="utf-8")
+    functional_map_template_path = (
+        Path(__file__).resolve().parent.parent / "src" / "templates" / "functional_map.html"
+    )
+    functional_map_template_text = functional_map_template_path.read_text(encoding="utf-8")
 
     assert "const submitter = event.submitter instanceof HTMLElement ? event.submitter : null;" in template_text
     assert "formElement.requestSubmit(submitter);" in template_text
@@ -43,6 +47,13 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert 'data-tab-target="central_database"' in template_text
     assert 'data-tab-target="extraction"' in template_text
     assert 'data-tab-panel="extraction"' in template_text
+    assert "Functional Map" in template_text
+    assert "url_for('functional_map_page')" in template_text
+    assert "Use in preprocessing" in functional_map_template_text
+    assert "Open latest report" in functional_map_template_text
+    assert "data-functional-search" in functional_map_template_text
+    assert "function updateFunctionalMap()" in functional_map_template_text
+    assert 'window.addEventListener("pageshow", updateFunctionalMap)' in functional_map_template_text
     assert "Extract Regional VCF" in template_text
     assert "Prepare Reference" in template_text
     assert "Search computer for BAM files" in template_text
@@ -293,8 +304,7 @@ def test_get_request_resets_preprocessing_workspace(monkeypatch) -> None:
 
     assert response.status_code == 200
     assert 'data-tab-target="analysis"' not in page
-    assert 'value="IGF1R"' not in page
-    assert 'value="DRD4"' in page
+    assert 'id="gene_name" name="gene_name" type="text" value="DRD4"' in page
 
     with client.session_transaction() as session_state:
         assert "preprocess_state" not in session_state
@@ -585,6 +595,77 @@ def test_history_tab_lists_saved_reports_and_serves_artifacts(monkeypatch, tmp_p
     artifact_response = client.get("/results/igf1r_report.html")
     assert artifact_response.status_code == 200
     assert "IGF1R report" in artifact_response.get_data(as_text=True)
+
+
+def test_functional_map_groups_genes_and_links_processed_reports(monkeypatch, tmp_path: Path) -> None:
+    """The functional map should group knowledge-base genes and link completed reports."""
+    results_dir = tmp_path / "results"
+    results_dir.mkdir()
+    report_path = results_dir / "sirt6_report.html"
+    report_path.write_text("<html><body>SIRT6 report</body></html>", encoding="utf-8")
+
+    monkeypatch.setattr("src.webapp.RESULTS_DIR", results_dir)
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+
+    client = app.test_client()
+    response = client.get("/functional-map")
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "NophiGene Functional Map" in page
+    assert "Longevity &amp; Healthy Aging" in page
+    assert "Senses &amp; Sensory Signaling" in page
+    assert "Asthma, Allergy &amp; Airways" in page
+    assert 'value="SIRT6"' in page
+    assert "/results/sirt6_report.html" in page
+    assert "Open latest report" in page
+
+
+def test_functional_map_selection_seeds_preprocessing(monkeypatch) -> None:
+    """Selecting a map gene should load its curated interval into preprocessing."""
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+
+    client = app.test_client()
+    response = client.post(
+        "/",
+        data={
+            "workflow": "functional_map",
+            "functional_gene_name": "SIRT6",
+        },
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'data-initial-tab="preprocessing"' in page
+    assert "Selected SIRT6 from Functional Map." in page
+    assert 'value="SIRT6"' in page
+
+    with client.session_transaction() as session_state:
+        preprocess_state = session_state["preprocess_state"]
+
+    assert preprocess_state["gene_name"] == "SIRT6"
+    assert preprocess_state["region"] == "19:4174106-4183560"
+    assert preprocess_state["scope_regions"]["promoter_only"] == "19:4182561-4183560"
+    assert preprocess_state["scope_regions"]["gene_only"] == "19:4174106-4182560"
+    assert preprocess_state["region_ready"] is True
+    assert preprocess_state["manifest_ready"] is False
+    assert preprocess_state["analysis_ready"] is False
+
+
+def test_functional_map_prioritizes_requested_families() -> None:
+    """High-signal descriptions should land in the intended functional families."""
+    assert _classify_functional_family("human longevity and centenarian healthy aging") == "longevity"
+    assert _classify_functional_family("human sensory biology and visual phototransduction") == "senses"
+    assert _classify_functional_family("asthma allergy airway eosinophil biology") == "asthma_allergy"
 
 
 def test_central_database_tab_displays_general_database(monkeypatch, tmp_path: Path) -> None:
