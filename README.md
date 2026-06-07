@@ -79,7 +79,8 @@ What the local start launcher does:
 - checks that key app dependencies can be imported
 - creates `data/`, `data/reference/hg38/`, `data/extracted/`, and `results/` if needed
 - starts the UI from the local environment
-- waits for the server to respond on `http://127.0.0.1:8000`
+- selects an available local port starting at `8766`
+- waits for the server health check to respond on the selected port
 - opens the browser automatically
 - tracks the running process in a local PID file
 - keeps BAM extraction disabled unless you explicitly start the PowerShell launcher with `-EnableLocalExtraction` and local `samtools`/`bcftools` are on PATH
@@ -140,7 +141,9 @@ Double-click:
 
 Then open:
 
-- [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- [http://127.0.0.1:8766](http://127.0.0.1:8766)
+
+`8766` is the preferred port. If it is occupied, the launcher selects the next bindable port and prints the actual URL. An explicitly requested port, such as `-Port 9000`, fails immediately when unavailable instead of waiting for the startup timeout. The selected local port is recorded in `.nophigene-ui.port`.
 
 When finished, double-click:
 
@@ -151,7 +154,7 @@ When finished, double-click:
 You can also run the UI directly:
 
 ```powershell
-.\.venv\Scripts\python.exe src\app.py web --host 127.0.0.1 --port 8000
+.\.venv\Scripts\python.exe src\app.py web --host 127.0.0.1 --port 8766
 ```
 
 Or run the CLI path:
@@ -236,6 +239,118 @@ Example:
 - requested report: `results/drd4_report.html`
 - generated methylation file: `results/drd4_report_methylation.csv`
 
+## Local REST API
+
+The Flask process also serves a versioned local API:
+
+- [http://127.0.0.1:8766/api/v1](http://127.0.0.1:8766/api/v1)
+- OpenAPI: [http://127.0.0.1:8766/api/v1/openapi.json](http://127.0.0.1:8766/api/v1/openapi.json)
+- Health: [http://127.0.0.1:8766/api/v1/health](http://127.0.0.1:8766/api/v1/health)
+
+Version 1 is intended for trusted local use. It references local filesystem paths and does not provide authentication or uploads.
+
+### Create a sample profile
+
+Profiles persist under `data/api/sample_profiles.json`. They describe one reusable IDAT pair, one full methylation manifest, and assembly-labelled VCF or BAM sources.
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8766/api/v1/profiles `
+  -H "Content-Type: application/json" `
+  --data-binary '@profile.json'
+```
+
+Example `profile.json`:
+
+```json
+{
+  "id": "sample-202277800037",
+  "display_name": "Sample 202277800037",
+  "default_genome_build": "hg19",
+  "idat_prefix": "data/202277800037_R01C01",
+  "manifest_path": "data/infinium-methylationepic-v-1-0-b5-manifest-file.csv",
+  "population_statistics_path": "",
+  "vcf_sources": [
+    {
+      "path": "data/GFXC926398.filtered.snp.vcf.gz",
+      "genome_build": "hg19"
+    }
+  ],
+  "bam_sources": [
+    {
+      "path": "data/sample_hg38.bam",
+      "genome_build": "hg38"
+    }
+  ]
+}
+```
+
+For a non-hg38 BAM source, include a matching `reference_fasta` in that source object. The built-in hg38 extraction path uses `data/reference/hg38/hg38.analysisSet.fa`.
+
+### Submit a full workflow
+
+Jobs accept one gene or up to 100 unique genes. Symbols are normalized to uppercase and duplicate names are removed.
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8766/api/v1/jobs `
+  -H "Content-Type: application/json" `
+  -d '{
+    "operation": "full_workflow",
+    "profile_id": "sample-202277800037",
+    "genes": ["DRD4", "HERC2", "POTEB3"],
+    "analysis_scope": "promoter_plus_gene",
+    "genome_build": "auto",
+    "options": {
+      "update_general_database": false,
+      "overwrite_general_database": false
+    }
+  }'
+```
+
+The response is `202 Accepted` with a job ID. Poll it and fetch the final result:
+
+```powershell
+curl.exe http://127.0.0.1:8766/api/v1/jobs/JOB_ID
+curl.exe http://127.0.0.1:8766/api/v1/jobs/JOB_ID/result
+curl.exe -o artifacts.zip http://127.0.0.1:8766/api/v1/jobs/JOB_ID/artifacts/artifacts.zip
+```
+
+Each successful gene in a full workflow produces:
+
+```text
+results/api/jobs/JOB_ID/genes/GENE/
+  report.html
+  report.json
+  report_summary.csv
+  variants.csv
+  methylation.csv
+  analysis.json
+  manifest.csv
+  region.json
+```
+
+`report.json` is the canonical machine-readable report. It includes its schema version, region and source provenance, interpreted variants, methylation insights, population context, predictive theses, warnings, and artifact links.
+
+### Independent operations
+
+The supported `operation` values are:
+
+- `resolve_regions`
+- `prepare_manifests`
+- `extract_variants`
+- `analyze`
+- `render_reports`
+- `full_workflow`
+
+`analyze` may reuse regions and extracted VCFs from a completed `source_job_id`. `render_reports` requires a completed analysis source job. A batch continues when one gene fails and finishes with `partial` status when it contains both successes and failures.
+
+Only queued jobs can be cancelled:
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8766/api/v1/jobs/JOB_ID/cancel
+```
+
+Queued jobs and completed results survive app restarts. A job interrupted while running is marked failed with the `interrupted` error code.
+
 ## Genotype-aware variant interpretation
 
 The variant layer decodes sample-level VCF `GT` before making any phenotype-oriented statement. `REF` and `ALT` are kept as the site definition, while the sample genotype is reported separately as decoded alleles, zygosity, ALT dosage, call-quality flags, and confidence.
@@ -271,7 +386,7 @@ docker build -t nophigene:latest .
 
 ```bash
 docker run --rm -it \
-  -p 8000:8000 \
+  -p 8766:8766 \
   -e NOPHIGENE_IN_DOCKER=1 \
   -v "${PWD}/data":/home/appuser/app/data \
   -v "${PWD}/results":/home/appuser/app/results \
@@ -280,7 +395,7 @@ docker run --rm -it \
 
 Then open:
 
-- [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- [http://127.0.0.1:8766](http://127.0.0.1:8766)
 
 ### Use the Docker launcher
 
@@ -315,7 +430,7 @@ Reinstall the app runtime:
 
 Open:
 
-- [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- [http://127.0.0.1:8766](http://127.0.0.1:8766)
 
 ### The local server failed to start
 

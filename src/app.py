@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 
+DEFAULT_WEB_PORT = 8766
+
 try:
     from . import analysis
     from .webapp import run_server
@@ -21,7 +23,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     web_parser = subparsers.add_parser("web", help="Run the browser-based interface.")
     web_parser.add_argument("--host", default="0.0.0.0", help="Host interface to bind.")
-    web_parser.add_argument("--port", default=8000, type=int, help="Port to serve the UI on.")
+    web_parser.add_argument("--port", default=DEFAULT_WEB_PORT, type=int, help="Port to serve the UI on.")
     web_parser.add_argument("--debug", action="store_true", help="Enable Flask debug mode.")
 
     cli_parser = subparsers.add_parser("cli", help="Run the original command-line pipeline.")
@@ -37,7 +39,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.mode in (None, "web"):
         host = getattr(args, "host", "0.0.0.0")
-        port = getattr(args, "port", 8000)
+        port = getattr(args, "port", DEFAULT_WEB_PORT)
         debug = getattr(args, "debug", False)
         run_server(host=host, port=port, debug=debug)
         return 0

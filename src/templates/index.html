@@ -2713,7 +2713,7 @@
             <div class="diagram-flow" aria-label="Local architecture diagram">
               <div class="diagram-node">
                 <strong>User browser</strong>
-                <span>Open <code>http://127.0.0.1:8000</code> after the local starter script launches the UI.</span>
+                <span>Open <code>http://127.0.0.1:8766</code> after the local starter script launches the UI. If that port is occupied, the launcher prints the selected fallback port.</span>
               </div>
               <div class="diagram-arrow" aria-hidden="true">↓</div>
               <div class="diagram-node">
@@ -2761,7 +2761,7 @@
             <div class="diagram-flow" aria-label="Docker architecture diagram">
               <div class="diagram-node">
                 <strong>User browser</strong>
-                <span>Connect to the same UI endpoint on <code>http://127.0.0.1:8000</code>, but served from the container.</span>
+                <span>Connect to the same UI endpoint on <code>http://127.0.0.1:8766</code>, but served from the container. If that port is occupied, the launcher prints the selected fallback port.</span>
               </div>
               <div class="diagram-arrow" aria-hidden="true">↓</div>
               <div class="diagram-node">
@@ -2771,7 +2771,7 @@
               <div class="diagram-arrow" aria-hidden="true">↓</div>
               <div class="diagram-node">
                 <strong>Container runtime</strong>
-                <span>The image starts the same Flask layer and Python pipeline, with port <code>8000</code> published back to the host machine.</span>
+                <span>The image starts the same Flask layer and Python pipeline, with port <code>8766</code> published back to the host machine.</span>
               </div>
               <div class="diagram-arrow" aria-hidden="true">↓</div>
               <div class="diagram-node-row">

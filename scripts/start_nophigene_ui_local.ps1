@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [int]$Port = 8000,
+    [int]$Port = 8766,
     [switch]$UseDocker,
     [string]$ImageName = "nophigene:latest",
     [string]$ContainerName = "nophigene-ui",
@@ -20,8 +20,10 @@ $referenceDir = Join-Path $dataDir "reference\hg38"
 $extractedDir = Join-Path $dataDir "extracted"
 $resultsDir = Join-Path $repoRoot "results"
 $pidFile = Join-Path $repoRoot ".nophigene-ui.pid"
+$portFile = Join-Path $repoRoot ".nophigene-ui.port"
 $stdoutLog = Join-Path $repoRoot ".nophigene-ui.log"
 $stderrLog = Join-Path $repoRoot ".nophigene-ui.err.log"
+$portWasExplicit = $PSBoundParameters.ContainsKey("Port")
 
 if ($UseDocker) {
     Write-Host ""
@@ -30,10 +32,10 @@ if ($UseDocker) {
     Write-Host ""
 
     $dockerParams = @{
-        Port = $Port
         ImageName = $ImageName
         ContainerName = $ContainerName
     }
+    if ($portWasExplicit) { $dockerParams.Port = $Port }
     if ($SkipBuild) { $dockerParams.SkipBuild = $true }
     if ($NoOpenBrowser) { $dockerParams.NoOpenBrowser = $true }
     if ($DryRun) { $dockerParams.DryRun = $true }
@@ -93,16 +95,74 @@ function Test-WebReady {
     }
 
     try {
-        $response = Invoke-WebRequest -Uri "http://127.0.0.1:$WebPort" -UseBasicParsing -TimeoutSec 3
-        return $response.StatusCode -ge 200 -and $response.StatusCode -lt 500
+        $response = Invoke-WebRequest -Uri "http://127.0.0.1:$WebPort/api/v1/health" -UseBasicParsing -TimeoutSec 3
+        if ($response.StatusCode -ne 200) {
+            return $false
+        }
+        $payload = $response.Content | ConvertFrom-Json
+        return $payload.status -in @("ok", "degraded")
     }
     catch {
         return $false
     }
 }
 
-function Wait-ForWebApp {
+function Test-PortAvailable {
     param([int]$WebPort)
+
+    if ($DryRun) {
+        return $true
+    }
+
+    $listener = $null
+    try {
+        $listener = New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Loopback, $WebPort)
+        $listener.Start()
+        return $true
+    }
+    catch {
+        return $false
+    }
+    finally {
+        if ($null -ne $listener) {
+            $listener.Stop()
+        }
+    }
+}
+
+function Resolve-WebPort {
+    param(
+        [int]$RequestedPort,
+        [bool]$Explicit
+    )
+
+    if ($RequestedPort -lt 1 -or $RequestedPort -gt 65535) {
+        throw "Port must be between 1 and 65535."
+    }
+    if (Test-PortAvailable -WebPort $RequestedPort) {
+        return $RequestedPort
+    }
+    if ($Explicit) {
+        throw "Port $RequestedPort is already in use or cannot be bound. Choose another port with -Port, for example -Port 9000."
+    }
+
+    $lastCandidate = [Math]::Min($RequestedPort + 50, 65535)
+    if ($RequestedPort -lt $lastCandidate) {
+        foreach ($candidate in (($RequestedPort + 1)..$lastCandidate)) {
+            if (Test-PortAvailable -WebPort $candidate) {
+                Write-Host "Port $RequestedPort is unavailable; using port $candidate instead." -ForegroundColor Yellow
+                return $candidate
+            }
+        }
+    }
+    throw "No available local port was found between $RequestedPort and $lastCandidate."
+}
+
+function Wait-ForWebApp {
+    param(
+        [int]$WebPort,
+        [int]$ProcessId
+    )
 
     if ($DryRun) {
         Write-Step "Would wait for http://127.0.0.1:$WebPort to respond"
@@ -115,9 +175,20 @@ function Wait-ForWebApp {
         if (Test-WebReady -WebPort $WebPort) {
             return
         }
+        if ($ProcessId -gt 0 -and -not (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)) {
+            $errorTail = ""
+            if (Test-Path $stderrLog) {
+                $errorTail = (Get-Content $stderrLog -Tail 20 -ErrorAction SilentlyContinue) -join [Environment]::NewLine
+            }
+            Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath $portFile -Force -ErrorAction SilentlyContinue
+            throw "The local UI process exited before becoming ready on port $WebPort.`n$errorTail"
+        }
         Start-Sleep -Seconds 2
     }
 
+    Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $portFile -Force -ErrorAction SilentlyContinue
     throw "The local UI did not respond on http://127.0.0.1:$WebPort within 2 minutes. Check $stdoutLog and $stderrLog."
 }
 
@@ -139,11 +210,43 @@ function Get-TrackedProcess {
     }
 }
 
+function Get-ListeningProcessId {
+    param([int]$WebPort)
+
+    if ($DryRun) {
+        return $null
+    }
+
+    $pattern = "^\s*TCP\s+\S+:$WebPort\s+\S+\s+\S+\s+(?<ProcessId>\d+)\s*$"
+    foreach ($line in (netstat -ano -p tcp)) {
+        if ($line -match $pattern) {
+            return [int]$Matches.ProcessId
+        }
+    }
+    return $null
+}
+
+function Get-TrackedPort {
+    if (-not (Test-Path $portFile)) {
+        return $null
+    }
+    $rawPort = Get-Content $portFile -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $rawPort) {
+        return $null
+    }
+    try {
+        return [int]$rawPort
+    }
+    catch {
+        return $null
+    }
+}
+
 Write-Host ""
 Write-Host "NophiGene local launcher" -ForegroundColor Green
 Write-Host "Repository : $repoRoot"
 Write-Host "Python     : $pythonPath"
-Write-Host "Port       : $Port"
+Write-Host "Requested  : $Port"
 Write-Host "Reference  : $referenceDir"
 Write-Host "Extracted  : $extractedDir"
 Write-Host ""
@@ -157,10 +260,11 @@ Configure-LocalExtraction
 
 $existing = Get-TrackedProcess
 if ($existing) {
-    if (Test-WebReady -WebPort $Port) {
+    $trackedPort = Get-TrackedPort
+    if ($trackedPort -and (Test-WebReady -WebPort $trackedPort)) {
         Write-Step "A tracked UI process is already running with PID $($existing.Id)"
         if (-not $NoOpenBrowser) {
-            $url = "http://127.0.0.1:$Port"
+            $url = "http://127.0.0.1:$trackedPort"
             Write-Step "Opening $url"
             if (-not $DryRun) {
                 Start-Process $url | Out-Null
@@ -177,6 +281,10 @@ if ($existing) {
 elseif (Test-Path $pidFile) {
     Remove-Item -LiteralPath $pidFile -Force
 }
+Remove-Item -LiteralPath $portFile -Force -ErrorAction SilentlyContinue
+
+$Port = Resolve-WebPort -RequestedPort $Port -Explicit $portWasExplicit
+Write-Host "Selected   : $Port"
 
 Write-Step "Checking local app dependencies"
 if (-not $DryRun) {
@@ -200,9 +308,19 @@ if (-not $DryRun) {
         -PassThru
 
     Set-Content -LiteralPath $pidFile -Value $process.Id -NoNewline
+    Set-Content -LiteralPath $portFile -Value $Port -NoNewline
 }
 
-Wait-ForWebApp -WebPort $Port
+$startedProcessId = if ($DryRun) { 0 } else { $process.Id }
+Wait-ForWebApp -WebPort $Port -ProcessId $startedProcessId
+if (-not $DryRun) {
+    $processIds = @($process.Id)
+    $listenerProcessId = Get-ListeningProcessId -WebPort $Port
+    if ($listenerProcessId -and $listenerProcessId -notin $processIds) {
+        $processIds += $listenerProcessId
+    }
+    Set-Content -LiteralPath $pidFile -Value $processIds
+}
 
 if (-not $NoOpenBrowser) {
     $url = "http://127.0.0.1:$Port"

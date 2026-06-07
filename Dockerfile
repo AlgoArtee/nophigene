@@ -57,7 +57,7 @@ RUN mkdir -p data results && \
 
 USER ${USERNAME}
 
-EXPOSE 8000
+EXPOSE 8766
 
 ENTRYPOINT ["python", "src/app.py"]
-CMD ["web", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["web", "--host", "0.0.0.0", "--port", "8766"]

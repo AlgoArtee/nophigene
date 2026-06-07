@@ -51,6 +51,12 @@ try:
         save_filtered_manifest,
     )
     from .human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
+    from .workflow import (
+        build_scope_regions as build_shared_scope_regions,
+        format_region_with_padding as format_shared_region_with_padding,
+        genome_build_from_knowledge_base,
+        knowledge_base_matches_build,
+    )
 except ImportError:
     from analysis import (
         ANALYSIS_SCOPE_OPTIONS,
@@ -82,6 +88,12 @@ except ImportError:
     from gene_region_extraction import find_gene_region
     from helper_functions.filter_manifest_region import sanitize_gene_name_for_filename, save_filtered_manifest
     from human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
+    from workflow import (
+        build_scope_regions as build_shared_scope_regions,
+        format_region_with_padding as format_shared_region_with_padding,
+        genome_build_from_knowledge_base,
+        knowledge_base_matches_build,
+    )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
@@ -345,6 +357,12 @@ FUNCTIONAL_FAMILY_DEFINITIONS = [
 
 app = Flask(__name__, template_folder=str(Path(__file__).resolve().parent / "templates"))
 app.secret_key = os.environ.get("NOPHIGENE_SECRET_KEY", "nophigene-local-dev")
+try:
+    from .api import register_api
+except ImportError:
+    from api import register_api
+
+register_api(app)
 
 
 def _build_app_structure_qa_items() -> list[dict[str, object]]:
@@ -540,67 +558,32 @@ def _format_region_union(regions: list[str]) -> str:
 
 def _format_region_with_padding(region: str, upstream_bp: int = 1000) -> str:
     """Return a conservative promoter+gene fallback when no curated scope exists."""
-    cleaned = region.strip().replace(",", "")
-    if ":" not in cleaned or "-" not in cleaned:
-        return region
-    chrom, span = cleaned.split(":", 1)
-    start_text, end_text = span.split("-", 1)
     try:
-        start = max(1, int(start_text) - upstream_bp)
-        end = int(end_text)
+        return format_shared_region_with_padding(region, upstream_bp=upstream_bp)
     except ValueError:
         return region
-    return f"{chrom}:{start}-{end}"
 
 
 def _build_analysis_scope_regions(gene_name: str, selected_gene_region: str) -> dict[str, str]:
     """Build promoter+gene, promoter-only, and gene-only regions for the UI."""
     normalized_gene_name = gene_name.strip().upper() or DEFAULT_GENE_NAME
     knowledge_base = load_gene_interpretation_database(normalized_gene_name)
-    if knowledge_base is not None:
-        gene_context = knowledge_base.get("gene_context", {})
-        context_chrom = str(gene_context.get("chromosome", "")).strip()
-        promoter_region = _format_interval_from_record(
-            gene_context.get("promoter_review_region"),
-            default_chrom=context_chrom,
-        )
-        gene_region = (
-            _format_interval_from_record(gene_context.get("gene_region"), default_chrom=context_chrom)
-            or selected_gene_region
-        )
-        recommended_region = str(gene_context.get("recommended_promoter_plus_gene_region") or "")
-        required_regions = [region for region in [promoter_region, gene_region] if region]
-        if recommended_region and _region_covers(recommended_region, required_regions):
-            promoter_plus_gene = recommended_region
-        else:
-            promoter_plus_gene = _format_region_union(required_regions) or _format_region_with_padding(gene_region)
-        return {
-            "promoter_plus_gene": promoter_plus_gene,
-            "promoter_only": promoter_region,
-            "gene_only": gene_region,
-        }
-
-    promoter_plus_gene = _format_region_with_padding(selected_gene_region)
-    return {
-        "promoter_plus_gene": promoter_plus_gene,
-        "promoter_only": "",
-        "gene_only": selected_gene_region,
-    }
+    genome_build = genome_build_from_knowledge_base(knowledge_base) or "hg19"
+    return build_shared_scope_regions(
+        normalized_gene_name,
+        selected_gene_region,
+        genome_build=genome_build,
+        knowledge_base=knowledge_base,
+    )
 
 
 def _knowledge_base_uses_genome_build(gene_name: str, genome_build: str) -> bool:
     """Return whether a bundled gene knowledge base explicitly matches a build."""
     knowledge_base = load_gene_interpretation_database(gene_name.strip().upper() or DEFAULT_GENE_NAME)
-    if knowledge_base is None:
+    try:
+        return knowledge_base_matches_build(knowledge_base, genome_build)
+    except ValueError:
         return False
-    gene_context = knowledge_base.get("gene_context", {})
-    assembly = str(gene_context.get("assembly", "")).lower()
-    normalized_build = str(genome_build or "").lower()
-    if normalized_build in {"hg38", "grch38"}:
-        return "hg38" in assembly or "grch38" in assembly
-    if normalized_build in {"hg19", "grch37"}:
-        return "hg19" in assembly or "grch37" in assembly or not assembly
-    return False
 
 
 def _build_extraction_scope_regions(
@@ -609,15 +592,13 @@ def _build_extraction_scope_regions(
     genome_build: str,
 ) -> dict[str, str]:
     """Build extraction scope regions without reusing hg19-only local intervals."""
-    normalized_build = str(genome_build or "hg38").lower()
-    if normalized_build == "hg38" and not _knowledge_base_uses_genome_build(gene_name, "hg38"):
-        promoter_plus_gene = _format_region_with_padding(selected_gene_region)
-        return {
-            "promoter_plus_gene": promoter_plus_gene,
-            "promoter_only": "",
-            "gene_only": selected_gene_region,
-        }
-    return _build_analysis_scope_regions(gene_name, selected_gene_region)
+    knowledge_base = load_gene_interpretation_database(gene_name.strip().upper() or DEFAULT_GENE_NAME)
+    return build_shared_scope_regions(
+        gene_name,
+        selected_gene_region,
+        genome_build=genome_build,
+        knowledge_base=knowledge_base,
+    )
 
 
 def _allows_empty_methylation_subset(gene_name: str) -> bool:
@@ -2657,7 +2638,7 @@ def index() -> str:
     )
 
 
-def run_server(host: str = "0.0.0.0", port: int = 8000, debug: bool = False) -> None:
+def run_server(host: str = "0.0.0.0", port: int = 8766, debug: bool = False) -> None:
     """Start the web server."""
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     DATA_DIR.mkdir(parents=True, exist_ok=True)

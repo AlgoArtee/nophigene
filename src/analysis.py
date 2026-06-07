@@ -33,12 +33,20 @@ from methylprep import run_pipeline
 
 try:
     from .helper_functions.filter_manifest_region import (
+        filter_probes_by_region,
+        load_manifest,
         parse_region_string,
         sanitize_gene_name_for_filename,
         save_filtered_manifest,
     )
 except ImportError:
-    from helper_functions.filter_manifest_region import parse_region_string, sanitize_gene_name_for_filename, save_filtered_manifest
+    from helper_functions.filter_manifest_region import (
+        filter_probes_by_region,
+        load_manifest,
+        parse_region_string,
+        sanitize_gene_name_for_filename,
+        save_filtered_manifest,
+    )
 
 DEFAULT_REGION = "11:636269-640706"
 DEFAULT_REPORT_NAME = "drd4_report.html"
@@ -430,6 +438,26 @@ class AnalysisResult:
     analysis_scope_label: str
     vcf_path: Path
     idat_base: Path
+    variant_interpretations: dict[str, Any]
+    methylation_insights: dict[str, Any]
+    knowledge_base: dict[str, Any]
+    population_insights: dict[str, Any]
+    population_database: dict[str, Any]
+    predictive_theses: dict[str, Any]
+    general_database_path: Path
+    general_database_status: str
+
+
+@dataclass
+class PreparedAnalysisResult:
+    """In-memory analysis result that can be rendered into one or more formats."""
+
+    variants: pd.DataFrame
+    methylation: pd.DataFrame
+    popstats: Any | None
+    region: str
+    analysis_scope: str
+    analysis_scope_label: str
     variant_interpretations: dict[str, Any]
     methylation_insights: dict[str, Any]
     knowledge_base: dict[str, Any]
@@ -4802,6 +4830,144 @@ def _run_methylprep_pipeline(data_dir: str, *, manifest_filepath: str | None) ->
     )
 
 
+def load_methylation_beta_values(
+    idat_base: str,
+    manifest_filepath: str | None = None,
+) -> pd.DataFrame:
+    """Process one IDAT pair and return a reusable probe/beta table."""
+    logger.info("Starting methylation loading for sample")
+    data_dir = os.path.dirname(idat_base) or "."
+    sample_name = os.path.basename(idat_base)
+
+    for suffix in ("_Grn.idat", "_Red.idat"):
+        path = os.path.join(data_dir, sample_name + suffix)
+        logger.debug("Checking IDAT: %s", path)
+        if not os.path.isfile(path):
+            raise AnalysisError(f"Missing IDAT file: {path}")
+
+    pipeline_manifest_path = manifest_filepath
+    try:
+        logger.info("Running methylprep pipeline with betas=True")
+        beta_values = _run_methylprep_pipeline(
+            data_dir,
+            manifest_filepath=pipeline_manifest_path,
+        )
+    except Exception as exc:
+        if not pipeline_manifest_path:
+            logger.exception("run_pipeline failed")
+            raise AnalysisError(f"methylprep failed for sample '{sample_name}': {exc}") from exc
+
+        logger.warning(
+            "methylprep rejected custom manifest '%s'; retrying with methylprep's default manifest.",
+            pipeline_manifest_path,
+            exc_info=True,
+        )
+        try:
+            beta_values = _run_methylprep_pipeline(data_dir, manifest_filepath=None)
+        except Exception as retry_exc:
+            logger.exception("run_pipeline failed even after retrying without a custom manifest")
+            raise AnalysisError(
+                f"methylprep failed for sample '{sample_name}' with custom manifest "
+                f"'{pipeline_manifest_path}', and the retry without that manifest also failed: {retry_exc}"
+            ) from retry_exc
+
+    if sample_name not in beta_values.columns:
+        raise AnalysisError(f"No beta column named '{sample_name}' in methylprep output")
+
+    beta_df = beta_values[sample_name].rename("beta").reset_index()
+    beta_df = beta_df.rename(columns={beta_df.columns[0]: "probe_id"})
+    logger.info("Loaded %d methylation beta value(s) for %s", len(beta_df), sample_name)
+    return beta_df
+
+
+def build_gene_methylation_table(
+    beta_values: pd.DataFrame,
+    manifest_region: pd.DataFrame,
+    *,
+    region: str,
+    genome_build: str = "hg19",
+) -> pd.DataFrame:
+    """Join reusable beta values to one region-specific manifest table."""
+    manifest_region = manifest_region.copy()
+    normalized_build = str(genome_build or "hg19").strip().lower()
+    chrom_column = "CHR_hg38" if normalized_build == "hg38" else "CHR"
+    position_column = "Start_hg38" if normalized_build == "hg38" else "MAPINFO"
+    if {chrom_column, position_column}.issubset(manifest_region.columns):
+        region_chrom, region_start, region_end = parse_region_string(region)
+        region_chrom = str(region_chrom)
+        if normalized_build == "hg38" and not region_chrom.startswith("chr"):
+            region_chrom = f"chr{region_chrom}"
+        elif normalized_build != "hg38":
+            region_chrom = region_chrom.removeprefix("chr")
+        region_positions = pd.to_numeric(manifest_region[position_column], errors="coerce")
+        manifest_region = manifest_region[
+            (manifest_region[chrom_column].astype(str) == region_chrom)
+            & (region_positions >= region_start)
+            & (region_positions <= region_end)
+        ].copy()
+
+    manifest_region = manifest_region.rename(
+        columns={
+            "IlmnID": "probe_id",
+            chrom_column: "chrom",
+            position_column: "pos",
+            "UCSC_RefGene_Name": "gene",
+        }
+    )
+    required = {"probe_id", "chrom", "pos", "gene"}
+    missing = required - set(manifest_region.columns)
+    if missing:
+        raise AnalysisError(f"Region manifest is missing required columns: {sorted(missing)}")
+
+    merged = pd.merge(beta_values, manifest_region, on="probe_id", how="inner")
+    logger.info("After merging, %d probes remain", len(merged))
+    keep_columns = [
+        "probe_id",
+        "beta",
+        "chrom",
+        "pos",
+        "GencodeBasicV12_NAME",
+        "UCSC_RefGene_Name",
+        "UCSC_RefGene_Accession",
+        "UCSC_RefGene_Group",
+        "UCSC_CpG_Islands_Name",
+        "Relation_to_UCSC_CpG_Island",
+        "Phantom4_Enhancers",
+        "Phantom5_Enhancers,DMR,450k_Enhancer,HMM_Island",
+        "DNase_Hypersensitivity_NAME",
+        "DNase_Hypersensitivity_Evidence_Count",
+    ]
+    available = set(merged.columns)
+    missing_columns = [column for column in keep_columns if column not in available]
+    if missing_columns:
+        logger.warning("Some expected columns are missing: %s", missing_columns)
+    return merged[[column for column in keep_columns if column in available]]
+
+
+def load_full_methylation_manifest(manifest_filepath: str) -> pd.DataFrame:
+    """Load a full Illumina manifest for reuse across a multi-gene job."""
+    try:
+        return load_manifest(manifest_filepath)
+    except Exception as exc:
+        raise AnalysisError(f"Failed to read methylation manifest '{manifest_filepath}': {exc}") from exc
+
+
+def build_gene_manifest_subset(
+    manifest: pd.DataFrame,
+    *,
+    region: str,
+    genome_build: str,
+) -> pd.DataFrame:
+    """Return one gene-region subset from an already loaded full manifest."""
+    try:
+        chrom, start, end = parse_region_string(region)
+        return filter_probes_by_region(manifest, chrom, start, end, genome_build)
+    except Exception as exc:
+        raise AnalysisError(
+            f"Failed to filter methylation manifest for {region} ({genome_build}): {exc}"
+        ) from exc
+
+
 def load_methylation(
     idat_base: str,
     manifest_filepath: str | None = None,
@@ -4840,70 +5006,23 @@ def load_methylation(
         Raised when the IDAT pair is incomplete, methylprep fails, or the local
         manifest subset cannot be loaded.
     """
-    logger.info("Starting methylation loading for sample")
     normalized_gene_name = gene_name.strip().upper() or DEFAULT_GENE_NAME
-
-    data_dir = os.path.dirname(idat_base) or "."
-    sample_name = os.path.basename(idat_base)
-
-    logger.debug("Data directory: %s", data_dir)
-    logger.debug("Sample name: %s", sample_name)
-
-    # Validate both channels first so failures are short and obvious.
-    for suffix in ("_Grn.idat", "_Red.idat"):
-        path = os.path.join(data_dir, sample_name + suffix)
-        logger.debug("Checking IDAT: %s", path)
-        if not os.path.isfile(path):
-            raise AnalysisError(f"Missing IDAT file: {path}")
 
     region_manifest_file = (
         Path(__file__).resolve().parent
         / "gene_data"
         / _gene_manifest_filename(normalized_gene_name)
     )
-    pipeline_manifest_path = manifest_filepath
     if manifest_filepath:
         region_manifest_file = _prepare_gene_manifest_subset(
             manifest_filepath=manifest_filepath,
             gene_name=normalized_gene_name,
             region=region,
         )
-
-    try:
-        logger.info("Running methylprep pipeline with betas=True")
-        beta_values = _run_methylprep_pipeline(
-            data_dir,
-            manifest_filepath=pipeline_manifest_path,
-        )
-        logger.debug("Beta-values DataFrame loaded, shape = %s", beta_values.shape)
-    except Exception as exc:
-        if pipeline_manifest_path:
-            logger.warning(
-                "methylprep rejected custom manifest '%s'; retrying with methylprep's default manifest.",
-                pipeline_manifest_path,
-                exc_info=True,
-            )
-            try:
-                beta_values = _run_methylprep_pipeline(data_dir, manifest_filepath=None)
-                logger.debug("Beta-values DataFrame loaded, shape = %s", beta_values.shape)
-            except Exception as retry_exc:
-                logger.exception("run_pipeline failed even after retrying without a custom manifest")
-                raise AnalysisError(
-                    f"methylprep failed for sample '{sample_name}' with custom manifest "
-                    f"'{pipeline_manifest_path}', and the retry without that manifest also failed: {retry_exc}"
-                ) from retry_exc
-        else:
-            logger.exception("run_pipeline failed")
-            raise AnalysisError(f"methylprep failed for sample '{sample_name}': {exc}") from exc
-
-    if sample_name not in beta_values.columns:
-        raise AnalysisError(f"No beta column named '{sample_name}' in methylprep output")
-
-    # Reset the index so probe IDs become a merge key instead of staying hidden
-    # in the wide matrix index produced by methylprep.
-    beta_df = beta_values[sample_name].rename("beta").reset_index()
-    beta_df = beta_df.rename(columns={beta_df.columns[0]: "probe_id"})
-    logger.debug("First 5 rows of beta-values DataFrame after renaming:\n%s", beta_df.head(5))
+    beta_df = load_methylation_beta_values(
+        idat_base,
+        manifest_filepath=manifest_filepath,
+    )
     try:
         if region_manifest_file.exists():
             manifest_region = pd.read_csv(region_manifest_file)
@@ -4913,60 +5032,7 @@ def load_methylation(
         raise AnalysisError(f"Failed to read region manifest file '{region_manifest_file}': {exc}") from exc
     if manifest_region is None:
         raise AnalysisError(f"Failed to read region manifest file '{region_manifest_file}': file not found")
-
-    if {"CHR", "MAPINFO"}.issubset(manifest_region.columns):
-        region_chrom, region_start, region_end = parse_region_string(region)
-        region_chrom = str(region_chrom).removeprefix("chr")
-        region_positions = pd.to_numeric(manifest_region["MAPINFO"], errors="coerce")
-        manifest_region = manifest_region[
-            (manifest_region["CHR"].astype(str).str.removeprefix("chr") == region_chrom)
-            & (region_positions >= region_start)
-            & (region_positions <= region_end)
-        ].copy()
-
-    rename_cols = {
-        "IlmnID": "probe_id",
-        "CHR": "chrom",
-        "MAPINFO": "pos",
-        "UCSC_RefGene_Name": "gene",
-    }
-    manifest_region = manifest_region.rename(columns=rename_cols)
-
-    required = {"probe_id", "chrom", "pos", "gene"}
-    missing = required - set(manifest_region.columns)
-    if missing:
-        raise AnalysisError(f"Region manifest is missing required columns: {sorted(missing)}")
-
-    # An inner join keeps only probes observed in both the sample output and the
-    # curated DRD4 manifest subset.
-    merged = pd.merge(beta_df, manifest_region, on="probe_id", how="inner")
-    logger.info("After merging, %d probes remain", len(merged))
-
-    keep_columns = [
-        "probe_id",
-        "beta",
-        "chrom",
-        "pos",
-        "GencodeBasicV12_NAME",
-        "UCSC_RefGene_Name",
-        "UCSC_RefGene_Accession",
-        "UCSC_RefGene_Group",
-        "UCSC_CpG_Islands_Name",
-        "Relation_to_UCSC_CpG_Island",
-        "Phantom4_Enhancers",
-        "Phantom5_Enhancers,DMR,450k_Enhancer,HMM_Island",
-        "DNase_Hypersensitivity_NAME",
-        "DNase_Hypersensitivity_Evidence_Count",
-    ]
-
-    available = set(merged.columns)
-    missing_columns = [column for column in keep_columns if column not in available]
-    if missing_columns:
-        logger.warning("Some expected columns are missing: %s", missing_columns)
-
-    final_df = merged[[column for column in keep_columns if column in available]]
-    logger.debug("First 5 rows of filtered epigenetic data table:\n%s", final_df.head(5))
-    return final_df
+    return build_gene_methylation_table(beta_df, manifest_region, region=region)
 
 
 def fetch_population_stats(popstats_source: str, variants: pd.DataFrame) -> Any:
@@ -6084,6 +6150,82 @@ def run_analysis(
         gene_name=normalized_gene_name,
         region=region,
     )
+    popstats = fetch_population_stats(popstats_source, variants) if popstats_source else None
+    prepared = analyze_prepared_data(
+        variants=variants,
+        methylation=methylation,
+        gene_name=normalized_gene_name,
+        region=region,
+        analysis_scope=normalized_analysis_scope,
+        popstats=popstats,
+        update_general_database_enabled=True,
+        overwrite_general_database=overwrite_general_database,
+        general_database_path=general_database_path,
+    )
+    variants = prepared.variants
+    methylation = prepared.methylation
+
+    report_path = Path(output_path)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+
+    methylation_output_path = _derive_methylation_output_path(report_path)
+    methylation_output_path.parent.mkdir(parents=True, exist_ok=True)
+    methylation.to_csv(methylation_output_path, index=False)
+    logger.info("Saved methylation data to %s", methylation_output_path)
+
+    final_report_path = generate_report(
+        variants,
+        methylation,
+        popstats,
+        str(report_path),
+        gene_name=normalized_gene_name,
+        region=region,
+        methylation_output_path=methylation_output_path,
+        variant_interpretations=prepared.variant_interpretations,
+        methylation_insights=prepared.methylation_insights,
+        population_insights=prepared.population_insights,
+        predictive_theses=prepared.predictive_theses,
+        analysis_scope=normalized_analysis_scope,
+    )
+
+    return AnalysisResult(
+        variants=variants,
+        methylation=methylation,
+        popstats=popstats,
+        report_path=final_report_path,
+        methylation_output_path=methylation_output_path,
+        region=region,
+        analysis_scope=normalized_analysis_scope,
+        analysis_scope_label=analysis_scope_label,
+        vcf_path=Path(vcf_path),
+        idat_base=Path(idat_base),
+        variant_interpretations=prepared.variant_interpretations,
+        methylation_insights=prepared.methylation_insights,
+        knowledge_base=prepared.knowledge_base,
+        population_insights=prepared.population_insights,
+        population_database=prepared.population_database,
+        predictive_theses=prepared.predictive_theses,
+        general_database_path=prepared.general_database_path,
+        general_database_status=prepared.general_database_status,
+    )
+
+
+def analyze_prepared_data(
+    *,
+    variants: pd.DataFrame,
+    methylation: pd.DataFrame,
+    gene_name: str,
+    region: str,
+    analysis_scope: str = DEFAULT_ANALYSIS_SCOPE,
+    popstats: Any | None = None,
+    update_general_database_enabled: bool = False,
+    overwrite_general_database: bool = False,
+    general_database_path: str | Path = GENERAL_ANALYSIS_DATABASE_PATH,
+) -> PreparedAnalysisResult:
+    """Interpret already loaded variant and methylation tables."""
+    normalized_gene_name = gene_name.strip().upper() or DEFAULT_GENE_NAME
+    normalized_analysis_scope = normalize_analysis_scope(analysis_scope)
+    analysis_scope_label = get_analysis_scope_label(normalized_analysis_scope)
 
     knowledge_base = load_gene_interpretation_database(normalized_gene_name)
     if knowledge_base is not None:
@@ -6137,19 +6279,7 @@ def run_analysis(
         }
         population_insights = build_empty_population_insights(gene_name=normalized_gene_name)
 
-    report_path = Path(output_path)
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-
-    methylation_output_path = _derive_methylation_output_path(report_path)
-    methylation_output_path.parent.mkdir(parents=True, exist_ok=True)
-    methylation.to_csv(methylation_output_path, index=False)
-    logger.info("Saved methylation data to %s", methylation_output_path)
-
-    popstats = None
-    if popstats_source:
-        popstats = fetch_population_stats(popstats_source, variants)
-
-    if normalized_analysis_scope == DEFAULT_ANALYSIS_SCOPE:
+    if update_general_database_enabled and normalized_analysis_scope == DEFAULT_ANALYSIS_SCOPE:
         general_database_result = update_general_analysis_database(
             gene_name=normalized_gene_name,
             variants=variants,
@@ -6158,6 +6288,11 @@ def run_analysis(
             overwrite=overwrite_general_database,
             database_path=general_database_path,
         )
+    elif not update_general_database_enabled:
+        general_database_result = {
+            "path": Path(general_database_path),
+            "message": "Central database update was not requested for this analysis.",
+        }
     else:
         general_database_result = {
             "path": Path(general_database_path),
@@ -6167,32 +6302,13 @@ def run_analysis(
             ),
         }
 
-    final_report_path = generate_report(
-        variants,
-        methylation,
-        popstats,
-        str(report_path),
-        gene_name=normalized_gene_name,
-        region=region,
-        methylation_output_path=methylation_output_path,
-        variant_interpretations=variant_interpretations,
-        methylation_insights=methylation_insights,
-        population_insights=population_insights,
-        predictive_theses=predictive_theses,
-        analysis_scope=normalized_analysis_scope,
-    )
-
-    return AnalysisResult(
+    return PreparedAnalysisResult(
         variants=variants,
         methylation=methylation,
         popstats=popstats,
-        report_path=final_report_path,
-        methylation_output_path=methylation_output_path,
         region=region,
         analysis_scope=normalized_analysis_scope,
         analysis_scope_label=analysis_scope_label,
-        vcf_path=Path(vcf_path),
-        idat_base=Path(idat_base),
         variant_interpretations=variant_interpretations,
         methylation_insights=methylation_insights,
         knowledge_base=knowledge_base,

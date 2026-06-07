@@ -6,6 +6,7 @@
 
 # Local launcher state
 .nophigene-ui.pid
+.nophigene-ui.port
 .nophigene-ui.log
 .nophigene-ui.err.log
 
