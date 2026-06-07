@@ -830,6 +830,216 @@ def test_acd_bundle_explains_rs6979_and_low_methylation_without_longevity_overre
     )
 
 
+def test_cdkn1a_bundle_interprets_sample_variants_and_promoter_methylation_without_overreach() -> None:
+    """CDKN1A should report exact findings, allele orientation, and methylation limits."""
+    knowledge_base = load_gene_interpretation_database("CDKN1A")
+    population_database = load_gene_population_database("CDKN1A")
+    synthesis_database = load_gene_synthesis_database("CDKN1A")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+
+    records = {
+        record["variant"]: record for record in knowledge_base["variant_records"]
+    }
+    assert {
+        "rs3176329",
+        "rs2894408",
+        "6:36648999 A>G",
+        "rs6457937",
+        "rs1801270",
+        "rs3176326",
+    }.issubset(records)
+    assert all(
+        "variation model" not in record["variant"]
+        and "regulatory expression context model" not in record["variant"]
+        for record in knowledge_base["variant_records"]
+    )
+
+    rs3176329 = records["rs3176329"]
+    nafl_disease = next(
+        row for row in rs3176329["literature_findings"] if "PMID 24626178" in row["paper"]
+    )
+    assert "OR 0.548" in nafl_disease["finding"]
+    assert "OR 0.487" in nafl_disease["finding"]
+    assert "did not remain significant" in nafl_disease["finding"]
+    gtex_finding = next(
+        row for row in rs3176329["literature_findings"] if "GTEx v10" in row["paper"]
+    )
+    assert "NES -0.16274856" in gtex_finding["finding"]
+    assert "P=5.15865 x 10^-5" in gtex_finding["finding"]
+
+    assert "population-major allele" in records["rs2894408"]["clinical_interpretation"]
+    assert "AF 0.993805" in records["rs2894408"]["literature_findings"][0]["finding"]
+    assert "no resolved rsID" in records["6:36648999 A>G"]["concrete_prediction"]
+
+    rs6457937 = records["rs6457937"]
+    physical_function = next(
+        row for row in rs6457937["literature_findings"] if "PMC2074888" in row["paper"]
+    )
+    assert "OR 0.90 (95% CI 0.68-1.18), P=0.436" in physical_function["finding"]
+    ovarian_cancer = next(
+        row for row in rs6457937["literature_findings"] if "PMC2743184" in row["paper"]
+    )
+    assert "OR 0.91 (95% CI 0.68-1.23)" in ovarian_cancer["finding"]
+
+    expected_probe_ids = [
+        "cg11706349",
+        "cg23305046",
+        "cg05759269",
+        "cg26500144",
+        "cg03354771",
+        "cg27495579",
+        "cg10800280",
+        "cg01306510",
+        "cg03562264",
+        "cg00935119",
+    ]
+    assert knowledge_base["gene_context"]["relevant_methylation_probe_ids"] == expected_probe_ids
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "6",
+                "id": ".",
+                "pos": 36647463,
+                "ref": "T",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [7, 5],
+                "dp": 12,
+                "gq": 48,
+                "qual": 49.27,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            },
+            {
+                "chrom": "6",
+                "id": ".",
+                "pos": 36648974,
+                "ref": "C",
+                "alt": "T",
+                "gt_raw": "1/1",
+                "ad": [0, 15],
+                "dp": 15,
+                "gq": 42,
+                "qual": 91.69,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            },
+            {
+                "chrom": "6",
+                "id": ".",
+                "pos": 36648999,
+                "ref": "A",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [7, 8],
+                "dp": 15,
+                "gq": 48,
+                "qual": 50.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            },
+            {
+                "chrom": "6",
+                "id": ".",
+                "pos": 36654351,
+                "ref": "T",
+                "alt": "C",
+                "gt_raw": "1/1",
+                "ad": [0, 9],
+                "dp": 9,
+                "gq": 24,
+                "qual": 74.11,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            },
+        ]
+    )
+    probe_betas = {
+        "cg11706349": 0.053,
+        "cg23305046": 0.076,
+        "cg05759269": 0.063,
+        "cg26500144": 0.027,
+        "cg03354771": 0.039,
+        "cg27495579": 0.019,
+        "cg10800280": 0.116,
+        "cg01306510": 0.044,
+        "cg03562264": 0.021,
+        "cg00935119": 0.023,
+    }
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": probe_id,
+                "beta": beta,
+                "chrom": "6",
+                "pos": 36646226 + offset,
+                "GencodeBasicV12_NAME": "CDKN1A;PI16",
+                "UCSC_RefGene_Name": "",
+                "UCSC_RefGene_Group": "TSS200;5'UTR;1stExon",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+            for offset, (probe_id, beta) in enumerate(probe_betas.items())
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="6:36643305-36655116",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    matched = {
+        row["variant"]: row for row in interpretation["matched_records"]
+    }
+    assert len(matched) == 4
+    assert matched["rs3176329 (CDKN1A intronic T>G)"]["genotype"] == "T/G"
+    assert matched["rs2894408 (CDKN1A intronic C>T)"]["genotype"] == "T/T"
+    assert (
+        matched["6:36648999 A>G (unregistered CDKN1A intronic observation)"]["genotype"]
+        == "A/G"
+    )
+    assert matched["rs6457937 (CDKN1A 3' UTR T>C)"]["genotype"] == "C/C"
+
+    assert methylation_insights["whitelist_mean_beta"] == 0.048
+    assert methylation_insights["whitelist_observed_probe_count"] == 10
+    assert methylation_insights["beta_band"] == "low"
+    assert "largely unmethylated" in methylation_insights["sample_interpretation"]
+    assert "does not establish higher CDKN1A RNA" in methylation_insights["sample_interpretation"]
+    assert "not a literature-validated" in methylation_insights["whitelist_explanation"]
+    assert all(
+        "may suggest a more restrained or permissive" not in effect
+        for effect in methylation_insights["methylation_effects"]
+    )
+
+    assert len(population_database["variant_population_records"]) == 3
+    rs2894408_population = next(
+        row
+        for row in population_database["variant_population_records"]
+        if row["variant"] == "rs2894408"
+    )
+    assert rs2894408_population["top_level_location_frequencies"][0][
+        "allele_frequencies"
+    ]["T"] == 0.993805
+
+    assert predictive_theses["matched_case_count"] >= 1
+    predictions = [row["prediction"] for row in predictive_theses["variant_prediction_rows"]]
+    assert any("not independent of rs762623" in prediction for prediction in predictions)
+    assert any("population-major allele (frequency 0.9938)" in prediction for prediction in predictions)
+    assert any("unclassified research observation" in prediction for prediction in predictions)
+    assert any("population-major allele (genome AF 0.9811)" in prediction for prediction in predictions)
+
+
 def test_foxo3_curated_bundle_drives_interpretation_and_population_helpers() -> None:
     """FOXO3 should behave like a curated gene even with pattern-only population notes."""
     knowledge_base = load_gene_interpretation_database("FOXO3")

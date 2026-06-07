@@ -6291,6 +6291,8 @@ def _build_biochemistry_gene_definition(config: dict[str, Any]) -> dict[str, Any
         "skip_manifest_subset",
         "methylation_band_interpretations",
         "methylation_whitelist_explanation",
+        "curated_methylation_probe_ids",
+        "variant_population_records",
     ):
         if optional_key in config:
             definition[optional_key] = config[optional_key]
@@ -8501,7 +8503,819 @@ TOPIC_BIOLOGY_GENE_OVERRIDES: dict[str, dict[str, Any]] = {
                 ],
             },
         ],
-    }
+    },
+    "CDKN1A": {
+        "biochemical_axis": (
+            "p53-responsive p21 control of cyclin-CDK activity, RB phosphorylation, DNA-damage checkpoints, "
+            "PCNA-dependent DNA synthesis, cellular senescence, and context-dependent tissue repair"
+        ),
+        "bundle_focus": "cell-cycle checkpoints, senescence, cancer biology, and aging research",
+        "conditions": [
+            "DNA-damage checkpoint and p53-response biology",
+            "Cellular senescence and aging research",
+            "Cancer susceptibility and tumor-progression research",
+            "Cardiovascular GWAS locus interpretation",
+            "Steatotic liver disease and fibrosis research",
+        ],
+        "gene_summary": (
+            "CDKN1A encodes p21/CIP1/WAF1, a p53-responsive regulator that binds cyclin-CDK complexes and PCNA. "
+            "p21 is not simply an on/off anti-aging protein: high p21 can enforce cell-cycle arrest after damage, while "
+            "lower stoichiometric amounts can help assemble and localize cyclin D-CDK4 complexes. In old mice, intermittent "
+            "clearance of p21-high cells improved physical function, but complete Cdkn1a loss also increased spontaneous "
+            "tumor susceptibility in a separate mouse model. Human sequence results therefore require exact variant, "
+            "allele, tissue, and phenotype context rather than a generic higher-is-better or lower-is-better conclusion."
+        ),
+        "clinical_context": (
+            "The current human databases do not support treating common CDKN1A polymorphisms as a Mendelian longevity "
+            "diagnosis. gnomAD constraint data show no strong depletion of heterozygous predicted loss-of-function variation "
+            "(observed/expected 0.944; pLI 0.0000203), and ClinVar contains sparse, often low-review submissions rather than "
+            "a well-established germline CDKN1A syndrome. Somatic, candidate-gene, eQTL, and GWAS findings must remain "
+            "separate. For this sample, rs3176329 has a small tissue-specific GTEx eQTL and a nominal NAFLD association that "
+            "did not remain independent after linkage-disequilibrium conditioning; rs2894408 and rs6457937 are common-major "
+            "genotypes without a clinically actionable result; and 6:36648999 A>G is an unregistered intronic observation."
+        ),
+        "variant_effect_overview": [
+            (
+                "Foundational experiments showed that p21 binds and inhibits cyclin-dependent kinases and mediates "
+                "p53-linked growth arrest. p21 also competes with POLD3 for PCNA and can inhibit DNA polymerase delta."
+            ),
+            (
+                "LaBaer et al. found dose-dependent behavior: lower p21/p27 stoichiometry promoted cyclin D-CDK4 assembly "
+                "and nuclear localization, whereas higher stoichiometry inhibited kinase activity. Expression direction "
+                "alone therefore does not determine benefit or harm."
+            ),
+            (
+                "In a p21-Cre mouse model, p21-high cells comprised about 1.5% to 10% of cells across tissues in 23-month-old "
+                "mice, and intermittent clearance improved physical function. This supports p21-high cells as one senescence "
+                "context in old mice, not as a validated human blood methylation or lifespan biomarker."
+            ),
+            (
+                "A separate p21-null mouse cohort developed spontaneous tumors at an average age of 16 months, whereas the "
+                "wild-type comparison group remained tumor-free beyond two years. This illustrates why reducing p21 is not "
+                "a general longevity intervention."
+            ),
+        ],
+        "evidence": [
+            _evidence("NCBI Gene 1026: CDKN1A", "https://www.ncbi.nlm.nih.gov/gene/1026"),
+            _evidence("UniProt P38936: reviewed p21 function", "https://www.uniprot.org/uniprotkb/P38936/entry"),
+            _evidence(
+                "Ensembl GRCh37 ENSG00000124762: CDKN1A coordinate and variant consequence source",
+                "https://grch37.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000124762",
+            ),
+            _evidence("gnomAD CDKN1A constraint", "https://gnomad.broadinstitute.org/gene/CDKN1A?dataset=gnomad_r4"),
+            _evidence("GTEx Portal CDKN1A", "https://gtexportal.org/home/gene/CDKN1A"),
+            _evidence("ClinVar CDKN1A search", "https://www.ncbi.nlm.nih.gov/clinvar/?term=CDKN1A%5Bgene%5D"),
+            _evidence(
+                "GWAS Catalog CDKN1A associations",
+                "https://www.ebi.ac.uk/gwas/genes/CDKN1A",
+            ),
+            _evidence(
+                "Open Targets CDKN1A evidence aggregation",
+                "https://platform.opentargets.org/target/ENSG00000124762",
+            ),
+            _evidence(
+                "Human Protein Atlas CDKN1A tissue and subcellular expression",
+                "https://www.proteinatlas.org/ENSG00000124762-CDKN1A",
+            ),
+            _evidence(
+                "Reactome CDKN1A pathway search",
+                "https://reactome.org/content/query?q=CDKN1A",
+            ),
+            _evidence(
+                "PMID 8242752: WAF1 induction by p53 and growth suppression",
+                "https://pubmed.ncbi.nlm.nih.gov/8242752/",
+            ),
+            _evidence(
+                "PMID 8242751: p21 inhibition of cyclin-CDK complexes",
+                "https://pubmed.ncbi.nlm.nih.gov/8242751/",
+            ),
+            _evidence(
+                "PMID 9106657: stoichiometric p21 effects on cyclin D-CDK4",
+                "https://pubmed.ncbi.nlm.nih.gov/9106657/",
+            ),
+            _evidence(
+                "PMID 11595739: p21 competition for PCNA",
+                "https://pubmed.ncbi.nlm.nih.gov/11595739/",
+            ),
+            _evidence(
+                "PMCID PMC8746571: p21-high cell tracking and clearance in old mice",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC8746571/",
+            ),
+            _evidence(
+                "Cancer Research 2001: spontaneous tumors in p21-null mice",
+                "https://aacrjournals.org/cancerres/article/61/16/6234/507824/Tumor-Susceptibility-of-p21Waf1-Cip1-deficient",
+            ),
+            _evidence(
+                "PMCID PMC4050146: CDKN1A variants and NAFLD progression",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC4050146/",
+            ),
+            _evidence(
+                "PMCID PMC2074888: CDKN1A variants and physical function in older adults",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC2074888/",
+            ),
+            _evidence(
+                "PMCID PMC2743184: cell-cycle SNPs and ovarian cancer risk",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC2743184/",
+            ),
+            _evidence(
+                "PMCID PMC5504311: cell-cycle variants and hepatocellular-carcinoma disease-free survival",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC5504311/",
+            ),
+            _evidence(
+                "PMID 31703578: CDKN1A promoter methylation and expression in preeclampsia",
+                "https://pubmed.ncbi.nlm.nih.gov/31703578/",
+            ),
+        ],
+        "variants": [
+            {
+                "variant": "rs3176329",
+                "display_name": "rs3176329 (CDKN1A intronic T>G)",
+                "common_name": "common CDKN1A intronic eQTL and candidate liver-disease marker",
+                "lookup_keys": ["rs3176329", "6:36647463", "6:36647463:T>G"],
+                "position": 36647463,
+                "region_class": "gene_body",
+                "interpretation_scope": "Common intronic research marker; no established clinical actionability",
+                "clinical_significance": (
+                    "No exact rs3176329 ClinVar record was returned by the NCBI Clinical Tables audit on 2026-06-07. "
+                    "Ensembl VEP annotates it as intronic. It is a common population polymorphism, not an established "
+                    "pathogenic CDKN1A allele."
+                ),
+                "clinical_interpretation": (
+                    "The T allele showed nominally lower odds of fibrosis and steatohepatitis in one UK NAFLD cohort, "
+                    "but the association did not remain significant after conditioning on linked lead marker rs762623 and "
+                    "rs3176329 was not the variant replicated in Finland. GTEx v10 reports G as a small CDKN1A expression-"
+                    "lowering allele in subcutaneous adipose (NES -0.1627, P=5.16 x 10^-5). Neither result establishes a "
+                    "systemic p21 level, liver outcome, cancer outcome, senescence burden, or longevity effect."
+                ),
+                "functional_effects": [
+                    "Intronic CDKN1A variant with no demonstrated protein-coding effect.",
+                    "GTEx v10 subcutaneous-adipose CDKN1A eQTL: G allele NES -0.1627, P=5.16 x 10^-5.",
+                    "Nominal NAFLD associations were explained by linkage disequilibrium with rs762623 in conditional analysis.",
+                    "No significant hepatocellular-carcinoma disease-free-survival association was observed.",
+                ],
+                "associated_conditions": [
+                    "CDKN1A expression in subcutaneous adipose",
+                    "NAFLD fibrosis and steatohepatitis candidate association",
+                    "Hepatocellular-carcinoma disease-free-survival null result",
+                ],
+                "research_context": [
+                    "Use T/G allele orientation on GRCh37 chr6:36,647,463.",
+                    "The gnomAD v4 genomic G frequency is 0.9269, so T is the lower-frequency allele globally.",
+                    "The NAFLD T-allele findings were nominal and did not survive conditioning on the lead linked marker.",
+                    "The GTEx eQTL is tissue-specific and should not be generalized to blood, liver, or whole-body p21.",
+                ],
+                "usual_variant_note": (
+                    "A common intronic marker with a small adipose eQTL and non-independent candidate NAFLD findings."
+                ),
+                "methylation_interpretation": (
+                    "No cited study establishes rs3176329 as an mQTL for the selected CDKN1A/PI16-annotated CpGs. Report "
+                    "the genotype and methylation panel as separate observations."
+                ),
+                "concrete_prediction": (
+                    "This sample is T/G at rs3176329. It carries one T allele, which had nominal associations with lower "
+                    "odds of fibrosis (OR 0.548, 95% CI 0.324-0.926, P=0.025) and steatohepatitis (OR 0.487, 95% CI "
+                    "0.272-0.871, P=0.015) in the UK NAFLD cohort, but those associations were not independent of rs762623. "
+                    "It also carries one G allele, associated in GTEx subcutaneous adipose with slightly lower CDKN1A RNA "
+                    "(NES -0.1627). These findings do not provide a clinical diagnosis or a longevity direction."
+                ),
+                "evidence": [
+                    _evidence("NCBI dbSNP rs3176329", "https://www.ncbi.nlm.nih.gov/snp/rs3176329"),
+                    _evidence(
+                        "gnomAD v4 rs3176329",
+                        "https://gnomad.broadinstitute.org/variant/6-36679686-T-G?dataset=gnomad_r4",
+                    ),
+                    _evidence("GTEx Portal rs3176329", "https://gtexportal.org/home/snp/rs3176329"),
+                    _evidence(
+                        "PMCID PMC4050146: rs3176329 in NAFLD",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4050146/",
+                    ),
+                    _evidence(
+                        "PMCID PMC5504311: rs3176329 HCC DFS null result",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5504311/",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Aravinthan et al. 2014, Cell Cycle (PMID 24626178)",
+                        "genotypes": "rs3176329 T/G; T was the lower-frequency analyzed allele",
+                        "phenotype": "Biopsy-defined NAFLD fibrosis and steatohepatitis",
+                        "finding": (
+                            "In 323 UK patients, each T allele was nominally associated with lower odds of fibrosis "
+                            "(OR 0.548, 95% CI 0.324-0.926, P=0.025) and steatohepatitis (OR 0.487, 95% CI "
+                            "0.272-0.871, P=0.015). Neither passed the study's Bonferroni threshold of P<0.0071, and the "
+                            "rs3176329 signal did not remain significant after conditioning on linked rs762623. Only "
+                            "rs762623 was taken forward and replicated in the 123-patient Finnish cohort."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4050146/",
+                    },
+                    {
+                        "paper": "GTEx v10 single-tissue eQTL analysis",
+                        "genotypes": "chr6_36679686_T_G_b38; G dosage relative to T",
+                        "phenotype": "CDKN1A RNA expression in subcutaneous adipose",
+                        "finding": (
+                            "G dosage was associated with lower CDKN1A expression in subcutaneous adipose "
+                            "(NES -0.16274856, P=5.15865 x 10^-5). No direct clinical outcome was tested."
+                        ),
+                        "url": "https://gtexportal.org/home/snp/rs3176329",
+                    },
+                    {
+                        "paper": "Jung et al. 2017, Cancer Medicine (PMCID PMC5504311)",
+                        "genotypes": "rs3176329 G/T",
+                        "phenotype": "Disease-free survival after hepatocellular-carcinoma treatment",
+                        "finding": (
+                            "In the multivariable analysis, rs3176329 was not associated with disease-free survival "
+                            "(HR 1.12, 95% CI 0.83-1.50, P=0.466)."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5504311/",
+                    },
+                ],
+            },
+            {
+                "variant": "rs2894408",
+                "display_name": "rs2894408 (CDKN1A intronic C>T)",
+                "common_name": "very common CDKN1A intronic population polymorphism",
+                "lookup_keys": ["rs2894408", "6:36648974", "6:36648974:C>T"],
+                "position": 36648974,
+                "region_class": "gene_body",
+                "interpretation_scope": "Common intronic population marker without a validated phenotype direction",
+                "clinical_significance": (
+                    "No exact rs2894408 ClinVar record was returned on 2026-06-07. Ensembl VEP annotates it as intronic, "
+                    "and no significant GTEx v10 single-tissue eQTL record was returned."
+                ),
+                "clinical_interpretation": (
+                    "gnomAD v4 reports T at frequency 0.9938 in genomes. A T/T call is therefore homozygous for the "
+                    "population-major allele even though T is represented as ALT in this VCF. The current database and "
+                    "primary-literature audit found no reproducible rs2894408-specific disease, senescence, cancer, or "
+                    "longevity effect that can be assigned to this genotype."
+                ),
+                "functional_effects": [
+                    "Intronic sequence variant with no demonstrated coding consequence.",
+                    "No significant GTEx v10 single-tissue eQTL result was returned.",
+                    "No exact ClinVar record and no reproducible primary phenotype association identified.",
+                ],
+                "associated_conditions": ["Population variation and intronic CDKN1A context"],
+                "research_context": [
+                    "VCF ALT status is not equivalent to a minor, adverse, or risk allele.",
+                    "The gnomAD v4 genomic T frequency is 0.9938.",
+                ],
+                "usual_variant_note": "A very common intronic T allele without a validated clinical effect.",
+                "methylation_interpretation": (
+                    "No evidence links rs2894408 to the selected methylation probes; do not infer an mQTL."
+                ),
+                "concrete_prediction": (
+                    "This sample is T/T at rs2894408. T is the gnomAD v4 population-major allele (frequency 0.9938), so "
+                    "the homozygous-ALT VCF representation does not imply increased risk or altered p21 function. No "
+                    "clinically actionable or reproducible phenotype direction is supported."
+                ),
+                "evidence": [
+                    _evidence("NCBI dbSNP rs2894408", "https://www.ncbi.nlm.nih.gov/snp/rs2894408"),
+                    _evidence(
+                        "gnomAD v4 rs2894408",
+                        "https://gnomad.broadinstitute.org/variant/6-36681197-C-T?dataset=gnomad_r4",
+                    ),
+                    _evidence("GTEx Portal rs2894408", "https://gtexportal.org/home/snp/rs2894408"),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Current NCBI, Ensembl, gnomAD v4, GTEx v10, and PubMed audit through 2026-06-07",
+                        "genotypes": "rs2894408 C/T",
+                        "phenotype": "Clinical classification, population frequency, expression, and published phenotype evidence",
+                        "finding": (
+                            "T was the population-major allele in gnomAD genomes (AF 0.993805). No exact ClinVar record, "
+                            "significant GTEx v10 single-tissue eQTL, or reproducible rs2894408-specific primary phenotype "
+                            "result was identified."
+                        ),
+                        "url": "https://www.ncbi.nlm.nih.gov/snp/rs2894408",
+                    }
+                ],
+            },
+            {
+                "variant": "6:36648999 A>G",
+                "display_name": "6:36648999 A>G (unregistered CDKN1A intronic observation)",
+                "common_name": "sample-specific unregistered CDKN1A intronic observation",
+                "lookup_keys": ["6:36648999", "6:36648999:A>G", "chr6:36648999:A>G"],
+                "position": 36648999,
+                "region_class": "gene_body",
+                "interpretation_scope": "Unregistered intronic observation / research VUS",
+                "clinical_significance": (
+                    "No RefSNP identifier was resolved through NCBI or Ensembl, and the lifted GRCh38 representation "
+                    "6:36681222 A>G was not found in gnomAD v4. This is not evidence of pathogenicity."
+                ),
+                "clinical_interpretation": (
+                    "Ensembl GRCh37 VEP places the observation in CDKN1A intronic sequence. With no rsID, population "
+                    "frequency, ClinVar assertion, eQTL result, segregation evidence, or functional study, it remains an "
+                    "unclassified research observation. Absence from gnomAD can reflect rarity, limited coverage, "
+                    "representation differences, or a technical artifact."
+                ),
+                "functional_effects": [
+                    "Predicted intronic consequence only.",
+                    "No registered rsID or gnomAD v4 population record.",
+                    "No direct expression, protein, phenotype, or methylation result.",
+                ],
+                "associated_conditions": ["Unclassified CDKN1A intronic variation"],
+                "research_context": [
+                    "Confirm read evidence and representation before biological interpretation.",
+                    "Do not label a database-absent intronic observation pathogenic solely because it is rare or novel.",
+                ],
+                "usual_variant_note": "An unregistered intronic observation with insufficient evidence for direction.",
+                "methylation_interpretation": (
+                    "No evidence connects this observation to the selected methylation probes."
+                ),
+                "concrete_prediction": (
+                    "This sample is A/G at GRCh37 chr6:36,648,999. The observation is intronic, has no resolved rsID, and "
+                    "was not found at its lifted GRCh38 position in gnomAD v4. It should remain an unclassified research "
+                    "observation pending technical confirmation and external evidence; no cancer, senescence, or longevity "
+                    "effect can be assigned."
+                ),
+                "evidence": [
+                    _evidence(
+                        "Ensembl GRCh37 VEP region",
+                        "https://grch37.ensembl.org/Homo_sapiens/Tools/VEP",
+                    ),
+                    _evidence(
+                        "gnomAD v4 lifted-position lookup",
+                        "https://gnomad.broadinstitute.org/variant/6-36681222-A-G?dataset=gnomad_r4",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Current NCBI, Ensembl, gnomAD v4, ClinVar, GTEx, and PubMed audit through 2026-06-07",
+                        "genotypes": "GRCh37 chr6:36,648,999 A>G",
+                        "phenotype": "Variant registration, frequency, expression, and disease evidence",
+                        "finding": (
+                            "The observation received an intronic VEP consequence, but no rsID, gnomAD v4 population "
+                            "record, ClinVar assertion, eQTL, or primary phenotype report was found. The evidence is "
+                            "insufficient for a directional interpretation."
+                        ),
+                        "url": "https://grch37.ensembl.org/Homo_sapiens/Tools/VEP",
+                    }
+                ],
+            },
+            {
+                "variant": "rs6457937",
+                "display_name": "rs6457937 (CDKN1A 3' UTR T>C)",
+                "common_name": "common CDKN1A 3' UTR candidate-gene marker with repeated null results",
+                "lookup_keys": ["rs6457937", "6:36654351", "6:36654351:T>C"],
+                "position": 36654351,
+                "region_class": "gene_body",
+                "interpretation_scope": "Common 3' UTR research marker; no established clinical actionability",
+                "clinical_significance": (
+                    "No exact rs6457937 ClinVar record was returned on 2026-06-07. Ensembl VEP annotates it in the "
+                    "CDKN1A 3' UTR. Candidate studies did not establish physical-function, ovarian-cancer, or breast-cancer "
+                    "risk effects."
+                ),
+                "clinical_interpretation": (
+                    "gnomAD v4 reports C at frequency 0.9811 in genomes and 0.9804 in exomes. A C/C call is therefore "
+                    "homozygous population-major, despite being ALT/ALT in this VCF. In 938 older EPIC-Norfolk participants, "
+                    "rs6457937 was null for physical function. Ovarian- and breast-cancer candidate studies also reported "
+                    "confidence intervals spanning no effect. No significant GTEx v10 single-tissue eQTL was returned."
+                ),
+                "functional_effects": [
+                    "3' UTR variant without a demonstrated post-transcriptional mechanism.",
+                    "No significant GTEx v10 single-tissue eQTL result was returned.",
+                    "Physical-function, ovarian-cancer, and breast-cancer candidate analyses were null.",
+                ],
+                "associated_conditions": [
+                    "Physical function in older adults, null result",
+                    "Ovarian cancer susceptibility, null result",
+                    "Breast cancer susceptibility, null result",
+                ],
+                "research_context": [
+                    "The gnomAD v4 genomic C frequency is 0.9811; T is the lower-frequency allele.",
+                    "Repeated candidate-study null results argue against assigning a strong common-variant effect.",
+                    "Absence of a significant eQTL does not prove absence of all regulatory effects.",
+                ],
+                "usual_variant_note": "A common-major C allele with no validated disease or longevity direction.",
+                "methylation_interpretation": (
+                    "No evidence establishes rs6457937 as an mQTL for the selected CDKN1A/PI16 probes."
+                ),
+                "concrete_prediction": (
+                    "This sample is C/C at rs6457937. C is the gnomAD v4 population-major allele (genome AF 0.9811). "
+                    "The exact marker was null for physical function in older adults (OR 0.90, 95% CI 0.68-1.18, P=0.436) "
+                    "and was not associated with ovarian cancer in the cited imputed candidate analysis. No risk, p21 "
+                    "expression, senescence, or longevity direction is supported."
+                ),
+                "evidence": [
+                    _evidence("NCBI dbSNP rs6457937", "https://www.ncbi.nlm.nih.gov/snp/rs6457937"),
+                    _evidence(
+                        "gnomAD v4 rs6457937",
+                        "https://gnomad.broadinstitute.org/variant/6-36686574-T-C?dataset=gnomad_r4",
+                    ),
+                    _evidence("GTEx Portal rs6457937", "https://gtexportal.org/home/snp/rs6457937"),
+                    _evidence(
+                        "PMCID PMC2074888: rs6457937 physical-function null result",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2074888/",
+                    ),
+                    _evidence(
+                        "PMCID PMC2743184: rs6457937 ovarian-cancer null result",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2743184/",
+                    ),
+                    _evidence(
+                        "PMCID PMC2346546: rs6457937 breast-cancer null result",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2346546/",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Melzer et al. 2007, Aging Cell (PMCID PMC2074888)",
+                        "genotypes": "rs6457937 CDKN1A tag-SNP genotypes",
+                        "phenotype": "SF-36 physical-function score in older adults",
+                        "finding": (
+                            "Among 938 EPIC-Norfolk participants aged 65 to 80 years, rs6457937 was not associated with "
+                            "physical function: ordinal-logistic OR 0.90 (95% CI 0.68-1.18), P=0.436."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2074888/",
+                    },
+                    {
+                        "paper": "Goode et al. 2009, Cancer Epidemiology Biomarkers & Prevention (PMCID PMC2743184)",
+                        "genotypes": "Imputed rs6457937 genotypes",
+                        "phenotype": "Ovarian cancer susceptibility",
+                        "finding": (
+                            "The rs6457937 ovarian-cancer estimates were null; the reported adjusted estimate was about "
+                            "OR 0.91 (95% CI 0.68-1.23), with the confidence interval spanning no effect."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2743184/",
+                    },
+                    {
+                        "paper": "Driver et al. 2008, Breast Cancer Research (PMCID PMC2346546)",
+                        "genotypes": "rs6457937 common-variant genotypes",
+                        "phenotype": "Breast cancer susceptibility",
+                        "finding": (
+                            "In the British SEARCH candidate-gene study, the heterozygous estimate was OR 1.07 "
+                            "(95% CI 0.91-1.25) and the rare-homozygous estimate was OR 1.56 (95% CI 0.89-2.74); "
+                            "neither provided significant evidence of association."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2346546/",
+                    },
+                ],
+            },
+            {
+                "variant": "rs1801270",
+                "display_name": "rs1801270 (CDKN1A p.Ser31Arg)",
+                "common_name": "common CDKN1A coding benchmark polymorphism",
+                "lookup_keys": ["rs1801270", "6:36651971", "6:36651971:C>A"],
+                "position": 36651971,
+                "region_class": "gene_body",
+                "interpretation_scope": "Common coding polymorphism / benign classification context",
+                "clinical_significance": (
+                    "Ensembl reports benign clinical significance for c.93C>A, p.Ser31Arg. ClinVar Variation ID 17565 "
+                    "is an old, no-criteria submission for a tumor-associated polymorphism rather than a pathogenic "
+                    "Mendelian CDKN1A assertion."
+                ),
+                "clinical_interpretation": (
+                    "rs1801270 changes p21 residue 31 but is a common polymorphism with inconsistent candidate-gene "
+                    "associations. It is useful as a benchmark showing that a coding change is not automatically pathogenic. "
+                    "The cited NAFLD and ovarian-cancer analyses did not establish a robust, replicated clinical effect."
+                ),
+                "functional_effects": [
+                    "Missense p.Ser31Arg coding polymorphism.",
+                    "Benign clinical-significance annotation in Ensembl; ClinVar submission quality is limited.",
+                    "Candidate-disease findings are inconsistent and not clinically actionable.",
+                ],
+                "associated_conditions": [
+                    "Benign coding-polymorphism context",
+                    "Candidate cancer and liver-disease association research",
+                ],
+                "usual_variant_note": "A common coding polymorphism classified as benign, not a monogenic CDKN1A diagnosis.",
+                "methylation_interpretation": (
+                    "No evidence establishes p.Ser31Arg as the cause of the selected promoter methylation pattern."
+                ),
+                "evidence": [
+                    _evidence("NCBI dbSNP rs1801270", "https://www.ncbi.nlm.nih.gov/snp/rs1801270"),
+                    _evidence(
+                        "ClinVar Variation ID 17565",
+                        "https://www.ncbi.nlm.nih.gov/clinvar/variation/17565/",
+                    ),
+                    _evidence(
+                        "PMCID PMC4050146: rs1801270 in NAFLD",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4050146/",
+                    ),
+                    _evidence(
+                        "PMCID PMC2743184: rs1801270 ovarian-cancer estimate",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2743184/",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Aravinthan et al. 2014, Cell Cycle (PMID 24626178)",
+                        "genotypes": "rs1801270 A/C",
+                        "phenotype": "NAFLD fibrosis and steatohepatitis",
+                        "finding": (
+                            "The A allele was not associated with fibrosis (OR 0.716, 95% CI 0.372-1.378, P=0.317). "
+                            "Its nominal steatohepatitis estimate was OR 0.479 (95% CI 0.242-0.947), P=0.034, which did "
+                            "not meet the study's Bonferroni threshold of P<0.0071."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4050146/",
+                    },
+                    {
+                        "paper": "Goode et al. 2009, Cancer Epidemiology Biomarkers & Prevention (PMCID PMC2743184)",
+                        "genotypes": "rs1801270 common-variant genotypes",
+                        "phenotype": "Ovarian cancer susceptibility",
+                        "finding": (
+                            "The adjusted ovarian-cancer estimate was null, about OR 0.95 (95% CI 0.79-1.15)."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2743184/",
+                    },
+                ],
+            },
+            {
+                "variant": "rs3176326",
+                "display_name": "rs3176326 (CDKN1A intronic cardiovascular GWAS locus marker)",
+                "common_name": "CDKN1A-mapped cardiovascular GWAS marker",
+                "lookup_keys": ["rs3176326", "6:36647289", "6:36647289:G>A"],
+                "position": 36647289,
+                "region_class": "gene_body",
+                "interpretation_scope": "Common GWAS locus marker; causal gene and mechanism not established",
+                "clinical_significance": (
+                    "rs3176326 is a common intronic GWAS marker, not a pathogenic ClinVar allele. Its associations map "
+                    "to the CDKN1A/DINOL neighborhood but do not by themselves prove that altered p21 causes the traits."
+                ),
+                "clinical_interpretation": (
+                    "Current GWAS Catalog records contain repeated genome-wide-significant cardiovascular associations at "
+                    "this locus, including atrial fibrillation and heart failure. Effect-allele orientation differs among "
+                    "studies because some report A and others G on different phenotype scales. Interpret the marker as a "
+                    "locus tag until fine-mapping, colocalization, and functional data establish the causal variant and gene."
+                ),
+                "functional_effects": [
+                    "Intronic common variant with no demonstrated protein-coding effect.",
+                    "Strong locus-level GWAS evidence for atrial fibrillation, heart failure, ECG, and related cardiac traits.",
+                    "Mapped-gene assignment does not establish CDKN1A causality or a p21 expression direction.",
+                ],
+                "associated_conditions": [
+                    "Atrial fibrillation and flutter",
+                    "Heart failure and cardiomyopathy",
+                    "Electrocardiographic traits",
+                ],
+                "usual_variant_note": "A robust cardiovascular GWAS locus marker without established CDKN1A causality.",
+                "methylation_interpretation": (
+                    "No evidence in this bundle links rs3176326 to the selected CDKN1A/PI16 methylation panel."
+                ),
+                "evidence": [
+                    _evidence("NCBI dbSNP rs3176326", "https://www.ncbi.nlm.nih.gov/snp/rs3176326"),
+                    _evidence(
+                        "GWAS Catalog rs3176326 associations",
+                        "https://www.ebi.ac.uk/gwas/variants/rs3176326",
+                    ),
+                    _evidence(
+                        "Open Targets CDKN1A evidence aggregation",
+                        "https://platform.opentargets.org/target/ENSG00000124762",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "GWAS Catalog current association set through 2026-06-07",
+                        "genotypes": "rs3176326 A/G, study-specific effect-allele coding",
+                        "phenotype": "Atrial fibrillation and cardiovascular traits",
+                        "finding": (
+                            "Examples include atrial fibrillation with G as effect allele, OR 1.07 "
+                            "(95% CI 1.06-1.08), P=1 x 10^-34, and another atrial-fibrillation study with A associated "
+                            "with a 0.0745-unit decrease, P=1 x 10^-68. The opposite-looking directions reflect study "
+                            "coding and phenotype scales; they do not establish a simple p21 gain- or loss-of-function model."
+                        ),
+                        "url": "https://www.ebi.ac.uk/gwas/variants/rs3176326",
+                    },
+                    {
+                        "paper": "Aravinthan et al. 2014, Cell Cycle (PMID 24626178)",
+                        "genotypes": "rs3176326 A/G",
+                        "phenotype": "NAFLD fibrosis and steatohepatitis",
+                        "finding": (
+                            "rs3176326 was null in the UK NAFLD cohort for fibrosis (OR 1.342, 95% CI 0.883-2.039, "
+                            "P=0.169) and steatohepatitis (OR 1.312, 95% CI 0.856-2.011, P=0.212)."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4050146/",
+                    },
+                ],
+            },
+        ],
+        "curated_methylation_probe_ids": [
+            "cg11706349",
+            "cg23305046",
+            "cg05759269",
+            "cg26500144",
+            "cg03354771",
+            "cg27495579",
+            "cg10800280",
+            "cg01306510",
+            "cg03562264",
+            "cg00935119",
+        ],
+        "methylation_interpretation": (
+            "The CDKN1A whitelist is a coherent 10-probe TSS1500/TSS200/5' UTR/first-exon island-and-shore panel rather "
+            "than a mean across promoter, gene body, and 3' UTR compartments. In the supplied sample its mean beta is "
+            "0.048, indicating that these selected CpGs are largely unmethylated in the assayed material. That is "
+            "compatible with an unmethylated promoter-like state, but it does not measure CDKN1A RNA, p21 protein, cell-"
+            "cycle arrest, senescent-cell burden, cancer risk, or longevity. Gencode annotations also include PI16 at "
+            "these probes, so the signal cannot be assigned exclusively to CDKN1A without tissue-matched regulatory data."
+        ),
+        "methylation_whitelist_explanation": (
+            "The whitelist deliberately excludes the highly methylated CDKN1A gene-body and 3' UTR probes that made the "
+            "previous whole-table mean biologically mixed. The selected probes summarize one promoter/5' compartment in "
+            "this assay. They are not a literature-validated CDKN1A expression, senescence, disease, or longevity panel, "
+            "and no exact-probe calibration supports converting beta values into a clinical effect size."
+        ),
+        "methylation_effects": [
+            (
+                "A whitelist mean beta near 0.048 means the selected promoter/5' CpGs were mostly unmethylated in this "
+                "sample. It does not prove that CDKN1A transcription or p21 protein is high."
+            ),
+            (
+                "The full table contains low promoter values and high gene-body/3' UTR values. Averaging those compartments "
+                "together obscures region-specific biology and should not be used for expression direction."
+            ),
+            (
+                "In a preeclampsia case-control study, maternal CDKN1A promoter methylation differed by disease status, but "
+                "promoter methylation was not associated with maternal-blood P21 mRNA. This directly cautions against "
+                "translating the sample beta mean into expression."
+            ),
+            (
+                "No bundled evidence establishes any of the four observed sample genotypes as the cause of the methylation "
+                "pattern. Sequence and methylation are reported as independent observations."
+            ),
+            (
+                "Because the selected probes also carry PI16 Gencode annotation, locus assignment is not exclusive to CDKN1A."
+            ),
+        ],
+        "methylation_condition_research": [
+            "CDKN1A promoter accessibility and tissue-matched RNA/protein measurement",
+            "Cell-type composition and senescence-state validation",
+            "Preeclampsia promoter-methylation study with a null methylation-to-mRNA result",
+            "Compartment-specific separation of promoter, gene-body, and 3' UTR methylation",
+            "Shared CDKN1A/PI16 probe annotation",
+        ],
+        "methylation_band_interpretations": {
+            "low": (
+                "The selected promoter/5' CpGs are largely unmethylated. This is compatible with an unmethylated local "
+                "promoter-like state, but does not establish higher CDKN1A RNA, higher p21 protein, more senescence, lower "
+                "cancer risk, or longer life. Tissue-matched RNA/protein and cell-composition data are required."
+            ),
+            "intermediate": (
+                "The selected promoter/5' CpGs show intermediate methylation. No CDKN1A-specific calibration maps this "
+                "band to p21 expression, senescence burden, disease risk, or longevity."
+            ),
+            "moderately high": (
+                "The selected promoter/5' CpGs show moderately high methylation. General promoter biology makes local "
+                "regulatory restraint plausible, but the exact probes are not calibrated to CDKN1A RNA or clinical outcome."
+            ),
+            "medium": (
+                "The selected promoter/5' panel shows a mixed methylation state. This remains an assay observation without "
+                "a validated p21 expression, disease, or longevity direction."
+            ),
+            "high": (
+                "The selected promoter/5' CpGs are highly methylated. Promoter repression is biologically plausible in "
+                "general, but no exact-probe evidence supports inferring low p21, cancer risk, senescence, or lifespan."
+            ),
+        },
+        "concrete_variant_prediction": (
+            "The supplied CDKN1A sample contains four interpretable sequence observations, none of which is an established "
+            "pathogenic or clinically actionable result. rs3176329 T/G carries one nominal NAFLD-associated T allele, but "
+            "that signal was not independent of linked rs762623, and one G allele associated with a small decrease in "
+            "CDKN1A RNA only in GTEx subcutaneous adipose. rs2894408 T/T and rs6457937 C/C are homozygous for their gnomAD "
+            "population-major alleles despite ALT/ALT VCF notation. 6:36648999 A/G is an unregistered intronic observation "
+            "with no population or functional evidence. The low promoter/5' methylation mean is a separate, uncalibrated "
+            "observation and does not convert these genotypes into a senescence or longevity prediction."
+        ),
+        "population_intro": (
+            "CDKN1A population interpretation separates common allele frequency, tissue-specific eQTLs, candidate-gene "
+            "studies, and mapped GWAS loci from pathogenic-variant interpretation."
+        ),
+        "population_coverage_note": (
+            "The bundled frequency rows use current gnomAD v4 global frequencies for the three registered sample variants. "
+            "They are not ancestry-specific risk estimates. The literature and database audit was current on 2026-06-07; "
+            "allele orientation, genome build, tissue, ancestry, phenotype definition, and linkage disequilibrium must be "
+            "checked before comparing studies."
+        ),
+        "population_sources": [
+            _evidence("gnomAD v4", "https://gnomad.broadinstitute.org/"),
+            _evidence("GTEx v10", "https://gtexportal.org/home/"),
+            _evidence("NCBI dbSNP", "https://www.ncbi.nlm.nih.gov/snp/"),
+            _evidence("GWAS Catalog", "https://www.ebi.ac.uk/gwas/"),
+        ],
+        "variant_population_records": [
+            {
+                "variant": "rs3176329",
+                "display_name": "rs3176329 (CDKN1A intronic T>G)",
+                "common_name": "CDKN1A intronic eQTL/candidate marker",
+                "effect_allele": "none established",
+                "focus_alleles": ["T", "G"],
+                "effect_summary": (
+                    "G is population-major globally; T had nominal, non-independent NAFLD associations, while G was the "
+                    "GTEx adipose expression-lowering allele."
+                ),
+                "source_url": "https://gnomad.broadinstitute.org/variant/6-36679686-T-G?dataset=gnomad_r4",
+                "top_level_location_frequencies": [
+                    {
+                        "population_code": "GLOBAL",
+                        "location_group": "gnomAD v4 genomes",
+                        "label": "Global genomes",
+                        "granularity": "global",
+                        "allele_frequencies": {"T": 0.073099, "G": 0.926901},
+                    }
+                ],
+                "detailed_population_frequencies": [],
+            },
+            {
+                "variant": "rs2894408",
+                "display_name": "rs2894408 (CDKN1A intronic C>T)",
+                "common_name": "very common CDKN1A intronic polymorphism",
+                "effect_allele": "none established",
+                "focus_alleles": ["C", "T"],
+                "effect_summary": "T is population-major; no validated phenotype direction is established.",
+                "source_url": "https://gnomad.broadinstitute.org/variant/6-36681197-C-T?dataset=gnomad_r4",
+                "top_level_location_frequencies": [
+                    {
+                        "population_code": "GLOBAL",
+                        "location_group": "gnomAD v4 genomes",
+                        "label": "Global genomes",
+                        "granularity": "global",
+                        "allele_frequencies": {"C": 0.006195, "T": 0.993805},
+                    }
+                ],
+                "detailed_population_frequencies": [],
+            },
+            {
+                "variant": "rs6457937",
+                "display_name": "rs6457937 (CDKN1A 3' UTR T>C)",
+                "common_name": "common-major CDKN1A 3' UTR polymorphism",
+                "effect_allele": "none established",
+                "focus_alleles": ["T", "C"],
+                "effect_summary": "C is population-major; candidate physical-function and cancer studies were null.",
+                "source_url": "https://gnomad.broadinstitute.org/variant/6-36686574-T-C?dataset=gnomad_r4",
+                "top_level_location_frequencies": [
+                    {
+                        "population_code": "GLOBAL",
+                        "location_group": "gnomAD v4 genomes",
+                        "label": "Global genomes",
+                        "granularity": "global",
+                        "allele_frequencies": {"T": 0.018878, "C": 0.981122},
+                    }
+                ],
+                "detailed_population_frequencies": [],
+            },
+        ],
+        "gene_population_patterns": [
+            {
+                "variant": "CDKN1A population constraint",
+                "location_group": "gnomAD v4",
+                "summary": (
+                    "CDKN1A had 14 observed versus 14.826 expected predicted loss-of-function variants "
+                    "(observed/expected 0.944; 90% interval 0.624-1.476; pLI 0.0000203). This does not support strong "
+                    "population depletion consistent with classic haploinsufficiency, but it does not classify any specific "
+                    "rare variant as benign."
+                ),
+                "evidence": [
+                    _evidence(
+                        "gnomAD CDKN1A constraint",
+                        "https://gnomad.broadinstitute.org/gene/CDKN1A?dataset=gnomad_r4",
+                    )
+                ],
+            },
+            {
+                "variant": "rs3176326 cardiovascular locus",
+                "location_group": "GWAS Catalog",
+                "summary": (
+                    "Repeated genome-wide-significant atrial-fibrillation, heart-failure, cardiomyopathy, and ECG "
+                    "associations map to rs3176326 and nearby CDKN1A/DINOL variants. This is strong locus evidence, but "
+                    "mapped-gene labels do not prove that CDKN1A or p21 is the causal mediator."
+                ),
+                "evidence": [
+                    _evidence(
+                        "GWAS Catalog rs3176326",
+                        "https://www.ebi.ac.uk/gwas/variants/rs3176326",
+                    )
+                ],
+            },
+            {
+                "variant": "Open Targets aggregate CDKN1A evidence",
+                "location_group": "Cross-datasource aggregation",
+                "summary": (
+                    "Open Targets returned broad disease evidence, with leading aggregate signals including bladder cancer, "
+                    "atrial fibrillation, heart failure, and breast carcinoma. These scores combine somatic, GWAS, model, "
+                    "expression, and literature sources and must not be read as variant-level causality or effect direction."
+                ),
+                "evidence": [
+                    _evidence(
+                        "Open Targets CDKN1A",
+                        "https://platform.opentargets.org/target/ENSG00000124762",
+                    )
+                ],
+            },
+            {
+                "variant": "CDKN1A expression distribution",
+                "location_group": "Human Protein Atlas",
+                "summary": (
+                    "Human Protein Atlas reports low tissue specificity with RNA detected in all tissues and supported "
+                    "subcellular localization in nucleoplasm and nuclear bodies. A variant or methylation result cannot "
+                    "therefore be converted into a whole-body p21 state without tissue-specific measurement."
+                ),
+                "evidence": [
+                    _evidence(
+                        "Human Protein Atlas CDKN1A",
+                        "https://www.proteinatlas.org/ENSG00000124762-CDKN1A",
+                    )
+                ],
+            },
+        ],
+    },
 }
 
 
