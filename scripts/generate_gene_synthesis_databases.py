@@ -12,7 +12,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 GENE_DATA_DIR = PROJECT_ROOT / "src" / "gene_data"
 GENE_DATA_BUNDLE_PATH = GENE_DATA_DIR / "gene_data_bundle.zip"
-VERSION = "2026-04-18"
+VERSION = "2026-06-07"
 TARGET_GENES = [
     "HERC2",
     "DRD4",
@@ -1128,7 +1128,10 @@ def _build_variant_prediction_rules(
 
         display_name = _first_nonempty(record.get("display_name"), variant)
         common_name = _clean_text(record.get("common_name"))
-        record_prediction = _variant_prediction_override(gene_name, record)
+        record_prediction = _first_nonempty(
+            record.get("concrete_prediction"),
+            _variant_prediction_override(gene_name, record),
+        )
         if not record_prediction:
             record_prediction = _clean_text(
                 f"GT-confirmed {display_name} dosage suggests this sample carries the {gene_name} prediction context described by the gene-level thesis. "
@@ -1191,6 +1194,7 @@ def _build_combined_case(
     source_label: str,
     source_description: str,
     band: str,
+    band_context: str,
     clinical_context: str,
     variant_focus: str,
     methylation_context: str,
@@ -1200,7 +1204,7 @@ def _build_combined_case(
     """Build one of the nine variant-plus-methylation synthesis cases."""
     prediction = _clean_text(
         f"When a {gene_name} variant is paired with {band} methylation in the {source_label.lower()}, "
-        f"the sample best fits a combined regulatory-context thesis. {BAND_CONTEXT[band]} "
+        f"the sample best fits a combined regulatory-context thesis. {band_context} "
         f"The variant side of the thesis is: {concrete_variant_prediction} "
         f"{methylation_context} {clinical_context} {variant_focus}"
     )
@@ -1234,6 +1238,9 @@ def build_synthesis_database(knowledge_base: dict[str, Any]) -> dict[str, Any]:
         *(gene_context.get("methylation_effects", []) or []),
         f"{gene_name} methylation is best interpreted as regulatory context rather than as a standalone biomarker.",
     )
+    methylation_band_interpretations = gene_context.get(
+        "methylation_band_interpretations", {}
+    )
     concrete_variant_prediction = _concrete_variant_prediction_for_gene(gene_name, knowledge_base)
     variant_prediction_rules = _build_variant_prediction_rules(
         knowledge_base,
@@ -1260,6 +1267,12 @@ def build_synthesis_database(knowledge_base: dict[str, Any]) -> dict[str, Any]:
                     source_label=source["label"],
                     source_description=source["description"],
                     band=band,
+                    band_context=_first_nonempty(
+                        methylation_band_interpretations.get(band)
+                        if isinstance(methylation_band_interpretations, dict)
+                        else "",
+                        BAND_CONTEXT[band],
+                    ),
                     clinical_context=clinical_context,
                     variant_focus=variant_focus,
                     methylation_context=methylation_context,

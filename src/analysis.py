@@ -3135,6 +3135,27 @@ def build_methylation_insights(
         if gene_name_mean_beta is not None
         else "All numeric-row mean beta"
     )
+    beta_band_probe_count = (
+        len(whitelist_beta_values)
+        if whitelist_mean_beta is not None
+        else len(gene_named_beta_values)
+        if gene_name_mean_beta is not None
+        else len(full_table_beta_values)
+    )
+    band_interpretations = gene_context.get("methylation_band_interpretations", {})
+    band_interpretation = (
+        str(band_interpretations.get(beta_band, "")).strip()
+        if isinstance(band_interpretations, dict)
+        else ""
+    )
+    sample_interpretation = ""
+    if primary_mean_beta is not None and band_interpretation:
+        beta_display = f"{primary_mean_beta:.3f}".rstrip("0").rstrip(".")
+        sample_interpretation = (
+            f"In this sample, the {beta_band_source_label.lower()} is {beta_display} across "
+            f"{beta_band_probe_count} numeric probe(s), which falls in the {beta_band} band. "
+            f"{band_interpretation}"
+        )
 
     if "UCSC_RefGene_Group" in observed_relevant.columns:
         group_breakdown = (
@@ -3172,6 +3193,7 @@ def build_methylation_insights(
         f"and {len(methylation)} row(s) in the full methylation table. "
         f"Across those views, {whitelist_summary}; {gene_named_summary}; and {raw_summary}. "
         f"The observed whitelist subset is dominated by {group_summary}. "
+        f"{sample_interpretation} "
         f"{gene_context.get('methylation_interpretation', '')}"
     ).strip()
 
@@ -3226,6 +3248,7 @@ def build_methylation_insights(
         "gene_name": gene_name,
         "clinical_context": gene_context.get("clinical_context", ""),
         "summary": summary,
+        "sample_interpretation": sample_interpretation,
         "mean_beta": _round_beta(whitelist_mean_beta),
         "mean_beta_label": "Whitelist mean beta",
         "mean_beta_probe_count": int(len(whitelist_beta_values)),
@@ -3234,7 +3257,10 @@ def build_methylation_insights(
         "whitelist_mean_beta_probe_count": int(len(whitelist_beta_values)),
         "whitelist_probe_count": len(relevant_probe_ids),
         "whitelist_observed_probe_count": int(len(observed_relevant)),
-        "whitelist_explanation": _build_whitelist_explanation(gene_name, relevant_probe_ids),
+        "whitelist_explanation": gene_context.get(
+            "methylation_whitelist_explanation"
+        )
+        or _build_whitelist_explanation(gene_name, relevant_probe_ids),
         "whitelist_literature_context": gene_context.get("methylation_interpretation", ""),
         "whitelist_probe_statuses": [
             {

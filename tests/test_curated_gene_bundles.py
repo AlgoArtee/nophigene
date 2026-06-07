@@ -715,6 +715,121 @@ def test_biochemistry_gene_bundle_exposes_biorender_visual_starter(gene_name: st
     assert knowledge_base["gene_context"]["concrete_variant_prediction"]
 
 
+def test_acd_bundle_explains_rs6979_and_low_methylation_without_longevity_overreach() -> None:
+    """ACD should connect the sample result to findings while preserving evidence limits."""
+    knowledge_base = load_gene_interpretation_database("ACD")
+    population_database = load_gene_population_database("ACD")
+    synthesis_database = load_gene_synthesis_database("ACD")
+
+    assert knowledge_base is not None
+    assert population_database is not None
+    assert synthesis_database is not None
+
+    rs6979 = next(
+        record for record in knowledge_base["variant_records"] if record["variant"] == "rs6979"
+    )
+    assert rs6979["position"] == 67691668
+    assert "ClinVar" in rs6979["clinical_significance"]
+    assert "benign" in rs6979["clinical_significance"]
+    ovarian_finding = next(
+        row for row in rs6979["literature_findings"] if "PMID 41266372" in row["paper"]
+    )
+    assert "19,883 affected cases" in ovarian_finding["finding"]
+    assert "378,355 controls or unaffected" in ovarian_finding["finding"]
+    assert "RR 1.07 (95% CI 1.04-1.09)" in ovarian_finding["finding"]
+    assert "P=2.30 x 10^-8" in ovarian_finding["finding"]
+    assert "did not demonstrate" in ovarian_finding["finding"]
+    telomere_finding = next(
+        row for row in rs6979["literature_findings"] if "PMID 22829448" in row["paper"]
+    )
+    assert "0.07-0.33 kb decrease" in telomere_finding["finding"]
+    adrenal_finding = next(
+        row for row in rs6979["literature_findings"] if "Hutz et al. 2006" in row["paper"]
+    )
+    assert "frequency 0.43" in adrenal_finding["finding"]
+    assert "not independent replication" in adrenal_finding["finding"]
+    assert "not proof" in rs6979["clinical_interpretation"]
+    assert all(
+        "promoter gain-of-expression" not in record["variant"]
+        for record in knowledge_base["variant_records"]
+    )
+
+    variants = pd.DataFrame(
+        [
+            {
+                "chrom": "16",
+                "id": ".",
+                "pos": 67691668,
+                "ref": "A",
+                "alt": "G",
+                "gt_raw": "0/1",
+                "ad": [4, 12],
+                "dp": 16,
+                "gq": 43,
+                "qual": 50.0,
+                "filter_status": "PASS",
+                "filter_pass": True,
+            }
+        ]
+    )
+    methylation = pd.DataFrame(
+        [
+            {
+                "probe_id": knowledge_base["gene_context"][
+                    "relevant_methylation_probe_ids"
+                ][0],
+                "beta": 0.025,
+                "chrom": "16",
+                "pos": 67694800,
+                "GencodeBasicV12_NAME": "ACD;PARD6A",
+                "UCSC_RefGene_Name": "ACD;PARD6A",
+                "UCSC_RefGene_Group": "TSS200;1stExon",
+                "Relation_to_UCSC_CpG_Island": "Island",
+            }
+        ]
+    )
+
+    interpretation = build_variant_interpretations(
+        variants,
+        knowledge_base,
+        region="16:67691415-67695713",
+    )
+    methylation_insights = build_methylation_insights(methylation, knowledge_base)
+    predictive_theses = build_predictive_theses(
+        variant_interpretations=interpretation,
+        methylation_insights=methylation_insights,
+        knowledge_base=knowledge_base,
+        synthesis_database=synthesis_database,
+    )
+
+    matched = interpretation["matched_records"][0]
+    assert matched["variant"] == "rs6979 (ACD/TPP1 p.Val432Ala)"
+    assert matched["genotype"] == "A/G"
+    assert matched["zygosity"] == "heterozygous"
+    assert "high-grade serous ovarian cancer risk" in matched["clinical_interpretation"]
+    assert "RR 1.07" in matched["clinical_interpretation"]
+
+    assert methylation_insights["whitelist_mean_beta"] == 0.025
+    assert methylation_insights["beta_band"] == "low"
+    assert "In this sample" in methylation_insights["sample_interpretation"]
+    assert "0.025 across 1 numeric probe" in methylation_insights["sample_interpretation"]
+    assert "longer telomeres" in methylation_insights["sample_interpretation"]
+    assert "not uniquely attributable to ACD" in methylation_insights["sample_interpretation"]
+    assert "not a literature-validated" in methylation_insights["whitelist_explanation"]
+    assert all(
+        "may suggest a more restrained or permissive" not in effect
+        for effect in methylation_insights["methylation_effects"]
+    )
+
+    assert predictive_theses["matched_case_count"] >= 1
+    assert any(
+        "one genomic G effect allele" in row["prediction"]
+        and "per-allele HGSOC RR of 1.07" in row["prediction"]
+        and "cannot be converted" in row["prediction"]
+        for row in predictive_theses["variant_prediction_rows"]
+    )
+
+
 def test_foxo3_curated_bundle_drives_interpretation_and_population_helpers() -> None:
     """FOXO3 should behave like a curated gene even with pattern-only population notes."""
     knowledge_base = load_gene_interpretation_database("FOXO3")

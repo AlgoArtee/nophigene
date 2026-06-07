@@ -20,7 +20,7 @@ from src.helper_functions.filter_manifest_region import filter_probes_by_region,
 GENE_DATA_DIR = PROJECT_ROOT / "src" / "gene_data"
 MANIFEST_PATH = PROJECT_ROOT / "data" / "infinium-methylationepic-v-1-0-b5-manifest-file.csv"
 ASSEMBLY = "GRCh37 / hg19"
-VERSION = "2026-04-15"
+VERSION = "2026-06-07"
 EMPTY_MANIFEST_COLUMNS = [
     "IlmnID",
     "CHR",
@@ -6200,6 +6200,8 @@ def _build_biochemistry_variant(
     }
     if "position" in variant:
         record["position"] = int(variant["position"])
+    if variant.get("concrete_prediction"):
+        record["concrete_prediction"] = str(variant["concrete_prediction"])
     if not assayable:
         record["clinical_parameter_summary"] = (
             "This record describes a recurrent model, haplotype, fusion, or loss-of-function class rather than a simple SNP row."
@@ -6228,29 +6230,35 @@ def _build_biochemistry_gene_definition(config: dict[str, Any]) -> dict[str, Any
         "clinical_context": config["clinical_context"],
         "variant_effect_overview": config["variant_effect_overview"],
         "condition_research_overview": conditions,
-        "methylation_interpretation": (
+        "methylation_interpretation": config.get("methylation_interpretation")
+        or (
             f"{gene_name} methylation should be treated as local regulatory context around a {axis} gene. "
             "Promoter-proximal methylation can support expression-potential review, but it should not replace genotype, RNA, protein, or phenotype data."
         ),
-        "methylation_effects": [
+        "methylation_effects": config.get("methylation_effects")
+        or [
             f"Promoter or first-exon methylation may suggest a more restrained or permissive local expression state for {gene_name}.",
             f"Because {gene_name} biology is tissue and pathway dependent, methylation values are context rather than a stand-alone biomarker.",
             f"Combined sequence plus methylation findings are most useful when interpreted against {axis}.",
         ],
-        "methylation_condition_research": [
+        "methylation_condition_research": config.get("methylation_condition_research")
+        or [
             f"Epigenetic regulation studies that use {gene_name} promoter or gene-body methylation as expression-context evidence.",
             f"Variant-plus-methylation review for {axis}.",
             *conditions[:2],
         ],
         "evidence": evidence,
         "variants": variants,
-        "population_intro": f"Broader population patterns curated from {gene_name} {axis} and condition-association literature.",
-        "population_coverage_note": (
+        "population_intro": config.get("population_intro")
+        or f"Broader population patterns curated from {gene_name} {axis} and condition-association literature.",
+        "population_coverage_note": config.get("population_coverage_note")
+        or (
             f"The bundled {gene_name} population database stores gene-level and marker-level interpretation notes, "
             "but does not embed a full ancestry-frequency matrix for these markers yet."
         ),
-        "population_sources": evidence,
-        "gene_population_patterns": [
+        "population_sources": config.get("population_sources") or evidence,
+        "gene_population_patterns": config.get("gene_population_patterns")
+        or [
             {
                 "variant": f"{gene_name} biochemical pathway context",
                 "location_group": "Global pattern",
@@ -6277,7 +6285,13 @@ def _build_biochemistry_gene_definition(config: dict[str, Any]) -> dict[str, Any
         ),
         "concrete_variant_prediction": config["concrete_variant_prediction"],
     }
-    for optional_key in ("manifest_filter_region", "allow_empty_manifest_subset", "skip_manifest_subset"):
+    for optional_key in (
+        "manifest_filter_region",
+        "allow_empty_manifest_subset",
+        "skip_manifest_subset",
+        "methylation_band_interpretations",
+        "methylation_whitelist_explanation",
+    ):
         if optional_key in config:
             definition[optional_key] = config[optional_key]
     return definition
@@ -7921,6 +7935,576 @@ TOPIC_BIOLOGY_DEFAULTS: dict[str, dict[str, Any]] = {
 }
 
 
+TOPIC_BIOLOGY_GENE_OVERRIDES: dict[str, dict[str, Any]] = {
+    "ACD": {
+        "biochemical_axis": (
+            "TPP1-POT1 shelterin assembly, telomerase recruitment and processivity, "
+            "telomere end protection, and telomere-length maintenance"
+        ),
+        "bundle_focus": "telomere maintenance, cellular aging, and telomere biology disorders",
+        "conditions": [
+            "Leukocyte telomere-length and aging-cohort research",
+            "High-grade serous epithelial ovarian cancer susceptibility",
+            "Ankylosing spondylitis locus association",
+            "Telomere biology disorders, aplastic anemia, and bone-marrow failure",
+            "Exploratory cancer, treatment-response, and environmental-adaptation studies",
+        ],
+        "gene_summary": (
+            "ACD encodes TPP1, the shelterin subunit that binds POT1 and uses its TEL patch to recruit telomerase "
+            "and increase telomerase repeat-addition processivity. Human family studies and engineered stem-cell "
+            "models show that rare TEL-patch variants such as p.Lys170del impair telomerase action and shorten "
+            "telomeres. Those high-impact variants are biologically different from the common rs6979 missense "
+            "polymorphism. For rs6979, the strongest current disease-risk evidence is a 2025 genome-wide association "
+            "study linking the G allele to a small increase in high-grade serous ovarian cancer risk."
+        ),
+        "clinical_context": (
+            "ACD results must be separated by variant class. Rare pathogenic TEL-patch or loss-of-function variants "
+            "can cause telomere biology disorders with very short telomeres and bone-marrow failure. rs6979 is a common "
+            "missense polymorphism classified as benign in ClinVar for ACD-related Mendelian disease. That benign "
+            "classification does not erase common-variant association results: rs6979-G has a genome-wide-significant, "
+            "small per-allele association with high-grade serous ovarian cancer, and the variant has also been studied "
+            "in telomere length, ankylosing spondylitis, high-altitude adaptation, and exploratory cancer cohorts. "
+            "None of these associations is an individual diagnosis or a lifespan prediction."
+        ),
+        "variant_effect_overview": [
+            (
+                "Rare ACD TEL-patch variants can reduce telomerase recruitment or processivity. In affected families and "
+                "engineered heterozygous cells, p.Lys170del was associated with progressive telomere shortening and "
+                "bone-marrow-failure phenotypes."
+            ),
+            (
+                "The common rs6979 p.Val432Ala polymorphism was among eight telomere-biology SNPs that remained associated "
+                "with leukocyte telomere length after multiple-comparison correction in one prospective cohort. The study "
+                "reported shorter telomeres with increasing minor-allele dosage across the associated SNP set, but did not "
+                "establish an rs6979-specific causal effect or an individual lifespan effect."
+            ),
+            (
+                "Barnes et al. 2025 reported rs6979-G as the effect allele for high-grade serous ovarian cancer: "
+                "effect-allele frequency 0.47145, 19,883 affected cases, 378,355 controls or unaffected carriers, "
+                "per-G-allele RR 1.07 (95% CI 1.04-1.09), P=2.30 x 10^-8. This is a small common-variant association; "
+                "the study did not demonstrate that p.Val432Ala changes TPP1 function or that it causes cancer."
+            ),
+        ],
+        "evidence": [
+            _evidence(
+                "PMCID PMC12635163: peer-reviewed rs6979-G association with high-grade serous ovarian cancer",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635163/",
+            ),
+            _evidence(
+                "PMCID PMC10942532: 2024 preprint of the ovarian-cancer GWAS, superseded by PMC12635163",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC10942532/",
+            ),
+            _evidence(
+                "PMCID PMC3478524: rs6979 and leukocyte telomere-length association",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC3478524/",
+            ),
+            _evidence(
+                "PMCID PMC2959172: rs6979 locus association with ankylosing spondylitis",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC2959172/",
+            ),
+            _evidence(
+                "DOI 10.1016/j.ymgme.2006.01.006: rs6979 in an ACD/adrenal-development sequencing study",
+                "https://doi.org/10.1016/j.ymgme.2006.01.006",
+            ),
+            _evidence(
+                "DOI 10.1111/j.1365-2265.2007.02855.x: rs6979 in an ACD/ACTH-resistance sequencing study",
+                "https://doi.org/10.1111/j.1365-2265.2007.02855.x",
+            ),
+            _evidence(
+                "PMCID PMC4006731: exploratory rs6979 signal in smoking-resistant lung function",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC4006731/",
+            ),
+            _evidence(
+                "PMCID PMC7928192: rs6979 and colorectal-cancer survival by smoking status",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC7928192/",
+            ),
+            _evidence(
+                "PMCID PMC8997875: rs6979 in rectal-cancer treatment-response analysis",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC8997875/",
+            ),
+            _evidence(
+                "PMCID PMC9915065: rs6979 in high-altitude adaptation analysis",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC9915065/",
+            ),
+            _evidence(
+                "PMCID PMC9978843: benign rs6979 observations in a familial-melanoma case series",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC9978843/",
+            ),
+            _evidence(
+                "PMCID PMC3024291: secondary telomere-variation review listing rs6979",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC3024291/",
+            ),
+            _evidence(
+                "PMCID PMC4215310: germline ACD p.Lys170del and inherited bone-marrow failure",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC4215310/",
+            ),
+            _evidence(
+                "PMCID PMC5003242: functional consequences of ACD/TPP1 p.Lys170del",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC5003242/",
+            ),
+            _evidence(
+                "PMCID PMC7492375: ACD TPP1 OB-fold variants in telomere biology disorders",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC7492375/",
+            ),
+            _evidence(
+                "NCBI dbSNP rs6979",
+                "https://www.ncbi.nlm.nih.gov/snp/rs6979",
+            ),
+            _evidence(
+                "NCBI ClinVar rs6979 submissions",
+                "https://www.ncbi.nlm.nih.gov/clinvar/?term=rs6979",
+            ),
+            _evidence(
+                "PMCID PMC3380411: CpG-island methylation and transcriptional regulation review",
+                "https://pmc.ncbi.nlm.nih.gov/articles/PMC3380411/",
+            ),
+        ],
+        "variants": [
+            {
+                "variant": "rs6979",
+                "display_name": "rs6979 (ACD/TPP1 p.Val432Ala)",
+                "common_name": "common ACD missense marker associated with HGSOC risk and leukocyte telomere length",
+                "lookup_keys": [
+                    "rs6979",
+                    "16:67691668",
+                    "16:67691668:A>G",
+                ],
+                "position": 67691668,
+                "region_class": "gene_body",
+                "interpretation_scope": "Common low-effect association marker / benign Mendelian-disease classification",
+                "clinical_significance": (
+                    "ClinVar VCV001167321.19 classifies c.1295T>C (p.Val432Ala) as benign for germline ACD-related "
+                    "Mendelian disease, with criteria provided by multiple submitters and no conflicts as of 2026-02-04. "
+                    "Separately, rs6979-G is a common, low-effect high-grade serous ovarian cancer susceptibility allele; "
+                    "it is not a high-penetrance cancer mutation, a pathogenic ACD diagnosis, or a validated longevity allele."
+                ),
+                "clinical_interpretation": (
+                    "rs6979 is annotated on the MANE ACD transcript as c.1295T>C, p.Val432Ala; older transcripts may use "
+                    "different residue numbering. Barnes et al. 2025 found that each genomic G allele was associated with "
+                    "a small increase in high-grade serous ovarian cancer risk (RR 1.07, 95% CI 1.04-1.09, P=2.30 x 10^-8). "
+                    "You et al. 2012 also placed rs6979 among eight telomere-biology SNPs associated with shorter leukocyte "
+                    "telomeres after multiple-comparison correction, although the paper did not publish an rs6979-specific "
+                    "effect size in its main text. These are cohort associations, not proof that rs6979 changes TPP1 function, "
+                    "causes cancer, shortens telomeres, or changes lifespan in this individual."
+                ),
+                "functional_effects": [
+                    "Missense substitution p.Val432Ala in ACD/TPP1; no established TEL-patch loss-of-function mechanism.",
+                    "The genomic G allele showed a genome-wide-significant but small per-allele HGSOC risk association; no direct molecular effect was demonstrated.",
+                    "One prospective cohort associated rs6979 minor-allele dosage with shorter leukocyte telomeres after multiple-testing correction.",
+                    "Other publications report locus, subgroup, or population-frequency associations, including several null or non-causal results.",
+                ],
+                "associated_conditions": [
+                    "High-grade serous epithelial ovarian cancer susceptibility",
+                    "Leukocyte telomere-length variation",
+                    "Ankylosing spondylitis locus association",
+                    "High-altitude population adaptation research",
+                    "Exploratory cancer prognosis and treatment-response research",
+                    "Benign ACD telomere-biology-disorder classification context",
+                ],
+                "research_context": [
+                    "Interpret as a common, low-penetrance association marker rather than a monogenic telomere disorder allele.",
+                    "PMC10942532 is the 2024 preprint of the Barnes study; PMC12635163 is its 2025 peer-reviewed publication, not an independent replication.",
+                    "The literature audit covers peer-reviewed exact-rs6979 primary studies found through 2026-06-07. PMC3024291 is a secondary review with no new cohort result, and PMC5656035 is an incidental full-text/supplementary-index hit without an interpretable rs6979 result; neither is counted as independent evidence.",
+                    "Telomere length is tissue-, age-, assay-, ancestry-, and environment-dependent.",
+                    "Direct telomere-length measurement is required to determine whether this individual has short or long telomeres.",
+                ],
+                "usual_variant_note": (
+                    "rs6979 is a common ACD/TPP1 p.Val432Ala marker with a small HGSOC risk association and several "
+                    "additional cohort-level telomere, inflammatory-disease, cancer, and adaptation findings."
+                ),
+                "methylation_interpretation": (
+                    "No cited study establishes rs6979 as a methylation quantitative-trait locus for the assayed ACD/PARD6A "
+                    "CpGs. Treat the genotype and methylation observations as separate findings unless an expression or mQTL "
+                    "assay links them in the same tissue."
+                ),
+                "concrete_prediction": (
+                    "For rs6979, this sample's heterozygous A/G result contains one genomic G effect allele. Under the additive "
+                    "model in Barnes et al. 2025, one G allele corresponded to the reported per-allele HGSOC RR of 1.07 "
+                    "(95% CI 1.04-1.09) relative to zero G alleles in the study populations. This is a small relative-risk "
+                    "shift and cannot be converted to this person's absolute ovarian-cancer risk without sex, ancestry, age, "
+                    "family history, pathogenic-variant status, and a validated risk model. The same call is benign for "
+                    "Mendelian ACD disease and does not establish short telomeres or reduced longevity."
+                ),
+                "evidence": [
+                    _evidence(
+                        "PMCID PMC12635163: rs6979-G and HGSOC risk",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635163/",
+                    ),
+                    _evidence(
+                        "PMCID PMC10942532: preprint version of the HGSOC analysis",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10942532/",
+                    ),
+                    _evidence(
+                        "PMCID PMC3478524: rs6979 and leukocyte telomere length",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3478524/",
+                    ),
+                    _evidence(
+                        "PMCID PMC2959172: rs6979 and ankylosing spondylitis",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC2959172/",
+                    ),
+                    _evidence(
+                        "DOI 10.1016/j.ymgme.2006.01.006: rs6979 in an ACD/adrenal-development sequencing study",
+                        "https://doi.org/10.1016/j.ymgme.2006.01.006",
+                    ),
+                    _evidence(
+                        "PMCID PMC4006731: rs6979 in smoking-resistant lung function",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4006731/",
+                    ),
+                    _evidence(
+                        "PMCID PMC7928192: rs6979 in colorectal-cancer survival analysis",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7928192/",
+                    ),
+                    _evidence(
+                        "PMCID PMC8997875: rs6979 in rectal-cancer response analysis",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC8997875/",
+                    ),
+                    _evidence(
+                        "PMCID PMC9915065: rs6979 in high-altitude adaptation analysis",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9915065/",
+                    ),
+                    _evidence(
+                        "PMCID PMC9978843: rs6979 in a familial-melanoma case series",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9978843/",
+                    ),
+                    _evidence("NCBI dbSNP rs6979", "https://www.ncbi.nlm.nih.gov/snp/rs6979"),
+                    _evidence(
+                        "ClinVar VCV001167321.19",
+                        "https://www.ncbi.nlm.nih.gov/clinvar/variation/1167321/",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Barnes et al. 2025, NPJ Genomic Medicine (PMID 41266372)",
+                        "genotypes": "rs6979 A/G on GRCh38; G was the effect allele; effect-allele frequency 0.47145",
+                        "phenotype": "High-grade serous ovarian cancer susceptibility",
+                        "finding": (
+                            "In a European-ancestry meta-analysis containing 19,883 affected cases and 378,355 controls or "
+                            "unaffected BRCA1/2 carriers, each G allele was associated with RR 1.07 (95% CI 1.04-1.09), "
+                            "P=2.30 x 10^-8. The estimate combined population-case-control odds ratios with BRCA1/2-carrier "
+                            "hazard ratios. The authors described a small common-variant effect and did not demonstrate that "
+                            "rs6979 itself changes TPP1 function. PMC10942532 is the preprint of this same analysis."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635163/",
+                    },
+                    {
+                        "paper": "You et al. 2012, Diabetes (PMID 22829448)",
+                        "genotypes": "Minor-allele dosage across 80 telomere-biology SNPs, including rs6979",
+                        "phenotype": "Leukocyte telomere length and incident type 2 diabetes in postmenopausal women",
+                        "finding": (
+                            "rs6979 was among eight SNPs that remained associated with leukocyte telomere length after "
+                            "multiple-comparison correction. For the 16 SNPs associated with shorter telomeres, each additional "
+                            "minor allele corresponded to a 0.07-0.33 kb decrease across the set. The telomere-associated variants "
+                            "were not significantly associated with incident diabetes, apart from a separate OBFC1 result."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3478524/",
+                    },
+                    {
+                        "paper": "Pointon et al. 2010, Annals of the Rheumatic Diseases (PMID 19854717)",
+                        "genotypes": "Paper-coded rs6979 C/T; C corresponds to genomic G in the current A>G orientation",
+                        "phenotype": "Ankylosing spondylitis susceptibility at chromosome 16q22.1",
+                        "finding": (
+                            "Replication in 725 cases and 2,879 controls gave OR 1.14 (95% CI 1.01-1.28), P=0.03. "
+                            "The combined meta-analysis of 1,647 cases and 4,344 controls gave OR 1.15 "
+                            "(95% CI 1.06-1.23), P=0.0009 for the paper-coded C allele. Fine mapping implicated the broader "
+                            "16q22.1 locus and highlighted TRADD; the study did not establish ACD or p.Val432Ala as causal."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2959172/",
+                    },
+                    {
+                        "paper": "Hutz et al. 2006, Molecular Genetics and Metabolism",
+                        "genotypes": "ACD sequencing in 15 congenital adrenal insufficiency, adrenal hypoplasia, or IMAGe cases",
+                        "phenotype": "Adrenal-development disorders",
+                        "finding": (
+                            "The p.Val432Ala rs6979 minor allele had frequency 0.43 in this small case series. No coding "
+                            "mutation predicted to cause the patients' phenotypes was found, and the authors stated that "
+                            "larger samples and appropriate controls were needed. These 15 patients were subsequently "
+                            "included in the expanded 2007 Keegan cohort, so this is not independent replication."
+                        ),
+                        "url": "https://doi.org/10.1016/j.ymgme.2006.01.006",
+                    },
+                    {
+                        "paper": "Keegan et al. 2007, Clinical Endocrinology (PMID 17547688)",
+                        "genotypes": "ACD sequencing in 25 primary and 60 expanded ACTH-resistance cases",
+                        "phenotype": "Familial glucocorticoid deficiency and triple-A/ACTH-resistance phenotypes",
+                        "finding": (
+                            "rs6979-C was observed on 24 of 50 chromosomes in the primary cohort and 55 of 120 chromosomes "
+                            "in the expanded cohort. No disease-causing ACD mutations were found, and the study did not "
+                            "establish rs6979 as associated with ACTH resistance."
+                        ),
+                        "url": "https://doi.org/10.1111/j.1365-2265.2007.02855.x",
+                    },
+                    {
+                        "paper": "Wain et al. 2014, PLOS Genetics (PMID 24786987)",
+                        "genotypes": "rs6979 G/A in an extreme-phenotype exome study",
+                        "phenotype": "Preserved lung function despite heavy smoking",
+                        "finding": (
+                            "Among 100 resistant smokers and 166 primary controls, G-allele frequency was 0.575 versus "
+                            "0.425, with exploratory OR 1.83 and Fisher P=9.09 x 10^-4. This was not the study's strongest "
+                            "signal, did not meet exome-wide significance, and was not presented as a replicated ACD finding."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4006731/",
+                    },
+                    {
+                        "paper": "Yin et al. 2020, Cancer Epidemiology Biomarkers & Prevention (PMID 32586834)",
+                        "genotypes": "rs6979 G/A, stratified by smoking status",
+                        "phenotype": "Colorectal-cancer-specific survival",
+                        "finding": (
+                            "In 4,896 invasive colorectal-cancer cases, the rs6979-by-smoking-status interaction had "
+                            "unadjusted P=0.023 but gene-level multiple-testing-adjusted P=0.069. It therefore did not remain "
+                            "statistically significant after correction and was not a validated prognostic marker."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7928192/",
+                    },
+                    {
+                        "paper": "Bagaria et al. 2022, IJERPH (PMID 35409691)",
+                        "genotypes": "rs6979 detected in 3 complete responders and 7 non-complete responders",
+                        "phenotype": "Response to neoadjuvant chemoradiotherapy in locally advanced rectal cancer",
+                        "finding": (
+                            "In 29 patients (14 complete responders and 15 non-complete responders), rs6979 was present in "
+                            "3 versus 7 patients, respectively; chi-square P=0.245. The difference was not significant, so "
+                            "this study does not support rs6979 as a treatment-response marker."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8997875/",
+                    },
+                    {
+                        "paper": "The Telomere-Telomerase System Is Detrimental to Health at High-Altitude (PMID 36767300)",
+                        "genotypes": "rs6979 G/A in 210 HAPE-free controls, 183 HAPE cases, and 200 highlanders",
+                        "phenotype": "High-altitude pulmonary edema and high-altitude population adaptation",
+                        "finding": (
+                            "The A allele was not associated with HAPE when cases were compared with HAPE-free controls "
+                            "(OR 1.03, 95% CI 0.75-1.43, P=0.844). It was much more frequent in highlanders than HAPE-free "
+                            "controls (OR 7.34, 95% CI 4.19-12.86, P=3.34 x 10^-12), and rs6979 participated in a "
+                            "three-locus adaptation model (testing accuracy 0.77, cross-validation 10/10, P<0.0001). "
+                            "This is a population-comparison result vulnerable to ancestry and structure confounding."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9915065/",
+                    },
+                    {
+                        "paper": "Familial melanoma telomere-maintenance case series (PMID 36876055)",
+                        "genotypes": "Two familial-melanoma individuals carrying benign rs6979; four melanomas reviewed",
+                        "phenotype": "Spitzoid morphology in familial melanoma",
+                        "finding": (
+                            "Two of four melanomas from the two ACD rs6979 carriers had spitzoid morphology. The published "
+                            "OR 82.4 (95% CI 21.3-494.6) pooled ten melanomas carrying various ACD, TERF2IP, or TERT variants "
+                            "and cannot be attributed to rs6979. The authors classified rs6979 as benign, so this case series "
+                            "does not establish melanoma risk or causality for rs6979."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9978843/",
+                    },
+                ],
+            },
+            {
+                "variant": "ACD p.Lys170del TEL-patch loss-of-function model",
+                "display_name": "ACD/TPP1 p.Lys170del TEL-patch model",
+                "common_name": "rare pathogenic ACD telomerase-recruitment defect",
+                "region_class": "gene_body",
+                "is_assayable_in_snp_vcf": False,
+                "interpretation_scope": "Rare telomere biology disorder mechanism",
+                "clinical_significance": (
+                    "Rare high-impact ACD variant model associated with severe telomere shortening, aplastic anemia, "
+                    "and inherited bone-marrow failure; this mechanism must not be transferred to common rs6979."
+                ),
+                "clinical_interpretation": (
+                    "A heterozygous in-frame p.Lys170del variant in the TPP1 TEL patch segregated with aplastic anemia and "
+                    "very short telomeres in an affected family. Functional and engineered-cell studies showed impaired "
+                    "telomerase recruitment/processivity and progressive telomere shortening."
+                ),
+                "functional_effects": [
+                    "Disrupts the TPP1 TEL patch used for telomerase recruitment and processivity.",
+                    "Produces progressive telomere shortening in heterozygous engineered human cells.",
+                    "Supports a dosage-sensitive, rare telomere biology disorder mechanism.",
+                ],
+                "associated_conditions": [
+                    "Aplastic anemia and inherited bone-marrow failure",
+                    "Telomere biology disorders",
+                    "Very short telomeres",
+                ],
+                "methylation_interpretation": (
+                    "The p.Lys170del disease mechanism is a protein-function defect and does not require promoter methylation "
+                    "to explain telomere shortening."
+                ),
+                "evidence": [
+                    _evidence(
+                        "PMCID PMC4215310: ACD p.Lys170del family study",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4215310/",
+                    ),
+                    _evidence(
+                        "PMCID PMC5003242: p.Lys170del functional study",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5003242/",
+                    ),
+                    _evidence(
+                        "PMCID PMC7492375: ACD telomere biology disorder variants",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7492375/",
+                    ),
+                ],
+                "literature_findings": [
+                    {
+                        "paper": "Guo et al. 2014, Blood (PMID 25205116)",
+                        "genotypes": "Heterozygous germline ACD/TPP1 p.Lys170del",
+                        "phenotype": "Aplastic anemia, bone-marrow failure, and severe telomere shortening",
+                        "finding": (
+                            "The deletion segregated with disease in a family, and functional assays showed impaired "
+                            "telomerase recruitment and processivity."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4215310/",
+                    },
+                    {
+                        "paper": "Bisht et al. 2016, PNAS (PMID 27466476)",
+                        "genotypes": "Engineered heterozygous ACD/TPP1 p.Lys170del human cells",
+                        "phenotype": "Telomerase function and telomere-length maintenance",
+                        "finding": (
+                            "Heterozygous p.Lys170del cells showed progressive telomere shortening, demonstrating "
+                            "dosage sensitivity of the TPP1 TEL patch."
+                        ),
+                        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5003242/",
+                    },
+                ],
+            },
+        ],
+        "methylation_interpretation": (
+            "The ACD whitelist is an assay-region subset, not a validated ACD longevity biomarker panel. The probes are "
+            "promoter/first-exon CpGs in a shared ACD/PARD6A annotation region. Low methylation is compatible with an "
+            "unmethylated promoter-like state in the sampled tissue, but no cited ACD study has shown that these exact EPIC "
+            "probes or the app's beta thresholds predict ACD RNA, TPP1 protein, telomerase recruitment, telomere length, or "
+            "lifespan. The ovarian-cancer association is a DNA-sequence GWAS result and does not show that these methylation "
+            "values alter HGSOC risk. The signal also cannot be assigned exclusively to ACD without tissue-matched expression "
+            "or chromatin data."
+        ),
+        "methylation_whitelist_explanation": (
+            "The ACD whitelist was selected from the local EPIC manifest by promoter/first-exon proximity and is used to "
+            "summarize this sample. It is not a literature-validated ACD expression, telomere-length, or longevity biomarker "
+            "panel; the exact probe IDs have no bundled ACD-specific outcome calibration."
+        ),
+        "methylation_effects": [
+            (
+                "A low mean beta means the assayed CpGs were mostly unmethylated in this sample. For promoter CpG islands, "
+                "that is generally compatible with a less repressed local state, but it is not direct evidence of increased ACD expression."
+            ),
+            (
+                "No ACD-specific calibration links these probe beta values to TPP1 abundance, telomerase activity, or measured "
+                "telomere length, so the result cannot be converted into a longevity direction or effect size."
+            ),
+            (
+                "Several probes share ACD and PARD6A annotations. Without tissue-matched RNA, chromatin, or targeted regulatory "
+                "assays, the methylation signal cannot be assigned exclusively to ACD."
+            ),
+            (
+                "No bundled evidence establishes rs6979 as the cause of the observed methylation pattern; genotype and "
+                "methylation should be reported as independent observations."
+            ),
+        ],
+        "methylation_condition_research": [
+            "ACD/TPP1 expression regulation and telomere-maintenance biology",
+            "Direct comparison with tissue-matched ACD RNA or TPP1 protein",
+            "Direct telomere-length measurement rather than inference from methylation",
+            "Shared ACD/PARD6A promoter-region annotation and locus assignment",
+        ],
+        "methylation_band_interpretations": {
+            "low": (
+                "These measured CpGs are largely unmethylated in the sample. That is compatible with a permissive promoter-like "
+                "state, but the literature does not validate these probes as evidence of higher ACD expression, longer telomeres, "
+                "or increased longevity. Because the probes overlap ACD/PARD6A annotations, the signal is not uniquely attributable to ACD."
+            ),
+            "intermediate": (
+                "The measured CpGs show an intermediate methylation pattern. No ACD-specific study validates this band as a "
+                "directional change in ACD expression, telomere length, or longevity."
+            ),
+            "moderately high": (
+                "The measured CpGs show moderately high methylation. This could be compatible with local regulatory restraint, "
+                "but no ACD-specific probe calibration supports an expression, telomere-length, or longevity conclusion."
+            ),
+            "medium": (
+                "The measured CpGs show a mixed or moderately methylated state. No ACD-specific study validates this predictive "
+                "bucket as a directional change in ACD expression, telomere length, or longevity."
+            ),
+            "high": (
+                "The measured CpGs are highly methylated. This can be compatible with promoter repression in general, but no "
+                "ACD-specific evidence shows that this probe set predicts lower TPP1, shorter telomeres, or reduced longevity."
+            ),
+        },
+        "concrete_variant_prediction": (
+            "Interpret an ACD result by exact variant class. For rs6979, a GT-confirmed heterozygous A/G result contains one "
+            "G allele, the effect allele in the 2025 HGSOC GWAS; under that study's additive model, the reported per-allele "
+            "RR was 1.07 (95% CI 1.04-1.09). This is a small common-variant association, while ClinVar classifies the same "
+            "variant as benign for Mendelian ACD disease. It is not a telomere biology disorder diagnosis, an ovarian-cancer "
+            "diagnosis, or a lifespan prediction. Rare TEL-patch loss-of-function variants such as p.Lys170del are a separate "
+            "high-impact class that can impair telomerase recruitment and cause telomere shortening."
+        ),
+        "population_intro": (
+            "ACD population interpretation separates common rs6979 risk, trait, and population-frequency associations from "
+            "rare familial telomere biology disorder variants."
+        ),
+        "population_coverage_note": (
+            "The bundled ACD population database summarizes published cohort and family findings but does not embed a complete "
+            "ancestry-frequency panel. rs6979 effect estimates should not be transferred across populations without checking "
+            "allele coding, ancestry, sex, age, phenotype definition, tissue, and assay. In particular, the HGSOC estimate "
+            "came from women of European ancestry and cannot be treated as a universal absolute-risk estimate."
+        ),
+        "gene_population_patterns": [
+            {
+                "variant": "rs6979",
+                "location_group": "European-ancestry HGSOC cohorts and BRCA1/2 carriers",
+                "summary": (
+                    "The genomic G allele had frequency 0.47145 and a small per-allele HGSOC association: RR 1.07 "
+                    "(95% CI 1.04-1.09), P=2.30 x 10^-8, across 19,883 affected cases and 378,355 controls or unaffected "
+                    "carriers. This is relative-risk evidence, not a direct absolute-risk estimate."
+                ),
+                "evidence": [
+                    _evidence(
+                        "PMCID PMC12635163: rs6979-G and HGSOC risk",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635163/",
+                    )
+                ],
+            },
+            {
+                "variant": "rs6979",
+                "location_group": "Telomere-length and aging cohort",
+                "summary": (
+                    "In postmenopausal women, rs6979 was among eight telomere-biology SNPs associated with shorter "
+                    "leukocyte telomere length after multiple-testing correction. The main text did not provide an "
+                    "rs6979-specific effect size, and the result does not predict individual lifespan."
+                ),
+                "evidence": [
+                    _evidence(
+                        "PMCID PMC3478524: rs6979 and leukocyte telomere length",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC3478524/",
+                    )
+                ],
+            },
+            {
+                "variant": "rs6979",
+                "location_group": "High-altitude population comparison",
+                "summary": (
+                    "The A allele was enriched in 200 highlanders relative to 210 HAPE-free controls "
+                    "(OR 7.34, 95% CI 4.19-12.86), but it was not associated with HAPE case status. "
+                    "The result should not be transferred outside the studied populations."
+                ),
+                "evidence": [
+                    _evidence(
+                        "PMCID PMC9915065: rs6979 and high-altitude adaptation",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC9915065/",
+                    )
+                ],
+            },
+            {
+                "variant": "Rare ACD TEL-patch variants",
+                "location_group": "Rare disease families",
+                "summary": (
+                    "Rare variants such as p.Lys170del are interpreted through family segregation, very short telomeres, "
+                    "bone-marrow-failure phenotypes, and functional impairment of telomerase recruitment."
+                ),
+                "evidence": [
+                    _evidence(
+                        "PMCID PMC4215310: ACD p.Lys170del family study",
+                        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4215310/",
+                    )
+                ],
+            },
+        ],
+    }
+}
+
+
 def _build_topic_biology_gene_config(row: tuple[str, str, str, str, str, str, int, int, str, str, str]) -> dict[str, Any]:
     """Expand compact topic biology rows into the full biochemistry config schema."""
     (
@@ -7941,56 +8525,56 @@ def _build_topic_biology_gene_config(row: tuple[str, str, str, str, str, str, in
     axis = str(topic_defaults["axis"])
     manifest_start = max(1, int(start) - 100000)
     manifest_end = int(end) + 100000
-    return _build_extended_biochemistry_gene_config(
-        {
-            "gene_name": gene_name,
-            "ensembl_id": ensembl_id,
-            "ncbi_id": ncbi_id,
-            "uniprot_id": uniprot_id,
-            "cytoband": cytoband,
-            "chromosome": chromosome,
-            "start": start,
-            "end": end,
-            "strand": strand,
-            "manifest_filter_region": f"{chromosome}:{manifest_start}-{manifest_end}",
-            "function": role,
-            "biochemical_axis": axis,
-            "bundle_focus": topic_label,
-            "conditions": list(topic_defaults["conditions"]),
-            "visual_key": str(topic_defaults["visual_key"]),
-            "figure_focus": f"{gene_name}: {topic_label} via {axis}",
-            "gene_summary": (
-                f"{gene_name} encodes {role}. This topic bundle emphasizes {topic_label}, "
-                f"with interpretation centered on {axis}."
-            ),
-            "clinical_context": (
-                f"The local {gene_name} bundle is oriented toward {topic_label}. "
-                "Use it for pathway triage, phenotype review, and candidate-gene context; "
-                "external variant classification is required before clinical interpretation."
-            ),
-            "variant_effect_overview": [
-                f"{gene_name} variants can alter, tag, or contextualize {axis}.",
-                "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context.",
-            ],
-            "variants": [
-                {
-                    "variant": f"{gene_name} {topic_defaults['variant_label']} variation model",
-                    "common_name": f"{gene_name} {topic_label} pathway model",
-                    "is_assayable_in_snp_vcf": False,
-                },
-                {
-                    "variant": f"{gene_name} regulatory expression context model",
-                    "common_name": f"{gene_name} expression and methylation-context model",
-                    "is_assayable_in_snp_vcf": False,
-                },
-            ],
-            "concrete_variant_prediction": (
-                f"The variant observed in this sample suggests a {gene_name} {topic_label} thesis: "
-                f"the individual may carry context relevant to {axis}. "
-                "Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
-            ),
-        }
-    )
+    config = {
+        "gene_name": gene_name,
+        "ensembl_id": ensembl_id,
+        "ncbi_id": ncbi_id,
+        "uniprot_id": uniprot_id,
+        "cytoband": cytoband,
+        "chromosome": chromosome,
+        "start": start,
+        "end": end,
+        "strand": strand,
+        "manifest_filter_region": f"{chromosome}:{manifest_start}-{manifest_end}",
+        "function": role,
+        "biochemical_axis": axis,
+        "bundle_focus": topic_label,
+        "conditions": list(topic_defaults["conditions"]),
+        "visual_key": str(topic_defaults["visual_key"]),
+        "figure_focus": f"{gene_name}: {topic_label} via {axis}",
+        "gene_summary": (
+            f"{gene_name} encodes {role}. This topic bundle emphasizes {topic_label}, "
+            f"with interpretation centered on {axis}."
+        ),
+        "clinical_context": (
+            f"The local {gene_name} bundle is oriented toward {topic_label}. "
+            "Use it for pathway triage, phenotype review, and candidate-gene context; "
+            "external variant classification is required before clinical interpretation."
+        ),
+        "variant_effect_overview": [
+            f"{gene_name} variants can alter, tag, or contextualize {axis}.",
+            "Effect direction depends on exact allele class, dosage, tissue, ancestry, phenotype definition, and assay context.",
+        ],
+        "variants": [
+            {
+                "variant": f"{gene_name} {topic_defaults['variant_label']} variation model",
+                "common_name": f"{gene_name} {topic_label} pathway model",
+                "is_assayable_in_snp_vcf": False,
+            },
+            {
+                "variant": f"{gene_name} regulatory expression context model",
+                "common_name": f"{gene_name} expression and methylation-context model",
+                "is_assayable_in_snp_vcf": False,
+            },
+        ],
+        "concrete_variant_prediction": (
+            f"The variant observed in this sample suggests a {gene_name} {topic_label} thesis: "
+            f"the individual may carry context relevant to {axis}. "
+            "Treat the result as candidate pathway evidence until exact allele, zygosity, phenotype, and external classification are reviewed."
+        ),
+    }
+    config.update(deepcopy(TOPIC_BIOLOGY_GENE_OVERRIDES.get(gene_name, {})))
+    return _build_extended_biochemistry_gene_config(config)
 
 
 TOPIC_BIOLOGY_GENE_ROWS: list[tuple[str, str, str, str, str, str, int, int, str, str, str]] = [
@@ -8696,6 +9280,14 @@ def _build_interpretation_database(meta: dict[str, Any], subset_df: pd.DataFrame
         "methylation_condition_research": meta["methylation_condition_research"],
         "evidence": meta["evidence"],
     }
+    if meta.get("methylation_band_interpretations"):
+        gene_context["methylation_band_interpretations"] = meta[
+            "methylation_band_interpretations"
+        ]
+    if meta.get("methylation_whitelist_explanation"):
+        gene_context["methylation_whitelist_explanation"] = meta[
+            "methylation_whitelist_explanation"
+        ]
     if meta.get("biorender_visuals"):
         gene_context["biorender_visuals"] = meta["biorender_visuals"]
     if meta.get("concrete_variant_prediction"):

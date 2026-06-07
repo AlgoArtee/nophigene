@@ -18,6 +18,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .uv-cache/
+.research-cache/
 
 # Local browser and UI-render captures
 .playwright-cli/
