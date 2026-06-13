@@ -1,6 +1,6 @@
 # nophigene
 
-Local-first DRD4 analysis workbench with an optional Docker path.
+Local-first Gene analysis workbench with an optional Docker path.
 
 The project now has two supported run modes:
 
