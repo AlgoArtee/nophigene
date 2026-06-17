@@ -5819,6 +5819,81 @@ def _render_predictive_theses_report(predictive_theses: dict[str, Any]) -> str:
     )
 
 
+def _dynamic_payload_for_report(dynamic_knowledge_base_path: str | Path | None) -> dict[str, Any]:
+    """Load workflow metadata from the dynamic KB artifact when available."""
+    if not dynamic_knowledge_base_path:
+        return {}
+    payload = load_dynamic_knowledge_base(dynamic_knowledge_base_path)
+    return payload if isinstance(payload, dict) else {}
+
+
+def _render_dynamic_workflow_report(
+    workflow_runs: list[dict[str, Any]],
+    *,
+    artifact_path: str | Path | None,
+) -> str:
+    """Render compact per-workflow dynamic KB evidence/status details."""
+    if not workflow_runs:
+        return ""
+    cards: list[str] = []
+    for workflow in workflow_runs:
+        label = html.escape(str(workflow.get("label") or workflow.get("workflow_key") or "Workflow"))
+        status = html.escape(str(workflow.get("status") or "unknown"))
+        summary = html.escape(str(workflow.get("summary") or "No workflow summary was generated."))
+        source_keys = [str(key) for key in workflow.get("selected_source_keys", [])]
+        record_counts = workflow.get("record_counts") if isinstance(workflow.get("record_counts"), dict) else {}
+        provider_statuses = workflow.get("provider_statuses") if isinstance(workflow.get("provider_statuses"), list) else []
+        provider_rows = []
+        for provider in provider_statuses:
+            if not isinstance(provider, dict):
+                continue
+            provider_rows.append(
+                "<li>"
+                f"<strong>{html.escape(str(provider.get('name') or provider.get('source_key') or 'Provider'))}</strong>: "
+                f"{html.escape(str(provider.get('status') or 'unknown'))}"
+                f" ({html.escape(str(provider.get('record_count', 0)))} record(s))"
+                "</li>"
+            )
+        warning_items = [
+            f"<li>{html.escape(str(warning))}</li>"
+            for warning in workflow.get("warnings", [])
+            if str(warning).strip()
+        ]
+        error_items = [
+            f"<li>{html.escape(str(error))}</li>"
+            for error in workflow.get("errors", [])
+            if str(error).strip()
+        ]
+        cards.append(
+            "<details class=\"workflow-card\" open>"
+            f"<summary><strong>{label}</strong><span>{status}</span></summary>"
+            f"<p>{summary}</p>"
+            "<div class=\"workflow-counts\">"
+            f"<span>Sources: {len(source_keys)}</span>"
+            f"<span>Source records: {html.escape(str(record_counts.get('source_records', 0)))}</span>"
+            f"<span>Literature: {html.escape(str(record_counts.get('literature_records', 0)))}</span>"
+            f"<span>Population: {html.escape(str(record_counts.get('population_records', 0)))}</span>"
+            "</div>"
+            f"<p><strong>Sources:</strong> {html.escape(', '.join(source_keys) or 'None selected')}</p>"
+            + (f"<ul>{''.join(provider_rows)}</ul>" if provider_rows else "")
+            + (f"<p><strong>Warnings</strong></p><ul>{''.join(warning_items)}</ul>" if warning_items else "")
+            + (f"<p><strong>Errors</strong></p><ul>{''.join(error_items)}</ul>" if error_items else "")
+            + "</details>"
+        )
+    path_markup = (
+        f"<p><strong>Dynamic KB artifact:</strong> {html.escape(str(artifact_path))}</p>"
+        if artifact_path
+        else ""
+    )
+    return (
+        "<section><h2>Dynamic Workflow Summary</h2>"
+        f"{path_markup}"
+        "<div class=\"workflow-summary-grid\">"
+        f"{''.join(cards)}"
+        "</div></section>"
+    )
+
+
 def generate_report(
     variants: pd.DataFrame,
     methylation: pd.DataFrame,
@@ -5876,6 +5951,17 @@ def generate_report(
     normalized_analysis_scope = normalize_analysis_scope(analysis_scope)
     analysis_scope_label = get_analysis_scope_label(normalized_analysis_scope)
     prepared_variants = _prepare_variant_table_for_output(variants)
+    dynamic_payload = _dynamic_payload_for_report(dynamic_knowledge_base_path)
+    dynamic_workflow_runs = [
+        workflow
+        for workflow in dynamic_payload.get("workflow_runs", [])
+        if isinstance(workflow, dict)
+    ]
+    dynamic_workflow_source_matrix = (
+        dynamic_payload.get("workflow_source_matrix", {})
+        if isinstance(dynamic_payload.get("workflow_source_matrix"), dict)
+        else {}
+    )
 
     popstats_section = ""
     if isinstance(popstats, pd.DataFrame):
@@ -5992,6 +6078,43 @@ def generate_report(
       margin-top: 8px;
       font-size: 1.8rem;
     }}
+    .workflow-summary-grid {{
+      display: grid;
+      gap: 14px;
+    }}
+    .workflow-card {{
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.62);
+    }}
+    .workflow-card summary {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+    }}
+    .workflow-card summary span {{
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+    }}
+    .workflow-counts {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }}
+    .workflow-counts span {{
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.10);
+      color: var(--ink);
+      font-size: 0.88rem;
+    }}
     section {{
       margin-top: 24px;
       padding: 24px;
@@ -6090,6 +6213,7 @@ def generate_report(
       </div>
     </section>
     {_render_section_table(prepared_variants, "Genetic Variant Results", rows=None)}
+    {_render_dynamic_workflow_report(dynamic_workflow_runs, artifact_path=dynamic_knowledge_base_path)}
     {variant_interpretation_section}
     {predictive_theses_section}
     {methylation_interpretation_section}
@@ -6116,6 +6240,8 @@ def generate_report(
             "dynamic_knowledge_base": {
                 "status": dynamic_knowledge_base_status,
                 "path": str(dynamic_knowledge_base_path) if dynamic_knowledge_base_path else "",
+                "workflow_runs": dynamic_workflow_runs,
+                "workflow_source_matrix": dynamic_workflow_source_matrix,
             },
         }
         report_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -6141,6 +6267,10 @@ def generate_report(
                 {
                     "metric": "dynamic_knowledge_base_status",
                     "value": dynamic_knowledge_base_status,
+                },
+                {
+                    "metric": "dynamic_workflow_count",
+                    "value": len(dynamic_workflow_runs),
                 },
             ]
         )

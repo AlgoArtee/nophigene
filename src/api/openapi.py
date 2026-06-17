@@ -92,6 +92,12 @@ def build_openapi_document() -> dict[str, Any]:
                     "responses": {"200": {"description": "OK"}},
                 }
             },
+            "/knowledge-workflows": {
+                "get": {
+                    "summary": "List purpose-based dynamic knowledge-base workflow cards",
+                    "responses": {"200": {"description": "OK"}},
+                }
+            },
             "/knowledge-sources/test": {
                 "post": {
                     "summary": "Check source API/export/linkout readiness without storing credentials",
@@ -155,6 +161,12 @@ def build_openapi_document() -> dict[str, Any]:
                                 "overwrite_general_database": {"type": "boolean", "default": False},
                                 "use_dynamic_knowledge_base": {"type": "boolean", "default": False},
                                 "knowledge_sources": {
+                                    "oneOf": [
+                                        {"type": "string"},
+                                        {"type": "array", "items": {"type": "string"}},
+                                    ],
+                                },
+                                "knowledge_workflows": {
                                     "oneOf": [
                                         {"type": "string"},
                                         {"type": "array", "items": {"type": "string"}},

@@ -75,7 +75,10 @@ def test_knowledge_source_endpoints_support_single_and_batch_tests(tmp_path: Pat
     assert listing.status_code == 200
     listing_payload = listing.get_json()
     assert listing_payload["count"] >= 1
-    assert all(card["selected"] for card in listing_payload["sources"])
+    assert any(card["selected"] for card in listing_payload["sources"])
+    assert not all(card["selected"] for card in listing_payload["sources"])
+    assert next(card for card in listing_payload["sources"] if card["key"] == "clinvar")["selected"] is True
+    assert next(card for card in listing_payload["sources"] if card["key"] == "foodb")["selected"] is False
     hgmd_card = next(card for card in listing_payload["sources"] if card["key"] == "hgmd")
     assert hgmd_card["ingestion_modes"] == ["user_export", "linkout_only"]
     assert hgmd_card["requires_export"] is True
@@ -109,6 +112,15 @@ def test_knowledge_source_endpoints_support_single_and_batch_tests(tmp_path: Pat
     import_payload = import_ready.get_json()["results"][0]
     assert import_payload["status"] == "import_ready"
     assert import_payload["readiness"]["user_export"] == "ready"
+
+    workflows = client.get("/api/v1/knowledge-workflows")
+    assert workflows.status_code == 200
+    workflow_payload = workflows.get_json()
+    assert workflow_payload["count"] >= 7
+    workflow_cards = {card["key"]: card for card in workflow_payload["workflows"]}
+    assert workflow_cards["clinical_variant_triage"]["selected"] is True
+    assert workflow_cards["licensed_aggregator_review"]["selected"] is False
+    assert "clinvar" in workflow_cards["clinical_variant_triage"]["ordered_source_keys"]
 
 
 def test_profile_crud_validates_files_and_keeps_id_immutable(tmp_path: Path) -> None:
@@ -197,6 +209,22 @@ def test_job_validation_rejects_empty_and_oversized_gene_lists() -> None:
     with pytest.raises(Exception) as traversal_gene:
         normalize_job_request({"operation": "resolve_regions", "genes": [".."]})
     assert getattr(traversal_gene.value, "code", "") == "invalid_gene"
+
+    normalized = normalize_job_request(
+        {
+            "operation": "build_knowledge_bases",
+            "genes": ["DRD4"],
+            "profile_id": "sample-one",
+            "options": {
+                "knowledge_workflows": "clinical_variant_triage,population_frequency_association",
+                "knowledge_sources": ["clinvar"],
+            },
+        }
+    )
+    assert normalized["options"]["knowledge_workflows"] == [
+        "clinical_variant_triage",
+        "population_frequency_association",
+    ]
 
 
 def test_running_jobs_are_marked_interrupted_and_queued_jobs_can_be_cancelled(tmp_path: Path) -> None:

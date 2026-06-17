@@ -57,6 +57,14 @@ try:
     from .variant_knowledge.credentials import credential_status_for_specs
     from .variant_knowledge.orchestrator import build_dynamic_knowledge_base
     from .variant_knowledge.registry import LANE_LABELS, list_source_cards, list_source_specs
+    from .variant_knowledge.workflows import (
+        default_workflow_keys,
+        default_workflow_source_keys,
+        list_workflow_cards,
+        list_workflow_specs,
+        select_workflow_specs,
+        source_keys_for_workflows,
+    )
     from .workflow import (
         build_scope_regions as build_shared_scope_regions,
         format_region_with_padding as format_shared_region_with_padding,
@@ -98,6 +106,14 @@ except ImportError:
     from variant_knowledge.credentials import credential_status_for_specs
     from variant_knowledge.orchestrator import build_dynamic_knowledge_base
     from variant_knowledge.registry import LANE_LABELS, list_source_cards, list_source_specs
+    from variant_knowledge.workflows import (
+        default_workflow_keys,
+        default_workflow_source_keys,
+        list_workflow_cards,
+        list_workflow_specs,
+        select_workflow_specs,
+        source_keys_for_workflows,
+    )
     from workflow import (
         build_scope_regions as build_shared_scope_regions,
         format_region_with_padding as format_shared_region_with_padding,
@@ -485,6 +501,76 @@ def _build_app_structure_qa_items() -> list[dict[str, object]]:
                 (
                     "In short: literature creates the gene record and the variant records; the whitelist probes are currently a bundled promoter/TSS-focused EPIC subset chosen from the manifest for that gene; "
                     "nearby SNPs come from manifest proximity fields; and the current probe-to-variant links are gene-level bundled associations unless a future bundle adds probe-specific evidence explicitly."
+                ),
+            ],
+        },
+        {
+            "question": "How do I use the Knowledge Sources tab and dynamic variant knowledge-base preprocessing?",
+            "answer_lines": [
+                (
+                    "The Knowledge Sources tab controls which external databases are used when the app builds a run-specific dynamic variant knowledge base. "
+                    "Workflow cards sit above the database cards: the Core safety workflows are checked by default, and those presets select clinical, population, regulatory, pharmacogenomic, and literature/dataset evidence lanes for a normal run."
+                ),
+                (
+                    "To customize a run, open Knowledge Sources, check or uncheck one or more purpose workflows, then fine-tune individual database cards. "
+                    "Workflow presets define the source union, while source checkboxes can add or remove individual databases before you click Save Source Settings."
+                ),
+                (
+                    "You can also enter session-only API credentials for sources that advertise an environment variable such as `NOPHIGENE_SOURCE_OMIM_TOKEN`. "
+                    "The selected workflow keys and source keys are stored in the Flask session, but submitted tokens are kept only in the server's in-memory credential store for that browser session."
+                ),
+                (
+                    "The cards also show the source access type, connector kind, credential status, import status, and ingestion modes. "
+                    "`official_api` means the app can use an official programmatic connector when available, `user_export` means a legally obtained CSV or JSON export can be uploaded, and `linkout_only` means the dynamic KB records source metadata and search context without ingesting proprietary records."
+                ),
+                (
+                    "After source settings are saved, return to Preprocessing. The dynamic KB step requires a resolved gene region and a filtered methylation manifest. "
+                    "It also needs a VCF source: the app reuses the Extraction tab's last regional VCF when available, otherwise you can choose an existing VCF in the VCF Source for Dynamic KB field."
+                ),
+                (
+                    "Click Build Variant Knowledge Base after region resolution, methylation subset creation, and variant source selection. "
+                    "The builder reads the observed VCF variants in the selected interval, combines them with the filtered EPIC methylation loci, runs selected workflows sequentially, de-duplicates shared database calls with an in-run source-result cache, and writes `variant_kb.json` under `results/dynamic_knowledge_bases/`."
+                ),
+                (
+                    "When analysis runs after a dynamic KB has been built, the app merges the dynamic variant records into the local curated gene bundle for that analysis only. "
+                    "This means bundled curated knowledge still works as before, while current run evidence can add extra variant records, workflow runs, provider statuses, literature records, population records, epigenetic locus records, provenance, and license notes."
+                ),
+                (
+                    "The dynamic KB is a run artifact, not a source-controlled curated bundle. "
+                    "If a provider fails, needs credentials, needs an export, or only supports linkout metadata, the provider status is recorded and the rest of the selected sources continue; partial failures should not block the whole preprocessing step."
+                ),
+            ],
+        },
+        {
+            "question": "How do licensed source exports, API credentials, and the API/CLI dynamic KB workflow work?",
+            "answer_lines": [
+                (
+                    "The app does not scrape Google Scholar, HGMD, GeneCards, VarSome, Franklin, Mastermind, Embase, Scopus, Web of Science, or other subscription indexes without an official licensed endpoint. "
+                    "For those sources, the supported paths are official APIs when legally configured, user-provided exports, or linkout/status metadata."
+                ),
+                (
+                    "For licensed export ingestion, upload a permitted CSV or JSON file on the relevant Knowledge Sources card. "
+                    "The accepted normalized fields are `source_key`, `record_id`, `gene`, `variant`, `rsid`, `title`, `summary`, `assertion`, `phenotype`, `drug`, `score`, `url`, `citation`, `evidence_level`, and `license_note`."
+                ),
+                (
+                    "The import parser intentionally discards unknown columns from uploaded exports. "
+                    "Dynamic KB artifacts store evidence summaries and provenance, not raw licensed database dumps. Provenance records include the source key/name, filename hash, file hash, row count, normalized record count, license note, timestamp, warnings, and parse errors."
+                ),
+                (
+                    "Credential and export precedence is conservative: an available official connector with usable records wins first; otherwise a matching user export is used; otherwise the source returns `needs_credentials`, `needs_export`, or `metadata_only` with linkout provenance. "
+                    "Secrets are never written to cookies, job manifests, cache files, reports, or `variant_kb.json`."
+                ),
+                (
+                    "The local API exposes `GET /api/v1/knowledge-sources` to list cards, ingestion modes, import schema, and readiness metadata, and `POST /api/v1/knowledge-sources/test` to check whether selected sources are queryable, need credentials, need an export, or are import-ready. "
+                    "`GET /api/v1/knowledge-workflows` lists purpose workflow cards, default status, source keys, evidence lanes, and caveats. Workflow jobs can enable dynamic KB building with operation `build_knowledge_bases` or with `options.use_dynamic_knowledge_base` on `analyze` and `full_workflow`."
+                ),
+                (
+                    "API jobs accept `options.knowledge_workflows` and `options.knowledge_sources` as lists or comma-separated strings, and `options.knowledge_source_imports` as a source-key to path map. "
+                    "The command-line builder mirrors that with `scripts/build_dynamic_variant_knowledge_base.py --selected-workflows ... --selected-sources ... --source-import SOURCE_KEY=PATH`, repeatable for multiple import files."
+                ),
+                (
+                    "The expected practical order is: resolve the gene region, prepare the filtered manifest, extract or choose the VCF, select Knowledge Sources and uploads, build the dynamic KB, then run analysis. "
+                    "Analysis reports show dynamic KB availability, Dynamic Workflow Summary sections, provider details per workflow, and the JSON report includes the dynamic KB path/status and workflow metadata so the evidence trail remains auditable."
                 ),
             ],
         }
@@ -1311,6 +1397,8 @@ def _empty_preprocess_state(manifest_files: list[str]) -> dict[str, Any]:
         "dynamic_kb_status": "",
         "dynamic_kb_provider_count": 0,
         "dynamic_kb_source_count": 0,
+        "dynamic_kb_workflow_count": 0,
+        "dynamic_kb_workflow_summary": [],
     }
 
 
@@ -1362,6 +1450,8 @@ def _store_preprocess_state(state: dict[str, Any]) -> None:
         "dynamic_kb_status": str(state.get("dynamic_kb_status", "")),
         "dynamic_kb_provider_count": int(state.get("dynamic_kb_provider_count", 0) or 0),
         "dynamic_kb_source_count": int(state.get("dynamic_kb_source_count", 0) or 0),
+        "dynamic_kb_workflow_count": int(state.get("dynamic_kb_workflow_count", 0) or 0),
+        "dynamic_kb_workflow_summary": list(state.get("dynamic_kb_workflow_summary", []))[:20],
     }
     session.modified = True
 
@@ -1475,8 +1565,10 @@ def _session_knowledge_credentials() -> dict[str, str]:
 
 
 def _empty_knowledge_sources_state() -> dict[str, Any]:
-    source_keys = [spec.key for spec in list_source_specs()]
+    workflow_keys = default_workflow_keys()
+    source_keys = default_workflow_source_keys()
     return {
+        "selected_workflows": workflow_keys,
         "selected_sources": source_keys,
         "source_imports": {},
         "notice": "",
@@ -1489,8 +1581,14 @@ def _load_knowledge_sources_state() -> dict[str, Any]:
     if isinstance(saved_state, dict):
         state.update(saved_state)
     known_keys = {spec.key for spec in list_source_specs()}
+    known_workflows = {workflow.key for workflow in list_workflow_specs()}
+    selected_workflows = [
+        key for key in state.get("selected_workflows", []) if key in known_workflows
+    ]
+    state["selected_workflows"] = selected_workflows
+    workflow_source_keys = source_keys_for_workflows(select_workflow_specs(selected_workflows))
     selected = [key for key in state.get("selected_sources", []) if key in known_keys]
-    state["selected_sources"] = selected or [spec.key for spec in list_source_specs()]
+    state["selected_sources"] = selected or workflow_source_keys or default_workflow_source_keys()
     imports = state.get("source_imports") if isinstance(state.get("source_imports"), dict) else {}
     state["source_imports"] = {
         str(key): str(path)
@@ -1502,6 +1600,7 @@ def _load_knowledge_sources_state() -> dict[str, Any]:
 
 def _store_knowledge_sources_state(state: dict[str, Any]) -> None:
     session[SESSION_KNOWLEDGE_SOURCES_KEY] = {
+        "selected_workflows": list(state.get("selected_workflows", [])),
         "selected_sources": list(state.get("selected_sources", [])),
         "source_imports": dict(state.get("source_imports") or {}),
         "notice": str(state.get("notice", "")),
@@ -1530,6 +1629,10 @@ def _build_knowledge_source_cards(state: dict[str, Any]) -> list[dict[str, Any]]
         import_statuses=_knowledge_source_import_statuses(source_imports),
         import_paths=source_imports,
     )
+
+
+def _build_knowledge_workflow_cards(state: dict[str, Any]) -> list[dict[str, Any]]:
+    return list_workflow_cards(selected_keys=list(state.get("selected_workflows", [])))
 
 
 def _save_uploaded_knowledge_source_imports(state: dict[str, Any]) -> int:
@@ -1885,6 +1988,8 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
         "dynamic_kb_status": str(preprocess_state.get("dynamic_kb_status", "")),
         "dynamic_kb_provider_count": int(preprocess_state.get("dynamic_kb_provider_count", 0) or 0),
         "dynamic_kb_source_count": int(preprocess_state.get("dynamic_kb_source_count", 0) or 0),
+        "dynamic_kb_workflow_count": int(preprocess_state.get("dynamic_kb_workflow_count", 0) or 0),
+        "dynamic_kb_workflow_summary": list(preprocess_state.get("dynamic_kb_workflow_summary", [])),
         "analysis_ready": bool(preprocess_state.get("analysis_ready", False)),
         "probe_count": int(preprocess_state.get("probe_count", 0)),
         "selected_sources": list(preprocess_state.get("selected_sources", [])),
@@ -1928,7 +2033,7 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
                 "title": "Build Variant Knowledge Base",
                 "status": "complete" if preprocess_state.get("dynamic_kb_ready") else "optional",
                 "summary": (
-                    f"{preprocess_state.get('dynamic_kb_provider_count', 0)} provider statuses saved to {preprocess_state.get('dynamic_kb_path', '')}"
+                    f"{preprocess_state.get('dynamic_kb_workflow_count', 0)} workflow(s), {preprocess_state.get('dynamic_kb_provider_count', 0)} provider statuses saved to {preprocess_state.get('dynamic_kb_path', '')}"
                     if preprocess_state.get("dynamic_kb_ready")
                     else "Waiting for an observed-variant VCF and selected knowledge sources."
                 ),
@@ -2080,11 +2185,17 @@ def index() -> str:
         if workflow == "knowledge_sources":
             initial_tab = "knowledge_sources"
             known_keys = {spec.key for spec in list_source_specs()}
+            known_workflows = {workflow_spec.key for workflow_spec in list_workflow_specs()}
+            selected_workflows = [
+                key for key in request.form.getlist("knowledge_workflow") if key in known_workflows
+            ]
+            workflow_source_keys = source_keys_for_workflows(select_workflow_specs(selected_workflows))
             selected_sources = [
                 key for key in request.form.getlist("knowledge_source") if key in known_keys
             ]
             if not selected_sources:
-                selected_sources = [spec.key for spec in list_source_specs()]
+                selected_sources = workflow_source_keys or default_workflow_source_keys()
+            knowledge_sources_state["selected_workflows"] = selected_workflows
             knowledge_sources_state["selected_sources"] = selected_sources
             credential_store = _session_knowledge_credentials()
             for spec in list_source_specs():
@@ -2094,7 +2205,7 @@ def index() -> str:
                     credential_store[spec.key] = submitted_secret
             uploaded_imports = _save_uploaded_knowledge_source_imports(knowledge_sources_state)
             knowledge_sources_state["notice"] = (
-                f"Saved {len(selected_sources)} selected knowledge source(s)"
+                f"Saved {len(selected_workflows)} selected workflow(s), {len(selected_sources)} selected knowledge source(s)"
                 f" and {uploaded_imports} licensed-source import upload(s) for preprocessing."
             )
             knowledge_sources_notice = knowledge_sources_state["notice"]
@@ -2230,6 +2341,8 @@ def index() -> str:
                 preprocess_state["dynamic_kb_status"] = ""
                 preprocess_state["dynamic_kb_provider_count"] = 0
                 preprocess_state["dynamic_kb_source_count"] = 0
+                preprocess_state["dynamic_kb_workflow_count"] = 0
+                preprocess_state["dynamic_kb_workflow_summary"] = []
             preprocess_action = request.form.get("preprocess_action", "").strip()
 
             try:
@@ -2273,6 +2386,8 @@ def index() -> str:
                     preprocess_state["dynamic_kb_status"] = ""
                     preprocess_state["dynamic_kb_provider_count"] = 0
                     preprocess_state["dynamic_kb_source_count"] = 0
+                    preprocess_state["dynamic_kb_workflow_count"] = 0
+                    preprocess_state["dynamic_kb_workflow_summary"] = []
                     preprocess_state["region_recently_updated"] = True
                     _append_preprocess_log(
                         preprocess_state,
@@ -2388,6 +2503,8 @@ def index() -> str:
                     preprocess_state["dynamic_kb_status"] = ""
                     preprocess_state["dynamic_kb_provider_count"] = 0
                     preprocess_state["dynamic_kb_source_count"] = 0
+                    preprocess_state["dynamic_kb_workflow_count"] = 0
+                    preprocess_state["dynamic_kb_workflow_summary"] = []
                     preprocess_state["region_recently_updated"] = False
                     _append_preprocess_log(
                         preprocess_state,
@@ -2425,7 +2542,10 @@ def index() -> str:
 
                     selected_sources = list(knowledge_sources_state.get("selected_sources", []))
                     if not selected_sources:
-                        selected_sources = [spec.key for spec in list_source_specs()]
+                        selected_sources = default_workflow_source_keys()
+                    selected_workflows = list(knowledge_sources_state.get("selected_workflows", []))
+                    if not selected_workflows:
+                        selected_workflows = default_workflow_keys()
                     output_dir = (
                         RESULTS_DIR
                         / "dynamic_knowledge_bases"
@@ -2435,7 +2555,8 @@ def index() -> str:
                         preprocess_state,
                         (
                             f"Building dynamic variant knowledge base for {preprocess_state['gene_name']} "
-                            f"from {vcf_path} with {len(selected_sources)} selected source(s)."
+                            f"from {vcf_path} with {len(selected_workflows)} workflow(s) and "
+                            f"{len(selected_sources)} selected source(s)."
                         ),
                     )
                     variants = load_variants(str(vcf_path), str(preprocess_state["region"]))
@@ -2446,6 +2567,7 @@ def index() -> str:
                         genome_build=str(preprocess_state.get("build", "hg19")),
                         variants=variants,
                         manifest_subset=manifest_subset,
+                        selected_workflows=selected_workflows,
                         selected_sources=selected_sources,
                         credentials=_session_knowledge_credentials(),
                         source_imports=dict(knowledge_sources_state.get("source_imports") or {}),
@@ -2458,8 +2580,19 @@ def index() -> str:
                     preprocess_state["dynamic_kb_path"] = _as_relative_display(artifact_path)
                     preprocess_state["dynamic_kb_provider_count"] = len(dynamic_payload.get("provider_statuses", []))
                     preprocess_state["dynamic_kb_source_count"] = len(selected_sources)
+                    preprocess_state["dynamic_kb_workflow_count"] = len(dynamic_payload.get("workflow_runs", []))
+                    preprocess_state["dynamic_kb_workflow_summary"] = [
+                        {
+                            "label": str(workflow.get("label", "")),
+                            "status": str(workflow.get("status", "")),
+                            "summary": str(workflow.get("summary", "")),
+                        }
+                        for workflow in dynamic_payload.get("workflow_runs", [])
+                        if isinstance(workflow, dict)
+                    ]
                     preprocess_state["dynamic_kb_status"] = (
-                        f"Built dynamic KB with {preprocess_state['dynamic_kb_provider_count']} provider status record(s)."
+                        f"Built dynamic KB with {preprocess_state['dynamic_kb_workflow_count']} workflow(s) "
+                        f"and {preprocess_state['dynamic_kb_provider_count']} provider status record(s)."
                     )
                     preprocess_state["analysis_ready"] = True
                     _append_preprocess_log(
@@ -2881,6 +3014,7 @@ def index() -> str:
         )
     knowledge_source_cards = _build_knowledge_source_cards(knowledge_sources_state)
     knowledge_source_groups = _group_knowledge_source_cards(knowledge_source_cards)
+    knowledge_workflow_cards = _build_knowledge_workflow_cards(knowledge_sources_state)
     available_tabs = [
         "overview",
         "preprocessing",
@@ -2907,6 +3041,7 @@ def index() -> str:
         knowledge_sources_error=knowledge_sources_error,
         knowledge_sources_notice=knowledge_sources_notice,
         knowledge_sources_state=knowledge_sources_state,
+        knowledge_workflow_cards=knowledge_workflow_cards,
         knowledge_source_groups=knowledge_source_groups,
         knowledge_source_cards=knowledge_source_cards,
         knowledge_source_lane_labels=LANE_LABELS,

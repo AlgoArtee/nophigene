@@ -2216,8 +2216,19 @@
                         <div class="preprocess-step-details">
                           <div><strong>VCF source:</strong> <code>{{ preprocess_state.knowledge_vcf_source or "Waiting for VCF" }}</code></div>
                           <div><strong>Dynamic KB:</strong> <code>{{ preprocess_state.dynamic_kb_path or "Not built yet" }}</code></div>
+                          <div><strong>Selected workflows:</strong> {{ knowledge_sources_state.selected_workflows|length }}</div>
                           <div><strong>Selected sources:</strong> {{ preprocess_state.dynamic_kb_source_count or knowledge_sources_state.selected_sources|length }}</div>
                           <div><strong>Provider statuses:</strong> {{ preprocess_state.dynamic_kb_provider_count if preprocess_state.dynamic_kb_ready else "Pending" }}</div>
+                          {% if preprocess_state.dynamic_kb_workflow_summary %}
+                          <details class="field-details">
+                            <summary>Workflow summary</summary>
+                            <ul class="insight-list">
+                              {% for workflow in preprocess_state.dynamic_kb_workflow_summary %}
+                              <li><strong>{{ workflow.label }}:</strong> {{ workflow.status }} - {{ workflow.summary }}</li>
+                              {% endfor %}
+                            </ul>
+                          </details>
+                          {% endif %}
                         </div>
                       </article>
                     </div>
@@ -2630,7 +2641,11 @@
                   <strong>{{ knowledge_source_cards|length }}</strong>
                 </article>
                 <article class="metric">
-                  <span>Selected</span>
+                  <span>Workflows</span>
+                  <strong>{{ knowledge_sources_state.selected_workflows|length }}</strong>
+                </article>
+                <article class="metric">
+                  <span>Selected Sources</span>
                   <strong>{{ knowledge_sources_state.selected_sources|length }}</strong>
                 </article>
                 <article class="metric">
@@ -2664,10 +2679,67 @@
             <section class="analysis-panel-inner">
               <div class="panel-head">
                 <div>
-                  <h2>Database Cards</h2>
-                  <p>Cards are grouped by evidence lane. Live connectors use public APIs where available; export cards normalize only evidence summaries and provenance.</p>
+                  <h2>Knowledge Workflows</h2>
+                  <p>Purpose presets run sequentially and de-duplicate shared database calls during dynamic KB preprocessing.</p>
                 </div>
-                <span class="panel-chip">Default all</span>
+                <span class="panel-chip">Core safety default</span>
+              </div>
+
+              <div class="scroll-region">
+                <div class="knowledge-card-grid">
+                  {% for workflow in knowledge_workflow_cards %}
+                  <article class="knowledge-card workflow-card">
+                    <div class="knowledge-card-head">
+                      <input
+                        type="checkbox"
+                        name="knowledge_workflow"
+                        value="{{ workflow.key }}"
+                        data-knowledge-workflow
+                        data-workflow-sources="{{ workflow.ordered_source_keys|join(',') }}"
+                        {% if workflow.selected %}checked{% endif %}
+                        aria-label="Select {{ workflow.label }}"
+                      >
+                      <div class="knowledge-card-title">
+                        <strong>{{ workflow.label }}</strong>
+                        <span>{{ workflow.purpose }}</span>
+                      </div>
+                    </div>
+                    <div class="knowledge-meta-row">
+                      {% if workflow.default_selected %}
+                      <span class="muted-badge">default</span>
+                      {% else %}
+                      <span class="muted-badge">optional</span>
+                      {% endif %}
+                      <span class="muted-badge">{{ workflow.source_count }} sources</span>
+                      {% if workflow.requires_vcf %}
+                      <span class="muted-badge">VCF</span>
+                      {% endif %}
+                      {% if workflow.requires_manifest %}
+                      <span class="muted-badge">manifest</span>
+                      {% endif %}
+                    </div>
+                    <p class="hint">Evidence lanes: {{ workflow.evidence_lane_labels|join(', ') }}</p>
+                    {% if workflow.licensed_notes %}
+                    <details class="field-details">
+                      <summary>Licensed/import caveats</summary>
+                      <ul class="insight-list">
+                        {% for note in workflow.licensed_notes %}
+                        <li>{{ note }}</li>
+                        {% endfor %}
+                      </ul>
+                    </details>
+                    {% endif %}
+                  </article>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="panel-head" style="margin-top: 22px;">
+                <div>
+                  <h2>Database Cards</h2>
+                  <p>Cards are grouped by evidence lane. Workflow presets define the source union; source checkboxes remain advanced include/exclude controls.</p>
+                </div>
+                <span class="panel-chip">{{ knowledge_sources_state.selected_sources|length }} selected</span>
               </div>
 
               <div class="scroll-region">
@@ -2683,6 +2755,7 @@
                             type="checkbox"
                             name="knowledge_source"
                             value="{{ source.key }}"
+                            data-knowledge-source="{{ source.key }}"
                             {% if source.selected %}checked{% endif %}
                             aria-label="Select {{ source.name }}"
                           >
@@ -4398,6 +4471,8 @@
       const generalDatabaseRows = Array.from(document.querySelectorAll("[data-general-database-row]"));
       const generalDatabaseFilterSummary = document.querySelector("[data-general-database-filter-summary]");
       const generalDatabaseFilterEmpty = document.querySelector("[data-general-database-filter-empty]");
+      const knowledgeWorkflowInputs = Array.from(document.querySelectorAll("[data-knowledge-workflow]"));
+      const knowledgeSourceInputs = Array.from(document.querySelectorAll("[data-knowledge-source]"));
       const preprocessViewerStage = document.getElementById("preprocess-viewer-stage");
       const analysisViewerStage = document.getElementById("viewer-stage");
       const proteinApiUrl = "/api/human-proteins";
@@ -4907,6 +4982,26 @@
         }
       }
 
+      function syncSourcesFromWorkflow(workflowInput) {
+        if (!workflowInput || !workflowInput.checked) {
+          return;
+        }
+        const sourceKeys = String(workflowInput.dataset.workflowSources || "")
+          .split(",")
+          .map((sourceKey) => sourceKey.trim())
+          .filter(Boolean);
+        if (!sourceKeys.length) {
+          return;
+        }
+        const sourceKeySet = new Set(sourceKeys);
+        knowledgeSourceInputs.forEach((sourceInput) => {
+          const sourceKey = sourceInput.dataset.knowledgeSource || sourceInput.value;
+          if (sourceKeySet.has(sourceKey)) {
+            sourceInput.checked = true;
+          }
+        });
+      }
+
       function updateAnalysisScopeFields() {
         if (!analysisScopeSelect) {
           return;
@@ -5085,6 +5180,10 @@
         generalDatabaseLabeledFilter.addEventListener("change", updateGeneralDatabaseFilter);
         updateGeneralDatabaseFilter();
       }
+
+      knowledgeWorkflowInputs.forEach((input) => {
+        input.addEventListener("change", () => syncSourcesFromWorkflow(input));
+      });
 
       if (analysisScopeSelect) {
         analysisScopeSelect.addEventListener("change", updateAnalysisScopeFields);

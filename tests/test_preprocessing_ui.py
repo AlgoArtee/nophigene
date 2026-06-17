@@ -58,6 +58,13 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert 'window.addEventListener("pageshow", updateFunctionalMap)' in functional_map_template_text
     assert "Extract Regional VCF" in template_text
     assert "Prepare Reference" in template_text
+    assert "Knowledge Workflows" in template_text
+    assert 'name="knowledge_workflow"' in template_text
+    assert 'data-knowledge-workflow' in template_text
+    assert 'data-knowledge-source="{{ source.key }}"' in template_text
+    assert "syncSourcesFromWorkflow" in template_text
+    assert "Core safety default" in template_text
+    assert "Workflow summary" in template_text
     assert "Search computer for BAM files" in template_text
     assert 'name="bam_search_root"' in template_text
     assert 'value="search_bam_files"' in template_text
@@ -151,6 +158,26 @@ def test_knowledge_sources_tab_accepts_licensed_export_upload(monkeypatch, tmp_p
 
     assert "hgmd" in source_imports
     assert (Path(__file__).resolve().parent.parent / source_imports["hgmd"]).is_file()
+
+
+def test_knowledge_workflows_render_core_safety_defaults(monkeypatch) -> None:
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+
+    page = app.test_client().get("/").get_data(as_text=True)
+
+    assert "Knowledge Workflows" in page
+    assert 'value="clinical_variant_triage"' in page
+    assert 'data-workflow-sources="clinvar,clingen,ensembl,dbsnp,civic,panelapp,mavedb,omim,oncokb,hgmd,varsome,franklin"' in page
+    assert 'value="licensed_aggregator_review"' in page
+    clinical_index = page.index('value="clinical_variant_triage"')
+    licensed_index = page.index('value="licensed_aggregator_review"')
+    assert "checked" in page[clinical_index:clinical_index + 420]
+    assert "checked" not in page[licensed_index:licensed_index + 420]
 
 
 def test_preprocess_find_region_submission_updates_session(monkeypatch) -> None:
@@ -598,6 +625,19 @@ def test_app_structure_page_includes_general_probe_mapping_qa(monkeypatch) -> No
     assert "the current whitelist probes are usually not stored as" in page
     assert "SIRT6 on the reverse strand" in page
     assert "That nearby-locus column is purely manifest-derived proximity annotation" in page
+    assert "How do I use the Knowledge Sources tab and dynamic variant knowledge-base preprocessing?" in page
+    assert "Workflow cards sit above the database cards" in page
+    assert "Core safety workflows are checked by default" in page
+    assert "Dynamic Workflow Summary sections" in page
+    assert "Build Variant Knowledge Base" in page
+    assert "results/dynamic_knowledge_bases/" in page
+    assert "How do licensed source exports, API credentials, and the API/CLI dynamic KB workflow work?" in page
+    assert "The app does not scrape Google Scholar, HGMD, GeneCards, VarSome, Franklin, Mastermind" in page
+    assert "`source_key`, `record_id`, `gene`, `variant`, `rsid`" in page
+    assert "GET /api/v1/knowledge-sources" in page
+    assert "GET /api/v1/knowledge-workflows" in page
+    assert "options.knowledge_workflows" in page
+    assert "options.knowledge_source_imports" in page
 
 
 def test_history_tab_lists_saved_reports_and_serves_artifacts(monkeypatch, tmp_path: Path) -> None:

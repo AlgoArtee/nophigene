@@ -566,6 +566,8 @@ SOURCE_OVERRIDES: dict[str, dict[str, Any]] = {
         "env_var": "NOPHIGENE_SOURCE_DRUGBANK_TOKEN",
         "license_note": LICENSED_NOTE,
         "lane": "pharmacogenomics",
+        "ingestion_modes": ("official_api", "user_export", "linkout_only"),
+        "requires_export": True,
     },
     "cpic": {
         "connector_kind": "cpic",

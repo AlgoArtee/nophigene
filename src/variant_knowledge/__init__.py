@@ -1,6 +1,11 @@
 """Dynamic variant knowledge-base generation utilities."""
 
-__all__ = ["build_dynamic_knowledge_base", "get_source_spec", "list_source_specs"]
+__all__ = [
+    "build_dynamic_knowledge_base",
+    "get_source_spec",
+    "list_source_specs",
+    "list_workflow_specs",
+]
 
 
 def build_dynamic_knowledge_base(*args, **kwargs):
@@ -22,3 +27,10 @@ def list_source_specs(*args, **kwargs):
     from .registry import list_source_specs as _list_source_specs
 
     return _list_source_specs(*args, **kwargs)
+
+
+def list_workflow_specs(*args, **kwargs):
+    """Lazily import workflow preset listing."""
+    from .workflows import list_workflow_specs as _list_workflow_specs
+
+    return _list_workflow_specs(*args, **kwargs)

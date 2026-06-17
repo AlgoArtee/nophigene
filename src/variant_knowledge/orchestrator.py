@@ -15,6 +15,7 @@ from .credentials import CredentialResolver, credential_status_for_specs
 from .imports import SourceImportBundle, filter_import_records_for_query, parse_source_import
 from .models import EpigeneticLocus, KnowledgeQuery, QueryVariant, SourceResult, SourceSpec, utc_now_iso
 from .registry import LANE_LABELS, list_source_specs, select_source_specs
+from .workflows import WorkflowSpec, select_workflow_specs, source_keys_for_workflows
 
 
 def _clean_text(value: Any) -> str:
@@ -86,9 +87,10 @@ def epigenetic_loci_from_dataframe(manifest: pd.DataFrame | None, *, limit: int 
 def _source_result_to_records(source_results: list[SourceResult]) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for result in source_results:
-        for record in result.records:
+        for index, record in enumerate(result.records, start=1):
             row = dict(record)
             row.setdefault("source_key", result.source_key)
+            row.setdefault("evidence_id", f"{result.source_key}:{index:03d}")
             rows.append(row)
     return rows
 
@@ -107,6 +109,7 @@ def _evidence_from_record(record: dict[str, Any], spec_lookup: dict[str, SourceS
     spec = spec_lookup.get(source_key)
     label = _clean_text(record.get("label") or record.get("source") or source_key)
     return {
+        "evidence_id": _clean_text(record.get("evidence_id")),
         "label": label[:220],
         "url": _clean_text(record.get("url") or (spec.homepage if spec else "")),
         "source": spec.name if spec else _clean_text(record.get("source") or source_key),
@@ -315,6 +318,204 @@ def _parse_source_imports(
     return bundles, errors
 
 
+def _selected_source_specs(
+    *,
+    selected_sources: list[str] | tuple[str, ...] | None,
+    workflows: tuple[WorkflowSpec, ...],
+) -> tuple[SourceSpec, ...]:
+    """Return source specs from an explicit source selection or workflow union."""
+    if selected_sources:
+        return select_source_specs(selected_sources)
+    workflow_source_keys = source_keys_for_workflows(workflows)
+    if workflow_source_keys:
+        return select_source_specs(workflow_source_keys)
+    return ()
+
+
+def _workflow_source_matrix(
+    *,
+    workflows: tuple[WorkflowSpec, ...],
+    selected_source_keys: list[str],
+) -> dict[str, list[str]]:
+    """Return source-to-workflow attribution for the final selected source set."""
+    selected = set(selected_source_keys)
+    matrix: dict[str, list[str]] = {source_key: [] for source_key in selected_source_keys}
+    for workflow in workflows:
+        for source_key in workflow.valid_source_keys():
+            if source_key in selected:
+                matrix.setdefault(source_key, []).append(workflow.key)
+    for source_key in selected_source_keys:
+        if not matrix[source_key]:
+            matrix[source_key] = ["manual_source_override"]
+    return matrix
+
+
+def _execution_specs_for_workflows(
+    *,
+    specs: tuple[SourceSpec, ...],
+    workflows: tuple[WorkflowSpec, ...],
+) -> tuple[SourceSpec, ...]:
+    """Order provider execution by workflow sequence, then manual-only additions."""
+    spec_lookup = {spec.key: spec for spec in specs}
+    ordered: list[SourceSpec] = []
+    seen: set[str] = set()
+    for workflow in workflows:
+        for source_key in workflow.valid_source_keys():
+            spec = spec_lookup.get(source_key)
+            if spec is not None and source_key not in seen:
+                seen.add(source_key)
+                ordered.append(spec)
+    for spec in specs:
+        if spec.key not in seen:
+            seen.add(spec.key)
+            ordered.append(spec)
+    return tuple(ordered)
+
+
+def _workflow_status(statuses: list[dict[str, Any]]) -> str:
+    if not statuses:
+        return "skipped"
+    usable_statuses = {"ok", "imported", "metadata_only"}
+    needs_input_statuses = {"needs_credentials", "needs_export"}
+    warning_statuses = {"failed", "skipped"}
+    has_usable = any(status.get("status") in usable_statuses for status in statuses)
+    has_needs_input = any(status.get("status") in needs_input_statuses for status in statuses)
+    has_warning = any(status.get("status") in warning_statuses for status in statuses)
+    if has_usable and not has_needs_input and not has_warning:
+        return "ok"
+    if has_usable:
+        return "partial"
+    if has_needs_input:
+        return "needs_input"
+    if has_warning:
+        return "failed"
+    return "skipped"
+
+
+def _workflow_record_counts(records: list[dict[str, Any]]) -> dict[str, int]:
+    categories = [_clean_text(record.get("category")) for record in records]
+    return {
+        "source_records": len(records),
+        "variant_evidence": sum(
+            category
+            not in {
+                "",
+                "source_metadata",
+                "literature",
+                "population",
+                "population_frequency",
+                "population_association",
+                "polygenic_score",
+            }
+            for category in categories
+        ),
+        "population_records": sum(
+            category in {"population", "population_frequency", "population_association", "polygenic_score"}
+            for category in categories
+        ),
+        "literature_records": sum(category == "literature" for category in categories),
+        "metadata_records": sum(category in {"", "source_metadata"} for category in categories),
+    }
+
+
+def _workflow_summary(
+    *,
+    workflow: WorkflowSpec,
+    status: str,
+    source_count: int,
+    provider_statuses: list[dict[str, Any]],
+    record_counts: dict[str, int],
+) -> str:
+    if source_count == 0:
+        return f"{workflow.label} had no selected sources after manual source filtering."
+    needs_input = sum(status_row.get("status") in {"needs_credentials", "needs_export"} for status_row in provider_statuses)
+    failures = sum(status_row.get("status") == "failed" for status_row in provider_statuses)
+    usable = sum(status_row.get("status") in {"ok", "imported", "metadata_only"} for status_row in provider_statuses)
+    parts = [
+        f"{workflow.label} queried {source_count} selected source(s)",
+        f"with {usable} usable or metadata response(s)",
+        f"and {record_counts['source_records']} normalized record(s).",
+    ]
+    if needs_input:
+        parts.append(f"{needs_input} source(s) need credentials or permitted exports.")
+    if failures:
+        parts.append(f"{failures} source(s) failed without stopping other workflows.")
+    if status == "ok":
+        parts.append("No provider failures were reported for this workflow.")
+    return " ".join(parts)
+
+
+def _build_workflow_runs(
+    *,
+    workflows: tuple[WorkflowSpec, ...],
+    selected_source_keys: list[str],
+    provider_statuses: list[dict[str, Any]],
+    source_records: list[dict[str, Any]],
+    timestamp: str,
+) -> list[dict[str, Any]]:
+    """Build deterministic per-workflow status and evidence summaries."""
+    status_lookup = {str(status.get("source_key")): status for status in provider_statuses}
+    selected = set(selected_source_keys)
+    runs: list[dict[str, Any]] = []
+    for index, workflow in enumerate(workflows, start=1):
+        source_keys = [source_key for source_key in workflow.valid_source_keys() if source_key in selected]
+        workflow_statuses = [status_lookup[source_key] for source_key in source_keys if source_key in status_lookup]
+        workflow_records = [
+            record for record in source_records if str(record.get("source_key", "")).strip() in set(source_keys)
+        ]
+        record_counts = _workflow_record_counts(workflow_records)
+        status = _workflow_status(workflow_statuses)
+        warnings: list[str] = []
+        errors: list[str] = []
+        for provider_status in workflow_statuses:
+            source_key = str(provider_status.get("source_key", ""))
+            source_name = str(provider_status.get("name") or source_key)
+            for warning in provider_status.get("warnings", []) or []:
+                warnings.append(f"{source_name}: {_clean_text(warning)}")
+            for error in provider_status.get("errors", []) or []:
+                errors.append(f"{source_name}: {_clean_text(error)}")
+            if provider_status.get("status") in {"needs_credentials", "needs_export"}:
+                warnings.append(f"{source_name}: {provider_status.get('message', provider_status.get('status'))}")
+        evidence_ids = sorted(
+            {
+                _clean_text(record.get("evidence_id"))
+                for record in workflow_records
+                if _clean_text(record.get("evidence_id"))
+            }
+        )
+        runs.append(
+            {
+                "run_order": index,
+                "workflow_key": workflow.key,
+                "label": workflow.label,
+                "purpose": workflow.purpose,
+                "status": status,
+                "report_section": workflow.report_section,
+                "requires_vcf": workflow.requires_vcf,
+                "requires_manifest": workflow.requires_manifest,
+                "evidence_lanes": list(workflow.evidence_lanes),
+                "selected_source_keys": source_keys,
+                "source_count": len(source_keys),
+                "provider_statuses": workflow_statuses,
+                "record_counts": record_counts,
+                "warnings": warnings,
+                "errors": errors,
+                "summary": _workflow_summary(
+                    workflow=workflow,
+                    status=status,
+                    source_count=len(source_keys),
+                    provider_statuses=workflow_statuses,
+                    record_counts=record_counts,
+                ),
+                "evidence_ids": evidence_ids,
+                "started_at": timestamp,
+                "completed_at": timestamp,
+                "licensed_notes": list(workflow.licensed_notes),
+            }
+        )
+    return runs
+
+
 def build_dynamic_knowledge_base(
     *,
     gene: str,
@@ -322,6 +523,7 @@ def build_dynamic_knowledge_base(
     genome_build: str,
     variants: pd.DataFrame | None = None,
     manifest_subset: pd.DataFrame | None = None,
+    selected_workflows: list[str] | tuple[str, ...] | None = None,
     selected_sources: list[str] | tuple[str, ...] | None = None,
     credentials: dict[str, str] | None = None,
     source_imports: dict[str, str | Path] | None = None,
@@ -333,7 +535,8 @@ def build_dynamic_knowledge_base(
     """Build a dynamic variant knowledge-base payload and optionally write it."""
     normalized_gene = _clean_text(gene).upper()
     normalized_build = _clean_text(genome_build) or "hg19"
-    specs = select_source_specs(selected_sources)
+    workflow_specs = select_workflow_specs(selected_workflows)
+    specs = _selected_source_specs(selected_sources=selected_sources, workflows=workflow_specs)
     query = KnowledgeQuery(
         gene=normalized_gene,
         region=region,
@@ -350,7 +553,7 @@ def build_dynamic_knowledge_base(
     resolver = CredentialResolver(credentials)
     client = request_client or RequestClient()
     source_results: list[SourceResult] = []
-    for spec in specs:
+    for spec in _execution_specs_for_workflows(specs=specs, workflows=workflow_specs):
         credential = resolver.resolve(spec)
         connector = connector_for(spec, client, credential)
         try:
@@ -392,6 +595,18 @@ def build_dynamic_knowledge_base(
         for result in source_results
         if result.source_key in spec_lookup
     ]
+    selected_source_keys = [spec.key for spec in specs]
+    workflow_source_matrix = _workflow_source_matrix(
+        workflows=workflow_specs,
+        selected_source_keys=selected_source_keys,
+    )
+    workflow_runs = _build_workflow_runs(
+        workflows=workflow_specs,
+        selected_source_keys=selected_source_keys,
+        provider_statuses=provider_statuses,
+        source_records=source_records,
+        timestamp=timestamp,
+    )
     payload = {
         "schema_version": "1.0",
         "database_name": f"NophiGene Dynamic {normalized_gene} Variant Knowledge Base",
@@ -409,8 +624,11 @@ def build_dynamic_knowledge_base(
         "literature_records": _filter_source_records(source_records, {"literature"}),
         "source_records": source_records,
         "provider_statuses": provider_statuses,
+        "workflow_runs": workflow_runs,
+        "workflow_source_matrix": workflow_source_matrix,
         "provenance": {
-            "selected_source_keys": [spec.key for spec in specs],
+            "selected_workflow_keys": [workflow.key for workflow in workflow_specs],
+            "selected_source_keys": selected_source_keys,
             "credential_statuses": credential_status_for_specs(list_source_specs(), credentials),
             "variant_count": len(query.variants),
             "epigenetic_locus_count": len(query.epigenetic_loci),

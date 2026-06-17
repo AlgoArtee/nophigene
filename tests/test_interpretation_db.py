@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import pandas as pd
 
 from src.analysis import (
@@ -413,6 +415,68 @@ def test_generate_report_includes_variant_and_methylation_interpretation_section
     assert "width: min(98vw, 1800px)" in report_html
     assert "Methylation Summary Metrics" in report_html
     assert "Methylation Raw Results" in report_html
+
+
+def test_generate_report_includes_dynamic_workflow_summaries(tmp_path) -> None:
+    dynamic_kb_path = tmp_path / "variant_kb.json"
+    dynamic_kb_path.write_text(
+        json.dumps(
+            {
+                "workflow_runs": [
+                    {
+                        "workflow_key": "clinical_variant_triage",
+                        "label": "Clinical Variant Triage",
+                        "status": "partial",
+                        "summary": "Clinical workflow queried shared sources.",
+                        "selected_source_keys": ["clinvar", "hgmd"],
+                        "record_counts": {"source_records": 2, "literature_records": 0, "population_records": 0},
+                        "provider_statuses": [
+                            {"source_key": "clinvar", "name": "ClinVar", "status": "ok", "record_count": 1},
+                            {"source_key": "hgmd", "name": "HGMD", "status": "needs_export", "record_count": 1},
+                        ],
+                        "warnings": ["HGMD: upload a permitted export"],
+                        "errors": [],
+                    }
+                ],
+                "workflow_source_matrix": {
+                    "clinvar": ["clinical_variant_triage"],
+                    "hgmd": ["clinical_variant_triage"],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    variants = pd.DataFrame([{"chrom": "1", "id": "rs1", "pos": 10, "ref": "A", "alt": "G"}])
+    methylation = pd.DataFrame([{"probe_id": "cg1", "beta": 0.4}])
+
+    html_report = generate_report(
+        variants,
+        methylation,
+        None,
+        str(tmp_path / "report.html"),
+        gene_name="GENE1",
+        region="1:1-20",
+        dynamic_knowledge_base_status="Available",
+        dynamic_knowledge_base_path=dynamic_kb_path,
+    )
+    json_report = generate_report(
+        variants,
+        methylation,
+        None,
+        str(tmp_path / "report.json"),
+        gene_name="GENE1",
+        region="1:1-20",
+        dynamic_knowledge_base_status="Available",
+        dynamic_knowledge_base_path=dynamic_kb_path,
+    )
+
+    html_text = html_report.read_text(encoding="utf-8")
+    assert "Dynamic Workflow Summary" in html_text
+    assert "Clinical Variant Triage" in html_text
+    assert "needs_export" in html_text
+    json_payload = json.loads(json_report.read_text(encoding="utf-8"))
+    assert json_payload["dynamic_knowledge_base"]["workflow_runs"][0]["workflow_key"] == "clinical_variant_triage"
+    assert json_payload["dynamic_knowledge_base"]["workflow_source_matrix"]["hgmd"] == ["clinical_variant_triage"]
 
 
 def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_path) -> None:

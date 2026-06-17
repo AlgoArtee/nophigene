@@ -16,10 +16,12 @@ try:
     from ..bam_extraction import get_extraction_tool_status, get_hg38_reference_status
     from ..variant_knowledge.credentials import credential_status_for_specs
     from ..variant_knowledge.registry import get_source_spec, list_source_cards, list_source_specs
+    from ..variant_knowledge.workflows import default_workflow_source_keys, list_workflow_cards
 except ImportError:
     from bam_extraction import get_extraction_tool_status, get_hg38_reference_status
     from variant_knowledge.credentials import credential_status_for_specs
     from variant_knowledge.registry import get_source_spec, list_source_cards, list_source_specs
+    from variant_knowledge.workflows import default_workflow_source_keys, list_workflow_cards
 
 api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
 
@@ -72,6 +74,7 @@ def api_index():
             "profiles": "/api/v1/profiles",
             "jobs": "/api/v1/jobs",
             "knowledge_sources": "/api/v1/knowledge-sources",
+            "knowledge_workflows": "/api/v1/knowledge-workflows",
         }
     )
 
@@ -113,8 +116,17 @@ def list_jobs():
 def list_knowledge_sources():
     specs = list_source_specs()
     credential_statuses = credential_status_for_specs(specs)
-    cards = list_source_cards(credential_statuses=credential_statuses)
+    cards = list_source_cards(
+        selected_keys=default_workflow_source_keys(),
+        credential_statuses=credential_statuses,
+    )
     return jsonify({"sources": cards, "count": len(cards)})
+
+
+@api_v1.get("/knowledge-workflows")
+def list_knowledge_workflows():
+    cards = list_workflow_cards()
+    return jsonify({"workflows": cards, "count": len(cards)})
 
 
 @api_v1.post("/knowledge-sources/test")

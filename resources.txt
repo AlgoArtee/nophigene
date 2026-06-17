@@ -74,4 +74,5 @@ PharmVar	Standardised pharmacogene haplotypes and star-allele definitions, such 
 PharmCAT	Software that converts genetic variant data into pharmacogene diplotypes, phenotypes and guideline-based reports.
 FDA Table of Pharmacogenetic Associations	FDA-reviewed gene–drug relationships for therapeutic management, efficacy or adverse-event risk.
 FDA Table of Pharmacogenomic Biomarkers in Drug Labeling	Drugs whose FDA labels mention germline or somatic pharmacogenomic biomarkers.
+DrugBank	Licensed drug, target, interaction, pharmacology and pharmacogenomics knowledgebase. Use official access, permitted exports or linkout metadata only.
 DGIdb — Drug–Gene Interaction Database	Aggregates known and potentially druggable gene–drug interactions from publications and source databases. It is more suitable for hypothesis generation than direct prescribing.

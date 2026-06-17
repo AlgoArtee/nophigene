@@ -9,6 +9,7 @@ from src.variant_knowledge.imports import parse_source_import
 from src.variant_knowledge.merger import merge_dynamic_knowledge_base
 from src.variant_knowledge.orchestrator import build_dynamic_knowledge_base
 from src.variant_knowledge.registry import RESOURCES_PATH, get_source_spec, list_source_cards, list_source_specs
+from src.variant_knowledge.workflows import CORE_SAFETY_WORKFLOW_KEYS, list_workflow_specs
 
 
 class FakeClient:
@@ -29,6 +30,22 @@ class FakeClient:
 
     def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
         raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+
+class CountingFakeClient(FakeClient):
+    def __init__(self) -> None:
+        self.get_counts: dict[str, int] = {}
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None):
+        if "esearch.fcgi" in url:
+            term = str((params or {}).get("term", ""))
+            self.get_counts[term] = self.get_counts.get(term, 0) + 1
+        return super().get_json(
+            url,
+            params=params,
+            headers=headers,
+            rate_limit_per_second=rate_limit_per_second,
+        )
 
 
 def test_registry_has_one_card_per_resource_entry():
@@ -68,6 +85,23 @@ def test_non_open_sources_advertise_compliant_ingestion_modes_only():
         assert set(spec.ingestion_modes) <= {"official_api", "user_export", "linkout_only"}
         assert cards[key]["import_schema"]
         assert cards[key]["accepted_import_formats"] == ["csv", "json"]
+
+
+def test_workflow_registry_references_valid_sources_and_core_defaults():
+    source_keys = {spec.key for spec in list_source_specs()}
+    workflows = list_workflow_specs()
+
+    assert [workflow.key for workflow in workflows if workflow.default_selected] == list(CORE_SAFETY_WORKFLOW_KEYS)
+    assert workflows
+    for workflow in workflows:
+        assert workflow.label
+        assert workflow.purpose
+        assert workflow.report_section
+        assert set(workflow.ordered_source_keys) <= source_keys
+        if workflow.key == "licensed_aggregator_review":
+            joined_notes = " ".join(workflow.licensed_notes).lower()
+            assert "scraping" in joined_notes
+            assert "captcha" in joined_notes
 
 
 def test_credential_status_redacts_session_secret():
@@ -130,6 +164,39 @@ def test_dynamic_builder_writes_partial_results_without_serializing_secret(tmp_p
     serialized = json.dumps(payload, sort_keys=True)
     assert "super-secret-token" not in serialized
     assert "session:[redacted]" in serialized
+    assert payload["workflow_runs"][0]["workflow_key"] == "clinical_variant_triage"
+    assert payload["workflow_runs"][0]["status"] == "partial"
+    assert payload["workflow_source_matrix"]["clinvar"] == ["clinical_variant_triage"]
+
+
+def test_dynamic_builder_runs_workflows_sequentially_and_deduplicates_sources():
+    variants = pd.DataFrame([{"chrom": "1", "id": "rs123", "pos": 101, "ref": "A", "alt": "G"}])
+    client = CountingFakeClient()
+
+    payload = build_dynamic_knowledge_base(
+        gene="GENE1",
+        region="1:90-110",
+        genome_build="hg19",
+        variants=variants,
+        selected_workflows=["clinical_variant_triage", "population_frequency_association"],
+        selected_sources=["dbsnp"],
+        request_client=client,
+        generated_at="2026-06-17T00:00:00Z",
+    )
+
+    assert len(payload["provider_statuses"]) == 1
+    assert payload["provider_statuses"][0]["source_key"] == "dbsnp"
+    assert client.get_counts["rs123"] == 1
+    assert [run["workflow_key"] for run in payload["workflow_runs"]] == [
+        "clinical_variant_triage",
+        "population_frequency_association",
+    ]
+    assert all(run["selected_source_keys"] == ["dbsnp"] for run in payload["workflow_runs"])
+    assert payload["workflow_source_matrix"]["dbsnp"] == [
+        "clinical_variant_triage",
+        "population_frequency_association",
+    ]
+    assert payload["source_records"][0]["evidence_id"] == "dbsnp:001"
 
 
 def test_source_import_parser_normalizes_json_csv_and_discards_raw_columns(tmp_path: Path):

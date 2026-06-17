@@ -171,6 +171,23 @@ def normalize_job_request(payload: Any) -> dict[str, Any]:
         normalized_options["knowledge_sources"] = [str(item).strip() for item in raw_sources if str(item).strip()]
     else:
         raise APIError("invalid_knowledge_sources", "'options.knowledge_sources' must be a list or comma-separated string.", 422)
+    raw_workflows = options.get("knowledge_workflows")
+    if raw_workflows in (None, "", []):
+        normalized_options["knowledge_workflows"] = []
+    elif isinstance(raw_workflows, str):
+        normalized_options["knowledge_workflows"] = [
+            item.strip() for item in raw_workflows.split(",") if item.strip()
+        ]
+    elif isinstance(raw_workflows, list):
+        normalized_options["knowledge_workflows"] = [
+            str(item).strip() for item in raw_workflows if str(item).strip()
+        ]
+    else:
+        raise APIError(
+            "invalid_knowledge_workflows",
+            "'options.knowledge_workflows' must be a list or comma-separated string.",
+            422,
+        )
     raw_imports = options.get("knowledge_source_imports") or {}
     if not isinstance(raw_imports, dict):
         raise APIError(
@@ -439,6 +456,7 @@ class WorkflowRunner:
                 f"genes/{gene}/dynamic_knowledge_base/variant_kb.json",
             )
             outcome["dynamic_provider_count"] = len(dynamic_payload.get("provider_statuses", []))
+            outcome["dynamic_workflow_count"] = len(dynamic_payload.get("workflow_runs", []))
             if operation == "build_knowledge_bases":
                 return outcome
         methylation = build_gene_methylation_table(
@@ -519,6 +537,7 @@ class WorkflowRunner:
             variants=variants,
             manifest_subset=manifest_subset,
             selected_sources=request_payload["options"].get("knowledge_sources") or None,
+            selected_workflows=request_payload["options"].get("knowledge_workflows") or None,
             source_imports=request_payload["options"].get("knowledge_source_imports") or None,
             output_dir=output_dir,
             cache_dir=gene_dir / ".knowledge_cache",

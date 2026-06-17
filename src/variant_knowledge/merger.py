@@ -145,12 +145,15 @@ def merge_dynamic_knowledge_base(
         "database_name": dynamic_payload.get("database_name", "Dynamic variant knowledge base"),
         "generated_at": dynamic_payload.get("generated_at", ""),
         "provider_count": len(dynamic_payload.get("provider_statuses", [])),
+        "workflow_count": len(dynamic_payload.get("workflow_runs", [])),
         "variant_record_count": len(dynamic_payload.get("variant_records", [])),
         "merged_variant_record_count": len(added_records),
     }
     merged["dynamic_knowledge_base"] = {
         "generated_at": dynamic_payload.get("generated_at", ""),
         "provider_statuses": dynamic_payload.get("provider_statuses", []),
+        "workflow_runs": dynamic_payload.get("workflow_runs", []),
+        "workflow_source_matrix": dynamic_payload.get("workflow_source_matrix", {}),
         "population_records": dynamic_payload.get("population_records", []),
         "literature_records": dynamic_payload.get("literature_records", []),
         "epigenetic_locus_records": dynamic_payload.get("epigenetic_locus_records", []),

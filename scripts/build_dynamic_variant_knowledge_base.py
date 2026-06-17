@@ -49,6 +49,18 @@ def _parse_selected_sources(raw: str) -> list[str] | None:
     return [item.strip() for item in cleaned.split(",") if item.strip()]
 
 
+def _parse_selected_workflows(raw: str) -> list[str] | None:
+    cleaned = str(raw or "").strip()
+    if not cleaned:
+        return None
+    if cleaned.startswith("["):
+        payload = json.loads(cleaned)
+        if not isinstance(payload, list):
+            raise ValueError("--selected-workflows JSON must be a list.")
+        return [str(item) for item in payload]
+    return [item.strip() for item in cleaned.split(",") if item.strip()]
+
+
 def _parse_source_imports(raw_items: list[str] | None) -> dict[str, str]:
     imports: dict[str, str] = {}
     for item in raw_items or []:
@@ -72,6 +84,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--manifest-subset", default="", help="Optional filtered manifest CSV.")
     parser.add_argument("--selected-sources", default="", help="Comma-separated source keys or JSON list. Defaults to all.")
     parser.add_argument(
+        "--selected-workflows",
+        default="",
+        help="Comma-separated workflow keys or JSON list. Defaults to Core safety workflows.",
+    )
+    parser.add_argument(
         "--source-import",
         action="append",
         default=[],
@@ -93,12 +110,22 @@ def main(argv: list[str] | None = None) -> int:
         genome_build=args.genome_build,
         variants=variants,
         manifest_subset=manifest_subset,
+        selected_workflows=_parse_selected_workflows(args.selected_workflows),
         selected_sources=_parse_selected_sources(args.selected_sources),
         source_imports=_parse_source_imports(args.source_import),
         output_dir=args.output_dir,
         cache_dir=args.cache_dir,
     )
-    print(json.dumps({"artifact_path": payload.get("artifact_path"), "provider_count": len(payload.get("provider_statuses", []))}, indent=2))
+    print(
+        json.dumps(
+            {
+                "artifact_path": payload.get("artifact_path"),
+                "provider_count": len(payload.get("provider_statuses", [])),
+                "workflow_count": len(payload.get("workflow_runs", [])),
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
