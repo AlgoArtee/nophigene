@@ -382,6 +382,96 @@
     .database-panel {
       padding: 34px;
     }
+    .knowledge-source-panel {
+      padding: 24px;
+    }
+    .knowledge-source-shell {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.82fr) minmax(0, 1.5fr);
+      gap: 18px;
+      min-height: calc(100vh - 168px);
+    }
+    .knowledge-source-toolbar {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+    .knowledge-source-grid {
+      display: grid;
+      gap: 18px;
+    }
+    .knowledge-lane {
+      display: grid;
+      gap: 12px;
+    }
+    .knowledge-lane h3 {
+      margin: 0;
+      color: var(--accent-3);
+      letter-spacing: -0.02em;
+    }
+    .knowledge-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .knowledge-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(118, 19, 45, 0.12);
+      background: rgba(255, 255, 255, 0.78);
+      min-width: 0;
+    }
+    .knowledge-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .knowledge-card-head input {
+      width: auto;
+      margin-top: 4px;
+      flex: 0 0 auto;
+    }
+    .knowledge-card-title {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+    .knowledge-card-title strong {
+      color: var(--ink);
+      line-height: 1.25;
+    }
+    .knowledge-card-title span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+    .knowledge-meta-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .knowledge-meta-row .muted-badge {
+      margin: 0;
+    }
+    .knowledge-credential,
+    .knowledge-import {
+      display: grid;
+      gap: 7px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(118, 19, 45, 0.14);
+    }
+    .knowledge-credential label,
+    .knowledge-import label {
+      font-size: 0.84rem;
+      color: var(--accent-3);
+      font-weight: 800;
+    }
+    .knowledge-import code {
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
     .database-table-shell {
       margin-top: 18px;
       max-height: calc(100vh - 330px);
@@ -1853,6 +1943,7 @@
         <a class="tab-button" href="{{ url_for('functional_map_page') }}">Functional Map</a>
         <button type="button" class="tab-button" data-tab-target="preprocessing" aria-selected="false">Preprocessing</button>
         <button type="button" class="tab-button" data-tab-target="extraction" aria-selected="false">Extraction</button>
+        <button type="button" class="tab-button" data-tab-target="knowledge_sources" aria-selected="false">Knowledge Sources</button>
         {% if analysis_unlocked %}
         <button type="button" class="tab-button" data-tab-target="analysis" aria-selected="false">Run Analysis</button>
         {% endif %}
@@ -1914,7 +2005,7 @@
             <div class="panel-head">
               <div>
                 <h2>Preprocessing</h2>
-                <p>Resolve the gene interval first, then create a gene-specific EPIC manifest subset before opening the main analysis workspace.</p>
+                <p>Resolve the gene interval, create a gene-specific EPIC manifest subset, then optionally build a dynamic variant knowledge base from the selected sources.</p>
               </div>
               <span class="panel-chip">Required before analysis</span>
             </div>
@@ -1983,6 +2074,31 @@
                     </div>
                     <p class="hint">
                       Leave this unchecked to reuse an existing <code>{{ preprocess_state.gene_name }}_epigenetics_{{ preprocess_state.build }}.csv</code> if one is already present. Check it to regenerate that file for the current region.
+                    </p>
+                  </div>
+
+                  <div class="field-card">
+                    <label for="knowledge_vcf_source">VCF Source for Dynamic KB</label>
+                    <p class="field-example">Current value: <code>{{ preprocess_state.knowledge_vcf_source or "Choose or extract a regional VCF" }}</code></p>
+                    <input id="knowledge_vcf_source" name="knowledge_vcf_source" list="knowledge-vcf-options" type="text" value="{{ preprocess_state.knowledge_vcf_source }}" placeholder="Path to a VCF or extracted regional VCF">
+                    <datalist id="knowledge-vcf-options">
+                      {% for option in vcf_files %}
+                      <option value="{{ option }}"></option>
+                      {% endfor %}
+                      {% if extraction_state.last_output_vcf %}
+                      <option value="{{ extraction_state.last_output_vcf }}"></option>
+                      {% endif %}
+                    </datalist>
+                    <details class="field-details">
+                      <summary>What this means biologically</summary>
+                      <p>The dynamic knowledge-base builder reads the observed sample variants from this VCF and combines them with the filtered methylation loci before querying the selected source cards.</p>
+                    </details>
+                    <div class="analysis-actions">
+                      <button type="submit" class="run-button" name="preprocess_action" value="build_variant_knowledge_base">Build Variant Knowledge Base</button>
+                      <button type="button" class="cta-button" data-go-tab="knowledge_sources">Choose Sources</button>
+                    </div>
+                    <p class="hint">
+                      If Extraction created a regional VCF, that file is preferred. Otherwise choose a VCF from <code>data/</code>.
                     </p>
                   </div>
                 </div>
@@ -2087,6 +2203,23 @@
                           <div><strong>Probe count:</strong> {{ preprocess_state.probe_count if preprocess_state.manifest_ready else "Pending" }}</div>
                         </div>
                       </article>
+
+                      <article class="preprocess-step-card {% if preprocess_state.dynamic_kb_ready %}is-complete{% endif %}">
+                        <div class="preprocess-step-meta">
+                          <span class="preprocess-step-index">03</span>
+                          <span class="preprocess-step-state">{{ "Complete" if preprocess_state.dynamic_kb_ready else "Optional" }}</span>
+                        </div>
+                        <div class="preprocess-step-copy">
+                          <h4>Build Variant Knowledge Base</h4>
+                          <p>{{ preprocess_result.steps[2].summary if preprocess_result and preprocess_result.steps|length > 2 else "Query selected source cards after variants and methylation loci are available." }}</p>
+                        </div>
+                        <div class="preprocess-step-details">
+                          <div><strong>VCF source:</strong> <code>{{ preprocess_state.knowledge_vcf_source or "Waiting for VCF" }}</code></div>
+                          <div><strong>Dynamic KB:</strong> <code>{{ preprocess_state.dynamic_kb_path or "Not built yet" }}</code></div>
+                          <div><strong>Selected sources:</strong> {{ preprocess_state.dynamic_kb_source_count or knowledge_sources_state.selected_sources|length }}</div>
+                          <div><strong>Provider statuses:</strong> {{ preprocess_state.dynamic_kb_provider_count if preprocess_state.dynamic_kb_ready else "Pending" }}</div>
+                        </div>
+                      </article>
                     </div>
                   </div>
 
@@ -2102,6 +2235,10 @@
                     <article class="metric">
                       <span>Subset probes</span>
                       <strong>{{ preprocess_state.probe_count if preprocess_state.manifest_ready else "Pending" }}</strong>
+                    </article>
+                    <article class="metric">
+                      <span>Dynamic KB</span>
+                      <strong>{{ "Ready" if preprocess_state.dynamic_kb_ready else "Optional" }}</strong>
                     </article>
                   </div>
 
@@ -2132,6 +2269,7 @@
                   <div class="preprocess-step-details" style="margin-top: 10px;">
                     <div><strong>Manifest source:</strong> <code>{{ preprocess_result.manifest_source or "Not selected yet" }}</code></div>
                     <div><strong>Filtered subset:</strong> <code>{{ preprocess_result.filtered_manifest or "Not generated yet" }}</code></div>
+                    <div><strong>Dynamic KB:</strong> <code>{{ preprocess_result.dynamic_kb_path or "Not generated yet" }}</code></div>
                     <div><strong>Genome build:</strong> {{ preprocess_result.build }}</div>
                     {% if preprocess_result.region_candidates %}
                     <div><strong>Candidate coordinates returned by public sources:</strong></div>
@@ -2472,6 +2610,142 @@
             </div>
           </article>
         </div>
+      </section>
+
+      <section class="frame tab-panel knowledge-source-panel{% if initial_tab == 'knowledge_sources' %} is-active{% endif %}" data-tab-panel="knowledge_sources"{% if initial_tab != 'knowledge_sources' %} hidden{% endif %} style="display:{% if initial_tab == 'knowledge_sources' %}block{% else %}none{% endif %};">
+        <form method="post" enctype="multipart/form-data">
+          <input type="hidden" name="workflow" value="knowledge_sources">
+          <div class="knowledge-source-shell">
+            <aside class="analysis-panel-inner knowledge-source-toolbar">
+              <div class="panel-head">
+                <div>
+                  <h2>Knowledge Sources</h2>
+                  <p>Select the databases used by dynamic variant knowledge-base preprocessing. Licensed sources can use official APIs, permitted CSV/JSON exports, or linkout metadata; scraping is never performed.</p>
+                </div>
+              </div>
+
+              <div class="metrics">
+                <article class="metric">
+                  <span>Sources</span>
+                  <strong>{{ knowledge_source_cards|length }}</strong>
+                </article>
+                <article class="metric">
+                  <span>Selected</span>
+                  <strong>{{ knowledge_sources_state.selected_sources|length }}</strong>
+                </article>
+                <article class="metric">
+                  <span>Lanes</span>
+                  <strong>{{ knowledge_source_groups|length }}</strong>
+                </article>
+                <article class="metric">
+                  <span>Imports</span>
+                  <strong>{{ knowledge_sources_state.source_imports|length }}</strong>
+                </article>
+              </div>
+
+              {% if knowledge_sources_error %}
+              <div class="error">{{ knowledge_sources_error }}</div>
+              {% endif %}
+              {% if knowledge_sources_notice %}
+              <p class="status-note">{{ knowledge_sources_notice }}</p>
+              {% elif knowledge_sources_state.notice %}
+              <p class="status-note">{{ knowledge_sources_state.notice }}</p>
+              {% endif %}
+
+              <div class="analysis-actions">
+                <button type="submit" class="run-button">Save Source Settings</button>
+                <button type="button" class="cta-button" data-go-tab="preprocessing">Back to Preprocessing</button>
+              </div>
+              <p class="hint">
+                Session-entered tokens are kept only in server memory for this browser session. The UI never writes them to generated reports, logs, or repository files.
+              </p>
+            </aside>
+
+            <section class="analysis-panel-inner">
+              <div class="panel-head">
+                <div>
+                  <h2>Database Cards</h2>
+                  <p>Cards are grouped by evidence lane. Live connectors use public APIs where available; export cards normalize only evidence summaries and provenance.</p>
+                </div>
+                <span class="panel-chip">Default all</span>
+              </div>
+
+              <div class="scroll-region">
+                <div class="knowledge-source-grid">
+                  {% for group in knowledge_source_groups %}
+                  <section class="knowledge-lane">
+                    <h3>{{ group.label }}</h3>
+                    <div class="knowledge-card-grid">
+                      {% for source in group.cards %}
+                      <article class="knowledge-card">
+                        <div class="knowledge-card-head">
+                          <input
+                            type="checkbox"
+                            name="knowledge_source"
+                            value="{{ source.key }}"
+                            {% if source.selected %}checked{% endif %}
+                            aria-label="Select {{ source.name }}"
+                          >
+                          <div class="knowledge-card-title">
+                            <strong>{{ source.name }}</strong>
+                            <span>{{ source.description or source.license_note }}</span>
+                          </div>
+                        </div>
+                        <div class="knowledge-meta-row">
+                          <span class="muted-badge">{{ source.access_type }}</span>
+                          <span class="muted-badge">{{ source.connector_kind }}</span>
+                          <span class="muted-badge">{{ source.credential_status }}</span>
+                          {% if source.import_status %}
+                          <span class="muted-badge">import: {{ source.import_status }}</span>
+                          {% endif %}
+                          {% for mode in source.ingestion_modes %}
+                          <span class="muted-badge">{{ mode }}</span>
+                          {% endfor %}
+                        </div>
+                        {% if source.homepage %}
+                        <div class="protein-source-links">
+                          <a href="{{ source.homepage }}" target="_blank" rel="noreferrer">Open source</a>
+                        </div>
+                        {% endif %}
+                        {% if source.env_var %}
+                        <div class="knowledge-credential">
+                          <label for="credential_{{ source.key }}">{{ source.env_var }}</label>
+                          <input
+                            id="credential_{{ source.key }}"
+                            name="credential_{{ source.key }}"
+                            type="password"
+                            value=""
+                            autocomplete="off"
+                            placeholder="Optional session token"
+                          >
+                        </div>
+                        {% endif %}
+                        {% if 'user_export' in source.ingestion_modes %}
+                        <div class="knowledge-import">
+                          <label for="source_import_{{ source.key }}">Permitted CSV/JSON export</label>
+                          <input
+                            id="source_import_{{ source.key }}"
+                            name="source_import_{{ source.key }}"
+                            type="file"
+                            accept=".csv,.json,application/json,text/csv"
+                          >
+                          {% if source.import_path %}
+                          <span class="hint">Current import: <code>{{ source.import_path }}</code></span>
+                          {% else %}
+                          <span class="hint">Accepted fields: {{ source.import_schema|join(', ') }}</span>
+                          {% endif %}
+                        </div>
+                        {% endif %}
+                      </article>
+                      {% endfor %}
+                    </div>
+                  </section>
+                  {% endfor %}
+                </div>
+              </div>
+            </section>
+          </div>
+        </form>
       </section>
 
       <section class="frame tab-panel database-panel{% if initial_tab == 'central_database' %} is-active{% endif %}" data-tab-panel="central_database"{% if initial_tab != 'central_database' %} hidden{% endif %} style="display:{% if initial_tab == 'central_database' %}block{% else %}none{% endif %};">
@@ -3075,6 +3349,9 @@
                   <div class="path-chip"><strong>Report</strong> <code>{{ result.report_path }}</code></div>
                   <div class="path-chip"><strong>Methylation CSV</strong> <code>{{ result.methylation_output_path }}</code></div>
                   <div class="path-chip"><strong>Knowledge base</strong> <code>{{ result.knowledge_base_name }} ({{ result.knowledge_base_version }})</code></div>
+                  {% if result.dynamic_knowledge_base_path %}
+                  <div class="path-chip"><strong>Dynamic KB</strong> <code>{{ result.dynamic_knowledge_base_path }}</code><span>{{ result.dynamic_knowledge_base_status }}</span></div>
+                  {% endif %}
                   <div class="path-chip"><strong>Population DB</strong> <code>{{ result.population_database_name }} ({{ result.population_database_version }})</code></div>
                   {% if result.general_database_path %}
                   <div class="path-chip"><strong>Central database</strong> <code>{{ result.general_database_path }}</code><span>{{ result.general_database_status }}</span></div>
@@ -4189,6 +4466,13 @@
           { threshold: 24, label: "Reading the saved gene region", note: "The selected interval is being loaded into the filter step", overlayText: "Load the saved gene interval for manifest filtering." },
           { threshold: 58, label: "Filtering the EPIC manifest", note: "The manifest is being reduced to the selected region", overlayText: "Filter the EPIC manifest down to the selected region." },
           { threshold: 90, label: "Saving the subset", note: "Prepared files are being written for the analysis workspace", overlayText: "Save the subset and unlock the analysis workspace." }
+        ],
+        build_variant_knowledge_base: [
+          { threshold: 0, label: "Preparing source queries", note: "Status Viewer is tracking progress", overlayText: "Prepare the selected source registry." },
+          { threshold: 22, label: "Loading observed variants", note: "The VCF region is being decoded for source lookup", overlayText: "Load observed variants from the selected VCF." },
+          { threshold: 48, label: "Joining methylation loci", note: "The filtered manifest subset is being added to the query context", overlayText: "Attach epigenetic loci from the filtered manifest." },
+          { threshold: 74, label: "Querying source cards", note: "Open APIs and metadata-only sources are being resolved", overlayText: "Query available database connectors." },
+          { threshold: 92, label: "Writing dynamic KB", note: "The variant_kb.json artifact is being written", overlayText: "Save the dynamic knowledge-base artifact." }
         ]
       };
 

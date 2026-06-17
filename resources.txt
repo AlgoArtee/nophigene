@@ -1,0 +1,77 @@
+#raw genetic data databases
+1000 Genomes Project (IGSR) - internationalgenome.org (IGSR)
+ClinPGx — formerly PharmGKB (pharmgkb.org)	Central pharmacogenomics knowledgebase for gene–drug relationships, variant annotations, clinical annotations, drug labels and guidelines.
+ENCODE Portal (DCC) — encodeproject.org	Functional-genomics and epigenomics experiments, including transcription-factor binding, chromatin accessibility, histone modifications and regulatory annotations.
+CIViC — civicdb.org	Open, community-curated interpretations of cancer variants, diagnoses, drugs and clinical evidence, including somatic variant–drug evidence statements and provenance.
+Database of Genomic Variants (DGV) - dgv.tcag.ca
+NCBI Gene	Gene-centred records linking sequences, expression, phenotypes, pathways, variation and publications.
+OMIM — Online Mendelian Inheritance in Man	Authoritative, literature-curated descriptions of human genes, genetic phenotypes and Mendelian disorders.
+GeneReviews	Expert-written, peer-reviewed chapters on inherited disorders, diagnosis, testing, management and counselling.
+Orphanet	Rare-disease classifications, genes, epidemiology, diagnostic resources and expert centres.
+GeneCards	Integrative human-gene knowledgebase combining genomic, transcriptomic, proteomic, disease and literature information from many sources.
+DISGENET	Gene–disease and variant–disease associations extracted and curated from publications and other databases. Access conditions now include commercial plans.
+ClinVar	Public archive of submitted clinical interpretations for variants associated with inherited disease, cancer phenotypes and drug response.
+ClinGen	Expert assessment of gene–disease validity, dosage sensitivity and variant pathogenicity, plus clinical interpretation standards.
+HGMD — Human Gene Mutation Database	Curated published germline variants associated with inherited disease. The current professional version is commercial; a delayed public version also exists.
+dbSNP	NCBI archive of short genetic variants and their identifiers, including SNVs and small insertions/deletions.
+dbVar	NCBI archive for human structural variants, including deletions, duplications, inversions, insertions and complex variants.
+gnomAD	Population allele frequencies, constraint metrics and sequence variation from large aggregated human cohorts. Essential for identifying variants that are too common to explain rare disease.
+LOVD — Leiden Open Variation Database	Gene-specific and patient-centred collections of sequence variants, often maintained by disease experts.
+DECIPHER	Genotype–phenotype matching and sharing for rare disease, sequence variants, copy-number variants and patient phenotypes.
+MaveDB	Repository for multiplexed assays of variant effect and deep-mutational-scanning results. Useful for functional evidence.
+NHGRI-EBI GWAS Catalog	Curated genome-wide association studies, associations, traits and summary statistics.
+PGS Catalog	Published polygenic scores with variant weights, development cohorts, ancestry information and performance evaluations.
+PanelApp	Expert-reviewed diagnostic gene panels, including Genomics England and NHS-related panels.
+OncoKB	Precision-oncology knowledgebase connecting tumour alterations with biological and therapeutic implications, targeted therapies, evidence levels and resistance associations.
+VICC Meta-Knowledgebase	Aggregates and harmonises somatic cancer variant interpretations from multiple precision-oncology knowledgebases.
+EWAS Catalog	Curated epigenome-wide association studies, particularly associations between DNA methylation and traits or diseases.
+EWAS Atlas / EWAS Open Platform	Curated EWAS associations, traits, genes, methylation sites and biological annotations.
+SCREEN	Search interface for ENCODE candidate cis-regulatory elements, including enhancers and promoters.
+IHEC Data Portal	Reference epigenomes produced by the International Human Epigenome Consortium.
+Roadmap Epigenomics	Human tissue and cell-type epigenomes. Roadmap data are now commonly accessed through ENCODE, GEO and associated portals.
+GEO — Gene Expression Omnibus	Functional-genomics repository containing expression, methylation, ChIP-seq, chromatin accessibility, single-cell and other high-throughput experiments.
+BioStudies / ArrayExpress collection	Functional-genomics studies previously accessed through ArrayExpress. The old standalone ArrayExpress interface was retired and its collection moved into BioStudies.
+MethBank	DNA-methylation profiles, methylomes and methylation annotations across organisms and biological conditions.
+DiseaseMeth	Disease-associated human DNA-methylation alterations collected from published studies.
+EpiFactors	Epigenetic regulators, chromatin-modifying enzymes, complexes, targets and products.
+ChIP-Atlas	Uniformly processed public ChIP-seq and related epigenomic datasets, with enrichment and target-analysis tools.
+PubMed/MEDLINE	Primary biomedical literature search for genetics, molecular biology, medicine, nutrition and pharmacogenomics. Contains citations and abstracts with links to publishers or repositories.
+PubMed Central — PMC	Free full-text archive of biomedical and life-sciences articles.
+Europe PMC	Publications, abstracts, full text, preprints and related biological data. Particularly useful for text mining and API access.
+Embase	Subscription biomedical and pharmacological index. Especially valuable for drug safety, adverse reactions, clinical studies and systematic reviews.
+Scopus	Broad abstract and citation database; useful for citation tracking and discovering related papers.
+Web of Science	Multidisciplinary citation database for forward/backward citation searching and systematic reviews.
+Dimensions	Links publications with grants, datasets, clinical trials, patents and organisations.
+OpenAlex	Open scholarly catalogue covering papers, authors, institutions, concepts and citations; useful for bulk data and APIs.
+Semantic Scholar	AI-assisted article discovery, citation networks and related-paper recommendations.
+Google Scholar	Very broad discovery tool covering journal articles, theses, repositories, books and conference papers. Coverage is wide but metadata can be messy.
+Crossref Metadata Search	DOI and publication-metadata search across articles, books, datasets and other scholarly works.
+DOAJ	Directory and search platform for peer-reviewed open-access journals and articles.
+CORE	Aggregates open-access papers from institutional and subject repositories.
+OpenAIRE Explore	Searches publications, datasets, software, projects and repositories in the European and international open-science ecosystem.
+BASE	Academic search engine aggregating records from institutional repositories and other scholarly sources.
+bioRxiv	Biology preprints, including genetics, genomics, epigenetics and bioinformatics. Not peer-reviewed by default.
+medRxiv	Health-science and clinical preprints. Results should not be treated as established clinical evidence before peer review.
+Cochrane Library	Systematic reviews and controlled-trial evidence, including some pharmacogenetic and nutritional interventions.
+AGRICOLA	USDA literature index covering agriculture, food, nutrition, plant and animal genetics.
+CAB Abstracts	Subscription database covering applied life sciences, nutrition, agriculture, food, veterinary medicine and genetics.
+FSTA — Food Science and Technology Abstracts	Specialist literature database for food science, nutrition, food composition, metabolism and related health research.
+LitVar2	Searches biomedical literature by genetic variant, gene, disease or chemical, including pharmacogenetic and drug-response variants and their synonyms.
+Mastermind Genomic Intelligence	Commercial/freemium genomic-literature search engine indexing full-text variant mentions, including rare variant–drug and variant–phenotype combinations.
+VarSome	Variant aggregator combining numerous annotation and clinical databases, ACMG evidence and community interpretations.
+Franklin by Genoox	Automated variant annotation, prioritisation and ACMG-oriented interpretation platform.
+Ensembl	Genome annotation, genes, transcripts, comparative genomics, regulatory elements and variation across many species.
+UCSC Genome Browser	Visualises genomic coordinates and annotation tracks; includes tools for variant annotation, sequence alignment and coordinate conversion.
+NutriGenomeDB	Nutrigenomics experiments connecting dietary interventions or food compounds with gene-expression responses.
+dbNP — Nutritional Phenotype Database	Nutrition-study metadata, phenotypes, interventions and omics measurements.
+NutriChem	Literature-derived relationships among foods, phytochemicals, diseases and drugs. It is an older resource, so availability and update status should be checked before building software around it.
+Exposome-Explorer	Biomarkers of dietary and environmental exposures extracted from biomarker and epidemiological studies.
+Phenol-Explorer	Food polyphenol content, metabolism, pharmacokinetics and intervention-study information.
+FooDB	Food constituents, chemical structures, concentrations, biological effects and associated references.
+PhytoHub	Dietary phytochemicals and their human metabolites, including chemical and literature information.
+CPIC — Clinical Pharmacogenetics Implementation Consortium	Peer-reviewed guidelines explaining how available genetic results should be used when selecting or dosing medications.
+PharmVar	Standardised pharmacogene haplotypes and star-allele definitions, such as CYP2D6, CYP2C19 and TPMT alleles.
+PharmCAT	Software that converts genetic variant data into pharmacogene diplotypes, phenotypes and guideline-based reports.
+FDA Table of Pharmacogenetic Associations	FDA-reviewed gene–drug relationships for therapeutic management, efficacy or adverse-event risk.
+FDA Table of Pharmacogenomic Biomarkers in Drug Labeling	Drugs whose FDA labels mention germline or somatic pharmacogenomic biomarkers.
+DGIdb — Drug–Gene Interaction Database	Aggregates known and potentially druggable gene–drug interactions from publications and source databases. It is more suitable for hypothesis generation than direct prescribing.

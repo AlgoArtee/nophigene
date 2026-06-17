@@ -6,6 +6,7 @@ import io
 import json
 import os
 import re
+import uuid
 import traceback
 import zipfile
 from contextlib import redirect_stderr, redirect_stdout
@@ -16,6 +17,7 @@ from typing import Any
 
 import pandas as pd
 from flask import Flask, jsonify, render_template, request, send_from_directory, session, url_for
+from werkzeug.utils import secure_filename
 
 try:
     from .analysis import (
@@ -32,6 +34,7 @@ try:
         get_analysis_scope_label,
         get_analysis_scope_slug,
         load_gene_interpretation_database,
+        load_variants,
         normalize_analysis_scope,
         run_analysis,
     )
@@ -51,6 +54,9 @@ try:
         save_filtered_manifest,
     )
     from .human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
+    from .variant_knowledge.credentials import credential_status_for_specs
+    from .variant_knowledge.orchestrator import build_dynamic_knowledge_base
+    from .variant_knowledge.registry import LANE_LABELS, list_source_cards, list_source_specs
     from .workflow import (
         build_scope_regions as build_shared_scope_regions,
         format_region_with_padding as format_shared_region_with_padding,
@@ -72,6 +78,7 @@ except ImportError:
         get_analysis_scope_label,
         get_analysis_scope_slug,
         load_gene_interpretation_database,
+        load_variants,
         normalize_analysis_scope,
         run_analysis,
     )
@@ -88,6 +95,9 @@ except ImportError:
     from gene_region_extraction import find_gene_region
     from helper_functions.filter_manifest_region import sanitize_gene_name_for_filename, save_filtered_manifest
     from human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
+    from variant_knowledge.credentials import credential_status_for_specs
+    from variant_knowledge.orchestrator import build_dynamic_knowledge_base
+    from variant_knowledge.registry import LANE_LABELS, list_source_cards, list_source_specs
     from workflow import (
         build_scope_regions as build_shared_scope_regions,
         format_region_with_padding as format_shared_region_with_padding,
@@ -101,6 +111,9 @@ RESULTS_DIR = PROJECT_ROOT / "results"
 PREPROCESSED_MANIFEST_DIR = Path(__file__).resolve().parent / "gene_data"
 SESSION_PREPROCESS_KEY = "preprocess_state"
 SESSION_EXTRACTION_KEY = "extraction_state"
+SESSION_KNOWLEDGE_SOURCES_KEY = "knowledge_sources_state"
+SESSION_KNOWLEDGE_CREDENTIAL_ID_KEY = "knowledge_sources_credential_id"
+KNOWLEDGE_SOURCE_CREDENTIAL_STORE: dict[str, dict[str, str]] = {}
 VARIANT_RAW_PAGE_SIZE = 25
 GENERAL_ANALYSIS_DATABASE_FILENAME = "general_gene_analysis_database.csv"
 REPORT_HISTORY_SUFFIXES = {".html", ".json", ".csv"}
@@ -1292,6 +1305,12 @@ def _empty_preprocess_state(manifest_files: list[str]) -> dict[str, Any]:
         "hg38_extraction_suggested": False,
         "hg38_extraction_message": "",
         "hg38_extraction_region": "",
+        "knowledge_vcf_source": "",
+        "dynamic_kb_ready": False,
+        "dynamic_kb_path": "",
+        "dynamic_kb_status": "",
+        "dynamic_kb_provider_count": 0,
+        "dynamic_kb_source_count": 0,
     }
 
 
@@ -1337,6 +1356,12 @@ def _store_preprocess_state(state: dict[str, Any]) -> None:
         "hg38_extraction_suggested": bool(state.get("hg38_extraction_suggested", False)),
         "hg38_extraction_message": str(state.get("hg38_extraction_message", "")),
         "hg38_extraction_region": str(state.get("hg38_extraction_region", "")),
+        "knowledge_vcf_source": str(state.get("knowledge_vcf_source", "")),
+        "dynamic_kb_ready": bool(state.get("dynamic_kb_ready", False)),
+        "dynamic_kb_path": str(state.get("dynamic_kb_path", "")),
+        "dynamic_kb_status": str(state.get("dynamic_kb_status", "")),
+        "dynamic_kb_provider_count": int(state.get("dynamic_kb_provider_count", 0) or 0),
+        "dynamic_kb_source_count": int(state.get("dynamic_kb_source_count", 0) or 0),
     }
     session.modified = True
 
@@ -1432,6 +1457,130 @@ def _store_extraction_state(state: dict[str, Any]) -> None:
         "last_commands": dict(state.get("last_commands") or {}),
     }
     session.modified = True
+
+
+def _knowledge_credential_id() -> str:
+    """Return a non-secret key for in-memory source credentials."""
+    credential_id = session.get(SESSION_KNOWLEDGE_CREDENTIAL_ID_KEY)
+    if not isinstance(credential_id, str) or not credential_id:
+        credential_id = uuid.uuid4().hex
+        session[SESSION_KNOWLEDGE_CREDENTIAL_ID_KEY] = credential_id
+        session.modified = True
+    return credential_id
+
+
+def _session_knowledge_credentials() -> dict[str, str]:
+    """Return credentials stored in server memory for this browser session."""
+    return KNOWLEDGE_SOURCE_CREDENTIAL_STORE.setdefault(_knowledge_credential_id(), {})
+
+
+def _empty_knowledge_sources_state() -> dict[str, Any]:
+    source_keys = [spec.key for spec in list_source_specs()]
+    return {
+        "selected_sources": source_keys,
+        "source_imports": {},
+        "notice": "",
+    }
+
+
+def _load_knowledge_sources_state() -> dict[str, Any]:
+    state = _empty_knowledge_sources_state()
+    saved_state = session.get(SESSION_KNOWLEDGE_SOURCES_KEY)
+    if isinstance(saved_state, dict):
+        state.update(saved_state)
+    known_keys = {spec.key for spec in list_source_specs()}
+    selected = [key for key in state.get("selected_sources", []) if key in known_keys]
+    state["selected_sources"] = selected or [spec.key for spec in list_source_specs()]
+    imports = state.get("source_imports") if isinstance(state.get("source_imports"), dict) else {}
+    state["source_imports"] = {
+        str(key): str(path)
+        for key, path in imports.items()
+        if key in known_keys and str(path).strip()
+    }
+    return state
+
+
+def _store_knowledge_sources_state(state: dict[str, Any]) -> None:
+    session[SESSION_KNOWLEDGE_SOURCES_KEY] = {
+        "selected_sources": list(state.get("selected_sources", [])),
+        "source_imports": dict(state.get("source_imports") or {}),
+        "notice": str(state.get("notice", "")),
+    }
+    session.modified = True
+
+
+def _knowledge_source_import_statuses(source_imports: dict[str, str]) -> dict[str, str]:
+    statuses: dict[str, str] = {}
+    for spec in list_source_specs():
+        import_path = str(source_imports.get(spec.key, "")).strip()
+        if import_path:
+            statuses[spec.key] = "ready" if _resolve_user_path(import_path).exists() else "missing"
+        elif "user_export" in spec.ingestion_modes:
+            statuses[spec.key] = "needs_export"
+    return statuses
+
+
+def _build_knowledge_source_cards(state: dict[str, Any]) -> list[dict[str, Any]]:
+    specs = list_source_specs()
+    statuses = credential_status_for_specs(specs, _session_knowledge_credentials())
+    source_imports = dict(state.get("source_imports") or {})
+    return list_source_cards(
+        selected_keys=list(state.get("selected_sources", [])),
+        credential_statuses=statuses,
+        import_statuses=_knowledge_source_import_statuses(source_imports),
+        import_paths=source_imports,
+    )
+
+
+def _save_uploaded_knowledge_source_imports(state: dict[str, Any]) -> int:
+    """Persist uploaded licensed-source exports as local runtime artifacts."""
+    source_imports = dict(state.get("source_imports") or {})
+    upload_count = 0
+    target_dir = RESULTS_DIR / "knowledge_source_imports" / _knowledge_credential_id()
+    for spec in list_source_specs():
+        if "user_export" not in spec.ingestion_modes:
+            continue
+        upload = request.files.get(f"source_import_{spec.key}")
+        if upload is None or not upload.filename:
+            continue
+        safe_name = secure_filename(upload.filename) or f"{spec.key}.csv"
+        target_dir.mkdir(parents=True, exist_ok=True)
+        target_path = target_dir / f"{spec.key}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{safe_name}"
+        upload.save(target_path)
+        source_imports[spec.key] = _as_relative_display(target_path)
+        upload_count += 1
+    state["source_imports"] = source_imports
+    return upload_count
+
+
+def _group_knowledge_source_cards(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    groups: list[dict[str, Any]] = []
+    for lane_key, label in LANE_LABELS.items():
+        group_cards = [card for card in cards if card.get("lane") == lane_key]
+        if group_cards:
+            groups.append({"key": lane_key, "label": label, "cards": group_cards})
+    remaining = [
+        card
+        for card in cards
+        if card.get("lane") not in {group["key"] for group in groups}
+    ]
+    if remaining:
+        groups.append({"key": "other", "label": "Other sources", "cards": remaining})
+    return groups
+
+
+def _default_knowledge_vcf_source(
+    *,
+    preprocess_state: dict[str, Any],
+    extraction_state: dict[str, Any],
+    vcf_files: list[str],
+) -> str:
+    """Return the preferred VCF for dynamic KB preprocessing."""
+    if extraction_state.get("last_output_vcf"):
+        return str(extraction_state["last_output_vcf"])
+    if preprocess_state.get("knowledge_vcf_source"):
+        return str(preprocess_state["knowledge_vcf_source"])
+    return vcf_files[0] if vcf_files else ""
 
 
 def _append_extraction_log(state: dict[str, Any], message: str, *, stream: str = "stdout") -> None:
@@ -1702,6 +1851,8 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
             preprocess_state.get("region_ready"),
             preprocess_state.get("manifest_ready"),
             preprocess_state.get("filtered_manifest"),
+            preprocess_state.get("dynamic_kb_ready"),
+            preprocess_state.get("dynamic_kb_path"),
             preprocess_state.get("logs"),
         ]
     ):
@@ -1729,6 +1880,11 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
         "filtered_manifest": filtered_manifest,
         "region_ready": bool(preprocess_state.get("region_ready", False)),
         "manifest_ready": bool(preprocess_state.get("manifest_ready", False)),
+        "dynamic_kb_ready": bool(preprocess_state.get("dynamic_kb_ready", False)),
+        "dynamic_kb_path": str(preprocess_state.get("dynamic_kb_path", "")),
+        "dynamic_kb_status": str(preprocess_state.get("dynamic_kb_status", "")),
+        "dynamic_kb_provider_count": int(preprocess_state.get("dynamic_kb_provider_count", 0) or 0),
+        "dynamic_kb_source_count": int(preprocess_state.get("dynamic_kb_source_count", 0) or 0),
         "analysis_ready": bool(preprocess_state.get("analysis_ready", False)),
         "probe_count": int(preprocess_state.get("probe_count", 0)),
         "selected_sources": list(preprocess_state.get("selected_sources", [])),
@@ -1742,8 +1898,10 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
         "hg38_extraction_region": str(preprocess_state.get("hg38_extraction_region", "")),
         "progress_percent": (
             100
+            if preprocess_state.get("dynamic_kb_ready")
+            else 66
             if preprocess_state.get("manifest_ready")
-            else 50
+            else 33
             if preprocess_state.get("region_ready")
             else 0
         ),
@@ -1764,6 +1922,15 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
                     f"{preprocess_state.get('probe_count', 0)} probes saved to {filtered_manifest}"
                     if preprocess_state.get("manifest_ready")
                     else "Waiting for the filtered EPIC manifest subset."
+                ),
+            },
+            {
+                "title": "Build Variant Knowledge Base",
+                "status": "complete" if preprocess_state.get("dynamic_kb_ready") else "optional",
+                "summary": (
+                    f"{preprocess_state.get('dynamic_kb_provider_count', 0)} provider statuses saved to {preprocess_state.get('dynamic_kb_path', '')}"
+                    if preprocess_state.get("dynamic_kb_ready")
+                    else "Waiting for an observed-variant VCF and selected knowledge sources."
                 ),
             },
         ],
@@ -1874,6 +2041,8 @@ def index() -> str:
     analysis_error = None
     preprocess_error = None
     preprocess_notice = None
+    knowledge_sources_error = None
+    knowledge_sources_notice = None
     extraction_error = None
     extraction_notice = None
     initial_tab = "overview"
@@ -1891,9 +2060,11 @@ def index() -> str:
         session.pop(SESSION_EXTRACTION_KEY, None)
         preprocess_state = _empty_preprocess_state(manifest_files)
         extraction_state = _empty_extraction_state(bam_files)
+        knowledge_sources_state = _load_knowledge_sources_state()
     else:
         preprocess_state = _load_preprocess_state(manifest_files)
         extraction_state = _load_extraction_state(bam_files)
+        knowledge_sources_state = _load_knowledge_sources_state()
     extraction_state["reference_ready"] = bool(extraction_reference_status.get("ready", False))
     bam_files = _merge_path_options(bam_files, list(extraction_state.get("bam_search_results", [])))
     if not extraction_state.get("bam_path") and bam_files:
@@ -1906,7 +2077,30 @@ def index() -> str:
     if request.method == "POST":
         workflow = request.form.get("workflow", "analysis").strip()
 
-        if workflow == "functional_map":
+        if workflow == "knowledge_sources":
+            initial_tab = "knowledge_sources"
+            known_keys = {spec.key for spec in list_source_specs()}
+            selected_sources = [
+                key for key in request.form.getlist("knowledge_source") if key in known_keys
+            ]
+            if not selected_sources:
+                selected_sources = [spec.key for spec in list_source_specs()]
+            knowledge_sources_state["selected_sources"] = selected_sources
+            credential_store = _session_knowledge_credentials()
+            for spec in list_source_specs():
+                field_name = f"credential_{spec.key}"
+                submitted_secret = request.form.get(field_name, "").strip()
+                if submitted_secret:
+                    credential_store[spec.key] = submitted_secret
+            uploaded_imports = _save_uploaded_knowledge_source_imports(knowledge_sources_state)
+            knowledge_sources_state["notice"] = (
+                f"Saved {len(selected_sources)} selected knowledge source(s)"
+                f" and {uploaded_imports} licensed-source import upload(s) for preprocessing."
+            )
+            knowledge_sources_notice = knowledge_sources_state["notice"]
+            _store_knowledge_sources_state(knowledge_sources_state)
+
+        elif workflow == "functional_map":
             requested_gene_name = request.form.get("functional_gene_name", "").strip().upper()
             try:
                 knowledge_base = load_gene_interpretation_database(requested_gene_name)
@@ -2010,6 +2204,8 @@ def index() -> str:
                     "manifest_source": request.form.get("manifest_source", "").strip()
                     or str(preprocess_state.get("manifest_source", "")),
                     "overwrite_filtered_manifest": request.form.get("overwrite_filtered_manifest") == "1",
+                    "knowledge_vcf_source": request.form.get("knowledge_vcf_source", "").strip()
+                    or str(preprocess_state.get("knowledge_vcf_source", "")),
                 }
             )
             if requested_gene_name != previous_gene_name:
@@ -2028,6 +2224,12 @@ def index() -> str:
                 preprocess_state["hg38_extraction_suggested"] = False
                 preprocess_state["hg38_extraction_message"] = ""
                 preprocess_state["hg38_extraction_region"] = ""
+                preprocess_state["knowledge_vcf_source"] = ""
+                preprocess_state["dynamic_kb_ready"] = False
+                preprocess_state["dynamic_kb_path"] = ""
+                preprocess_state["dynamic_kb_status"] = ""
+                preprocess_state["dynamic_kb_provider_count"] = 0
+                preprocess_state["dynamic_kb_source_count"] = 0
             preprocess_action = request.form.get("preprocess_action", "").strip()
 
             try:
@@ -2066,6 +2268,11 @@ def index() -> str:
                     preprocess_state["analysis_ready"] = False
                     preprocess_state["filtered_manifest"] = ""
                     preprocess_state["probe_count"] = 0
+                    preprocess_state["dynamic_kb_ready"] = False
+                    preprocess_state["dynamic_kb_path"] = ""
+                    preprocess_state["dynamic_kb_status"] = ""
+                    preprocess_state["dynamic_kb_provider_count"] = 0
+                    preprocess_state["dynamic_kb_source_count"] = 0
                     preprocess_state["region_recently_updated"] = True
                     _append_preprocess_log(
                         preprocess_state,
@@ -2176,6 +2383,11 @@ def index() -> str:
                     preprocess_state["manifest_ready"] = True
                     preprocess_state["analysis_ready"] = True
                     preprocess_state["probe_count"] = int(selection["probe_count"])
+                    preprocess_state["dynamic_kb_ready"] = False
+                    preprocess_state["dynamic_kb_path"] = ""
+                    preprocess_state["dynamic_kb_status"] = ""
+                    preprocess_state["dynamic_kb_provider_count"] = 0
+                    preprocess_state["dynamic_kb_source_count"] = 0
                     preprocess_state["region_recently_updated"] = False
                     _append_preprocess_log(
                         preprocess_state,
@@ -2187,6 +2399,74 @@ def index() -> str:
                     preprocess_notice = (
                         f"Prepared {selection['probe_count']} probe(s) at {preprocess_state['filtered_manifest']}."
                     )
+                elif preprocess_action == "build_variant_knowledge_base":
+                    if not preprocess_state.get("region_ready"):
+                        raise AnalysisError("Resolve the gene coordinates before building a dynamic knowledge base.")
+                    if not preprocess_state.get("manifest_ready") or not preprocess_state.get("filtered_manifest"):
+                        raise AnalysisError("Select methylation data before building a dynamic knowledge base.")
+                    vcf_source = (
+                        str(preprocess_state.get("knowledge_vcf_source", "")).strip()
+                        or _default_knowledge_vcf_source(
+                            preprocess_state=preprocess_state,
+                            extraction_state=extraction_state,
+                            vcf_files=vcf_files,
+                        )
+                    )
+                    if not vcf_source:
+                        raise AnalysisError(
+                            "Choose a VCF source for dynamic knowledge-base generation, or extract one first."
+                        )
+                    vcf_path = _resolve_user_path(vcf_source)
+                    if not vcf_path.exists():
+                        raise AnalysisError(f"Dynamic KB VCF source was not found: {vcf_path}")
+                    manifest_subset_path = _resolve_user_path(str(preprocess_state["filtered_manifest"]))
+                    if not manifest_subset_path.exists():
+                        raise AnalysisError(f"Filtered manifest was not found: {manifest_subset_path}")
+
+                    selected_sources = list(knowledge_sources_state.get("selected_sources", []))
+                    if not selected_sources:
+                        selected_sources = [spec.key for spec in list_source_specs()]
+                    output_dir = (
+                        RESULTS_DIR
+                        / "dynamic_knowledge_bases"
+                        / f"{sanitize_gene_name_for_filename(str(preprocess_state['gene_name']).lower())}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+                    )
+                    _append_preprocess_log(
+                        preprocess_state,
+                        (
+                            f"Building dynamic variant knowledge base for {preprocess_state['gene_name']} "
+                            f"from {vcf_path} with {len(selected_sources)} selected source(s)."
+                        ),
+                    )
+                    variants = load_variants(str(vcf_path), str(preprocess_state["region"]))
+                    manifest_subset = pd.read_csv(manifest_subset_path)
+                    dynamic_payload = build_dynamic_knowledge_base(
+                        gene=str(preprocess_state["gene_name"]),
+                        region=str(preprocess_state["region"]),
+                        genome_build=str(preprocess_state.get("build", "hg19")),
+                        variants=variants,
+                        manifest_subset=manifest_subset,
+                        selected_sources=selected_sources,
+                        credentials=_session_knowledge_credentials(),
+                        source_imports=dict(knowledge_sources_state.get("source_imports") or {}),
+                        output_dir=output_dir,
+                        cache_dir=PROJECT_ROOT / ".research-cache" / "variant_knowledge",
+                    )
+                    artifact_path = Path(str(dynamic_payload.get("artifact_path", output_dir / "variant_kb.json")))
+                    preprocess_state["knowledge_vcf_source"] = _as_relative_display(vcf_path)
+                    preprocess_state["dynamic_kb_ready"] = True
+                    preprocess_state["dynamic_kb_path"] = _as_relative_display(artifact_path)
+                    preprocess_state["dynamic_kb_provider_count"] = len(dynamic_payload.get("provider_statuses", []))
+                    preprocess_state["dynamic_kb_source_count"] = len(selected_sources)
+                    preprocess_state["dynamic_kb_status"] = (
+                        f"Built dynamic KB with {preprocess_state['dynamic_kb_provider_count']} provider status record(s)."
+                    )
+                    preprocess_state["analysis_ready"] = True
+                    _append_preprocess_log(
+                        preprocess_state,
+                        f"Saved dynamic knowledge base at {preprocess_state['dynamic_kb_path']}.",
+                    )
+                    preprocess_notice = preprocess_state["dynamic_kb_status"]
                 else:
                     raise AnalysisError("Choose a preprocessing action before submitting the form.")
             except (AnalysisError, ValueError) as exc:
@@ -2510,6 +2790,11 @@ def index() -> str:
                         ),
                         overwrite_general_database=bool(form["overwrite_general_database"]),
                         general_database_path=_general_analysis_database_path(),
+                        dynamic_knowledge_base_path=(
+                            _resolve_user_path(str(preprocess_state.get("dynamic_kb_path", "")))
+                            if preprocess_state.get("dynamic_kb_ready") and preprocess_state.get("dynamic_kb_path")
+                            else None
+                        ),
                     )
 
                     methylation_probe_preview = analysis_result.methylation_insights.get("probe_preview")
@@ -2568,6 +2853,16 @@ def index() -> str:
                             else ""
                         ),
                         "general_database_status": getattr(analysis_result, "general_database_status", ""),
+                        "dynamic_knowledge_base_path": (
+                            _as_relative_display(getattr(analysis_result, "dynamic_knowledge_base_path"))
+                            if getattr(analysis_result, "dynamic_knowledge_base_path", None)
+                            else ""
+                        ),
+                        "dynamic_knowledge_base_status": getattr(
+                            analysis_result,
+                            "dynamic_knowledge_base_status",
+                            "",
+                        ),
                     }
                 except AnalysisError as exc:
                     analysis_error = str(exc)
@@ -2578,10 +2873,19 @@ def index() -> str:
     processed_gene_symbols = discover_processed_gene_symbols(report_history, general_database)
     analysis_scope_options = _build_analysis_scope_options(preprocess_state)
     extraction_scope_options = _build_extraction_scope_options(extraction_state)
+    if not preprocess_state.get("knowledge_vcf_source"):
+        preprocess_state["knowledge_vcf_source"] = _default_knowledge_vcf_source(
+            preprocess_state=preprocess_state,
+            extraction_state=extraction_state,
+            vcf_files=vcf_files,
+        )
+    knowledge_source_cards = _build_knowledge_source_cards(knowledge_sources_state)
+    knowledge_source_groups = _group_knowledge_source_cards(knowledge_source_cards)
     available_tabs = [
         "overview",
         "preprocessing",
         "extraction",
+        "knowledge_sources",
         "central_database",
         "history",
         "proteins",
@@ -2600,6 +2904,12 @@ def index() -> str:
         error=analysis_error,
         preprocess_error=preprocess_error,
         preprocess_notice=preprocess_notice,
+        knowledge_sources_error=knowledge_sources_error,
+        knowledge_sources_notice=knowledge_sources_notice,
+        knowledge_sources_state=knowledge_sources_state,
+        knowledge_source_groups=knowledge_source_groups,
+        knowledge_source_cards=knowledge_source_cards,
+        knowledge_source_lane_labels=LANE_LABELS,
         extraction_error=extraction_error,
         extraction_notice=extraction_notice,
         preprocess_state=preprocess_state,

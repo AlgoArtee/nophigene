@@ -14,8 +14,12 @@ from .workflow_runner import normalize_job_request
 
 try:
     from ..bam_extraction import get_extraction_tool_status, get_hg38_reference_status
+    from ..variant_knowledge.credentials import credential_status_for_specs
+    from ..variant_knowledge.registry import get_source_spec, list_source_cards, list_source_specs
 except ImportError:
     from bam_extraction import get_extraction_tool_status, get_hg38_reference_status
+    from variant_knowledge.credentials import credential_status_for_specs
+    from variant_knowledge.registry import get_source_spec, list_source_cards, list_source_specs
 
 api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
 
@@ -67,6 +71,7 @@ def api_index():
             "openapi": "/api/v1/openapi.json",
             "profiles": "/api/v1/profiles",
             "jobs": "/api/v1/jobs",
+            "knowledge_sources": "/api/v1/knowledge-sources",
         }
     )
 
@@ -102,6 +107,114 @@ def delete_profile(profile_id: str):
 def list_jobs():
     jobs = _jobs().list()
     return jsonify({"jobs": jobs, "count": len(jobs)})
+
+
+@api_v1.get("/knowledge-sources")
+def list_knowledge_sources():
+    specs = list_source_specs()
+    credential_statuses = credential_status_for_specs(specs)
+    cards = list_source_cards(credential_statuses=credential_statuses)
+    return jsonify({"sources": cards, "count": len(cards)})
+
+
+@api_v1.post("/knowledge-sources/test")
+def test_knowledge_source():
+    payload = _json_body()
+    source_imports = payload.get("source_imports") or {}
+    if source_imports and not isinstance(source_imports, dict):
+        raise APIError("invalid_source_imports", "'source_imports' must be an object mapping source keys to paths.", 422)
+    raw_sources = payload.get("sources")
+    if raw_sources is not None:
+        if isinstance(raw_sources, str):
+            source_keys = [part.strip() for part in raw_sources.split(",") if part.strip()]
+        elif isinstance(raw_sources, list):
+            source_keys = [str(item).strip() for item in raw_sources if str(item).strip()]
+        else:
+            raise APIError("invalid_knowledge_sources", "'sources' must be a list or comma-separated string.", 422)
+        if not source_keys:
+            raise APIError("invalid_knowledge_sources", "'sources' must include at least one source key.", 422)
+        specs = []
+        for source_key in source_keys:
+            spec = get_source_spec(source_key)
+            if spec is None:
+                raise APIError("unknown_knowledge_source", f"Unknown knowledge source '{source_key}'.", 404)
+            specs.append(spec)
+        credential_statuses = credential_status_for_specs(specs)
+        return jsonify(
+            {
+                "results": [
+                    _knowledge_source_test_result(
+                        spec,
+                        credential_statuses[spec.key],
+                        import_path=str(source_imports.get(spec.key, "")),
+                    )
+                    for spec in specs
+                ],
+                "count": len(specs),
+            }
+        )
+
+    source_key = str(payload.get("source_key") or payload.get("key") or "").strip()
+    spec = get_source_spec(source_key)
+    if spec is None:
+        raise APIError("unknown_knowledge_source", f"Unknown knowledge source '{source_key}'.", 404)
+    status = credential_status_for_specs([spec])[spec.key]
+    import_path = str(payload.get("source_import") or source_imports.get(spec.key, "") or "")
+    return jsonify(_knowledge_source_test_result(spec, status, import_path=import_path))
+
+
+def _source_import_ready(spec, import_path: str) -> bool:
+    return "user_export" in spec.ingestion_modes and bool(import_path) and Path(import_path).exists()
+
+
+def _source_readiness(spec, credential_status: str, import_path: str) -> dict[str, str]:
+    official_supported = "official_api" in spec.ingestion_modes
+    official_ready = official_supported and (not spec.env_var or credential_status != "missing")
+    user_export_supported = "user_export" in spec.ingestion_modes
+    return {
+        "official_api": "ready" if official_ready else "needs_credentials" if official_supported else "not_supported",
+        "user_export": (
+            "ready"
+            if _source_import_ready(spec, import_path)
+            else "needs_export"
+            if user_export_supported
+            else "not_supported"
+        ),
+        "linkout_only": "available" if "linkout_only" in spec.ingestion_modes else "not_supported",
+    }
+
+
+def _knowledge_source_test_result(spec, status: str, *, import_path: str = "") -> dict[str, Any]:
+    readiness = _source_readiness(spec, status, import_path)
+    if readiness["official_api"] == "ready" and spec.connector_kind not in {"metadata", "auth_metadata", "licensed_metadata"}:
+        query_status = "queryable"
+        message = f"{spec.name} has a configured official connector."
+    elif readiness["user_export"] == "ready":
+        query_status = "import_ready"
+        message = f"{spec.name} has a user-provided export ready for dynamic KB ingestion."
+    elif spec.access_type in {"auth_api", "licensed"} and status == "missing" and "official_api" in spec.ingestion_modes:
+        query_status = "needs_credentials"
+        message = f"Set {spec.env_var} before live querying {spec.name}."
+    elif spec.requires_export or "user_export" in spec.ingestion_modes:
+        query_status = "needs_export"
+        message = f"Upload a permitted CSV/JSON export for {spec.name}; scraping is not performed."
+    elif spec.connector_kind in {"metadata", "auth_metadata", "licensed_metadata"}:
+        query_status = "metadata_only"
+        message = spec.license_note
+    else:
+        query_status = "queryable"
+        message = f"{spec.name} has a configured connector."
+    return {
+        "source": spec.to_card(
+            credential_status=status,
+            import_status=readiness["user_export"],
+            import_path=import_path,
+        ),
+        "key": spec.key,
+        "status": query_status,
+        "message": message,
+        "readiness": readiness,
+    }
 
 
 @api_v1.post("/jobs")

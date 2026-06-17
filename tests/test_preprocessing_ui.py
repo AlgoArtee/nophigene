@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import io
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -38,6 +39,7 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert "{{ result.methylation_insights.whitelist_probe_reference_summary }}" in template_text
     assert 'data-detail-target="qa"' in template_text
     assert "{{ app_structure_qa_items }}" not in template_text
+
     assert "{{ item.question }}" in template_text
     assert "App Structure Q&amp;A" in template_text
     assert "Curated probe-to-variant and paper links" in template_text
@@ -114,6 +116,41 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert 'data-variant-raw-table' in template_text
     assert 'variant-raw-data' in template_text
     assert "function renderVariantRawPage()" in template_text
+
+
+def test_knowledge_sources_tab_accepts_licensed_export_upload(monkeypatch, tmp_path: Path) -> None:
+    results_dir = tmp_path / "results"
+    monkeypatch.setattr("src.webapp.RESULTS_DIR", results_dir)
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+
+    client = app.test_client()
+    response = client.post(
+        "/",
+        data={
+            "workflow": "knowledge_sources",
+            "knowledge_source": ["hgmd"],
+            "source_import_hgmd": (
+                io.BytesIO(b"gene,rsid,classification\nGENE1,rs1,Pathogenic\n"),
+                "hgmd.csv",
+            ),
+        },
+        content_type="multipart/form-data",
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Current import:" in page
+    assert "import: ready" in page
+    with client.session_transaction() as session_state:
+        source_imports = session_state["knowledge_sources_state"]["source_imports"]
+
+    assert "hgmd" in source_imports
+    assert (Path(__file__).resolve().parent.parent / source_imports["hgmd"]).is_file()
 
 
 def test_preprocess_find_region_submission_updates_session(monkeypatch) -> None:

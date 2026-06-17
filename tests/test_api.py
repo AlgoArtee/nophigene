@@ -66,6 +66,51 @@ def _test_app(profile_store: ProfileStore, manager: JobManager) -> Flask:
     return app
 
 
+def test_knowledge_source_endpoints_support_single_and_batch_tests(tmp_path: Path) -> None:
+    store = ProfileStore(tmp_path / "profiles.json")
+    manager = JobManager(jobs_root=tmp_path / "jobs", profile_store=store)
+    client = _test_app(store, manager).test_client()
+
+    listing = client.get("/api/v1/knowledge-sources")
+    assert listing.status_code == 200
+    listing_payload = listing.get_json()
+    assert listing_payload["count"] >= 1
+    assert all(card["selected"] for card in listing_payload["sources"])
+    hgmd_card = next(card for card in listing_payload["sources"] if card["key"] == "hgmd")
+    assert hgmd_card["ingestion_modes"] == ["user_export", "linkout_only"]
+    assert hgmd_card["requires_export"] is True
+    assert "variant" in hgmd_card["import_schema"]
+
+    single = client.post("/api/v1/knowledge-sources/test", json={"source_key": "clinvar"})
+    assert single.status_code == 200
+    single_payload = single.get_json()
+    assert single_payload["key"] == "clinvar"
+    assert single_payload["status"] == "queryable"
+
+    batch = client.post(
+        "/api/v1/knowledge-sources/test",
+        json={"sources": ["clinvar", "omim", "hgmd"]},
+    )
+    assert batch.status_code == 200
+    statuses = {item["key"]: item["status"] for item in batch.get_json()["results"]}
+    assert statuses == {
+        "clinvar": "queryable",
+        "omim": "needs_credentials",
+        "hgmd": "needs_export",
+    }
+
+    hgmd_export = tmp_path / "hgmd.csv"
+    hgmd_export.write_text("gene,rsid,classification\nGENE1,rs1,Pathogenic\n", encoding="utf-8")
+    import_ready = client.post(
+        "/api/v1/knowledge-sources/test",
+        json={"sources": ["hgmd"], "source_imports": {"hgmd": str(hgmd_export)}},
+    )
+    assert import_ready.status_code == 200
+    import_payload = import_ready.get_json()["results"][0]
+    assert import_payload["status"] == "import_ready"
+    assert import_payload["readiness"]["user_export"] == "ready"
+
+
 def test_profile_crud_validates_files_and_keeps_id_immutable(tmp_path: Path) -> None:
     files = _profile_files(tmp_path)
     store = ProfileStore(tmp_path / "profiles.json")

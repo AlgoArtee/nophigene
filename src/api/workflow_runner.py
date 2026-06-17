@@ -30,6 +30,7 @@ try:
         normalize_analysis_scope,
     )
     from ..bam_extraction import HG38_FASTA, extract_region_vcf
+    from ..variant_knowledge.orchestrator import build_dynamic_knowledge_base
     from ..workflow import (
         normalize_gene_symbol,
         normalize_genome_build,
@@ -52,6 +53,7 @@ except ImportError:
         normalize_analysis_scope,
     )
     from bam_extraction import HG38_FASTA, extract_region_vcf
+    from variant_knowledge.orchestrator import build_dynamic_knowledge_base
     from workflow import (
         normalize_gene_symbol,
         normalize_genome_build,
@@ -63,6 +65,7 @@ JOB_OPERATIONS = {
     "resolve_regions",
     "prepare_manifests",
     "extract_variants",
+    "build_knowledge_bases",
     "analyze",
     "render_reports",
     "full_workflow",
@@ -125,7 +128,7 @@ def normalize_job_request(payload: Any) -> dict[str, Any]:
 
     profile_id = str(payload.get("profile_id") or "").strip()
     source_job_id = str(payload.get("source_job_id") or "").strip()
-    if operation in {"prepare_manifests", "extract_variants", "analyze", "full_workflow"} and not profile_id:
+    if operation in {"prepare_manifests", "extract_variants", "build_knowledge_bases", "analyze", "full_workflow"} and not profile_id:
         raise APIError("profile_required", f"'profile_id' is required for {operation}.", 422)
     if operation == "render_reports" and not source_job_id:
         raise APIError("source_job_required", "'source_job_id' is required for render_reports.", 422)
@@ -155,6 +158,30 @@ def normalize_job_request(payload: Any) -> dict[str, Any]:
     normalized_options = {
         "update_general_database": bool(options.get("update_general_database", False)),
         "overwrite_general_database": bool(options.get("overwrite_general_database", False)),
+        "use_dynamic_knowledge_base": bool(options.get("use_dynamic_knowledge_base", False)),
+    }
+    raw_sources = options.get("knowledge_sources")
+    if raw_sources in (None, "", []):
+        normalized_options["knowledge_sources"] = []
+    elif isinstance(raw_sources, str):
+        normalized_options["knowledge_sources"] = [
+            item.strip() for item in raw_sources.split(",") if item.strip()
+        ]
+    elif isinstance(raw_sources, list):
+        normalized_options["knowledge_sources"] = [str(item).strip() for item in raw_sources if str(item).strip()]
+    else:
+        raise APIError("invalid_knowledge_sources", "'options.knowledge_sources' must be a list or comma-separated string.", 422)
+    raw_imports = options.get("knowledge_source_imports") or {}
+    if not isinstance(raw_imports, dict):
+        raise APIError(
+            "invalid_knowledge_source_imports",
+            "'options.knowledge_source_imports' must be an object mapping source keys to CSV/JSON paths.",
+            422,
+        )
+    normalized_options["knowledge_source_imports"] = {
+        str(source_key).strip(): str(import_path).strip()
+        for source_key, import_path in raw_imports.items()
+        if str(source_key).strip() and str(import_path).strip()
     }
     return {
         "operation": operation,
@@ -225,7 +252,7 @@ class WorkflowRunner:
 
         manifest: pd.DataFrame | None = None
         beta_values: pd.DataFrame | None = None
-        if operation in {"prepare_manifests", "analyze", "full_workflow"}:
+        if operation in {"prepare_manifests", "build_knowledge_bases", "analyze", "full_workflow"}:
             progress("loading_manifest", 0, len(genes), [])
             manifest = load_full_methylation_manifest(profile["manifest_path"])
         if operation in {"analyze", "full_workflow"}:
@@ -358,7 +385,7 @@ class WorkflowRunner:
             return outcome
 
         manifest_subset: pd.DataFrame | None = None
-        if operation in {"prepare_manifests", "analyze", "full_workflow"}:
+        if operation in {"prepare_manifests", "build_knowledge_bases", "analyze", "full_workflow"}:
             manifest_subset = build_gene_manifest_subset(
                 manifest,
                 region=resolved["region"],
@@ -395,6 +422,25 @@ class WorkflowRunner:
             return outcome
 
         variants = load_variants(variant_source["path"], resolved["region"])
+        dynamic_knowledge_base_path: Path | None = None
+        if operation == "build_knowledge_bases" or request_payload["options"]["use_dynamic_knowledge_base"]:
+            dynamic_payload = self._build_dynamic_knowledge_base_artifact(
+                gene=gene,
+                resolved=resolved,
+                variants=variants,
+                manifest_subset=manifest_subset,
+                gene_dir=gene_dir,
+                request_payload=request_payload,
+            )
+            dynamic_knowledge_base_path = Path(dynamic_payload["artifact_path"])
+            outcome["dynamic_knowledge_base_path"] = str(dynamic_knowledge_base_path)
+            outcome["artifacts"]["dynamic_knowledge_base"] = _artifact_url(
+                job_id,
+                f"genes/{gene}/dynamic_knowledge_base/variant_kb.json",
+            )
+            outcome["dynamic_provider_count"] = len(dynamic_payload.get("provider_statuses", []))
+            if operation == "build_knowledge_bases":
+                return outcome
         methylation = build_gene_methylation_table(
             beta_values,
             manifest_subset,
@@ -413,6 +459,7 @@ class WorkflowRunner:
             popstats=popstats,
             update_general_database_enabled=request_payload["options"]["update_general_database"],
             overwrite_general_database=request_payload["options"]["overwrite_general_database"],
+            dynamic_knowledge_base_path=dynamic_knowledge_base_path,
         )
         variants_path = gene_dir / "variants.csv"
         methylation_path = gene_dir / "methylation.csv"
@@ -453,6 +500,30 @@ class WorkflowRunner:
                 )
             )
         return outcome
+
+    def _build_dynamic_knowledge_base_artifact(
+        self,
+        *,
+        gene: str,
+        resolved: dict[str, Any],
+        variants: pd.DataFrame,
+        manifest_subset: pd.DataFrame | None,
+        gene_dir: Path,
+        request_payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        output_dir = gene_dir / "dynamic_knowledge_base"
+        payload = build_dynamic_knowledge_base(
+            gene=gene,
+            region=resolved["region"],
+            genome_build=resolved["genome_build"],
+            variants=variants,
+            manifest_subset=manifest_subset,
+            selected_sources=request_payload["options"].get("knowledge_sources") or None,
+            source_imports=request_payload["options"].get("knowledge_source_imports") or None,
+            output_dir=output_dir,
+            cache_dir=gene_dir / ".knowledge_cache",
+        )
+        return payload
 
     def _variant_source(
         self,
@@ -538,6 +609,10 @@ class WorkflowRunner:
             "general_database": {
                 "path": prepared.general_database_path,
                 "status": prepared.general_database_status,
+            },
+            "dynamic_knowledge_base": {
+                "path": getattr(prepared, "dynamic_knowledge_base_path", None),
+                "status": getattr(prepared, "dynamic_knowledge_base_status", ""),
             },
         }
 

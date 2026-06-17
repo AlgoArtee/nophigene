@@ -39,6 +39,7 @@ try:
         sanitize_gene_name_for_filename,
         save_filtered_manifest,
     )
+    from .variant_knowledge.merger import load_dynamic_knowledge_base, merge_dynamic_knowledge_base
 except ImportError:
     from helper_functions.filter_manifest_region import (
         filter_probes_by_region,
@@ -47,6 +48,7 @@ except ImportError:
         sanitize_gene_name_for_filename,
         save_filtered_manifest,
     )
+    from variant_knowledge.merger import load_dynamic_knowledge_base, merge_dynamic_knowledge_base
 
 DEFAULT_REGION = "11:636269-640706"
 DEFAULT_REPORT_NAME = "drd4_report.html"
@@ -426,6 +428,11 @@ class AnalysisResult:
     general_database_status : str
         Human-readable status describing whether this run added, skipped, or
         overwrote central database rows.
+    dynamic_knowledge_base_path : Path | None
+        Optional dynamic knowledge-base artifact merged into the interpretation
+        bundle before variant matching.
+    dynamic_knowledge_base_status : str
+        Human-readable status for the dynamic merge step.
     """
 
     variants: pd.DataFrame
@@ -446,6 +453,8 @@ class AnalysisResult:
     predictive_theses: dict[str, Any]
     general_database_path: Path
     general_database_status: str
+    dynamic_knowledge_base_path: Path | None
+    dynamic_knowledge_base_status: str
 
 
 @dataclass
@@ -466,6 +475,8 @@ class PreparedAnalysisResult:
     predictive_theses: dict[str, Any]
     general_database_path: Path
     general_database_status: str
+    dynamic_knowledge_base_path: Path | None
+    dynamic_knowledge_base_status: str
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -5822,6 +5833,8 @@ def generate_report(
     population_insights: dict[str, Any] | None = None,
     predictive_theses: dict[str, Any] | None = None,
     analysis_scope: str = DEFAULT_ANALYSIS_SCOPE,
+    dynamic_knowledge_base_status: str = "",
+    dynamic_knowledge_base_path: str | Path | None = None,
 ) -> Path:
     """Generate a report artifact from the assembled analysis tables.
 
@@ -5877,6 +5890,18 @@ def generate_report(
             methylation_path_markup = (
                 "<p><strong>Methylation CSV:</strong> "
                 f"{html.escape(str(methylation_output_path))}</p>"
+            )
+        dynamic_kb_markup = ""
+        if dynamic_knowledge_base_status or dynamic_knowledge_base_path:
+            dynamic_kb_markup = (
+                "<p><strong>Dynamic knowledge base:</strong> "
+                f"{html.escape(dynamic_knowledge_base_status or 'Available')}"
+                + (
+                    f" ({html.escape(str(dynamic_knowledge_base_path))})"
+                    if dynamic_knowledge_base_path
+                    else ""
+                )
+                + "</p>"
             )
 
         variant_interpretation_section = _render_variant_interpretation_report(
@@ -6048,6 +6073,7 @@ def generate_report(
       <p><strong>Region:</strong> {html.escape(region)}</p>
       <p><strong>Report path:</strong> {html.escape(str(report_path))}</p>
       {methylation_path_markup}
+      {dynamic_kb_markup}
       <div class="metrics">
         <article class="metric">
           <span>VCF calls</span>
@@ -6087,6 +6113,10 @@ def generate_report(
             "population_statistics": _serialize_popstats(popstats),
             "methylation_output_path": str(methylation_output_path) if methylation_output_path else None,
             "predictive_theses": predictive_theses or {},
+            "dynamic_knowledge_base": {
+                "status": dynamic_knowledge_base_status,
+                "path": str(dynamic_knowledge_base_path) if dynamic_knowledge_base_path else "",
+            },
         }
         report_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         return report_path
@@ -6107,6 +6137,10 @@ def generate_report(
                 {
                     "metric": "predictive_thesis_matched_cases",
                     "value": (predictive_theses or {}).get("matched_case_count", 0),
+                },
+                {
+                    "metric": "dynamic_knowledge_base_status",
+                    "value": dynamic_knowledge_base_status,
                 },
             ]
         )
@@ -6130,6 +6164,7 @@ def run_analysis(
     analysis_scope: str = DEFAULT_ANALYSIS_SCOPE,
     overwrite_general_database: bool = False,
     general_database_path: str | Path = GENERAL_ANALYSIS_DATABASE_PATH,
+    dynamic_knowledge_base_path: str | Path | None = None,
 ) -> AnalysisResult:
     """Run the end-to-end gene analysis workflow.
 
@@ -6187,6 +6222,7 @@ def run_analysis(
         update_general_database_enabled=True,
         overwrite_general_database=overwrite_general_database,
         general_database_path=general_database_path,
+        dynamic_knowledge_base_path=dynamic_knowledge_base_path,
     )
     variants = prepared.variants
     methylation = prepared.methylation
@@ -6212,6 +6248,8 @@ def run_analysis(
         population_insights=prepared.population_insights,
         predictive_theses=prepared.predictive_theses,
         analysis_scope=normalized_analysis_scope,
+        dynamic_knowledge_base_status=prepared.dynamic_knowledge_base_status,
+        dynamic_knowledge_base_path=prepared.dynamic_knowledge_base_path,
     )
 
     return AnalysisResult(
@@ -6233,6 +6271,8 @@ def run_analysis(
         predictive_theses=prepared.predictive_theses,
         general_database_path=prepared.general_database_path,
         general_database_status=prepared.general_database_status,
+        dynamic_knowledge_base_path=prepared.dynamic_knowledge_base_path,
+        dynamic_knowledge_base_status=prepared.dynamic_knowledge_base_status,
     )
 
 
@@ -6247,13 +6287,37 @@ def analyze_prepared_data(
     update_general_database_enabled: bool = False,
     overwrite_general_database: bool = False,
     general_database_path: str | Path = GENERAL_ANALYSIS_DATABASE_PATH,
+    dynamic_knowledge_base_path: str | Path | None = None,
 ) -> PreparedAnalysisResult:
     """Interpret already loaded variant and methylation tables."""
     normalized_gene_name = gene_name.strip().upper() or DEFAULT_GENE_NAME
     normalized_analysis_scope = normalize_analysis_scope(analysis_scope)
     analysis_scope_label = get_analysis_scope_label(normalized_analysis_scope)
 
+    resolved_dynamic_knowledge_base_path = (
+        Path(dynamic_knowledge_base_path) if dynamic_knowledge_base_path else None
+    )
+    dynamic_payload = load_dynamic_knowledge_base(resolved_dynamic_knowledge_base_path)
+    if resolved_dynamic_knowledge_base_path and dynamic_payload is None:
+        dynamic_knowledge_base_status = (
+            f"Dynamic knowledge base was requested but could not be loaded from "
+            f"{resolved_dynamic_knowledge_base_path}."
+        )
+    elif dynamic_payload:
+        provider_count = len(dynamic_payload.get("provider_statuses", []))
+        dynamic_knowledge_base_status = (
+            f"Merged dynamic knowledge base with {provider_count} provider status record(s)."
+        )
+    else:
+        dynamic_knowledge_base_status = "Dynamic knowledge base was not provided."
+
     knowledge_base = load_gene_interpretation_database(normalized_gene_name)
+    knowledge_base = merge_dynamic_knowledge_base(
+        knowledge_base,
+        dynamic_payload,
+        gene_name=normalized_gene_name,
+        region=region,
+    )
     if knowledge_base is not None:
         variants = annotate_known_variant_ids(variants, knowledge_base)
         variant_interpretations = build_variant_interpretations(variants, knowledge_base, region=region)
@@ -6343,6 +6407,8 @@ def analyze_prepared_data(
         predictive_theses=predictive_theses,
         general_database_path=Path(general_database_result["path"]),
         general_database_status=str(general_database_result["message"]),
+        dynamic_knowledge_base_path=resolved_dynamic_knowledge_base_path if dynamic_payload else None,
+        dynamic_knowledge_base_status=dynamic_knowledge_base_status,
     )
 
 

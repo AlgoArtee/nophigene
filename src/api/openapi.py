@@ -86,6 +86,18 @@ def build_openapi_document() -> dict[str, Any]:
             "/jobs/{job_id}/artifacts/{path}": {
                 "get": {"summary": "Download a job artifact", "responses": {"200": {"description": "Artifact"}}}
             },
+            "/knowledge-sources": {
+                "get": {
+                    "summary": "List dynamic knowledge source cards, ingestion modes, and import schema",
+                    "responses": {"200": {"description": "OK"}},
+                }
+            },
+            "/knowledge-sources/test": {
+                "post": {
+                    "summary": "Check source API/export/linkout readiness without storing credentials",
+                    "responses": {"200": {"description": "OK"}},
+                }
+            },
             "/health": {
                 "get": {"summary": "Get worker and extraction health", "responses": {"200": {"description": "OK"}}}
             },
@@ -114,6 +126,7 @@ def build_openapi_document() -> dict[str, Any]:
                                 "resolve_regions",
                                 "prepare_manifests",
                                 "extract_variants",
+                                "build_knowledge_bases",
                                 "analyze",
                                 "render_reports",
                                 "full_workflow",
@@ -140,6 +153,18 @@ def build_openapi_document() -> dict[str, Any]:
                             "properties": {
                                 "update_general_database": {"type": "boolean", "default": False},
                                 "overwrite_general_database": {"type": "boolean", "default": False},
+                                "use_dynamic_knowledge_base": {"type": "boolean", "default": False},
+                                "knowledge_sources": {
+                                    "oneOf": [
+                                        {"type": "string"},
+                                        {"type": "array", "items": {"type": "string"}},
+                                    ],
+                                },
+                                "knowledge_source_imports": {
+                                    "type": "object",
+                                    "description": "Map source keys to permitted local CSV/JSON export paths.",
+                                    "additionalProperties": {"type": "string"},
+                                },
                             },
                         },
                     },
