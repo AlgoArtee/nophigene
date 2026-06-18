@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import os
 import time
 from typing import Any
@@ -33,6 +35,15 @@ def _literature_query(query: KnowledgeQuery) -> str:
 NCBI_EUTILS_BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 NCBI_TOOL_NAME = "NophiGeneDynamicKB"
 NLM_CLINICAL_TABLES_VARIANTS_URL = "https://clinicaltables.nlm.nih.gov/api/variants/v4/search"
+CLINGEN_VALIDITY_URL = "https://search.clinicalgenome.org/kb/gene-validity/download"
+CLINGEN_DOSAGE_URL = "https://search.clinicalgenome.org/kb/gene-dosage/download"
+CLINGEN_SUMMARY_URL = "https://search.clinicalgenome.org/kb/reports/curation-activity-summary-report"
+CLINGEN_ACTIONABILITY_URLS = (
+    ("Adult", "https://actionability.clinicalgenome.org/ac/Adult/api/summ?flavor=flat"),
+    ("Pediatric", "https://actionability.clinicalgenome.org/ac/Pediatric/api/summ?flavor=flat"),
+)
+CLINGEN_PRIMARY_TIMEOUT_SECONDS = 20
+CLINGEN_OPTIONAL_TIMEOUT_SECONDS = 8
 
 
 def _ncbi_request_params(params: dict[str, Any]) -> dict[str, Any]:
@@ -852,6 +863,279 @@ class GraphqlConnector(BaseConnector):
             return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
 
 
+class ClinGenConnector(BaseConnector):
+    """ClinGen connector backed by official gene-centered downloads and APIs."""
+
+    def query(self, context: KnowledgeQuery) -> SourceResult:
+        started = time.monotonic()
+        urls: list[str] = []
+        records: list[dict[str, Any]] = []
+        warnings: list[str] = []
+        request_errors: list[KnowledgeRequestError] = []
+
+        download_steps = (
+            ("Gene-Disease Validity", CLINGEN_VALIDITY_URL, self._validity_records, CLINGEN_PRIMARY_TIMEOUT_SECONDS),
+            ("Dosage Sensitivity", CLINGEN_DOSAGE_URL, self._dosage_records, CLINGEN_PRIMARY_TIMEOUT_SECONDS),
+            (
+                "Curation Activity Summary",
+                CLINGEN_SUMMARY_URL,
+                self._summary_records,
+                CLINGEN_OPTIONAL_TIMEOUT_SECONDS,
+            ),
+        )
+        for label, url, parser, timeout_seconds in download_steps:
+            try:
+                text = self.client.get_text(
+                    url,
+                    rate_limit_per_second=self.spec.rate_limit_per_second,
+                    timeout=timeout_seconds,
+                )
+                urls.append(url)
+                records.extend(parser(text, context))
+            except KnowledgeRequestError as exc:
+                request_errors.append(exc)
+                warnings.append(f"{label} request failed: {exc}")
+            except (ValueError, csv.Error) as exc:
+                warnings.append(f"{label} response could not be parsed: {exc}")
+
+        for context_label, url in CLINGEN_ACTIONABILITY_URLS:
+            try:
+                payload = self.client.get_json(
+                    url,
+                    rate_limit_per_second=self.spec.rate_limit_per_second,
+                    timeout=CLINGEN_OPTIONAL_TIMEOUT_SECONDS,
+                )
+                urls.append(url)
+                records.extend(self._actionability_records(payload, context, context_label))
+            except KnowledgeRequestError as exc:
+                request_errors.append(exc)
+                warnings.append(f"Clinical Actionability {context_label} request failed: {exc}")
+            except (TypeError, ValueError) as exc:
+                warnings.append(f"Clinical Actionability {context_label} response could not be parsed: {exc}")
+
+        records = self._dedupe_records(records)
+        if request_errors and not records and len(request_errors) == len(download_steps) + len(CLINGEN_ACTIONABILITY_URLS):
+            first_error = request_errors[0]
+            return _request_failure_result(self.spec, first_error, queried_urls=urls, started=started)
+
+        if records:
+            message = f"Queried ClinGen; {len(records)} gene-centered curation record(s) returned for {context.gene}."
+        else:
+            message = f"Queried ClinGen; no ClinGen curation records found for {context.gene}."
+        return SourceResult(
+            source_key=self.spec.key,
+            status="ok",
+            message=message,
+            records=records,
+            warnings=warnings,
+            queried_urls=urls,
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _validity_records(self, text: str, context: KnowledgeQuery) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        for row in self._csv_dict_rows(text, "GENE SYMBOL"):
+            if not self._gene_matches(row.get("GENE SYMBOL"), context):
+                continue
+            disease = _clean_cell(row.get("DISEASE LABEL"))
+            classification = _clean_cell(row.get("CLASSIFICATION"))
+            moi = _clean_cell(row.get("MOI"))
+            gcep = _clean_cell(row.get("GCEP"))
+            date = _clean_cell(row.get("CLASSIFICATION DATE"))
+            report = _clean_cell(row.get("ONLINE REPORT"))
+            summary_parts = [
+                f"{classification} gene-disease validity" if classification else "Gene-disease validity curation",
+                f"for {disease}" if disease else "",
+                f"({moi})" if moi else "",
+            ]
+            record = {
+                "category": "gene_disease_validity",
+                "source": self.spec.name,
+                "label": f"ClinGen validity: {context.gene}{' - ' + disease if disease else ''}",
+                "summary": " ".join(part for part in summary_parts if part).strip(),
+                "gene": context.gene,
+                "hgnc_id": _clean_cell(row.get("GENE ID (HGNC)")),
+                "disease": disease,
+                "mondo_id": _clean_cell(row.get("DISEASE ID (MONDO)")),
+                "mode_of_inheritance": moi,
+                "classification": classification,
+                "assertion": classification,
+                "sop": _clean_cell(row.get("SOP")),
+                "expert_panel": gcep,
+                "date": date,
+                "url": report or self.spec.homepage,
+                "provenance_url": CLINGEN_VALIDITY_URL,
+            }
+            records.append(record)
+        return records
+
+    def _dosage_records(self, text: str, context: KnowledgeQuery) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        for row in self._csv_dict_rows(text, "GENE SYMBOL"):
+            if not self._gene_matches(row.get("GENE SYMBOL"), context):
+                continue
+            haplo = _clean_cell(row.get("HAPLOINSUFFICIENCY"))
+            triplo = _clean_cell(row.get("TRIPLOSENSITIVITY"))
+            report = _clean_cell(row.get("ONLINE REPORT"))
+            date = _clean_cell(row.get("DATE"))
+            records.append(
+                {
+                    "category": "dosage_sensitivity",
+                    "source": self.spec.name,
+                    "label": f"ClinGen dosage sensitivity: {context.gene}",
+                    "summary": f"Haploinsufficiency: {haplo or 'not reported'}; triplosensitivity: {triplo or 'not reported'}.",
+                    "gene": context.gene,
+                    "hgnc_id": _clean_cell(row.get("HGNC ID")),
+                    "haploinsufficiency": haplo,
+                    "triplosensitivity": triplo,
+                    "date": date,
+                    "url": report or self.spec.homepage,
+                    "provenance_url": CLINGEN_DOSAGE_URL,
+                }
+            )
+        return records
+
+    def _summary_records(self, text: str, context: KnowledgeQuery) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        for row in self._csv_dict_rows(text, "gene_symbol"):
+            if not self._gene_matches(row.get("gene_symbol"), context):
+                continue
+            disease = _clean_cell(row.get("disease_label"))
+            validity = _clean_cell(row.get("gene_disease_validity_assertion_classifications"))
+            actionability = _clean_cell(row.get("actionability_assertion_classifications"))
+            dosage_haplo = _clean_cell(row.get("dosage_haploinsufficiency_assertion"))
+            dosage_triplo = _clean_cell(row.get("dosage_triplosensitivity_assertion"))
+            parts = []
+            if validity:
+                parts.append(f"validity: {validity}")
+            if actionability:
+                parts.append(f"actionability: {actionability}")
+            if dosage_haplo or dosage_triplo:
+                parts.append(f"dosage: HI {dosage_haplo or 'n/a'}, TS {dosage_triplo or 'n/a'}")
+            records.append(
+                {
+                    "category": "clinical_gene_curation_summary",
+                    "source": self.spec.name,
+                    "label": f"ClinGen curation summary: {context.gene}{' - ' + disease if disease else ''}",
+                    "summary": "; ".join(parts) or "ClinGen curation summary row.",
+                    "gene": context.gene,
+                    "hgnc_id": _clean_cell(row.get("hgnc_id")),
+                    "disease": disease,
+                    "mondo_id": _clean_cell(row.get("mondo_id")),
+                    "mode_of_inheritance": _clean_cell(row.get("mode_of_inheritance")),
+                    "classification": validity,
+                    "actionability": actionability,
+                    "haploinsufficiency": dosage_haplo,
+                    "triplosensitivity": dosage_triplo,
+                    "expert_panel": _clean_cell(row.get("gene_disease_validity_gceps")),
+                    "actionability_group": _clean_cell(row.get("actionability_groups")),
+                    "url": _clean_cell(row.get("gene_url")) or self.spec.homepage,
+                    "report_url": _clean_cell(row.get("gene_disease_validity_assertion_reports")),
+                    "actionability_report_url": _clean_cell(row.get("actionability_assertion_reports")),
+                    "dosage_report_url": _clean_cell(row.get("dosage_report")),
+                    "provenance_url": CLINGEN_SUMMARY_URL,
+                }
+            )
+        return records
+
+    def _actionability_records(
+        self,
+        payload: Any,
+        context: KnowledgeQuery,
+        actionability_context: str,
+    ) -> list[dict[str, Any]]:
+        rows = self._flat_json_rows(payload)
+        records: list[dict[str, Any]] = []
+        for row in rows:
+            if not self._gene_matches(row.get("geneOrVariant"), context):
+                continue
+            disease = _clean_cell(row.get("disease"))
+            overall = _clean_cell(row.get("overall"))
+            intervention = _clean_cell(row.get("intervention"))
+            doc_id = _clean_cell(row.get("docId"))
+            records.append(
+                {
+                    "category": "clinical_actionability",
+                    "source": self.spec.name,
+                    "label": f"ClinGen actionability ({actionability_context}): {context.gene}{' - ' + disease if disease else ''}",
+                    "summary": (
+                        f"Overall actionability score {overall or 'not reported'}"
+                        f"{'; intervention: ' + intervention if intervention else ''}."
+                    ),
+                    "gene": context.gene,
+                    "disease": disease,
+                    "classification": _clean_cell(row.get("status-overall")),
+                    "actionability_score": overall,
+                    "outcome": _clean_cell(row.get("outcome")),
+                    "intervention": intervention,
+                    "severity": _clean_cell(row.get("severity")),
+                    "likelihood": _clean_cell(row.get("likelihood")),
+                    "nature_of_intervention": _clean_cell(row.get("natureOfIntervention")),
+                    "effectiveness": _clean_cell(row.get("effectiveness")),
+                    "context": actionability_context,
+                    "date": _clean_cell(row.get("releaseDate") or row.get("lastUpdated")),
+                    "url": _clean_cell(row.get("contextIri")) or self.spec.homepage,
+                    "source_id": doc_id,
+                    "provenance_url": dict(CLINGEN_ACTIONABILITY_URLS).get(actionability_context, ""),
+                }
+            )
+        return records
+
+    def _csv_dict_rows(self, text: str, first_column: str) -> list[dict[str, str]]:
+        reader = csv.reader(io.StringIO(text))
+        header: list[str] | None = None
+        rows: list[dict[str, str]] = []
+        for raw_row in reader:
+            row = [cell.strip() for cell in raw_row]
+            if not any(row):
+                continue
+            if header is None:
+                if row and row[0] == first_column:
+                    header = row
+                continue
+            if row[0].startswith("+"):
+                continue
+            normalized = row + [""] * max(0, len(header) - len(row))
+            rows.append(dict(zip(header, normalized[: len(header)])))
+        if header is None:
+            raise ValueError(f"Could not find ClinGen CSV header starting with {first_column!r}.")
+        return rows
+
+    def _flat_json_rows(self, payload: Any) -> list[dict[str, Any]]:
+        if not isinstance(payload, dict):
+            raise ValueError("ClinGen actionability response was not a JSON object.")
+        columns = payload.get("columns")
+        rows = payload.get("rows")
+        if not isinstance(columns, list) or not isinstance(rows, list):
+            raise ValueError("ClinGen actionability response did not include columns and rows.")
+        normalized_rows: list[dict[str, Any]] = []
+        for row in rows:
+            if not isinstance(row, list):
+                continue
+            padded = row + [""] * max(0, len(columns) - len(row))
+            normalized_rows.append(dict(zip([str(column) for column in columns], padded[: len(columns)])))
+        return normalized_rows
+
+    def _gene_matches(self, value: Any, context: KnowledgeQuery) -> bool:
+        return _clean_cell(value).upper() == context.gene.upper()
+
+    def _dedupe_records(self, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        seen: set[tuple[str, str, str, str]] = set()
+        deduped: list[dict[str, Any]] = []
+        for record in records:
+            key = (
+                _clean_cell(record.get("category")),
+                _clean_cell(record.get("label")).lower(),
+                _clean_cell(record.get("url")),
+                _clean_cell(record.get("provenance_url")),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(record)
+        return deduped
+
+
 class LinkoutOfficialConnector(BaseConnector):
     """Official-source linkout connector for open resources without a compact stable API path."""
 
@@ -882,6 +1166,7 @@ CONNECTOR_CLASSES = {
     "pmc": NcbiEutilsConnector,
     "geo": NcbiEutilsConnector,
     "litvar": NcbiEutilsConnector,
+    "clingen": ClinGenConnector,
     "ensembl": EnsemblConnector,
     "ucsc": UcscConnector,
     "europe_pmc": LiteratureSearchConnector,

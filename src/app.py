@@ -7,6 +7,13 @@ import argparse
 DEFAULT_WEB_PORT = 8766
 
 try:
+    from .env import load_dotenv
+except ImportError:
+    from env import load_dotenv
+
+load_dotenv()
+
+try:
     from . import analysis
     from .webapp import run_server
 except ImportError:

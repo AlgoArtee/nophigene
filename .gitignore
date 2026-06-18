@@ -1,6 +1,11 @@
 # Python venv
 .venv/
 
+# Local secrets and environment overrides
+.env
+.env.*
+!.env-example
+
 # Local Docker CLI config used by project launch scripts
 .docker-local/
 

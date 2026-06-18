@@ -57,6 +57,15 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "homepage": "https://www.ncbi.nlm.nih.gov/clinvar/",
                 },
                 {
+                    "source_key": "clingen",
+                    "name": "ClinGen",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "Queried ClinGen; 1 gene-centered curation record(s) returned for DRD4.",
+                    "record_count": 1,
+                    "homepage": "https://clinicalgenome.org/",
+                },
+                {
                     "source_key": "hgmd",
                     "name": "HGMD",
                     "lane": "licensed",
@@ -74,6 +83,15 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "label": "ClinVar DRD4 record",
                     "summary": "ClinVar summary",
                     "url": "https://example.com/clinvar-drd4",
+                },
+                {
+                    "source_key": "clingen",
+                    "category": "gene_disease_validity",
+                    "label": "ClinGen validity: DRD4 - Example syndrome",
+                    "summary": "Definitive gene-disease validity for Example syndrome (AD)",
+                    "classification": "Definitive",
+                    "disease": "Example syndrome",
+                    "url": "https://search.clinicalgenome.org/kb/gene-validity/DRD4",
                 }
             ],
             "literature_records": [
@@ -109,6 +127,9 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
     assert by_key["curated_gene_bundle"]["status"] == "ok"
     assert any("NCBI Gene 1815" in link["label"] for link in by_key["curated_gene_bundle"]["links"])
     assert by_key["clinvar"]["status"] == "ok"
+    assert by_key["clingen"]["status"] == "ok"
+    assert by_key["clingen"]["findings"] == ["Definitive gene-disease validity for Example syndrome (AD)"]
+    assert "Expert assessment of gene" not in by_key["clingen"]["summary"]
     assert by_key["hgmd"]["status"] == "needs_export"
     assert by_key["hgmd"]["license_note"] == "License-gated source."
     assert "europe_pmc_literature" in by_key

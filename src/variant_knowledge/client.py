@@ -158,6 +158,7 @@ class RequestClient:
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
         rate_limit_per_second: float | None = None,
+        timeout: int | float | None = None,
     ) -> Any:
         self._throttle(rate_limit_per_second)
         try:
@@ -165,7 +166,7 @@ class RequestClient:
                 url,
                 params=params,
                 headers=headers,
-                timeout=self.timeout,
+                timeout=timeout or self.timeout,
                 verify=self.verify,
             )
             self._last_request_at = time.monotonic()
@@ -188,6 +189,7 @@ class RequestClient:
         json_payload: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
         rate_limit_per_second: float | None = None,
+        timeout: int | float | None = None,
     ) -> Any:
         self._throttle(rate_limit_per_second)
         try:
@@ -195,7 +197,7 @@ class RequestClient:
                 url,
                 json=json_payload,
                 headers=headers,
-                timeout=self.timeout,
+                timeout=timeout or self.timeout,
                 verify=self.verify,
             )
             self._last_request_at = time.monotonic()
@@ -210,3 +212,34 @@ class RequestClient:
             ) from exc
         except (requests.RequestException, ValueError) as exc:
             raise KnowledgeRequestError(f"POST {url} failed: {_redact_sensitive_text(exc)}") from exc
+
+    def get_text(
+        self,
+        url: str,
+        *,
+        params: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
+        rate_limit_per_second: float | None = None,
+        timeout: int | float | None = None,
+    ) -> str:
+        self._throttle(rate_limit_per_second)
+        try:
+            response = self.session.get(
+                url,
+                params=params,
+                headers=headers,
+                timeout=timeout or self.timeout,
+                verify=self.verify,
+            )
+            self._last_request_at = time.monotonic()
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.SSLError as exc:
+            safe_error = _redact_sensitive_text(exc)
+            raise KnowledgeRequestError(
+                f"GET {url} failed: {TLS_REMEDIATION} Detail: {safe_error}",
+                code="tls_certificate_verification_failed",
+                remediation=TLS_REMEDIATION,
+            ) from exc
+        except requests.RequestException as exc:
+            raise KnowledgeRequestError(f"GET {url} failed: {_redact_sensitive_text(exc)}") from exc

@@ -92,6 +92,103 @@ class RecordingClinVarClient:
         raise AssertionError(f"Unexpected fake POST URL: {url}")
 
 
+class RecordingClinGenClient:
+    VALIDITY_CSV = (
+        '"CLINGEN GENE DISEASE VALIDITY CURATIONS","",""\n'
+        '"GENE SYMBOL","GENE ID (HGNC)","DISEASE LABEL","DISEASE ID (MONDO)","MOI","SOP","CLASSIFICATION","ONLINE REPORT","CLASSIFICATION DATE","GCEP"\n'
+        '"+++++++++++","++++","++++","++++","++++","++++","++++","++++","++++","++++"\n'
+        '"GENE1","HGNC:1","Example syndrome","MONDO:0000001","AD","SOP10","Definitive","https://search.clinicalgenome.org/kb/gene-validity/GENE1","2026-01-01T00:00:00.000Z","Example GCEP"\n'
+    )
+    DOSAGE_CSV = (
+        '"CLINGEN DOSAGE SENSITIVITY CURATIONS","",""\n'
+        '"GENE SYMBOL","HGNC ID","HAPLOINSUFFICIENCY","TRIPLOSENSITIVITY","ONLINE REPORT","DATE"\n'
+        '"+++++++++++","++++","++++","++++","++++","++++"\n'
+        '"GENE1","HGNC:1","Sufficient Evidence for Haploinsufficiency","No Evidence for Triplosensitivity","https://search.clinicalgenome.org/kb/gene-dosage/HGNC:1","2026-01-02T00:00:00+00:00"\n'
+    )
+    SUMMARY_CSV = (
+        '"README","",""\n'
+        '"gene_symbol","hgnc_id","gene_url","disease_label","mondo_id","disease_url","mode_of_inheritance","dosage_haploinsufficiency_assertion","dosage_triplosensitivity_assertion","dosage_report","dosage_group","gene_disease_validity_assertion_classifications","gene_disease_validity_assertion_reports","gene_disease_validity_gceps","actionability_assertion_classifications","actionability_assertion_reports","actionability_groups"\n'
+        '"GENE1","HGNC:1","https://search.clinicalgenome.org/kb/genes/HGNC:1","Example syndrome","MONDO:0000001","https://search.clinicalgenome.org/kb/conditions/MONDO:0000001","Autosomal dominant inheritance","Sufficient Evidence for Haploinsufficiency","No Evidence for Triplosensitivity","https://search.clinicalgenome.org/kb/gene-dosage/HGNC:1","Dosage Working Group","Definitive","https://search.clinicalgenome.org/kb/gene-validity/GENE1","Example GCEP","Actionable","https://actionability.clinicalgenome.org/ac/Adult/ui/summ","Example Actionability Group"\n'
+    )
+    ACTIONABILITY_JSON = {
+        "columns": [
+            "docId",
+            "contextIri",
+            "context",
+            "releaseDate",
+            "geneOrVariant",
+            "disease",
+            "status-overall",
+            "outcome",
+            "intervention",
+            "severity",
+            "likelihood",
+            "natureOfIntervention",
+            "effectiveness",
+            "overall",
+        ],
+        "rows": [
+            [
+                "AC1",
+                "https://actionability.clinicalgenome.org/ac/Adult/api/sepio/doc/AC1",
+                "Adult",
+                "Thu, 01 Jan 2026 00:00:00 -0000",
+                "GENE1",
+                "Example syndrome",
+                "Released",
+                "Preventable morbidity",
+                "Surveillance",
+                "2",
+                "3C",
+                "3",
+                "2N",
+                "10CN",
+            ]
+        ],
+    }
+
+    def __init__(self, *, empty: bool = False, malformed_validity: bool = False, fail_all: bool = False) -> None:
+        self.empty = empty
+        self.malformed_validity = malformed_validity
+        self.fail_all = fail_all
+        self.calls: list[str] = []
+
+    def get_text(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        self.calls.append(str(url))
+        if self.fail_all:
+            raise KnowledgeRequestError(
+                "GET ClinGen failed: TLS certificate verification failed.",
+                code="tls_certificate_verification_failed",
+                remediation="Configure NOPHIGENE_CA_BUNDLE.",
+            )
+        if "gene-validity/download" in url:
+            return "not,a,valid,clingen,file\n" if self.malformed_validity else self._maybe_empty(self.VALIDITY_CSV)
+        if "gene-dosage/download" in url:
+            return self._maybe_empty(self.DOSAGE_CSV)
+        if "curation-activity-summary-report" in url:
+            return self._maybe_empty(self.SUMMARY_CSV)
+        raise AssertionError(f"Unexpected ClinGen fake text URL: {url}")
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        self.calls.append(str(url))
+        if self.fail_all:
+            raise KnowledgeRequestError(
+                "GET ClinGen failed: TLS certificate verification failed.",
+                code="tls_certificate_verification_failed",
+                remediation="Configure NOPHIGENE_CA_BUNDLE.",
+            )
+        return {"columns": self.ACTIONABILITY_JSON["columns"], "rows": []} if self.empty else self.ACTIONABILITY_JSON
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None, timeout=None):
+        raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+    def _maybe_empty(self, csv_text: str) -> str:
+        if not self.empty:
+            return csv_text
+        line_count = 2 if csv_text.startswith('"README"') else 3
+        return "\n".join(csv_text.splitlines()[:line_count]) + "\n"
+
+
 def _write_simple_pdf(path: Path, text: str) -> None:
     escaped = text.replace("\\", "\\\\").replace("(", r"\(").replace(")", r"\)")
     stream = f"BT /F1 12 Tf 72 720 Td ({escaped}) Tj ET"
@@ -332,6 +429,74 @@ def test_clinvar_connector_reports_tls_error_without_traceback():
     assert "Traceback" not in json.dumps(status)
 
 
+def test_clingen_connector_returns_gene_centered_curations():
+    client = RecordingClinGenClient()
+    connector = connector_for(get_source_spec("clingen"), client, ResolvedCredential("clingen"))
+
+    result = connector.query(KnowledgeQuery(gene="GENE1", region="1:1-10", genome_build="hg19"))
+
+    assert result.status == "ok"
+    assert "5 gene-centered curation record" in result.message
+    categories = {record["category"] for record in result.records}
+    assert categories == {
+        "gene_disease_validity",
+        "dosage_sensitivity",
+        "clinical_gene_curation_summary",
+        "clinical_actionability",
+    }
+    validity = next(record for record in result.records if record["category"] == "gene_disease_validity")
+    assert validity["classification"] == "Definitive"
+    assert validity["disease"] == "Example syndrome"
+    assert validity["mondo_id"] == "MONDO:0000001"
+    dosage = next(record for record in result.records if record["category"] == "dosage_sensitivity")
+    assert dosage["haploinsufficiency"] == "Sufficient Evidence for Haploinsufficiency"
+    actionability_records = [record for record in result.records if record["category"] == "clinical_actionability"]
+    assert len(actionability_records) == 2
+    actionability = actionability_records[0]
+    assert actionability["actionability_score"] == "10CN"
+    assert actionability["intervention"] == "Surveillance"
+    assert all(record["source"] == get_source_spec("clingen").name for record in result.records)
+
+
+def test_clingen_connector_reports_empty_live_query_without_metadata_record():
+    client = RecordingClinGenClient(empty=True)
+    connector = connector_for(get_source_spec("clingen"), client, ResolvedCredential("clingen"))
+
+    result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
+
+    assert result.status == "ok"
+    assert result.records == []
+    assert "no ClinGen curation records found for DRD4" in result.message
+
+
+def test_clingen_connector_keeps_partial_results_when_one_feed_is_malformed():
+    client = RecordingClinGenClient(malformed_validity=True)
+    connector = connector_for(get_source_spec("clingen"), client, ResolvedCredential("clingen"))
+
+    result = connector.query(KnowledgeQuery(gene="GENE1", region="1:1-10", genome_build="hg19"))
+
+    assert result.status == "ok"
+    assert any("Gene-Disease Validity response could not be parsed" in warning for warning in result.warnings)
+    assert {record["category"] for record in result.records} == {
+        "dosage_sensitivity",
+        "clinical_gene_curation_summary",
+        "clinical_actionability",
+    }
+
+
+def test_clingen_connector_reports_request_failure_without_traceback():
+    client = RecordingClinGenClient(fail_all=True)
+    connector = connector_for(get_source_spec("clingen"), client, ResolvedCredential("clingen"))
+
+    result = connector.query(KnowledgeQuery(gene="GENE1", region="1:1-10", genome_build="hg19"))
+    status = result.to_status(get_source_spec("clingen"))
+
+    assert result.status == "failed"
+    assert status["error_code"] == "tls_certificate_verification_failed"
+    assert status["remediation"] == "Configure NOPHIGENE_CA_BUNDLE."
+    assert "Traceback" not in json.dumps(status)
+
+
 def test_local_article_extractor_finds_gene_snippets_without_full_text(tmp_path: Path):
     article_dir = tmp_path / "articles"
     article_dir.mkdir()
@@ -508,6 +673,29 @@ def test_dynamic_builder_runs_workflows_sequentially_and_deduplicates_sources():
         "population_frequency_association",
     ]
     assert payload["source_records"][0]["evidence_id"] == "dbsnp:001"
+
+
+def test_dynamic_builder_merges_clingen_curations_into_workflow_records():
+    payload = build_dynamic_knowledge_base(
+        gene="GENE1",
+        region="1:1-10",
+        genome_build="hg19",
+        selected_sources=["clingen"],
+        request_client=RecordingClinGenClient(),
+        generated_at="2026-06-17T00:00:00Z",
+    )
+
+    assert payload["provider_statuses"][0]["source_key"] == "clingen"
+    assert payload["provider_statuses"][0]["status"] == "ok"
+    assert payload["workflow_source_matrix"]["clingen"] == ["clinical_variant_triage"]
+    assert {record["category"] for record in payload["source_records"]} == {
+        "gene_disease_validity",
+        "dosage_sensitivity",
+        "clinical_gene_curation_summary",
+        "clinical_actionability",
+    }
+    assert any(record["classification"] == "Definitive" for record in payload["source_records"])
+    assert payload["workflow_runs"][0]["record_counts"]["source_records"] == 5
 
 
 def test_source_import_parser_normalizes_json_csv_and_discards_raw_columns(tmp_path: Path):
