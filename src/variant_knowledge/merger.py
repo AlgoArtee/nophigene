@@ -157,5 +157,7 @@ def merge_dynamic_knowledge_base(
         "population_records": dynamic_payload.get("population_records", []),
         "literature_records": dynamic_payload.get("literature_records", []),
         "epigenetic_locus_records": dynamic_payload.get("epigenetic_locus_records", []),
+        "local_article_evidence": dynamic_payload.get("local_article_evidence", {}),
+        "local_article_evidence_artifacts": dynamic_payload.get("local_article_evidence_artifacts", {}),
     }
     return merged

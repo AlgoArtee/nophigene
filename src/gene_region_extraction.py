@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+import json
 import re
+import zipfile
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, Iterable
 
 import requests
 
 DEFAULT_TIMEOUT_SECONDS = 30
+GENE_DATA_DIR = Path(__file__).resolve().parent / "gene_data"
+GENE_DATA_BUNDLE_PATH = GENE_DATA_DIR / "gene_data_bundle.zip"
+GENE_DATA_INDEX_PATH = GENE_DATA_DIR / "gene_data_index.json"
+LOCAL_CURATED_SOURCE = "Local curated gene bundle"
 
 
 def fetch_refseq_region(gene_symbol: str = "DRD4") -> str | None:
@@ -231,6 +239,190 @@ def _normalize_genome_build(genome_build: str) -> str:
     raise ValueError("Genome build must be hg19/GRCh37 or hg38/GRCh38.")
 
 
+def _sanitize_gene_name_for_filename(gene_symbol: str) -> str:
+    """Return the filename-safe gene stem used by bundled gene data."""
+    sanitized = re.sub(r"[^A-Za-z0-9._-]+", "_", gene_symbol.strip())
+    return sanitized.strip("_") or "gene"
+
+
+def _candidate_interpretation_filenames(gene_symbol: str) -> list[str]:
+    """Return likely bundled interpretation DB filenames for a gene."""
+    sanitized = _sanitize_gene_name_for_filename(gene_symbol)
+    candidates = [
+        f"{sanitized.lower()}_interpretation_db.json",
+        f"{sanitized}_interpretation_db.json",
+        f"{sanitized.upper()}_interpretation_db.json",
+    ]
+    return list(dict.fromkeys(candidates))
+
+
+@lru_cache(maxsize=8)
+def _gene_data_bundle_members(bundle_path: str) -> frozenset[str]:
+    """Return filenames available in the compressed curated bundle."""
+    path = Path(bundle_path)
+    if not path.exists():
+        return frozenset()
+    try:
+        with zipfile.ZipFile(path) as bundle:
+            return frozenset(info.filename for info in bundle.infolist() if not info.is_dir())
+    except (OSError, zipfile.BadZipFile):
+        return frozenset()
+
+
+@lru_cache(maxsize=4096)
+def _read_gene_data_bundle_member(bundle_path: str, member_name: str) -> bytes | None:
+    """Read one curated bundle member when it exists."""
+    if member_name not in _gene_data_bundle_members(bundle_path):
+        return None
+    try:
+        with zipfile.ZipFile(bundle_path) as bundle:
+            return bundle.read(member_name)
+    except (OSError, zipfile.BadZipFile, KeyError):
+        return None
+
+
+@lru_cache(maxsize=8)
+def _gene_data_index(index_path: str) -> dict[str, Any]:
+    """Return the sharded bulk gene-data index when available."""
+    path = Path(index_path)
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+@lru_cache(maxsize=4096)
+def _read_bulk_gene_data_member(
+    index_path: str,
+    gene_data_dir: str,
+    member_name: str,
+) -> bytes | None:
+    """Read one sharded bulk gene-data member when indexed."""
+    index = _gene_data_index(index_path)
+    files = index.get("files", {})
+    shards = index.get("shards", {})
+    if not isinstance(files, dict) or not isinstance(shards, dict):
+        return None
+    shard_name = files.get(member_name)
+    if not isinstance(shard_name, str):
+        return None
+    shard_info = shards.get(shard_name, {})
+    relative_path = shard_info.get("path") if isinstance(shard_info, dict) else None
+    if not isinstance(relative_path, str):
+        relative_path = f"bulk_gene_data_shards/{shard_name}"
+    shard_path = Path(gene_data_dir) / relative_path
+    if not shard_path.exists():
+        return None
+    try:
+        with zipfile.ZipFile(shard_path) as bundle:
+            return bundle.read(member_name)
+    except (OSError, zipfile.BadZipFile, KeyError):
+        return None
+
+
+def _read_gene_data_text(filename: str) -> str | None:
+    """Read one gene-data artifact from loose, zipped, or sharded storage."""
+    loose_path = GENE_DATA_DIR / filename
+    if loose_path.exists():
+        try:
+            return loose_path.read_text(encoding="utf-8")
+        except OSError:
+            return None
+    bundled_bytes = _read_gene_data_bundle_member(str(GENE_DATA_BUNDLE_PATH), filename)
+    if bundled_bytes is not None:
+        return bundled_bytes.decode("utf-8")
+    bulk_bytes = _read_bulk_gene_data_member(
+        str(GENE_DATA_INDEX_PATH),
+        str(GENE_DATA_DIR),
+        filename,
+    )
+    if bulk_bytes is not None:
+        return bulk_bytes.decode("utf-8")
+    return None
+
+
+def _load_local_interpretation_database(gene_symbol: str) -> dict[str, Any] | None:
+    """Load a bundled gene interpretation DB without importing the full analysis stack."""
+    for filename in _candidate_interpretation_filenames(gene_symbol):
+        payload_text = _read_gene_data_text(filename)
+        if payload_text is None:
+            continue
+        try:
+            payload = json.loads(payload_text)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            return payload
+    return None
+
+
+def _knowledge_base_genome_build(knowledge_base: dict[str, Any]) -> str | None:
+    """Return the assembly declared by a local curated gene database."""
+    context = knowledge_base.get("gene_context", {})
+    assembly = str(context.get("assembly", "") if isinstance(context, dict) else "").lower()
+    if "hg38" in assembly or "grch38" in assembly:
+        return "hg38"
+    if "hg19" in assembly or "grch37" in assembly:
+        return "hg19"
+    return None
+
+
+def _format_local_interval(record: Any, *, default_chrom: str = "") -> str:
+    """Normalize a curated interval record to chrom:start-end text."""
+    if isinstance(record, str):
+        cleaned = record.replace(",", "").strip()
+        match = re.fullmatch(r"(?:chr)?(?P<chrom>[^:]+):(?P<start>\d+)-(?P<end>\d+)", cleaned)
+        if match is None:
+            return ""
+        chrom = match.group("chrom")
+        start = int(match.group("start"))
+        end = int(match.group("end"))
+        return f"{chrom}:{min(start, end)}-{max(start, end)}"
+
+    if not isinstance(record, dict):
+        return ""
+    chrom = str(record.get("chromosome") or record.get("chrom") or default_chrom).strip()
+    try:
+        start = int(record["start"])
+        end = int(record["end"])
+    except (KeyError, TypeError, ValueError):
+        return ""
+    if not chrom:
+        return ""
+    return f"{chrom.removeprefix('chr')}:{min(start, end)}-{max(start, end)}"
+
+
+def _fetch_local_curated_region(
+    cleaned_symbol: str,
+    normalized_build: str,
+) -> dict[str, str] | None:
+    """Return a bundled curated gene interval for offline/public-API fallback."""
+    knowledge_base = _load_local_interpretation_database(cleaned_symbol)
+    if not knowledge_base:
+        return None
+    context = knowledge_base.get("gene_context", {})
+    if not isinstance(context, dict):
+        return None
+    curated_gene = str(context.get("gene_name") or knowledge_base.get("gene_name") or "").upper()
+    if curated_gene and curated_gene != cleaned_symbol.upper():
+        return None
+    declared_build = _knowledge_base_genome_build(knowledge_base)
+    if declared_build and declared_build != normalized_build:
+        return None
+    chrom = str(context.get("chromosome", "")).strip()
+    region = _format_local_interval(context.get("gene_region"), default_chrom=chrom)
+    if not region:
+        region = _format_local_interval(
+            context.get("recommended_promoter_plus_gene_region"),
+            default_chrom=chrom,
+        )
+    if not region:
+        return None
+    return {"source": LOCAL_CURATED_SOURCE, "region": region}
+
+
 def find_gene_region(gene_symbol: str = "DRD4", genome_build: str = "hg19") -> dict[str, object]:
     """Resolve a gene symbol to the widest candidate interval across public sources.
 
@@ -274,6 +466,10 @@ def find_gene_region(gene_symbol: str = "DRD4", genome_build: str = "hg19") -> d
         for source_name, region in source_candidates
         if region
     ]
+    if not candidates:
+        local_candidate = _fetch_local_curated_region(cleaned_symbol, normalized_build)
+        if local_candidate:
+            candidates.append(local_candidate)
     if not candidates:
         raise ValueError(
             f"No genomic interval could be resolved for gene symbol '{cleaned_symbol}'."

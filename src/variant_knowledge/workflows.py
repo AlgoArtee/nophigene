@@ -5,7 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from .local_articles import LOCAL_ARTICLE_SOURCE_KEY, LOCAL_ARTICLE_WORKFLOW_KEY
 from .registry import LANE_LABELS, get_source_spec
+
+LOCAL_WORKFLOW_SOURCE_KEYS = {LOCAL_ARTICLE_SOURCE_KEY}
 
 
 CORE_SAFETY_WORKFLOW_KEYS = (
@@ -34,11 +37,15 @@ class WorkflowSpec:
 
     def valid_source_keys(self) -> tuple[str, ...]:
         """Return source keys that exist in the current source registry."""
-        return tuple(key for key in self.ordered_source_keys if get_source_spec(key) is not None)
+        return tuple(
+            key for key in self.ordered_source_keys if get_source_spec(key) is not None or key in LOCAL_WORKFLOW_SOURCE_KEYS
+        )
 
     def missing_source_keys(self) -> tuple[str, ...]:
         """Return configured source keys that are not currently registered."""
-        return tuple(key for key in self.ordered_source_keys if get_source_spec(key) is None)
+        return tuple(
+            key for key in self.ordered_source_keys if get_source_spec(key) is None and key not in LOCAL_WORKFLOW_SOURCE_KEYS
+        )
 
     def to_card(self, *, selected: bool | None = None) -> dict[str, Any]:
         """Return a compact, redacted UI/API card."""
@@ -191,6 +198,24 @@ WORKFLOW_SPECS: tuple[WorkflowSpec, ...] = (
         requires_manifest=False,
         licensed_notes=(
             "Google Scholar, Mastermind, Embase, Scopus, and Web of Science are API/import/linkout only; no scraping is performed.",
+        ),
+    ),
+    WorkflowSpec(
+        key=LOCAL_ARTICLE_WORKFLOW_KEY,
+        label="Local PDF Article Evidence",
+        purpose=(
+            "Extract short gene-relevant evidence snippets from a user-provided folder of legally obtained "
+            "scientific article PDFs."
+        ),
+        default_selected=False,
+        ordered_source_keys=(LOCAL_ARTICLE_SOURCE_KEY,),
+        evidence_lanes=("literature",),
+        report_section="Local Article Evidence",
+        requires_vcf=False,
+        requires_manifest=False,
+        licensed_notes=(
+            "Only local user-provided PDFs are parsed. The app stores snippets and provenance, not full article text.",
+            "No publisher login automation, DRM bypass, or web scraping is performed.",
         ),
     ),
     WorkflowSpec(

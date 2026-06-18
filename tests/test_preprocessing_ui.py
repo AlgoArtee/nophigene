@@ -8,7 +8,131 @@ from types import SimpleNamespace
 
 import pandas as pd
 
-from src.webapp import _classify_functional_family, app
+from src.analysis import load_gene_interpretation_database, load_gene_population_database
+from src.webapp import _build_data_sources_payload, _classify_functional_family, app
+
+
+def _stub_common_discovery(monkeypatch) -> None:
+    monkeypatch.setattr("src.webapp.discover_vcf_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_bam_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_idat_prefixes", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_population_stats_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_manifest_files", lambda: [])
+    monkeypatch.setattr("src.webapp.discover_report_history", lambda: [])
+
+
+def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
+    """The Result Viewer Data Sources payload should merge curated and dynamic provenance."""
+    knowledge_base = load_gene_interpretation_database("DRD4")
+    population_database = load_gene_population_database("DRD4")
+    assert knowledge_base is not None
+    assert population_database is not None
+
+    payload = _build_data_sources_payload(
+        knowledge_base=knowledge_base,
+        population_database=population_database,
+        population_insights={
+            "summary": "Population summary",
+            "variant_population_records": [{"variant": "rs1"}],
+            "gene_population_patterns": [],
+            "sources": [{"label": "Population source", "url": "https://example.com/pop"}],
+        },
+        methylation_insights={
+            "summary": "Methylation summary",
+            "clinical_context": "Methylation context",
+            "evidence": [{"label": "Methylation paper", "url": "https://example.com/methylation"}],
+            "whitelist_probe_reference_rows": [
+                {"probe_id": "cg1", "papers": [{"label": "Probe paper", "url": "https://example.com/probe"}]}
+            ],
+        },
+        dynamic_payload={
+            "provider_statuses": [
+                {
+                    "source_key": "clinvar",
+                    "name": "ClinVar",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "ClinVar returned one record.",
+                    "record_count": 1,
+                    "homepage": "https://www.ncbi.nlm.nih.gov/clinvar/",
+                },
+                {
+                    "source_key": "hgmd",
+                    "name": "HGMD",
+                    "lane": "licensed",
+                    "status": "needs_export",
+                    "message": "Upload a permitted export.",
+                    "record_count": 0,
+                    "warnings": ["HGMD needs a licensed export."],
+                    "license_note": "License-gated source.",
+                },
+            ],
+            "source_records": [
+                {
+                    "source_key": "clinvar",
+                    "category": "clinical",
+                    "label": "ClinVar DRD4 record",
+                    "summary": "ClinVar summary",
+                    "url": "https://example.com/clinvar-drd4",
+                }
+            ],
+            "literature_records": [
+                {
+                    "source_key": "europe_pmc",
+                    "category": "literature",
+                    "title": "DRD4 literature",
+                    "summary": "Literature summary",
+                    "url": "https://example.com/lit",
+                }
+            ],
+            "local_article_evidence": {
+                "status": "ok",
+                "message": "Extracted one local snippet.",
+                "records": [
+                    {
+                        "source_key": "local_pdf_articles",
+                        "title": "Local DRD4 PDF",
+                        "snippet": "DRD4 local finding",
+                        "url": "https://example.com/local",
+                    }
+                ],
+                "provenance": {"warnings": [], "errors": []},
+            },
+        },
+        selected_source_keys=["clinvar", "hgmd"],
+    )
+
+    cards = [card for group in payload["groups"] for card in group["cards"]]
+    by_key = {card["source_key"]: card for card in cards}
+
+    assert payload["dynamic_status"] == "available"
+    assert by_key["curated_gene_bundle"]["status"] == "ok"
+    assert any("NCBI Gene 1815" in link["label"] for link in by_key["curated_gene_bundle"]["links"])
+    assert by_key["clinvar"]["status"] == "ok"
+    assert by_key["hgmd"]["status"] == "needs_export"
+    assert by_key["hgmd"]["license_note"] == "License-gated source."
+    assert "europe_pmc_literature" in by_key
+    assert by_key["local_pdf_articles"]["record_count"] == 1
+    assert any(link["url"] == "https://example.com/probe" for link in by_key["methylation_evidence"]["links"])
+
+
+def test_data_sources_payload_marks_selected_dynamic_sources_not_run() -> None:
+    """When no dynamic KB is present, selected providers should appear as not_run cards."""
+    payload = _build_data_sources_payload(
+        knowledge_base={"database_name": "Mock KB", "gene_context": {}, "variant_records": []},
+        population_database={"database_name": "Mock population DB"},
+        population_insights={},
+        methylation_insights={},
+        dynamic_payload=None,
+        selected_source_keys=["clinvar", "hgmd"],
+    )
+
+    cards = [card for group in payload["groups"] for card in group["cards"]]
+    statuses = {card["source_key"]: card["status"] for card in cards}
+
+    assert payload["dynamic_status"] == "not_run"
+    assert statuses["clinvar"] == "not_run"
+    assert statuses["hgmd"] == "not_run"
 
 
 def test_preprocessing_template_preserves_clicked_submit_button() -> None:
@@ -30,6 +154,11 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert "{{ item.nucleotide_change }}" in template_text
     assert "{% for link in item.research_links %}" in template_text
     assert "Genetic Variant Results" in template_text
+    assert "Data Sources" in template_text
+    assert 'data-subtab-target="data_sources"' in template_text
+    assert 'data-subtab-panel="data_sources"' in template_text
+    assert template_text.count("data-subtab-target=") == 3
+    assert template_text.count("data-subtab-panel=") == 3
     assert "{{ result.variant_interpretations.sample_highlights.result_table_rows }}" not in template_text
     assert "Exact variant links in this sample" in template_text
     assert "{% for row in result.variant_interpretations.sample_highlights.result_table_rows %}" in template_text
@@ -65,6 +194,24 @@ def test_preprocessing_template_preserves_clicked_submit_button() -> None:
     assert "syncSourcesFromWorkflow" in template_text
     assert "Core safety default" in template_text
     assert "Workflow summary" in template_text
+    assert "preprocess-domain-form" in template_text
+    assert 'data-preprocess-domain="genetics"' in template_text
+    assert 'data-preprocess-domain="epigenetics"' in template_text
+    assert 'data-preprocess-domain="knowledge"' in template_text
+    assert "Genetics" in template_text
+    assert "Epigenetics" in template_text
+    assert "Knowledge Base Building" in template_text
+    assert 'value="reset_preprocessing"' in template_text
+    assert "Refresh Process" in template_text
+    assert "preprocess-flow-arrow" in template_text
+    assert "staged preprocessing flow" in template_text
+    assert "two preprocessing steps" not in template_text
+    assert "Use local PDF article folder" in template_text
+    assert 'name="article_pdf_folder"' in template_text
+    assert 'name="article_pdf_recursive"' in template_text
+    assert 'name="max_article_pdfs"' in template_text
+    assert "Query available database connectors and local article snippets." in template_text
+    assert "Local article snippets" in template_text
     assert "Search computer for BAM files" in template_text
     assert 'name="bam_search_root"' in template_text
     assert 'value="search_bam_files"' in template_text
@@ -173,10 +320,14 @@ def test_knowledge_workflows_render_core_safety_defaults(monkeypatch) -> None:
     assert "Knowledge Workflows" in page
     assert 'value="clinical_variant_triage"' in page
     assert 'data-workflow-sources="clinvar,clingen,ensembl,dbsnp,civic,panelapp,mavedb,omim,oncokb,hgmd,varsome,franklin"' in page
+    assert 'value="local_pdf_article_evidence"' in page
+    assert 'data-workflow-sources="local_pdf_articles"' in page
     assert 'value="licensed_aggregator_review"' in page
     clinical_index = page.index('value="clinical_variant_triage"')
+    local_articles_index = page.index('value="local_pdf_article_evidence"')
     licensed_index = page.index('value="licensed_aggregator_review"')
     assert "checked" in page[clinical_index:clinical_index + 420]
+    assert "checked" not in page[local_articles_index:local_articles_index + 420]
     assert "checked" not in page[licensed_index:licensed_index + 420]
 
 
@@ -372,6 +523,138 @@ def test_get_request_resets_preprocessing_workspace(monkeypatch) -> None:
 
     with client.session_transaction() as session_state:
         assert "preprocess_state" not in session_state
+
+
+def test_left_preprocessing_form_shows_only_genetics_by_default(monkeypatch) -> None:
+    _stub_common_discovery(monkeypatch)
+
+    page = app.test_client().get("/").get_data(as_text=True)
+
+    assert 'data-preprocess-domain="genetics"' in page
+    assert 'data-preprocess-domain="epigenetics"' not in page
+    assert 'data-preprocess-domain="knowledge"' not in page
+    assert "Refresh Process" in page
+
+
+def test_left_preprocessing_form_reveals_epigenetics_after_region_ready(monkeypatch) -> None:
+    _stub_common_discovery(monkeypatch)
+
+    client = app.test_client()
+    with client.session_transaction() as session_state:
+        session_state["preprocess_state"] = {
+            "gene_name": "TEST",
+            "region": "1:1-100",
+            "manifest_source": "data/manifest.csv",
+            "filtered_manifest": "",
+            "region_candidates": [],
+            "selected_sources": [],
+            "region_ready": True,
+            "manifest_ready": False,
+            "analysis_ready": False,
+            "probe_count": 0,
+            "build": "hg19",
+            "logs": [],
+            "region_recently_updated": False,
+            "overwrite_filtered_manifest": False,
+        }
+
+    page = client.post("/", data={"workflow": "knowledge_sources"}).get_data(as_text=True)
+
+    assert 'data-preprocess-domain="genetics"' in page
+    assert 'data-preprocess-domain="epigenetics"' in page
+    assert 'data-preprocess-domain="knowledge"' not in page
+    assert page.count('class="preprocess-flow-arrow"') == 1
+
+
+def test_left_preprocessing_form_reveals_knowledge_after_manifest_ready(monkeypatch) -> None:
+    _stub_common_discovery(monkeypatch)
+
+    client = app.test_client()
+    with client.session_transaction() as session_state:
+        session_state["preprocess_state"] = {
+            "gene_name": "TEST",
+            "region": "1:1-100",
+            "manifest_source": "data/manifest.csv",
+            "filtered_manifest": "src/gene_data/TEST_epigenetics_hg19.csv",
+            "region_candidates": [],
+            "selected_sources": [],
+            "region_ready": True,
+            "manifest_ready": True,
+            "analysis_ready": True,
+            "probe_count": 12,
+            "build": "hg19",
+            "logs": [],
+            "region_recently_updated": False,
+            "overwrite_filtered_manifest": False,
+        }
+
+    page = client.post("/", data={"workflow": "knowledge_sources"}).get_data(as_text=True)
+
+    assert 'data-preprocess-domain="genetics"' in page
+    assert 'data-preprocess-domain="epigenetics"' in page
+    assert 'data-preprocess-domain="knowledge"' in page
+    assert page.count('class="preprocess-flow-arrow"') == 2
+
+
+def test_preprocess_refresh_resets_state_and_preserves_knowledge_sources(monkeypatch) -> None:
+    _stub_common_discovery(monkeypatch)
+
+    client = app.test_client()
+    with client.session_transaction() as session_state:
+        session_state["preprocess_state"] = {
+            "gene_name": "TEST",
+            "region": "1:1-100",
+            "manifest_source": "data/manifest.csv",
+            "filtered_manifest": "src/gene_data/TEST_epigenetics_hg19.csv",
+            "region_candidates": [{"source": "mock", "region": "1:1-100"}],
+            "selected_sources": ["mock"],
+            "region_ready": True,
+            "manifest_ready": True,
+            "analysis_ready": True,
+            "probe_count": 12,
+            "build": "hg19",
+            "logs": ["[stdout] old run"],
+            "region_recently_updated": False,
+            "overwrite_filtered_manifest": True,
+            "knowledge_vcf_source": "data/test.vcf",
+            "dynamic_kb_ready": True,
+            "dynamic_kb_path": "results/dynamic_knowledge_bases/test/variant_kb.json",
+            "dynamic_kb_status": "ready",
+        }
+        session_state["knowledge_sources_state"] = {
+            "selected_workflows": ["clinical_variant_triage"],
+            "selected_sources": ["clinvar"],
+            "source_imports": {"hgmd": "results/imports/hgmd.csv"},
+            "notice": "keep me",
+        }
+
+    response = client.post(
+        "/",
+        data={
+            "workflow": "preprocess",
+            "preprocess_action": "reset_preprocessing",
+            "gene_name": "STALE",
+            "preprocess_region": "9:9-99",
+        },
+    )
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Preprocessing was refreshed. Start again with Genetics." in page
+    assert 'data-tab-target="analysis"' not in page
+    assert 'data-preprocess-domain="genetics"' in page
+    assert 'data-preprocess-domain="epigenetics"' not in page
+    with client.session_transaction() as session_state:
+        preprocess_state = session_state["preprocess_state"]
+        knowledge_sources_state = session_state["knowledge_sources_state"]
+
+    assert preprocess_state["gene_name"] == "DRD4"
+    assert preprocess_state["region_ready"] is False
+    assert preprocess_state["manifest_ready"] is False
+    assert preprocess_state["analysis_ready"] is False
+    assert preprocess_state["dynamic_kb_path"] == ""
+    assert knowledge_sources_state["selected_sources"] == ["clinvar"]
+    assert knowledge_sources_state["source_imports"] == {"hgmd": "results/imports/hgmd.csv"}
 
 
 def test_extraction_tab_renders_with_disabled_tool_state(monkeypatch) -> None:
@@ -628,6 +911,8 @@ def test_app_structure_page_includes_general_probe_mapping_qa(monkeypatch) -> No
     assert "How do I use the Knowledge Sources tab and dynamic variant knowledge-base preprocessing?" in page
     assert "Workflow cards sit above the database cards" in page
     assert "Core safety workflows are checked by default" in page
+    assert "Use local PDF article folder" in page
+    assert "rather than full article text" in page
     assert "Dynamic Workflow Summary sections" in page
     assert "Build Variant Knowledge Base" in page
     assert "results/dynamic_knowledge_bases/" in page
@@ -638,6 +923,7 @@ def test_app_structure_page_includes_general_probe_mapping_qa(monkeypatch) -> No
     assert "GET /api/v1/knowledge-workflows" in page
     assert "options.knowledge_workflows" in page
     assert "options.knowledge_source_imports" in page
+    assert "options.article_pdf_folder" in page
 
 
 def test_history_tab_lists_saved_reports_and_serves_artifacts(monkeypatch, tmp_path: Path) -> None:
@@ -1019,6 +1305,8 @@ def test_analysis_result_keeps_full_curated_methylation_probe_preview(monkeypatc
     assert result["predictive_theses"]["matched_case_count"] == 1
     assert result["predictive_theses"]["variant_prediction_rows"][0]["prediction"] == "Mock variant prediction"
     assert result["analysis_scope_label"] == "Promoter only"
+    assert result["data_sources"]["total_cards"] >= 4
+    assert result["data_sources"]["dynamic_status"] == "not_run"
     assert captured_run_kwargs["analysis_scope"] == "promoter_only"
     assert captured_run_kwargs["overwrite_general_database"] is True
 

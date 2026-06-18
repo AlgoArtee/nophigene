@@ -3,10 +3,20 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+import requests
 
-from src.variant_knowledge.credentials import credential_status_for_specs
+from src.variant_knowledge import client as request_client_module
+from src.variant_knowledge.client import KnowledgeRequestError, RequestClient
+from src.variant_knowledge.connectors import connector_for
+from src.variant_knowledge.credentials import ResolvedCredential, credential_status_for_specs
 from src.variant_knowledge.imports import parse_source_import
+from src.variant_knowledge.local_articles import (
+    LOCAL_ARTICLE_SOURCE_KEY,
+    LOCAL_ARTICLE_WORKFLOW_KEY,
+    extract_local_article_evidence,
+)
 from src.variant_knowledge.merger import merge_dynamic_knowledge_base
+from src.variant_knowledge.models import KnowledgeQuery, QueryVariant
 from src.variant_knowledge.orchestrator import build_dynamic_knowledge_base
 from src.variant_knowledge.registry import RESOURCES_PATH, get_source_spec, list_source_cards, list_source_specs
 from src.variant_knowledge.workflows import CORE_SAFETY_WORKFLOW_KEYS, list_workflow_specs
@@ -46,6 +56,57 @@ class CountingFakeClient(FakeClient):
             headers=headers,
             rate_limit_per_second=rate_limit_per_second,
         )
+
+
+class RecordingClinVarClient:
+    def __init__(
+        self,
+        *,
+        ids_by_term: dict[str, list[str]] | None = None,
+        summaries: dict[str, dict[str, object]] | None = None,
+        clinical_tables_payload: list[object] | None = None,
+    ) -> None:
+        self.ids_by_term = ids_by_term or {}
+        self.summaries = summaries or {}
+        self.clinical_tables_payload = clinical_tables_payload or [0, [], {}, []]
+        self.calls: list[dict[str, object]] = []
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None):
+        params = dict(params or {})
+        self.calls.append({"url": url, "params": params})
+        if "esearch.fcgi" in url:
+            return {"esearchresult": {"idlist": self.ids_by_term.get(str(params.get("term", "")), [])}}
+        if "esummary.fcgi" in url:
+            return {
+                "result": {
+                    item_id: self.summaries[item_id]
+                    for item_id in str(params.get("id", "")).split(",")
+                    if item_id in self.summaries
+                }
+            }
+        if "clinicaltables.nlm.nih.gov" in url:
+            return self.clinical_tables_payload
+        raise AssertionError(f"Unexpected ClinVar fake GET URL: {url}")
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
+        raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+
+def _write_simple_pdf(path: Path, text: str) -> None:
+    escaped = text.replace("\\", "\\\\").replace("(", r"\(").replace(")", r"\)")
+    stream = f"BT /F1 12 Tf 72 720 Td ({escaped}) Tj ET"
+    payload = (
+        "%PDF-1.4\n"
+        "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n"
+        "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n"
+        "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >> endobj\n"
+        f"4 0 obj << /Length {len(stream)} >> stream\n"
+        f"{stream}\n"
+        "endstream endobj\n"
+        "trailer << /Root 1 0 R >>\n"
+        "%%EOF\n"
+    )
+    path.write_bytes(payload.encode("latin-1", errors="ignore"))
 
 
 def test_registry_has_one_card_per_resource_entry():
@@ -89,6 +150,7 @@ def test_non_open_sources_advertise_compliant_ingestion_modes_only():
 
 def test_workflow_registry_references_valid_sources_and_core_defaults():
     source_keys = {spec.key for spec in list_source_specs()}
+    synthetic_local_sources = {LOCAL_ARTICLE_SOURCE_KEY}
     workflows = list_workflow_specs()
 
     assert [workflow.key for workflow in workflows if workflow.default_selected] == list(CORE_SAFETY_WORKFLOW_KEYS)
@@ -97,11 +159,260 @@ def test_workflow_registry_references_valid_sources_and_core_defaults():
         assert workflow.label
         assert workflow.purpose
         assert workflow.report_section
-        assert set(workflow.ordered_source_keys) <= source_keys
+        assert set(workflow.ordered_source_keys) <= source_keys | synthetic_local_sources
+        if workflow.key == LOCAL_ARTICLE_WORKFLOW_KEY:
+            assert workflow.ordered_source_keys == (LOCAL_ARTICLE_SOURCE_KEY,)
+            assert not workflow.default_selected
         if workflow.key == "licensed_aggregator_review":
             joined_notes = " ".join(workflow.licensed_notes).lower()
             assert "scraping" in joined_notes
             assert "captcha" in joined_notes
+
+
+def test_request_client_prefers_explicit_ca_bundle(monkeypatch, tmp_path: Path):
+    ca_bundle = tmp_path / "custom-ca.pem"
+    ca_bundle.write_text("", encoding="ascii")
+    monkeypatch.setenv("NOPHIGENE_CA_BUNDLE", str(ca_bundle))
+    monkeypatch.setenv("REQUESTS_CA_BUNDLE", str(tmp_path / "other-ca.pem"))
+
+    client = RequestClient()
+
+    assert client.verify == str(ca_bundle)
+
+
+def test_request_client_uses_windows_merged_ca_bundle(monkeypatch, tmp_path: Path):
+    ca_bundle = tmp_path / "windows-merged-ca.pem"
+    ca_bundle.write_text("", encoding="ascii")
+    for env_var in request_client_module.EXPLICIT_CA_ENV_VARS:
+        monkeypatch.delenv(env_var, raising=False)
+    monkeypatch.setattr(request_client_module.os, "name", "nt")
+    monkeypatch.setattr(request_client_module, "_windows_merged_ca_bundle", lambda: str(ca_bundle))
+
+    client = RequestClient()
+
+    assert client.verify == str(ca_bundle)
+
+
+def test_request_client_ssl_errors_are_redacted_and_actionable():
+    client = RequestClient()
+
+    def fail_get(url, *, params=None, headers=None, timeout=None, verify=None):
+        raise requests.exceptions.SSLError(
+            "certificate verify failed for https://example.test/?api_key=SECRET&token=TOKEN"
+        )
+
+    client.session.get = fail_get
+
+    with pytest.raises(KnowledgeRequestError) as exc_info:
+        client.get_json("https://example.test/endpoint", params={"api_key": "SECRET"})
+
+    message = str(exc_info.value)
+    assert exc_info.value.code == "tls_certificate_verification_failed"
+    assert "NOPHIGENE_CA_BUNDLE" in message
+    assert "SECRET" not in message
+    assert "TOKEN" not in message
+    assert "api_key=[redacted]" in message
+    assert "token=[redacted]" in message
+
+
+def test_clinvar_connector_uses_fielded_gene_query_and_ncbi_params(monkeypatch):
+    monkeypatch.setenv("NOPHIGENE_NCBI_EMAIL", "researcher@example.org")
+    monkeypatch.setenv("NOPHIGENE_NCBI_API_KEY", "secret-ncbi-key")
+    client = RecordingClinVarClient(
+        ids_by_term={"DRD4[gene] AND single_gene[prop]": ["123"]},
+        summaries={
+            "123": {
+                "uid": "123",
+                "title": "DRD4 variant",
+                "clinical_significance": {"description": "Pathogenic"},
+                "trait_set": [{"trait_name": "Example condition"}],
+                "variation_set": [
+                    {
+                        "variation_name": "DRD4 c.1A>G",
+                        "variation_xrefs": [{"db_source": "dbSNP", "db_id": "1800955"}],
+                    }
+                ],
+            }
+        },
+    )
+    connector = connector_for(get_source_spec("clinvar"), client, ResolvedCredential("clinvar"))
+
+    result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
+
+    search_calls = [call for call in client.calls if "esearch.fcgi" in str(call["url"])]
+    assert search_calls[0]["params"]["term"] == "DRD4[gene] AND single_gene[prop]"
+    assert search_calls[0]["params"]["tool"] == "NophiGeneDynamicKB"
+    assert search_calls[0]["params"]["email"] == "researcher@example.org"
+    assert search_calls[0]["params"]["api_key"] == "secret-ncbi-key"
+    assert result.status == "ok"
+    assert result.records[0]["clinical_significance"] == "Pathogenic"
+    assert result.records[0]["rsid"] == "rs1800955"
+    assert result.records[0]["url"] == "https://www.ncbi.nlm.nih.gov/clinvar/variation/123/"
+    serialized = json.dumps(result.to_status(get_source_spec("clinvar")), sort_keys=True)
+    assert "secret-ncbi-key" not in serialized
+
+
+def test_clinvar_connector_queries_rsid_first_and_deduplicates_gene_results():
+    client = RecordingClinVarClient(
+        ids_by_term={
+            "rs123": ["123"],
+            "DRD4[gene] AND single_gene[prop]": ["123"],
+        },
+        summaries={
+            "123": {
+                "uid": "123",
+                "title": "ClinVar rs123 record",
+                "description": "Clinical assertion",
+            }
+        },
+    )
+    connector = connector_for(get_source_spec("clinvar"), client, ResolvedCredential("clinvar"))
+    query = KnowledgeQuery(
+        gene="DRD4",
+        region="11:1-10",
+        genome_build="hg19",
+        variants=(QueryVariant(chrom="11", pos=1, rsid="rs123"),),
+    )
+
+    result = connector.query(query)
+
+    search_terms = [call["params"]["term"] for call in client.calls if "esearch.fcgi" in str(call["url"])]
+    assert search_terms[:2] == ["rs123", "DRD4[gene] AND single_gene[prop]"]
+    assert len(result.records) == 1
+    assert result.records[0]["variant"] == "rs123"
+
+
+def test_clinvar_connector_falls_back_from_single_gene_to_gene_query():
+    client = RecordingClinVarClient(
+        ids_by_term={
+            "DRD4[gene] AND single_gene[prop]": [],
+            "DRD4[gene]": ["456"],
+        },
+        summaries={"456": {"uid": "456", "title": "ClinVar broad gene record"}},
+    )
+    connector = connector_for(get_source_spec("clinvar"), client, ResolvedCredential("clinvar"))
+
+    result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
+
+    search_terms = [call["params"]["term"] for call in client.calls if "esearch.fcgi" in str(call["url"])]
+    assert search_terms[:2] == ["DRD4[gene] AND single_gene[prop]", "DRD4[gene]"]
+    assert result.status == "ok"
+    assert result.records[0]["source_id"] == "456"
+
+
+def test_clinvar_connector_returns_ok_for_zero_results():
+    client = RecordingClinVarClient()
+    connector = connector_for(get_source_spec("clinvar"), client, ResolvedCredential("clinvar"))
+
+    result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
+
+    assert result.status == "ok"
+    assert result.records == []
+    assert "0 clinical variant record" in result.message
+
+
+def test_clinvar_connector_reports_tls_error_without_traceback():
+    class FailingClient:
+        def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None):
+            raise KnowledgeRequestError(
+                "GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi failed: "
+                "TLS certificate verification failed. Configure NOPHIGENE_CA_BUNDLE.",
+                code="tls_certificate_verification_failed",
+                remediation="Configure NOPHIGENE_CA_BUNDLE.",
+            )
+
+    connector = connector_for(get_source_spec("clinvar"), FailingClient(), ResolvedCredential("clinvar"))
+
+    result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
+    status = result.to_status(get_source_spec("clinvar"))
+
+    assert result.status == "failed"
+    assert status["error_code"] == "tls_certificate_verification_failed"
+    assert status["remediation"] == "Configure NOPHIGENE_CA_BUNDLE."
+    assert "Traceback" not in json.dumps(status)
+
+
+def test_local_article_extractor_finds_gene_snippets_without_full_text(tmp_path: Path):
+    article_dir = tmp_path / "articles"
+    article_dir.mkdir()
+    _write_simple_pdf(
+        article_dir / "gene1_results.pdf",
+        (
+            "Abstract. GENE1 rs123 showed a significant association with Example syndrome in the "
+            "reported cohort. DO_NOT_SERIALIZE_PRIVATE_APPENDIX"
+        ),
+    )
+
+    extraction = extract_local_article_evidence(
+        gene="GENE1",
+        pdf_folder=article_dir,
+        generated_at="2026-06-17T00:00:00Z",
+    )
+
+    assert extraction["status"] == "ok"
+    assert extraction["provenance"]["pdf_count"] == 1
+    assert extraction["provenance"]["record_count"] == 1
+    record = extraction["records"][0]
+    assert record["source_key"] == LOCAL_ARTICLE_SOURCE_KEY
+    assert record["gene"] == "GENE1"
+    assert record["rsid"] == "rs123"
+    assert record["claim_type"] in {"clinical_variant", "population_association"}
+    serialized = json.dumps(extraction, sort_keys=True)
+    assert "DO_NOT_SERIALIZE_PRIVATE_APPENDIX" not in serialized
+    assert str(article_dir) not in serialized
+    assert record["source_file_sha256"]
+    assert record["pdf_path_hash"]
+
+
+def test_dynamic_builder_adds_local_article_evidence_workflow(tmp_path: Path):
+    article_dir = tmp_path / "articles"
+    article_dir.mkdir()
+    _write_simple_pdf(
+        article_dir / "gene1_function.pdf",
+        "Results. GENE1 expression was reduced after knockdown and the assay showed altered pathway activity.",
+    )
+    variants = pd.DataFrame([{"chrom": "1", "id": "rs123", "pos": 101, "ref": "A", "alt": "G"}])
+
+    payload = build_dynamic_knowledge_base(
+        gene="GENE1",
+        region="1:90-110",
+        genome_build="hg19",
+        variants=variants,
+        selected_sources=["clinvar"],
+        use_local_article_evidence=True,
+        article_pdf_folder=article_dir,
+        output_dir=tmp_path,
+        request_client=FakeClient(),
+        generated_at="2026-06-17T00:00:00Z",
+    )
+
+    statuses = {status["source_key"]: status["status"] for status in payload["provider_statuses"]}
+    assert statuses[LOCAL_ARTICLE_SOURCE_KEY] == "ok"
+    assert payload["local_article_evidence"]["provenance"]["record_count"] == 1
+    assert payload["local_article_evidence_artifacts"]["article_evidence_json"].endswith("article_evidence.json")
+    assert any(record["source_key"] == LOCAL_ARTICLE_SOURCE_KEY for record in payload["literature_records"])
+    assert payload["workflow_runs"][-1]["workflow_key"] == LOCAL_ARTICLE_WORKFLOW_KEY
+    assert payload["workflow_runs"][-1]["status"] == "ok"
+    assert payload["workflow_source_matrix"][LOCAL_ARTICLE_SOURCE_KEY] == [LOCAL_ARTICLE_WORKFLOW_KEY]
+    assert (tmp_path / "local_article_evidence" / "article_evidence_summary.csv").is_file()
+
+
+def test_dynamic_builder_reports_missing_local_article_folder_as_input_needed():
+    payload = build_dynamic_knowledge_base(
+        gene="GENE1",
+        region="1:90-110",
+        genome_build="hg19",
+        selected_sources=[],
+        selected_workflows=[LOCAL_ARTICLE_WORKFLOW_KEY],
+        use_local_article_evidence=True,
+        generated_at="2026-06-17T00:00:00Z",
+    )
+
+    statuses = {status["source_key"]: status["status"] for status in payload["provider_statuses"]}
+    assert statuses[LOCAL_ARTICLE_SOURCE_KEY] == "needs_folder"
+    assert payload["workflow_runs"][0]["workflow_key"] == LOCAL_ARTICLE_WORKFLOW_KEY
+    assert payload["workflow_runs"][0]["status"] == "needs_input"
+    assert payload["local_article_evidence"]["provenance"]["record_count"] == 0
 
 
 def test_credential_status_redacts_session_secret():

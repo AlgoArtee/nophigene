@@ -55,6 +55,7 @@ try:
     )
     from .human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
     from .variant_knowledge.credentials import credential_status_for_specs
+    from .variant_knowledge.merger import load_dynamic_knowledge_base
     from .variant_knowledge.orchestrator import build_dynamic_knowledge_base
     from .variant_knowledge.registry import LANE_LABELS, list_source_cards, list_source_specs
     from .variant_knowledge.workflows import (
@@ -104,6 +105,7 @@ except ImportError:
     from helper_functions.filter_manifest_region import sanitize_gene_name_for_filename, save_filtered_manifest
     from human_protein_catalog import FEATURED_HUMAN_PROTEIN_QUERIES, get_human_protein_catalog
     from variant_knowledge.credentials import credential_status_for_specs
+    from variant_knowledge.merger import load_dynamic_knowledge_base
     from variant_knowledge.orchestrator import build_dynamic_knowledge_base
     from variant_knowledge.registry import LANE_LABELS, list_source_cards, list_source_specs
     from variant_knowledge.workflows import (
@@ -528,12 +530,21 @@ def _build_app_structure_qa_items() -> list[dict[str, object]]:
                     "It also needs a VCF source: the app reuses the Extraction tab's last regional VCF when available, otherwise you can choose an existing VCF in the VCF Source for Dynamic KB field."
                 ),
                 (
+                    "Optional local article evidence is configured in the same preprocessing step. "
+                    "Check `Use local PDF article folder`, enter a folder containing legally obtained scientific article PDFs, and choose whether subfolders should be scanned. "
+                    "The app extracts only short snippets that mention the queried gene or supplied aliases, then stores normalized summaries and file/path hashes rather than full article text."
+                ),
+                (
                     "Click Build Variant Knowledge Base after region resolution, methylation subset creation, and variant source selection. "
-                    "The builder reads the observed VCF variants in the selected interval, combines them with the filtered EPIC methylation loci, runs selected workflows sequentially, de-duplicates shared database calls with an in-run source-result cache, and writes `variant_kb.json` under `results/dynamic_knowledge_bases/`."
+                    "The builder reads the observed VCF variants in the selected interval, combines them with the filtered EPIC methylation loci, runs selected workflows sequentially, de-duplicates shared database calls with an in-run source-result cache, optionally extracts local PDF article snippets, and writes `variant_kb.json` under `results/dynamic_knowledge_bases/`."
                 ),
                 (
                     "When analysis runs after a dynamic KB has been built, the app merges the dynamic variant records into the local curated gene bundle for that analysis only. "
                     "This means bundled curated knowledge still works as before, while current run evidence can add extra variant records, workflow runs, provider statuses, literature records, population records, epigenetic locus records, provenance, and license notes."
+                ),
+                (
+                    "Local PDF evidence is also a run artifact. "
+                    "It appears in `local_article_evidence`, `literature_records`, workflow summaries, report tables, and sidecar files under the dynamic KB output folder so it is visible in the queried gene's results without becoming a permanent curated bundle."
                 ),
                 (
                     "The dynamic KB is a run artifact, not a source-controlled curated bundle. "
@@ -566,7 +577,8 @@ def _build_app_structure_qa_items() -> list[dict[str, object]]:
                 ),
                 (
                     "API jobs accept `options.knowledge_workflows` and `options.knowledge_sources` as lists or comma-separated strings, and `options.knowledge_source_imports` as a source-key to path map. "
-                    "The command-line builder mirrors that with `scripts/build_dynamic_variant_knowledge_base.py --selected-workflows ... --selected-sources ... --source-import SOURCE_KEY=PATH`, repeatable for multiple import files."
+                    "For local article folders, API jobs also accept `options.use_local_article_evidence`, `options.article_pdf_folder`, `options.article_pdf_recursive`, and `options.max_article_pdfs`. "
+                    "The command-line builder mirrors that with `scripts/build_dynamic_variant_knowledge_base.py --selected-workflows ... --selected-sources ... --source-import SOURCE_KEY=PATH --use-local-article-evidence --article-pdf-folder PATH`, repeatable for multiple import files."
                 ),
                 (
                     "The expected practical order is: resolve the gene region, prepare the filtered manifest, extract or choose the VCF, select Knowledge Sources and uploads, build the dynamic KB, then run analysis. "
@@ -591,6 +603,18 @@ def _resolve_user_path(raw_path: str) -> Path:
     if candidate.is_absolute():
         return candidate
     return PROJECT_ROOT / candidate
+
+
+def _safe_nonnegative_int(value: Any, default: int, *, maximum: int | None = None) -> int:
+    """Parse optional numeric UI fields without throwing away the surrounding form state."""
+    try:
+        parsed = int(str(value).strip())
+    except (TypeError, ValueError):
+        parsed = default
+    parsed = max(0, parsed)
+    if maximum is not None:
+        parsed = min(parsed, maximum)
+    return parsed
 
 
 def _format_interval_from_record(record: dict[str, Any] | None, *, default_chrom: str = "") -> str:
@@ -1345,6 +1369,411 @@ def _serialize_table_rows(df: pd.DataFrame) -> list[dict[str, Any]]:
     return serialized_rows
 
 
+DATA_SOURCE_GROUP_LABELS = {
+    "curated": "Bundled curated evidence",
+    "variant": "Genetic variant evidence",
+    "methylation": "Methylation evidence",
+    "population": "Population sources",
+    "dynamic": "Dynamic knowledge sources",
+    "literature": "Literature and local PDFs",
+    "licensed": "Licensed/import-only notices",
+}
+
+
+def _clean_source_text(value: Any, *, limit: int = 700) -> str:
+    """Return compact plain text for source cards."""
+    text = " ".join(str(value or "").split())
+    return text[:limit]
+
+
+def _as_dict_list(value: Any) -> list[dict[str, Any]]:
+    """Return only dictionary items from a possibly mixed list."""
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, dict)]
+
+
+def _append_source_link(
+    links: list[dict[str, str]],
+    *,
+    label: Any = "",
+    url: Any = "",
+) -> None:
+    """Append one source link when it has either label or URL."""
+    clean_label = _clean_source_text(label, limit=180)
+    clean_url = _clean_source_text(url, limit=500)
+    if not clean_label and not clean_url:
+        return
+    links.append(
+        {
+            "label": clean_label or clean_url,
+            "url": clean_url,
+        }
+    )
+
+
+def _dedupe_source_links(links: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Deduplicate links by URL when possible and then by label."""
+    deduped: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for link in links:
+        label = _clean_source_text(link.get("label", ""), limit=180)
+        url = _clean_source_text(link.get("url", ""), limit=500)
+        key = (url.casefold(), label.casefold() if not url else "")
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append({"label": label or url, "url": url})
+    return deduped
+
+
+def _source_links_from_records(records: list[dict[str, Any]]) -> list[dict[str, str]]:
+    """Extract commonly shaped evidence links from normalized records."""
+    links: list[dict[str, str]] = []
+    for record in records:
+        _append_source_link(
+            links,
+            label=record.get("label") or record.get("title") or record.get("paper") or record.get("source"),
+            url=record.get("url"),
+        )
+        for evidence_item in _as_dict_list(record.get("evidence")):
+            _append_source_link(
+                links,
+                label=evidence_item.get("label") or evidence_item.get("title") or evidence_item.get("source"),
+                url=evidence_item.get("url"),
+            )
+        for finding in _as_dict_list(record.get("literature_findings")):
+            _append_source_link(
+                links,
+                label=finding.get("paper") or finding.get("title") or finding.get("label"),
+                url=finding.get("url"),
+            )
+        for link in _as_dict_list(record.get("research_links")):
+            _append_source_link(
+                links,
+                label=link.get("label") or link.get("title"),
+                url=link.get("url"),
+            )
+        for paper in _as_dict_list(record.get("papers")):
+            _append_source_link(
+                links,
+                label=paper.get("label") or paper.get("title") or paper.get("source_variant"),
+                url=paper.get("url"),
+            )
+    return _dedupe_source_links(links)
+
+
+def _source_card(
+    *,
+    group: str,
+    source_key: str,
+    source_name: str,
+    status: str,
+    summary: str,
+    record_count: int = 0,
+    findings: list[Any] | None = None,
+    links: list[dict[str, str]] | None = None,
+    warnings: list[Any] | None = None,
+    errors: list[Any] | None = None,
+    license_note: str = "",
+) -> dict[str, Any]:
+    """Return one normalized card for the Data Sources result tab."""
+    return {
+        "group": group,
+        "source_key": source_key,
+        "source_name": source_name,
+        "status": status,
+        "record_count": int(record_count or 0),
+        "summary": _clean_source_text(summary),
+        "findings": [
+            _clean_source_text(finding)
+            for finding in (findings or [])
+            if _clean_source_text(finding)
+        ][:12],
+        "links": _dedupe_source_links(links or [])[:20],
+        "warnings": [
+            _clean_source_text(warning)
+            for warning in (warnings or [])
+            if _clean_source_text(warning)
+        ][:8],
+        "errors": [
+            _clean_source_text(error)
+            for error in (errors or [])
+            if _clean_source_text(error)
+        ][:8],
+        "license_note": _clean_source_text(license_note, limit=500),
+    }
+
+
+def _findings_from_variant_record(record: dict[str, Any]) -> list[str]:
+    """Summarize one curated or dynamic variant evidence record."""
+    label = _clean_source_text(record.get("display_name") or record.get("variant") or record.get("label"))
+    text = _clean_source_text(
+        record.get("clinical_significance")
+        or record.get("clinical_interpretation")
+        or record.get("summary")
+        or record.get("assertion")
+    )
+    if label and text:
+        return [f"{label}: {text}"]
+    return [label or text] if (label or text) else []
+
+
+def _records_by_source(records: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Group normalized dynamic records by source key."""
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for record in records:
+        source_key = _clean_source_text(record.get("source_key") or record.get("source") or "dynamic", limit=120)
+        grouped.setdefault(source_key, []).append(record)
+    return grouped
+
+
+def _selected_source_specs(selected_source_keys: list[str]) -> list[Any]:
+    """Return source specs in selected order, skipping unknown keys."""
+    spec_lookup = {spec.key: spec for spec in list_source_specs()}
+    return [spec_lookup[key] for key in selected_source_keys if key in spec_lookup]
+
+
+def _build_data_sources_payload(
+    *,
+    knowledge_base: dict[str, Any],
+    population_database: dict[str, Any],
+    population_insights: dict[str, Any],
+    methylation_insights: dict[str, Any],
+    dynamic_payload: dict[str, Any] | None,
+    selected_source_keys: list[str],
+) -> dict[str, Any]:
+    """Build compact source provenance cards for the Result Viewer."""
+    cards: list[dict[str, Any]] = []
+    knowledge_base = knowledge_base or {}
+    population_database = population_database or {}
+    population_insights = population_insights or {}
+    methylation_insights = methylation_insights or {}
+    gene_context = knowledge_base.get("gene_context", {}) if isinstance(knowledge_base.get("gene_context"), dict) else {}
+
+    gene_evidence = _as_dict_list(gene_context.get("evidence"))
+    gene_findings = [
+        gene_context.get("gene_summary"),
+        gene_context.get("clinical_context"),
+        *list(gene_context.get("variant_effect_overview") or [])[:3],
+        *list(gene_context.get("condition_research_overview") or [])[:3],
+    ]
+    cards.append(
+        _source_card(
+            group="curated",
+            source_key="curated_gene_bundle",
+            source_name=str(knowledge_base.get("database_name") or "Bundled gene interpretation database"),
+            status="ok",
+            record_count=len(knowledge_base.get("variant_records", []) or []),
+            summary="Bundled curated gene context used as the stable interpretation base for this analysis.",
+            findings=gene_findings,
+            links=_source_links_from_records(gene_evidence),
+        )
+    )
+
+    variant_records = _as_dict_list(knowledge_base.get("variant_records"))
+    variant_links = _source_links_from_records(variant_records)
+    variant_findings: list[str] = []
+    for record in variant_records[:12]:
+        variant_findings.extend(_findings_from_variant_record(record))
+    cards.append(
+        _source_card(
+            group="variant",
+            source_key="curated_variant_records",
+            source_name="Curated variant records",
+            status="ok" if variant_records else "metadata_only",
+            record_count=len(variant_records),
+            summary="Variant-level evidence bundled with the gene interpretation database.",
+            findings=variant_findings,
+            links=variant_links,
+        )
+    )
+
+    methylation_records = _as_dict_list(methylation_insights.get("whitelist_probe_reference_rows"))
+    methylation_links = _source_links_from_records(methylation_records)
+    methylation_links.extend(_source_links_from_records(_as_dict_list(methylation_insights.get("evidence"))))
+    methylation_findings = [
+        methylation_insights.get("summary"),
+        methylation_insights.get("clinical_context"),
+        methylation_insights.get("whitelist_literature_context"),
+        *list(methylation_insights.get("methylation_effects") or [])[:4],
+        *list(methylation_insights.get("methylation_condition_research") or [])[:4],
+    ]
+    cards.append(
+        _source_card(
+            group="methylation",
+            source_key="methylation_evidence",
+            source_name="Methylation evidence",
+            status="ok" if methylation_records or methylation_findings else "metadata_only",
+            record_count=len(methylation_records),
+            summary="Probe and methylation literature context used to interpret the selected gene subset.",
+            findings=methylation_findings,
+            links=methylation_links,
+        )
+    )
+
+    population_sources = _as_dict_list(population_database.get("sources"))
+    population_sources.extend(_as_dict_list(population_insights.get("sources")))
+    population_findings = [
+        population_database.get("coverage_note"),
+        population_insights.get("summary"),
+        population_insights.get("gene_population_patterns_intro"),
+    ]
+    population_record_count = len(population_insights.get("variant_population_records") or []) + len(
+        population_insights.get("gene_population_patterns") or []
+    )
+    cards.append(
+        _source_card(
+            group="population",
+            source_key="population_database",
+            source_name=str(population_database.get("database_name") or "Population database"),
+            status="ok" if population_sources or population_record_count else "metadata_only",
+            record_count=population_record_count,
+            summary="Population reference sources and cohort context available for the analyzed gene.",
+            findings=population_findings,
+            links=_source_links_from_records(population_sources),
+        )
+    )
+
+    dynamic_source_records = _as_dict_list((dynamic_payload or {}).get("source_records"))
+    dynamic_records_by_source = _records_by_source(dynamic_source_records)
+    dynamic_statuses = _as_dict_list((dynamic_payload or {}).get("provider_statuses"))
+    status_source_keys: set[str] = set()
+    if dynamic_payload:
+        for status in dynamic_statuses:
+            source_key = _clean_source_text(status.get("source_key"), limit=120)
+            if not source_key:
+                continue
+            status_source_keys.add(source_key)
+            source_records = dynamic_records_by_source.get(source_key, [])
+            source_findings = [
+                record.get("summary") or record.get("title") or record.get("label")
+                for record in source_records[:8]
+            ]
+            links = _source_links_from_records(source_records)
+            _append_source_link(links, label=status.get("name"), url=status.get("homepage"))
+            for url in status.get("queried_urls", []) or []:
+                _append_source_link(links, label=url, url=url)
+            group = "licensed" if status.get("lane") == "licensed" else "dynamic"
+            cards.append(
+                _source_card(
+                    group=group,
+                    source_key=source_key,
+                    source_name=str(status.get("name") or source_key),
+                    status=str(status.get("status") or "metadata_only"),
+                    record_count=int(status.get("record_count") or len(source_records)),
+                    summary=str(status.get("message") or "Dynamic provider status recorded during preprocessing."),
+                    findings=source_findings,
+                    links=links,
+                    warnings=status.get("warnings") or [],
+                    errors=status.get("errors") or [],
+                    license_note=str(status.get("license_note") or ""),
+                )
+            )
+
+        literature_records = _as_dict_list(dynamic_payload.get("literature_records"))
+        for source_key, records in _records_by_source(literature_records).items():
+            source_name = source_key
+            for status in dynamic_statuses:
+                if status.get("source_key") == source_key:
+                    source_name = str(status.get("name") or source_key)
+                    break
+            cards.append(
+                _source_card(
+                    group="literature",
+                    source_key=f"{source_key}_literature",
+                    source_name=f"{source_name} literature records",
+                    status="ok" if records else "metadata_only",
+                    record_count=len(records),
+                    summary="Literature records returned by dynamic Knowledge Sources preprocessing.",
+                    findings=[
+                        record.get("summary") or record.get("title") or record.get("label")
+                        for record in records[:10]
+                    ],
+                    links=_source_links_from_records(records),
+                )
+            )
+
+        local_article_evidence = dynamic_payload.get("local_article_evidence")
+        if isinstance(local_article_evidence, dict):
+            local_records = _as_dict_list(local_article_evidence.get("records"))
+            cards.append(
+                _source_card(
+                    group="literature",
+                    source_key="local_pdf_articles",
+                    source_name="Local PDF articles",
+                    status=str(local_article_evidence.get("status") or "metadata_only"),
+                    record_count=len(local_records),
+                    summary=str(local_article_evidence.get("message") or "Local article evidence status."),
+                    findings=[
+                        record.get("snippet") or record.get("summary") or record.get("title")
+                        for record in local_records[:10]
+                    ],
+                    links=_source_links_from_records(local_records),
+                    warnings=(local_article_evidence.get("provenance") or {}).get("warnings", []),
+                    errors=(local_article_evidence.get("provenance") or {}).get("errors", []),
+                )
+            )
+
+    if not dynamic_payload:
+        selected_specs = _selected_source_specs(selected_source_keys)
+        for spec in selected_specs:
+            group = "licensed" if spec.lane == "licensed" or spec.requires_export else "dynamic"
+            cards.append(
+                _source_card(
+                    group=group,
+                    source_key=spec.key,
+                    source_name=spec.name,
+                    status="not_run",
+                    record_count=0,
+                    summary=(
+                        "Selected in Knowledge Sources but not queried for this analysis. "
+                        "Run Build Variant Knowledge Base during preprocessing to populate this provider."
+                    ),
+                    links=[{"label": spec.name, "url": spec.homepage}] if spec.homepage else [],
+                    license_note=spec.license_note,
+                )
+            )
+    else:
+        for spec in _selected_source_specs(selected_source_keys):
+            if spec.key in status_source_keys:
+                continue
+            group = "licensed" if spec.lane == "licensed" or spec.requires_export else "dynamic"
+            cards.append(
+                _source_card(
+                    group=group,
+                    source_key=spec.key,
+                    source_name=spec.name,
+                    status="not_run",
+                    record_count=0,
+                    summary="Selected source did not appear in the dynamic KB provider statuses for this run.",
+                    links=[{"label": spec.name, "url": spec.homepage}] if spec.homepage else [],
+                    license_note=spec.license_note,
+                )
+            )
+
+    groups: list[dict[str, Any]] = []
+    for group_key, label in DATA_SOURCE_GROUP_LABELS.items():
+        group_cards = [card for card in cards if card.get("group") == group_key]
+        if group_cards:
+            groups.append(
+                {
+                    "key": group_key,
+                    "label": label,
+                    "cards": group_cards,
+                }
+            )
+    return {
+        "summary": (
+            f"{len(cards)} source card(s) assembled from bundled evidence"
+            + (" and dynamic Knowledge Sources." if dynamic_payload else ". Dynamic Knowledge Sources were not run.")
+        ),
+        "groups": groups,
+        "total_cards": len(cards),
+        "dynamic_status": "available" if dynamic_payload else "not_run",
+    }
+
+
 def _empty_form_state() -> dict[str, str]:
     """Return the initial analysis form state used on first page load."""
     vcf_files = discover_vcf_files()
@@ -1392,6 +1821,13 @@ def _empty_preprocess_state(manifest_files: list[str]) -> dict[str, Any]:
         "hg38_extraction_message": "",
         "hg38_extraction_region": "",
         "knowledge_vcf_source": "",
+        "use_local_article_evidence": False,
+        "article_pdf_folder": "",
+        "article_pdf_recursive": True,
+        "max_article_pdfs": 100,
+        "local_article_evidence_status": "",
+        "local_article_evidence_record_count": 0,
+        "local_article_pdf_count": 0,
         "dynamic_kb_ready": False,
         "dynamic_kb_path": "",
         "dynamic_kb_status": "",
@@ -1418,6 +1854,11 @@ def _load_preprocess_state(manifest_files: list[str]) -> dict[str, Any]:
 
     if not state.get("manifest_source") and manifest_files:
         state["manifest_source"] = manifest_files[0]
+    state["max_article_pdfs"] = _safe_nonnegative_int(
+        state.get("max_article_pdfs", 100),
+        100,
+        maximum=1000,
+    )
     return state
 
 
@@ -1445,6 +1886,13 @@ def _store_preprocess_state(state: dict[str, Any]) -> None:
         "hg38_extraction_message": str(state.get("hg38_extraction_message", "")),
         "hg38_extraction_region": str(state.get("hg38_extraction_region", "")),
         "knowledge_vcf_source": str(state.get("knowledge_vcf_source", "")),
+        "use_local_article_evidence": bool(state.get("use_local_article_evidence", False)),
+        "article_pdf_folder": str(state.get("article_pdf_folder", "")),
+        "article_pdf_recursive": bool(state.get("article_pdf_recursive", True)),
+        "max_article_pdfs": _safe_nonnegative_int(state.get("max_article_pdfs", 100), 100, maximum=1000),
+        "local_article_evidence_status": str(state.get("local_article_evidence_status", "")),
+        "local_article_evidence_record_count": int(state.get("local_article_evidence_record_count", 0) or 0),
+        "local_article_pdf_count": int(state.get("local_article_pdf_count", 0) or 0),
         "dynamic_kb_ready": bool(state.get("dynamic_kb_ready", False)),
         "dynamic_kb_path": str(state.get("dynamic_kb_path", "")),
         "dynamic_kb_status": str(state.get("dynamic_kb_status", "")),
@@ -1990,6 +2438,15 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
         "dynamic_kb_source_count": int(preprocess_state.get("dynamic_kb_source_count", 0) or 0),
         "dynamic_kb_workflow_count": int(preprocess_state.get("dynamic_kb_workflow_count", 0) or 0),
         "dynamic_kb_workflow_summary": list(preprocess_state.get("dynamic_kb_workflow_summary", [])),
+        "use_local_article_evidence": bool(preprocess_state.get("use_local_article_evidence", False)),
+        "article_pdf_folder": str(preprocess_state.get("article_pdf_folder", "")),
+        "article_pdf_recursive": bool(preprocess_state.get("article_pdf_recursive", True)),
+        "max_article_pdfs": int(preprocess_state.get("max_article_pdfs", 100) or 0),
+        "local_article_evidence_status": str(preprocess_state.get("local_article_evidence_status", "")),
+        "local_article_evidence_record_count": int(
+            preprocess_state.get("local_article_evidence_record_count", 0) or 0
+        ),
+        "local_article_pdf_count": int(preprocess_state.get("local_article_pdf_count", 0) or 0),
         "analysis_ready": bool(preprocess_state.get("analysis_ready", False)),
         "probe_count": int(preprocess_state.get("probe_count", 0)),
         "selected_sources": list(preprocess_state.get("selected_sources", [])),
@@ -2033,7 +2490,8 @@ def _build_preprocess_result(preprocess_state: dict[str, Any]) -> dict[str, Any]
                 "title": "Build Variant Knowledge Base",
                 "status": "complete" if preprocess_state.get("dynamic_kb_ready") else "optional",
                 "summary": (
-                    f"{preprocess_state.get('dynamic_kb_workflow_count', 0)} workflow(s), {preprocess_state.get('dynamic_kb_provider_count', 0)} provider statuses saved to {preprocess_state.get('dynamic_kb_path', '')}"
+                    f"{preprocess_state.get('dynamic_kb_workflow_count', 0)} workflow(s), {preprocess_state.get('dynamic_kb_provider_count', 0)} provider statuses"
+                    f" and {preprocess_state.get('local_article_evidence_record_count', 0)} local article snippet(s) saved to {preprocess_state.get('dynamic_kb_path', '')}"
                     if preprocess_state.get("dynamic_kb_ready")
                     else "Waiting for an observed-variant VCF and selected knowledge sources."
                 ),
@@ -2303,50 +2761,69 @@ def index() -> str:
 
         elif workflow == "preprocess":
             initial_tab = "preprocessing"
-            previous_gene_name = str(preprocess_state.get("gene_name", DEFAULT_GENE_NAME)).strip().upper()
-            requested_gene_name = (
-                request.form.get("gene_name", "").strip() or DEFAULT_GENE_NAME
-            ).upper()
-            preprocess_state.update(
-                {
-                    "gene_name": requested_gene_name,
-                    "region": request.form.get("preprocess_region", "").strip()
-                    or str(preprocess_state.get("region", DEFAULT_REGION)),
-                    "manifest_source": request.form.get("manifest_source", "").strip()
-                    or str(preprocess_state.get("manifest_source", "")),
-                    "overwrite_filtered_manifest": request.form.get("overwrite_filtered_manifest") == "1",
-                    "knowledge_vcf_source": request.form.get("knowledge_vcf_source", "").strip()
-                    or str(preprocess_state.get("knowledge_vcf_source", "")),
-                }
-            )
-            if requested_gene_name != previous_gene_name:
-                preprocess_state["region_ready"] = False
-                preprocess_state["manifest_ready"] = False
-                preprocess_state["analysis_ready"] = False
-                preprocess_state["filtered_manifest"] = ""
-                preprocess_state["probe_count"] = 0
-                preprocess_state["selected_sources"] = []
-                preprocess_state["region_candidates"] = []
-                preprocess_state["analysis_scope"] = DEFAULT_ANALYSIS_SCOPE
-                preprocess_state["scope_regions"] = {}
-                preprocess_state["scope_region_source"] = ""
-                preprocess_state["logs"] = []
-                preprocess_state["region_recently_updated"] = False
-                preprocess_state["hg38_extraction_suggested"] = False
-                preprocess_state["hg38_extraction_message"] = ""
-                preprocess_state["hg38_extraction_region"] = ""
-                preprocess_state["knowledge_vcf_source"] = ""
-                preprocess_state["dynamic_kb_ready"] = False
-                preprocess_state["dynamic_kb_path"] = ""
-                preprocess_state["dynamic_kb_status"] = ""
-                preprocess_state["dynamic_kb_provider_count"] = 0
-                preprocess_state["dynamic_kb_source_count"] = 0
-                preprocess_state["dynamic_kb_workflow_count"] = 0
-                preprocess_state["dynamic_kb_workflow_summary"] = []
             preprocess_action = request.form.get("preprocess_action", "").strip()
+            if preprocess_action == "reset_preprocessing":
+                preprocess_state = _empty_preprocess_state(manifest_files)
+                preprocess_notice = "Preprocessing was refreshed. Start again with Genetics."
+                _append_preprocess_log(preprocess_state, preprocess_notice)
+            else:
+                previous_gene_name = str(preprocess_state.get("gene_name", DEFAULT_GENE_NAME)).strip().upper()
+                requested_gene_name = (
+                    request.form.get("gene_name", "").strip() or DEFAULT_GENE_NAME
+                ).upper()
+                preprocess_state.update(
+                    {
+                        "gene_name": requested_gene_name,
+                        "region": request.form.get("preprocess_region", "").strip()
+                        or str(preprocess_state.get("region", DEFAULT_REGION)),
+                        "manifest_source": request.form.get("manifest_source", "").strip()
+                        or str(preprocess_state.get("manifest_source", "")),
+                        "overwrite_filtered_manifest": request.form.get("overwrite_filtered_manifest") == "1",
+                        "knowledge_vcf_source": request.form.get("knowledge_vcf_source", "").strip()
+                        or str(preprocess_state.get("knowledge_vcf_source", "")),
+                        "use_local_article_evidence": request.form.get("use_local_article_evidence") == "1",
+                        "article_pdf_folder": request.form.get("article_pdf_folder", "").strip()
+                        or str(preprocess_state.get("article_pdf_folder", "")),
+                        "article_pdf_recursive": request.form.get("article_pdf_recursive") == "1",
+                        "max_article_pdfs": _safe_nonnegative_int(
+                            request.form.get("max_article_pdfs", preprocess_state.get("max_article_pdfs", 100)),
+                            100,
+                            maximum=1000,
+                        ),
+                    }
+                )
+                if requested_gene_name != previous_gene_name:
+                    preprocess_state["region_ready"] = False
+                    preprocess_state["manifest_ready"] = False
+                    preprocess_state["analysis_ready"] = False
+                    preprocess_state["filtered_manifest"] = ""
+                    preprocess_state["probe_count"] = 0
+                    preprocess_state["selected_sources"] = []
+                    preprocess_state["region_candidates"] = []
+                    preprocess_state["analysis_scope"] = DEFAULT_ANALYSIS_SCOPE
+                    preprocess_state["scope_regions"] = {}
+                    preprocess_state["scope_region_source"] = ""
+                    preprocess_state["logs"] = []
+                    preprocess_state["region_recently_updated"] = False
+                    preprocess_state["hg38_extraction_suggested"] = False
+                    preprocess_state["hg38_extraction_message"] = ""
+                    preprocess_state["hg38_extraction_region"] = ""
+                    preprocess_state["knowledge_vcf_source"] = ""
+                    preprocess_state["local_article_evidence_status"] = ""
+                    preprocess_state["local_article_evidence_record_count"] = 0
+                    preprocess_state["local_article_pdf_count"] = 0
+                    preprocess_state["dynamic_kb_ready"] = False
+                    preprocess_state["dynamic_kb_path"] = ""
+                    preprocess_state["dynamic_kb_status"] = ""
+                    preprocess_state["dynamic_kb_provider_count"] = 0
+                    preprocess_state["dynamic_kb_source_count"] = 0
+                    preprocess_state["dynamic_kb_workflow_count"] = 0
+                    preprocess_state["dynamic_kb_workflow_summary"] = []
 
             try:
-                if preprocess_action == "find_region":
+                if preprocess_action == "reset_preprocessing":
+                    pass
+                elif preprocess_action == "find_region":
                     _append_preprocess_log(
                         preprocess_state,
                         f"Starting gene-region lookup for {preprocess_state['gene_name']}.",
@@ -2388,6 +2865,9 @@ def index() -> str:
                     preprocess_state["dynamic_kb_source_count"] = 0
                     preprocess_state["dynamic_kb_workflow_count"] = 0
                     preprocess_state["dynamic_kb_workflow_summary"] = []
+                    preprocess_state["local_article_evidence_status"] = ""
+                    preprocess_state["local_article_evidence_record_count"] = 0
+                    preprocess_state["local_article_pdf_count"] = 0
                     preprocess_state["region_recently_updated"] = True
                     _append_preprocess_log(
                         preprocess_state,
@@ -2505,6 +2985,9 @@ def index() -> str:
                     preprocess_state["dynamic_kb_source_count"] = 0
                     preprocess_state["dynamic_kb_workflow_count"] = 0
                     preprocess_state["dynamic_kb_workflow_summary"] = []
+                    preprocess_state["local_article_evidence_status"] = ""
+                    preprocess_state["local_article_evidence_record_count"] = 0
+                    preprocess_state["local_article_pdf_count"] = 0
                     preprocess_state["region_recently_updated"] = False
                     _append_preprocess_log(
                         preprocess_state,
@@ -2540,6 +3023,12 @@ def index() -> str:
                     if not manifest_subset_path.exists():
                         raise AnalysisError(f"Filtered manifest was not found: {manifest_subset_path}")
 
+                    article_pdf_folder = str(preprocess_state.get("article_pdf_folder", "")).strip()
+                    article_pdf_folder_path = _resolve_user_path(article_pdf_folder) if article_pdf_folder else None
+                    use_local_article_evidence = bool(
+                        preprocess_state.get("use_local_article_evidence", False)
+                        or article_pdf_folder
+                    )
                     selected_sources = list(knowledge_sources_state.get("selected_sources", []))
                     if not selected_sources:
                         selected_sources = default_workflow_source_keys()
@@ -2556,7 +3045,8 @@ def index() -> str:
                         (
                             f"Building dynamic variant knowledge base for {preprocess_state['gene_name']} "
                             f"from {vcf_path} with {len(selected_workflows)} workflow(s) and "
-                            f"{len(selected_sources)} selected source(s)."
+                            f"{len(selected_sources)} selected source(s). "
+                            f"Local PDF article evidence: {'enabled' if use_local_article_evidence else 'disabled'}."
                         ),
                     )
                     variants = load_variants(str(vcf_path), str(preprocess_state["region"]))
@@ -2571,16 +3061,44 @@ def index() -> str:
                         selected_sources=selected_sources,
                         credentials=_session_knowledge_credentials(),
                         source_imports=dict(knowledge_sources_state.get("source_imports") or {}),
+                        use_local_article_evidence=use_local_article_evidence,
+                        article_pdf_folder=article_pdf_folder_path,
+                        article_pdf_recursive=bool(preprocess_state.get("article_pdf_recursive", True)),
+                        max_article_pdfs=int(preprocess_state.get("max_article_pdfs", 100) or 0),
                         output_dir=output_dir,
                         cache_dir=PROJECT_ROOT / ".research-cache" / "variant_knowledge",
                     )
                     artifact_path = Path(str(dynamic_payload.get("artifact_path", output_dir / "variant_kb.json")))
+                    selected_source_keys = list(
+                        (dynamic_payload.get("provenance") or {}).get("selected_source_keys") or selected_sources
+                    )
+                    local_article_evidence = (
+                        dynamic_payload.get("local_article_evidence")
+                        if isinstance(dynamic_payload.get("local_article_evidence"), dict)
+                        else {}
+                    )
+                    local_article_provenance = (
+                        local_article_evidence.get("provenance")
+                        if isinstance(local_article_evidence.get("provenance"), dict)
+                        else {}
+                    )
                     preprocess_state["knowledge_vcf_source"] = _as_relative_display(vcf_path)
                     preprocess_state["dynamic_kb_ready"] = True
                     preprocess_state["dynamic_kb_path"] = _as_relative_display(artifact_path)
                     preprocess_state["dynamic_kb_provider_count"] = len(dynamic_payload.get("provider_statuses", []))
-                    preprocess_state["dynamic_kb_source_count"] = len(selected_sources)
+                    preprocess_state["dynamic_kb_source_count"] = len(selected_source_keys)
                     preprocess_state["dynamic_kb_workflow_count"] = len(dynamic_payload.get("workflow_runs", []))
+                    preprocess_state["local_article_evidence_status"] = str(local_article_evidence.get("message", ""))
+                    preprocess_state["local_article_evidence_record_count"] = int(
+                        local_article_provenance.get(
+                            "record_count",
+                            len(local_article_evidence.get("records", []) or []),
+                        )
+                        or 0
+                    )
+                    preprocess_state["local_article_pdf_count"] = int(
+                        local_article_provenance.get("pdf_count", 0) or 0
+                    )
                     preprocess_state["dynamic_kb_workflow_summary"] = [
                         {
                             "label": str(workflow.get("label", "")),
@@ -2592,13 +3110,23 @@ def index() -> str:
                     ]
                     preprocess_state["dynamic_kb_status"] = (
                         f"Built dynamic KB with {preprocess_state['dynamic_kb_workflow_count']} workflow(s) "
-                        f"and {preprocess_state['dynamic_kb_provider_count']} provider status record(s)."
+                        f"and {preprocess_state['dynamic_kb_provider_count']} provider status record(s). "
+                        f"Local article snippets: {preprocess_state['local_article_evidence_record_count']}."
                     )
                     preprocess_state["analysis_ready"] = True
                     _append_preprocess_log(
                         preprocess_state,
                         f"Saved dynamic knowledge base at {preprocess_state['dynamic_kb_path']}.",
                     )
+                    if local_article_evidence:
+                        _append_preprocess_log(
+                            preprocess_state,
+                            (
+                                f"Local PDF article evidence: "
+                                f"{preprocess_state['local_article_evidence_record_count']} snippet(s) "
+                                f"from {preprocess_state['local_article_pdf_count']} PDF file(s)."
+                            ),
+                        )
                     preprocess_notice = preprocess_state["dynamic_kb_status"]
                 else:
                     raise AnalysisError("Choose a preprocessing action before submitting the form.")
@@ -2934,6 +3462,25 @@ def index() -> str:
                     variant_preview = _prepare_variant_preview_table(analysis_result.variants)
                     methylation_preview = _prepare_methylation_preview_table(analysis_result.methylation)
                     variant_rows = _serialize_table_rows(variant_preview)
+                    dynamic_knowledge_base_path_raw = getattr(
+                        analysis_result,
+                        "dynamic_knowledge_base_path",
+                        None,
+                    )
+                    dynamic_knowledge_base_path = (
+                        Path(dynamic_knowledge_base_path_raw)
+                        if dynamic_knowledge_base_path_raw
+                        else None
+                    )
+                    dynamic_payload = load_dynamic_knowledge_base(dynamic_knowledge_base_path)
+                    data_sources = _build_data_sources_payload(
+                        knowledge_base=analysis_result.knowledge_base,
+                        population_database=analysis_result.population_database,
+                        population_insights=analysis_result.population_insights,
+                        methylation_insights=analysis_result.methylation_insights,
+                        dynamic_payload=dynamic_payload,
+                        selected_source_keys=list(knowledge_sources_state.get("selected_sources", [])),
+                    )
                     result = {
                         "report_path": _as_relative_display(analysis_result.report_path),
                         "methylation_output_path": _as_relative_display(analysis_result.methylation_output_path),
@@ -2957,6 +3504,7 @@ def index() -> str:
                         ),
                         "variant_interpretations": analysis_result.variant_interpretations,
                         "population_insights": analysis_result.population_insights,
+                        "data_sources": data_sources,
                         "methylation_insights": {
                             **analysis_result.methylation_insights,
                             "probe_preview": (
@@ -2987,8 +3535,8 @@ def index() -> str:
                         ),
                         "general_database_status": getattr(analysis_result, "general_database_status", ""),
                         "dynamic_knowledge_base_path": (
-                            _as_relative_display(getattr(analysis_result, "dynamic_knowledge_base_path"))
-                            if getattr(analysis_result, "dynamic_knowledge_base_path", None)
+                            _as_relative_display(dynamic_knowledge_base_path)
+                            if dynamic_knowledge_base_path
                             else ""
                         ),
                         "dynamic_knowledge_base_status": getattr(

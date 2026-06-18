@@ -17,6 +17,7 @@ from src.analysis import (
     load_gene_population_database,
     load_gene_synthesis_database,
     load_methylation,
+    load_methylation_beta_values,
 )
 from src.webapp import (
     _apply_preprocessing_defaults,
@@ -615,6 +616,56 @@ def test_load_methylation_retries_without_custom_manifest(monkeypatch, tmp_path:
     assert pipeline_calls == ["data/custom_manifest.csv", None]
     assert methylation["probe_id"].tolist() == ["cg19620752"]
     assert methylation["beta"].tolist() == [0.42]
+
+
+def test_load_methylation_beta_values_reuses_cached_beta_matrix(monkeypatch, tmp_path: Path) -> None:
+    """Existing methylprep beta matrices should avoid rerunning methylprep."""
+    sample_prefix = tmp_path / "cached_sample"
+    for suffix in ("_Grn.idat", "_Red.idat"):
+        sample_prefix.with_name(sample_prefix.name + suffix).write_bytes(b"")
+    pd.DataFrame(
+        {sample_prefix.name: [0.12, 0.34]},
+        index=pd.Index(["cg1", "cg2"], name="probe_id"),
+    ).to_pickle(tmp_path / "beta_values.pkl")
+
+    def fail_run_pipeline(*_args, **_kwargs):
+        raise AssertionError("methylprep should not run when cached beta values exist")
+
+    monkeypatch.setattr("src.analysis._run_methylprep_pipeline", fail_run_pipeline)
+
+    beta_values = load_methylation_beta_values(str(sample_prefix))
+
+    assert beta_values.to_dict(orient="records") == [
+        {"probe_id": "cg1", "beta": 0.12},
+        {"probe_id": "cg2", "beta": 0.34},
+    ]
+
+
+def test_load_methylation_beta_values_reuses_cached_processed_csv(monkeypatch, tmp_path: Path) -> None:
+    """Per-sample processed CSVs should also be reusable beta sources."""
+    sample_prefix = tmp_path / "123456789_R01C01"
+    for suffix in ("_Grn.idat", "_Red.idat"):
+        sample_prefix.with_name(sample_prefix.name + suffix).write_bytes(b"")
+    processed_dir = tmp_path / "123456789"
+    processed_dir.mkdir()
+    pd.DataFrame(
+        [
+            {"IlmnID": "cg1", "beta_value": 0.56, "quality_mask": 0},
+            {"IlmnID": "cg2", "beta_value": 0.78, "quality_mask": 1},
+        ]
+    ).to_csv(processed_dir / "123456789_R01C01_processed.csv", index=False)
+
+    def fail_run_pipeline(*_args, **_kwargs):
+        raise AssertionError("methylprep should not run when cached processed CSV exists")
+
+    monkeypatch.setattr("src.analysis._run_methylprep_pipeline", fail_run_pipeline)
+
+    beta_values = load_methylation_beta_values(str(sample_prefix))
+
+    assert beta_values.to_dict(orient="records") == [
+        {"probe_id": "cg1", "beta": 0.56},
+        {"probe_id": "cg2", "beta": 0.78},
+    ]
 
 
 def test_preprocessing_defaults_do_not_force_custom_manifest() -> None:

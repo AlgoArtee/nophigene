@@ -442,6 +442,26 @@ def test_generate_report_includes_dynamic_workflow_summaries(tmp_path) -> None:
                     "clinvar": ["clinical_variant_triage"],
                     "hgmd": ["clinical_variant_triage"],
                 },
+                "local_article_evidence": {
+                    "status": "ok",
+                    "message": "Extracted 1 gene-relevant snippet from 1 local PDF article.",
+                    "records": [
+                        {
+                            "source_key": "local_pdf_articles",
+                            "record_id": "local_pdf_articles:abc:p1:1",
+                            "gene": "GENE1",
+                            "title": "GENE1 local article",
+                            "section": "Results",
+                            "page": 1,
+                            "claim_type": "functional_biology",
+                            "variant": "",
+                            "confidence": 0.78,
+                            "citation": "10.1234/example",
+                            "snippet": "GENE1 knockdown changed pathway activity in the reported assay.",
+                        }
+                    ],
+                    "provenance": {"pdf_count": 1, "record_count": 1, "warnings": [], "errors": []},
+                },
             }
         ),
         encoding="utf-8",
@@ -474,9 +494,13 @@ def test_generate_report_includes_dynamic_workflow_summaries(tmp_path) -> None:
     assert "Dynamic Workflow Summary" in html_text
     assert "Clinical Variant Triage" in html_text
     assert "needs_export" in html_text
+    assert "Local Article Evidence" in html_text
+    assert "GENE1 local article" in html_text
+    assert "GENE1 knockdown changed pathway activity" in html_text
     json_payload = json.loads(json_report.read_text(encoding="utf-8"))
     assert json_payload["dynamic_knowledge_base"]["workflow_runs"][0]["workflow_key"] == "clinical_variant_triage"
     assert json_payload["dynamic_knowledge_base"]["workflow_source_matrix"]["hgmd"] == ["clinical_variant_triage"]
+    assert json_payload["dynamic_knowledge_base"]["local_article_evidence"]["records"][0]["source_key"] == "local_pdf_articles"
 
 
 def test_general_analysis_database_adds_once_and_overwrites_variant_rows(tmp_path) -> None:

@@ -168,12 +168,16 @@ BASE_VARIANT_COLUMNS = [
 ]
 
 # Configure the root logger once so both CLI and web runs stream progress.
+_LOG_LEVEL_NAME = os.getenv("NOPHIGENE_LOG_LEVEL", "INFO").strip().upper()
+_LOG_LEVEL = getattr(logging, _LOG_LEVEL_NAME, logging.INFO)
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=_LOG_LEVEL,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger(__name__)
+for noisy_logger_name in ("urllib3", "requests", "methylprep.files"):
+    logging.getLogger(noisy_logger_name).setLevel(logging.WARNING)
 
 
 def normalize_analysis_scope(scope: str | None) -> str:
@@ -4867,52 +4871,130 @@ def _run_methylprep_pipeline(data_dir: str, *, manifest_filepath: str | None) ->
     )
 
 
+def _beta_matrix_to_table(beta_values: pd.DataFrame, sample_name: str) -> pd.DataFrame:
+    """Convert methylprep's beta matrix into the app's probe_id/beta table."""
+    if sample_name not in beta_values.columns:
+        raise AnalysisError(f"No beta column named '{sample_name}' in methylprep output")
+    beta_df = beta_values[sample_name].rename("beta").reset_index()
+    return beta_df.rename(columns={beta_df.columns[0]: "probe_id"})
+
+
+def _load_cached_beta_matrix(data_dir: Path, sample_name: str) -> pd.DataFrame | None:
+    """Load methylprep's cached beta matrix when it already exists."""
+    beta_matrix_path = data_dir / "beta_values.pkl"
+    if not beta_matrix_path.exists():
+        return None
+    try:
+        beta_values = pd.read_pickle(beta_matrix_path)
+    except Exception as exc:
+        logger.warning("Ignoring unreadable cached methylprep beta matrix '%s': %s", beta_matrix_path, exc)
+        return None
+    if not isinstance(beta_values, pd.DataFrame) or sample_name not in beta_values.columns:
+        return None
+    return _beta_matrix_to_table(beta_values, sample_name)
+
+
+def _candidate_processed_methylprep_paths(data_dir: Path, sample_name: str) -> list[Path]:
+    """Return likely methylprep per-sample processed CSV paths."""
+    candidates = [
+        data_dir / f"{sample_name}_processed.csv",
+    ]
+    if "_" in sample_name:
+        sentrix_id = sample_name.split("_", maxsplit=1)[0]
+        candidates.append(data_dir / sentrix_id / f"{sample_name}_processed.csv")
+    candidates.extend(sorted(data_dir.rglob(f"{sample_name}_processed.csv")))
+
+    unique_candidates: list[Path] = []
+    seen: set[str] = set()
+    for path in candidates:
+        path_key = str(path)
+        if path_key in seen:
+            continue
+        seen.add(path_key)
+        unique_candidates.append(path)
+    return unique_candidates
+
+
+def _load_cached_processed_sample(data_dir: Path, sample_name: str) -> pd.DataFrame | None:
+    """Load a cached methylprep per-sample processed CSV when available."""
+    for processed_path in _candidate_processed_methylprep_paths(data_dir, sample_name):
+        if not processed_path.exists():
+            continue
+        try:
+            processed = pd.read_csv(
+                processed_path,
+                usecols=lambda column: column in {"IlmnID", "probe_id", "beta_value", "beta"},
+            )
+        except Exception as exc:
+            logger.warning("Ignoring unreadable cached methylprep output '%s': %s", processed_path, exc)
+            continue
+        probe_column = "probe_id" if "probe_id" in processed.columns else "IlmnID"
+        beta_column = "beta" if "beta" in processed.columns else "beta_value"
+        if probe_column not in processed.columns or beta_column not in processed.columns:
+            continue
+        beta_df = processed[[probe_column, beta_column]].copy()
+        beta_df = beta_df.rename(columns={probe_column: "probe_id", beta_column: "beta"})
+        logger.info("Loaded cached methylprep sample output from %s", processed_path)
+        return beta_df
+    return None
+
+
+def _load_cached_methylprep_beta_values(data_dir: Path, sample_name: str) -> pd.DataFrame | None:
+    """Return existing methylprep beta output so analysis does not rerun unnecessarily."""
+    cached = _load_cached_beta_matrix(data_dir, sample_name)
+    if cached is not None:
+        logger.info("Loaded cached methylprep beta matrix for %s", sample_name)
+        return cached
+    return _load_cached_processed_sample(data_dir, sample_name)
+
+
 def load_methylation_beta_values(
     idat_base: str,
     manifest_filepath: str | None = None,
 ) -> pd.DataFrame:
     """Process one IDAT pair and return a reusable probe/beta table."""
     logger.info("Starting methylation loading for sample")
-    data_dir = os.path.dirname(idat_base) or "."
-    sample_name = os.path.basename(idat_base)
+    idat_prefix = Path(str(idat_base).strip().strip('"').strip("'"))
+    data_dir = idat_prefix.parent if str(idat_prefix.parent) else Path(".")
+    sample_name = idat_prefix.name
 
     for suffix in ("_Grn.idat", "_Red.idat"):
-        path = os.path.join(data_dir, sample_name + suffix)
+        path = data_dir / f"{sample_name}{suffix}"
         logger.debug("Checking IDAT: %s", path)
-        if not os.path.isfile(path):
+        if not path.is_file():
             raise AnalysisError(f"Missing IDAT file: {path}")
+
+    cached_beta_values = _load_cached_methylprep_beta_values(data_dir, sample_name)
+    if cached_beta_values is not None:
+        logger.info("Loaded %d cached methylation beta value(s) for %s", len(cached_beta_values), sample_name)
+        return cached_beta_values
 
     pipeline_manifest_path = manifest_filepath
     try:
         logger.info("Running methylprep pipeline with betas=True")
         beta_values = _run_methylprep_pipeline(
-            data_dir,
+            str(data_dir),
             manifest_filepath=pipeline_manifest_path,
         )
     except Exception as exc:
         if not pipeline_manifest_path:
-            logger.exception("run_pipeline failed")
+            logger.debug("run_pipeline failed", exc_info=True)
             raise AnalysisError(f"methylprep failed for sample '{sample_name}': {exc}") from exc
 
         logger.warning(
             "methylprep rejected custom manifest '%s'; retrying with methylprep's default manifest.",
             pipeline_manifest_path,
-            exc_info=True,
         )
         try:
-            beta_values = _run_methylprep_pipeline(data_dir, manifest_filepath=None)
+            beta_values = _run_methylprep_pipeline(str(data_dir), manifest_filepath=None)
         except Exception as retry_exc:
-            logger.exception("run_pipeline failed even after retrying without a custom manifest")
+            logger.debug("run_pipeline failed even after retrying without a custom manifest", exc_info=True)
             raise AnalysisError(
                 f"methylprep failed for sample '{sample_name}' with custom manifest "
                 f"'{pipeline_manifest_path}', and the retry without that manifest also failed: {retry_exc}"
             ) from retry_exc
 
-    if sample_name not in beta_values.columns:
-        raise AnalysisError(f"No beta column named '{sample_name}' in methylprep output")
-
-    beta_df = beta_values[sample_name].rename("beta").reset_index()
-    beta_df = beta_df.rename(columns={beta_df.columns[0]: "probe_id"})
+    beta_df = _beta_matrix_to_table(beta_values, sample_name)
     logger.info("Loaded %d methylation beta value(s) for %s", len(beta_df), sample_name)
     return beta_df
 
@@ -5894,6 +5976,60 @@ def _render_dynamic_workflow_report(
     )
 
 
+def _render_local_article_evidence_report(local_article_evidence: dict[str, Any]) -> str:
+    """Render local PDF article snippets extracted during dynamic KB preprocessing."""
+    if not local_article_evidence:
+        return ""
+    records = [
+        record
+        for record in local_article_evidence.get("records", [])
+        if isinstance(record, dict)
+    ]
+    provenance = local_article_evidence.get("provenance") if isinstance(local_article_evidence.get("provenance"), dict) else {}
+    if not records and not provenance:
+        return ""
+    summary = html.escape(str(local_article_evidence.get("message") or "Local article evidence was processed."))
+    provenance_bits = [
+        f"PDFs: {html.escape(str(provenance.get('pdf_count', 0)))}",
+        f"Parsed: {html.escape(str(provenance.get('parsed_pdf_count', 0)))}",
+        f"Matched: {html.escape(str(provenance.get('matched_pdf_count', 0)))}",
+        f"Records: {html.escape(str(provenance.get('record_count', len(records))))}",
+    ]
+    rows = []
+    for record in records[:50]:
+        rows.append(
+            {
+                "title": record.get("title", ""),
+                "section": record.get("section", ""),
+                "page": record.get("page", ""),
+                "claim_type": record.get("claim_type", ""),
+                "variant": record.get("variant", ""),
+                "confidence": record.get("confidence", ""),
+                "citation": record.get("citation", ""),
+                "snippet": str(record.get("snippet") or record.get("summary") or "")[:700],
+            }
+        )
+    table = (
+        _render_section_table(pd.DataFrame(rows), "Local Article Evidence Snippets", rows=None)
+        if rows
+        else ""
+    )
+    warnings = [
+        f"<li>{html.escape(str(warning))}</li>"
+        for warning in provenance.get("warnings", [])
+        if str(warning).strip()
+    ]
+    warning_markup = f"<ul>{''.join(warnings)}</ul>" if warnings else ""
+    return (
+        "<section><h2>Local Article Evidence</h2>"
+        f"<p>{summary}</p>"
+        f"<p>{' | '.join(provenance_bits)}</p>"
+        f"{warning_markup}"
+        f"{table}"
+        "</section>"
+    )
+
+
 def generate_report(
     variants: pd.DataFrame,
     methylation: pd.DataFrame,
@@ -5960,6 +6096,11 @@ def generate_report(
     dynamic_workflow_source_matrix = (
         dynamic_payload.get("workflow_source_matrix", {})
         if isinstance(dynamic_payload.get("workflow_source_matrix"), dict)
+        else {}
+    )
+    dynamic_local_article_evidence = (
+        dynamic_payload.get("local_article_evidence", {})
+        if isinstance(dynamic_payload.get("local_article_evidence"), dict)
         else {}
     )
 
@@ -6214,6 +6355,7 @@ def generate_report(
     </section>
     {_render_section_table(prepared_variants, "Genetic Variant Results", rows=None)}
     {_render_dynamic_workflow_report(dynamic_workflow_runs, artifact_path=dynamic_knowledge_base_path)}
+    {_render_local_article_evidence_report(dynamic_local_article_evidence)}
     {variant_interpretation_section}
     {predictive_theses_section}
     {methylation_interpretation_section}
@@ -6242,6 +6384,7 @@ def generate_report(
                 "path": str(dynamic_knowledge_base_path) if dynamic_knowledge_base_path else "",
                 "workflow_runs": dynamic_workflow_runs,
                 "workflow_source_matrix": dynamic_workflow_source_matrix,
+                "local_article_evidence": dynamic_local_article_evidence,
             },
         }
         report_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -6271,6 +6414,10 @@ def generate_report(
                 {
                     "metric": "dynamic_workflow_count",
                     "value": len(dynamic_workflow_runs),
+                },
+                {
+                    "metric": "local_article_evidence_record_count",
+                    "value": len(dynamic_local_article_evidence.get("records", [])),
                 },
             ]
         )

@@ -159,7 +159,17 @@ def normalize_job_request(payload: Any) -> dict[str, Any]:
         "update_general_database": bool(options.get("update_general_database", False)),
         "overwrite_general_database": bool(options.get("overwrite_general_database", False)),
         "use_dynamic_knowledge_base": bool(options.get("use_dynamic_knowledge_base", False)),
+        "use_local_article_evidence": bool(options.get("use_local_article_evidence", False)),
+        "article_pdf_folder": str(options.get("article_pdf_folder") or "").strip(),
+        "article_pdf_recursive": bool(options.get("article_pdf_recursive", True)),
     }
+    try:
+        normalized_options["max_article_pdfs"] = min(
+            1000,
+            max(0, int(options.get("max_article_pdfs", 100) or 0)),
+        )
+    except (TypeError, ValueError) as exc:
+        raise APIError("invalid_max_article_pdfs", "'options.max_article_pdfs' must be an integer.", 422) from exc
     raw_sources = options.get("knowledge_sources")
     if raw_sources in (None, "", []):
         normalized_options["knowledge_sources"] = []
@@ -539,6 +549,10 @@ class WorkflowRunner:
             selected_sources=request_payload["options"].get("knowledge_sources") or None,
             selected_workflows=request_payload["options"].get("knowledge_workflows") or None,
             source_imports=request_payload["options"].get("knowledge_source_imports") or None,
+            use_local_article_evidence=bool(request_payload["options"].get("use_local_article_evidence", False)),
+            article_pdf_folder=request_payload["options"].get("article_pdf_folder") or None,
+            article_pdf_recursive=bool(request_payload["options"].get("article_pdf_recursive", True)),
+            max_article_pdfs=int(request_payload["options"].get("max_article_pdfs", 100) or 0),
             output_dir=output_dir,
             cache_dir=gene_dir / ".knowledge_cache",
         )

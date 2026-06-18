@@ -95,6 +95,23 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         metavar="SOURCE_KEY=PATH",
         help="User-provided licensed-source CSV/JSON export. Repeat for multiple sources.",
     )
+    parser.add_argument(
+        "--article-pdf-folder",
+        default="",
+        help="Optional folder of legally obtained scientific article PDFs for local gene evidence extraction.",
+    )
+    parser.add_argument(
+        "--use-local-article-evidence",
+        action="store_true",
+        help="Enable local PDF article evidence extraction even if the local article workflow is not selected.",
+    )
+    parser.add_argument(
+        "--article-pdf-recursive",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Search the article PDF folder recursively. Defaults to true.",
+    )
+    parser.add_argument("--max-article-pdfs", type=int, default=100, help="Maximum local PDFs to parse.")
     parser.add_argument("--cache-dir", default=str(PROJECT_ROOT / ".research-cache" / "variant_knowledge"))
     parser.add_argument("--output-dir", required=True, help="Directory that receives variant_kb.json.")
     return parser.parse_args(argv)
@@ -113,6 +130,10 @@ def main(argv: list[str] | None = None) -> int:
         selected_workflows=_parse_selected_workflows(args.selected_workflows),
         selected_sources=_parse_selected_sources(args.selected_sources),
         source_imports=_parse_source_imports(args.source_import),
+        use_local_article_evidence=args.use_local_article_evidence,
+        article_pdf_folder=args.article_pdf_folder,
+        article_pdf_recursive=args.article_pdf_recursive,
+        max_article_pdfs=args.max_article_pdfs,
         output_dir=args.output_dir,
         cache_dir=args.cache_dir,
     )
@@ -122,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
                 "artifact_path": payload.get("artifact_path"),
                 "provider_count": len(payload.get("provider_statuses", [])),
                 "workflow_count": len(payload.get("workflow_runs", [])),
+                "local_article_record_count": len((payload.get("local_article_evidence") or {}).get("records", [])),
             },
             indent=2,
         )

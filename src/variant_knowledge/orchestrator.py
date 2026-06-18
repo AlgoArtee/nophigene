@@ -13,9 +13,17 @@ from .client import RequestClient
 from .connectors import connector_for
 from .credentials import CredentialResolver, credential_status_for_specs
 from .imports import SourceImportBundle, filter_import_records_for_query, parse_source_import
+from .local_articles import (
+    LOCAL_ARTICLE_SOURCE_KEY,
+    LOCAL_ARTICLE_SOURCE_SPEC,
+    LOCAL_ARTICLE_WORKFLOW_KEY,
+    extract_local_article_evidence,
+    source_result_from_local_article_evidence,
+    write_local_article_artifacts,
+)
 from .models import EpigeneticLocus, KnowledgeQuery, QueryVariant, SourceResult, SourceSpec, utc_now_iso
 from .registry import LANE_LABELS, list_source_specs, select_source_specs
-from .workflows import WorkflowSpec, select_workflow_specs, source_keys_for_workflows
+from .workflows import WorkflowSpec, get_workflow_spec, select_workflow_specs, source_keys_for_workflows
 
 
 def _clean_text(value: Any) -> str:
@@ -372,15 +380,38 @@ def _execution_specs_for_workflows(
     return tuple(ordered)
 
 
+def _local_article_requested(
+    *,
+    workflows: tuple[WorkflowSpec, ...],
+    selected_sources: list[str] | tuple[str, ...] | None,
+    use_local_article_evidence: bool,
+    article_pdf_folder: str | Path | None,
+) -> bool:
+    if use_local_article_evidence or _clean_text(article_pdf_folder):
+        return True
+    if selected_sources and any(_clean_text(source_key) == LOCAL_ARTICLE_SOURCE_KEY for source_key in selected_sources):
+        return True
+    return any(workflow.key == LOCAL_ARTICLE_WORKFLOW_KEY for workflow in workflows)
+
+
+def _append_local_article_workflow(workflows: tuple[WorkflowSpec, ...]) -> tuple[WorkflowSpec, ...]:
+    if any(workflow.key == LOCAL_ARTICLE_WORKFLOW_KEY for workflow in workflows):
+        return workflows
+    workflow = get_workflow_spec(LOCAL_ARTICLE_WORKFLOW_KEY)
+    return workflows + ((workflow,) if workflow is not None else ())
+
+
 def _workflow_status(statuses: list[dict[str, Any]]) -> str:
     if not statuses:
         return "skipped"
     usable_statuses = {"ok", "imported", "metadata_only"}
-    needs_input_statuses = {"needs_credentials", "needs_export"}
+    needs_input_statuses = {"needs_credentials", "needs_export", "needs_folder"}
     warning_statuses = {"failed", "skipped"}
     has_usable = any(status.get("status") in usable_statuses for status in statuses)
     has_needs_input = any(status.get("status") in needs_input_statuses for status in statuses)
     has_warning = any(status.get("status") in warning_statuses for status in statuses)
+    if all(status.get("status") == "skipped" for status in statuses):
+        return "skipped"
     if has_usable and not has_needs_input and not has_warning:
         return "ok"
     if has_usable:
@@ -428,7 +459,10 @@ def _workflow_summary(
 ) -> str:
     if source_count == 0:
         return f"{workflow.label} had no selected sources after manual source filtering."
-    needs_input = sum(status_row.get("status") in {"needs_credentials", "needs_export"} for status_row in provider_statuses)
+    needs_input = sum(
+        status_row.get("status") in {"needs_credentials", "needs_export", "needs_folder"}
+        for status_row in provider_statuses
+    )
     failures = sum(status_row.get("status") == "failed" for status_row in provider_statuses)
     usable = sum(status_row.get("status") in {"ok", "imported", "metadata_only"} for status_row in provider_statuses)
     parts = [
@@ -527,6 +561,11 @@ def build_dynamic_knowledge_base(
     selected_sources: list[str] | tuple[str, ...] | None = None,
     credentials: dict[str, str] | None = None,
     source_imports: dict[str, str | Path] | None = None,
+    use_local_article_evidence: bool = False,
+    article_pdf_folder: str | Path | None = None,
+    article_pdf_recursive: bool = True,
+    max_article_pdfs: int = 100,
+    gene_aliases: list[str] | tuple[str, ...] | None = None,
     output_dir: str | Path | None = None,
     cache_dir: str | Path | None = None,
     request_client: RequestClient | None = None,
@@ -536,6 +575,14 @@ def build_dynamic_knowledge_base(
     normalized_gene = _clean_text(gene).upper()
     normalized_build = _clean_text(genome_build) or "hg19"
     workflow_specs = select_workflow_specs(selected_workflows)
+    local_article_requested = _local_article_requested(
+        workflows=workflow_specs,
+        selected_sources=selected_sources,
+        use_local_article_evidence=use_local_article_evidence,
+        article_pdf_folder=article_pdf_folder,
+    )
+    if local_article_requested:
+        workflow_specs = _append_local_article_workflow(workflow_specs)
     specs = _selected_source_specs(selected_sources=selected_sources, workflows=workflow_specs)
     query = KnowledgeQuery(
         gene=normalized_gene,
@@ -588,14 +635,28 @@ def build_dynamic_knowledge_base(
             source_results[-1] = _needs_export_result(spec)
             continue
 
+    runtime_specs = specs
+    local_article_evidence: dict[str, Any] = {}
+    if local_article_requested:
+        local_article_evidence = extract_local_article_evidence(
+            gene=normalized_gene,
+            pdf_folder=article_pdf_folder,
+            gene_aliases=gene_aliases,
+            recursive=article_pdf_recursive,
+            max_pdfs=max_article_pdfs,
+            generated_at=timestamp,
+        )
+        source_results.append(source_result_from_local_article_evidence(local_article_evidence))
+        runtime_specs = specs + (LOCAL_ARTICLE_SOURCE_SPEC,)
+
     source_records = _source_result_to_records(source_results)
-    spec_lookup = {spec.key: spec for spec in specs}
+    spec_lookup = {spec.key: spec for spec in runtime_specs}
     provider_statuses = [
         result.to_status(spec_lookup[result.source_key])
         for result in source_results
         if result.source_key in spec_lookup
     ]
-    selected_source_keys = [spec.key for spec in specs]
+    selected_source_keys = [spec.key for spec in runtime_specs]
     workflow_source_matrix = _workflow_source_matrix(
         workflows=workflow_specs,
         selected_source_keys=selected_source_keys,
@@ -615,7 +676,7 @@ def build_dynamic_knowledge_base(
         "region_parsed": _parse_region(region),
         "genome_build": normalized_build,
         "generated_at": timestamp,
-        "variant_records": _build_dynamic_variant_records(query, source_records, specs),
+        "variant_records": _build_dynamic_variant_records(query, source_records, runtime_specs),
         "epigenetic_locus_records": _build_epigenetic_locus_records(query),
         "population_records": _filter_source_records(
             source_records,
@@ -638,6 +699,7 @@ def build_dynamic_knowledge_base(
                 for bundle in import_bundles.values()
             ],
             "source_import_errors": dict(sorted(import_errors.items())),
+            "local_article_evidence": local_article_evidence.get("provenance", {}) if local_article_evidence else {},
         },
         "source_lanes": LANE_LABELS,
         "license_notes": {
@@ -647,11 +709,15 @@ def build_dynamic_knowledge_base(
                 "license_note": spec.license_note,
                 "homepage": spec.homepage,
             }
-            for spec in specs
+            for spec in runtime_specs
         },
     }
+    if local_article_evidence:
+        payload["local_article_evidence"] = local_article_evidence
     if output_dir is not None:
         output_path = Path(output_dir) / "variant_kb.json"
+        if local_article_evidence:
+            payload["local_article_evidence_artifacts"] = write_local_article_artifacts(output_dir, local_article_evidence)
         payload["artifact_path"] = str(output_path)
         _write_json(output_path, payload)
     return payload

@@ -177,6 +177,27 @@ def build_openapi_document() -> dict[str, Any]:
                                     "description": "Map source keys to permitted local CSV/JSON export paths.",
                                     "additionalProperties": {"type": "string"},
                                 },
+                                "use_local_article_evidence": {
+                                    "type": "boolean",
+                                    "default": False,
+                                    "description": "Extract gene-relevant evidence snippets from a local folder of user-provided PDF articles.",
+                                },
+                                "article_pdf_folder": {
+                                    "type": "string",
+                                    "description": "Local folder containing legally obtained scientific article PDFs.",
+                                },
+                                "article_pdf_recursive": {
+                                    "type": "boolean",
+                                    "default": True,
+                                    "description": "Scan article_pdf_folder recursively when local article evidence is enabled.",
+                                },
+                                "max_article_pdfs": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1000,
+                                    "default": 100,
+                                    "description": "Maximum number of local PDF files to inspect for the queried gene.",
+                                },
                             },
                         },
                     },

@@ -167,6 +167,8 @@ class SourceResult:
     errors: list[str] = field(default_factory=list)
     queried_urls: list[str] = field(default_factory=list)
     elapsed_ms: int | None = None
+    error_code: str = ""
+    remediation: str = ""
 
     def to_status(self, spec: SourceSpec) -> dict[str, Any]:
         return {
@@ -183,6 +185,8 @@ class SourceResult:
             "errors": list(self.errors),
             "queried_urls": list(self.queried_urls),
             "elapsed_ms": self.elapsed_ms,
+            "error_code": self.error_code,
+            "remediation": self.remediation,
             "license_note": spec.license_note,
             "homepage": spec.homepage,
         }

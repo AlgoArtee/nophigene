@@ -472,6 +472,26 @@
       overflow-wrap: anywhere;
       white-space: normal;
     }
+    .local-article-controls {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(118, 19, 45, 0.14);
+    }
+    .local-article-options {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(140px, 0.45fr);
+      gap: 12px;
+      align-items: end;
+    }
+    .local-article-options label {
+      display: grid;
+      gap: 7px;
+      color: var(--accent-3);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
     .database-table-shell {
       margin-top: 18px;
       max-height: calc(100vh - 330px);
@@ -758,6 +778,87 @@
       background: rgba(255, 255, 255, 0.76);
       min-width: 0;
       overflow-wrap: anywhere;
+    }
+    .preprocess-domain-form {
+      display: grid;
+      gap: 14px;
+    }
+    .preprocess-domain-panel {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(118, 19, 45, 0.12);
+      background: rgba(255, 255, 255, 0.76);
+      min-width: 0;
+    }
+    .preprocess-domain-panel--genetics {
+      border-color: rgba(124, 13, 45, 0.18);
+      background:
+        linear-gradient(135deg, rgba(124, 13, 45, 0.07), rgba(255, 255, 255, 0.78)),
+        rgba(255, 255, 255, 0.78);
+    }
+    .preprocess-domain-panel--epigenetics {
+      border-color: rgba(209, 31, 79, 0.18);
+      background:
+        linear-gradient(135deg, rgba(209, 31, 79, 0.07), rgba(255, 255, 255, 0.80)),
+        rgba(255, 255, 255, 0.80);
+    }
+    .preprocess-domain-panel--knowledge {
+      border-color: rgba(161, 20, 61, 0.18);
+      background:
+        linear-gradient(135deg, rgba(161, 20, 61, 0.07), rgba(255, 255, 255, 0.80)),
+        rgba(255, 255, 255, 0.80);
+    }
+    .preprocess-domain-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .preprocess-domain-title {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-width: 0;
+    }
+    .preprocess-domain-title h3 {
+      margin: 0;
+      color: var(--accent-3);
+      letter-spacing: -0.02em;
+    }
+    .preprocess-domain-title p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .preprocess-domain-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.2rem;
+      height: 2.2rem;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(161, 20, 61, 0.08);
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .preprocess-flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      color: var(--accent);
+      font-size: 1.55rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .preprocess-refresh-form {
+      display: inline-flex;
+      gap: 0;
     }
     .field-card label {
       display: block;
@@ -1364,6 +1465,27 @@
     .insight-stack {
       display: grid;
       gap: 14px;
+    }
+    .data-source-group {
+      display: grid;
+      gap: 12px;
+    }
+    .data-source-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .source-status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .source-link-list {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 0;
+      padding-left: 18px;
     }
     .insight-card {
       padding: 18px;
@@ -2005,102 +2127,197 @@
             <div class="panel-head">
               <div>
                 <h2>Preprocessing</h2>
-                <p>Resolve the gene interval, create a gene-specific EPIC manifest subset, then optionally build a dynamic variant knowledge base from the selected sources.</p>
+                <p>Work through Genetics, Epigenetics, then Knowledge Base Building. Each panel appears when the previous stage is ready.</p>
               </div>
-              <span class="panel-chip">Required before analysis</span>
+              <div class="panel-head-actions">
+                <span class="panel-chip">Required before analysis</span>
+                <form method="post" class="preprocess-refresh-form">
+                  <input type="hidden" name="workflow" value="preprocess">
+                  <button type="submit" class="cta-button" name="preprocess_action" value="reset_preprocessing">Refresh Process</button>
+                </form>
+              </div>
             </div>
 
             <div class="scroll-region">
               <form method="post" data-preprocess-form>
                 <input type="hidden" name="workflow" value="preprocess">
-                <div class="field-grid">
-                  <div class="field-card">
-                    <label for="gene_name">Gene Name</label>
-                    <p class="field-example">Current value: <code>{{ preprocess_field_info.gene_name.example }}</code></p>
-                    <input id="gene_name" name="gene_name" type="text" value="{{ preprocess_state.gene_name }}" placeholder="Enter a gene symbol such as DRD4 or COMT">
-                    <details class="field-details">
-                      <summary>What this means biologically</summary>
-                      <p>{{ preprocess_field_info.gene_name.details }}</p>
-                    </details>
-                    <div class="analysis-actions">
-                      <button type="submit" class="run-button" name="preprocess_action" value="find_region">Find Region from Gene Name</button>
+                <div class="preprocess-domain-form">
+                  <section class="preprocess-domain-panel preprocess-domain-panel--genetics" data-preprocess-domain="genetics">
+                    <div class="preprocess-domain-head">
+                      <div class="preprocess-domain-title">
+                        <span class="preprocess-domain-index">01</span>
+                        <div>
+                          <h3>Genetics</h3>
+                          <p>Resolve the queried gene into the standard promoter-plus-gene interval used by downstream steps.</p>
+                        </div>
+                      </div>
+                      <span class="preprocess-step-state">{{ "Complete" if preprocess_state.region_ready else "Pending" }}</span>
                     </div>
-                  </div>
+                    <div class="field-grid">
+                      <div class="field-card">
+                        <label for="gene_name">Gene Name</label>
+                        <p class="field-example">Current value: <code>{{ preprocess_field_info.gene_name.example }}</code></p>
+                        <input id="gene_name" name="gene_name" type="text" value="{{ preprocess_state.gene_name }}" placeholder="Enter a gene symbol such as DRD4 or COMT">
+                        <details class="field-details">
+                          <summary>What this means biologically</summary>
+                          <p>{{ preprocess_field_info.gene_name.details }}</p>
+                        </details>
+                        <div class="analysis-actions">
+                          <button type="submit" class="run-button" name="preprocess_action" value="find_region">Find Region from Gene Name</button>
+                        </div>
+                      </div>
 
-                  <div class="field-card">
-                    <label for="preprocess_region">Gene Region</label>
-                    <p class="field-example">Current value: <code>{{ preprocess_field_info.region.example }}</code></p>
-                    <input
-                      id="preprocess_region"
-                      name="preprocess_region"
-                      type="text"
-                      value="{{ preprocess_state.region }}"
-                      placeholder="Gene interval will appear here"
-                      class="{% if preprocess_state.region_recently_updated %}input-autofilled{% endif %}"
-                    >
-                    <details class="field-details">
-                      <summary>What this means biologically</summary>
-                      <p>{{ preprocess_field_info.region.details }}</p>
-                    </details>
-                  </div>
-
-                  <div class="field-card">
-                    <label for="manifest_source">EPIC Manifest File</label>
-                    <p class="field-example">Current value: <code>{{ preprocess_field_info.manifest_source.example }}</code></p>
-                    <input id="manifest_source" name="manifest_source" list="manifest-source-options" type="text" value="{{ preprocess_state.manifest_source }}" placeholder="Path to the full EPIC manifest CSV">
-                    <datalist id="manifest-source-options">
-                      {% for option in manifest_files %}
-                      <option value="{{ option }}"></option>
-                      {% endfor %}
-                    </datalist>
-                    <details class="field-details">
-                      <summary>What this means biologically</summary>
-                      <p>{{ preprocess_field_info.manifest_source.details }}</p>
-                    </details>
-                    <div class="analysis-actions">
-                      <button type="submit" class="run-button" name="preprocess_action" value="select_methylation">Select Methylation Data</button>
-                      <label class="toggle-row">
+                      <div class="field-card">
+                        <label for="preprocess_region">Gene Region</label>
+                        <p class="field-example">Current value: <code>{{ preprocess_field_info.region.example }}</code></p>
                         <input
-                          type="checkbox"
-                          name="overwrite_filtered_manifest"
-                          value="1"
-                          {% if preprocess_state.overwrite_filtered_manifest %}checked{% endif %}
+                          id="preprocess_region"
+                          name="preprocess_region"
+                          type="text"
+                          value="{{ preprocess_state.region }}"
+                          placeholder="Gene interval will appear here"
+                          class="{% if preprocess_state.region_recently_updated %}input-autofilled{% endif %}"
                         >
-                        <span>Overwrite existing filtered file</span>
-                      </label>
-                      {% if analysis_unlocked %}
-                      <button type="button" class="cta-button" data-go-tab="analysis">Open Analysis Workspace</button>
-                      {% endif %}
+                        <details class="field-details">
+                          <summary>What this means biologically</summary>
+                          <p>{{ preprocess_field_info.region.details }}</p>
+                        </details>
+                      </div>
                     </div>
-                    <p class="hint">
-                      Leave this unchecked to reuse an existing <code>{{ preprocess_state.gene_name }}_epigenetics_{{ preprocess_state.build }}.csv</code> if one is already present. Check it to regenerate that file for the current region.
-                    </p>
-                  </div>
+                  </section>
 
-                  <div class="field-card">
-                    <label for="knowledge_vcf_source">VCF Source for Dynamic KB</label>
-                    <p class="field-example">Current value: <code>{{ preprocess_state.knowledge_vcf_source or "Choose or extract a regional VCF" }}</code></p>
-                    <input id="knowledge_vcf_source" name="knowledge_vcf_source" list="knowledge-vcf-options" type="text" value="{{ preprocess_state.knowledge_vcf_source }}" placeholder="Path to a VCF or extracted regional VCF">
-                    <datalist id="knowledge-vcf-options">
-                      {% for option in vcf_files %}
-                      <option value="{{ option }}"></option>
-                      {% endfor %}
-                      {% if extraction_state.last_output_vcf %}
-                      <option value="{{ extraction_state.last_output_vcf }}"></option>
-                      {% endif %}
-                    </datalist>
-                    <details class="field-details">
-                      <summary>What this means biologically</summary>
-                      <p>The dynamic knowledge-base builder reads the observed sample variants from this VCF and combines them with the filtered methylation loci before querying the selected source cards.</p>
-                    </details>
-                    <div class="analysis-actions">
-                      <button type="submit" class="run-button" name="preprocess_action" value="build_variant_knowledge_base">Build Variant Knowledge Base</button>
-                      <button type="button" class="cta-button" data-go-tab="knowledge_sources">Choose Sources</button>
+                  {% if preprocess_state.region_ready %}
+                  <div class="preprocess-flow-arrow" aria-hidden="true">&darr;</div>
+                  <section class="preprocess-domain-panel preprocess-domain-panel--epigenetics" data-preprocess-domain="epigenetics">
+                    <div class="preprocess-domain-head">
+                      <div class="preprocess-domain-title">
+                        <span class="preprocess-domain-index">02</span>
+                        <div>
+                          <h3>Epigenetics</h3>
+                          <p>Create the gene-specific EPIC methylation manifest subset for the resolved interval.</p>
+                        </div>
+                      </div>
+                      <span class="preprocess-step-state">{{ "Complete" if preprocess_state.manifest_ready else "Ready" }}</span>
                     </div>
-                    <p class="hint">
-                      If Extraction created a regional VCF, that file is preferred. Otherwise choose a VCF from <code>data/</code>.
-                    </p>
-                  </div>
+                    <div class="field-card">
+                      <label for="manifest_source">EPIC Manifest File</label>
+                      <p class="field-example">Current value: <code>{{ preprocess_field_info.manifest_source.example }}</code></p>
+                      <input id="manifest_source" name="manifest_source" list="manifest-source-options" type="text" value="{{ preprocess_state.manifest_source }}" placeholder="Path to the full EPIC manifest CSV">
+                      <datalist id="manifest-source-options">
+                        {% for option in manifest_files %}
+                        <option value="{{ option }}"></option>
+                        {% endfor %}
+                      </datalist>
+                      <details class="field-details">
+                        <summary>What this means biologically</summary>
+                        <p>{{ preprocess_field_info.manifest_source.details }}</p>
+                      </details>
+                      <div class="analysis-actions">
+                        <button type="submit" class="run-button" name="preprocess_action" value="select_methylation">Select Methylation Data</button>
+                        <label class="toggle-row">
+                          <input
+                            type="checkbox"
+                            name="overwrite_filtered_manifest"
+                            value="1"
+                            {% if preprocess_state.overwrite_filtered_manifest %}checked{% endif %}
+                          >
+                          <span>Overwrite existing filtered file</span>
+                        </label>
+                        {% if analysis_unlocked %}
+                        <button type="button" class="cta-button" data-go-tab="analysis">Open Analysis Workspace</button>
+                        {% endif %}
+                      </div>
+                      <p class="hint">
+                        Leave this unchecked to reuse an existing <code>{{ preprocess_state.gene_name }}_epigenetics_{{ preprocess_state.build }}.csv</code> if one is already present. Check it to regenerate that file for the current region.
+                      </p>
+                    </div>
+                  </section>
+                  {% endif %}
+
+                  {% if preprocess_state.manifest_ready %}
+                  <div class="preprocess-flow-arrow" aria-hidden="true">&darr;</div>
+                  <section class="preprocess-domain-panel preprocess-domain-panel--knowledge" data-preprocess-domain="knowledge">
+                    <div class="preprocess-domain-head">
+                      <div class="preprocess-domain-title">
+                        <span class="preprocess-domain-index">03</span>
+                        <div>
+                          <h3>Knowledge Base Building</h3>
+                          <p>Build the run-specific dynamic knowledge base from observed variants, methylation loci, selected sources, and optional local PDFs.</p>
+                        </div>
+                      </div>
+                      <span class="preprocess-step-state">{{ "Complete" if preprocess_state.dynamic_kb_ready else "Optional" }}</span>
+                    </div>
+                    <div class="field-card">
+                      <label for="knowledge_vcf_source">VCF Source for Dynamic KB</label>
+                      <p class="field-example">Current value: <code>{{ preprocess_state.knowledge_vcf_source or "Choose or extract a regional VCF" }}</code></p>
+                      <input id="knowledge_vcf_source" name="knowledge_vcf_source" list="knowledge-vcf-options" type="text" value="{{ preprocess_state.knowledge_vcf_source }}" placeholder="Path to a VCF or extracted regional VCF">
+                      <datalist id="knowledge-vcf-options">
+                        {% for option in vcf_files %}
+                        <option value="{{ option }}"></option>
+                        {% endfor %}
+                        {% if extraction_state.last_output_vcf %}
+                        <option value="{{ extraction_state.last_output_vcf }}"></option>
+                        {% endif %}
+                      </datalist>
+                      <details class="field-details">
+                        <summary>What this means biologically</summary>
+                        <p>The dynamic knowledge-base builder reads the observed sample variants from this VCF and combines them with the filtered methylation loci before querying the selected source cards.</p>
+                      </details>
+                      <div class="local-article-controls">
+                        <label class="toggle-row">
+                          <input
+                            type="checkbox"
+                            name="use_local_article_evidence"
+                            value="1"
+                            {% if preprocess_state.use_local_article_evidence %}checked{% endif %}
+                          >
+                          <span>Use local PDF article folder</span>
+                        </label>
+                        <label for="article_pdf_folder">Article PDF Folder</label>
+                        <input
+                          id="article_pdf_folder"
+                          name="article_pdf_folder"
+                          type="text"
+                          value="{{ preprocess_state.article_pdf_folder }}"
+                          placeholder="Path to a folder of legally obtained article PDFs"
+                        >
+                        <div class="local-article-options">
+                          <label class="toggle-row">
+                            <input
+                              type="checkbox"
+                              name="article_pdf_recursive"
+                              value="1"
+                              {% if preprocess_state.article_pdf_recursive %}checked{% endif %}
+                            >
+                            <span>Scan subfolders</span>
+                          </label>
+                          <label for="max_article_pdfs">
+                            Max PDFs
+                            <input
+                              id="max_article_pdfs"
+                              name="max_article_pdfs"
+                              type="number"
+                              min="0"
+                              max="1000"
+                              step="1"
+                              value="{{ preprocess_state.max_article_pdfs }}"
+                            >
+                          </label>
+                        </div>
+                        <p class="hint">
+                          This optional local step extracts only short snippets that mention <code>{{ preprocess_state.gene_name }}</code> and stores hashes/provenance, not full article text.
+                        </p>
+                      </div>
+                      <div class="analysis-actions">
+                        <button type="submit" class="run-button" name="preprocess_action" value="build_variant_knowledge_base">Build Variant Knowledge Base</button>
+                        <button type="button" class="cta-button" data-go-tab="knowledge_sources">Choose Sources</button>
+                      </div>
+                      <p class="hint">
+                        If Extraction created a regional VCF, that file is preferred. Otherwise choose a VCF from <code>data/</code>.
+                      </p>
+                    </div>
+                  </section>
+                  {% endif %}
                 </div>
 
                 {% if preprocess_error %}
@@ -2124,7 +2341,7 @@
               <div class="panel-head">
                 <div>
                   <h2>Preprocessing Status</h2>
-                  <p>The status column mirrors the two preprocessing steps and fills downward as each one completes.</p>
+                  <p>The status column mirrors the staged preprocessing flow and fills downward as each domain completes.</p>
                 </div>
                 <span class="panel-chip">{{ "Analysis unlocked" if analysis_unlocked else "Waiting for preprocessing" }}</span>
               </div>
@@ -2219,6 +2436,13 @@
                           <div><strong>Selected workflows:</strong> {{ knowledge_sources_state.selected_workflows|length }}</div>
                           <div><strong>Selected sources:</strong> {{ preprocess_state.dynamic_kb_source_count or knowledge_sources_state.selected_sources|length }}</div>
                           <div><strong>Provider statuses:</strong> {{ preprocess_state.dynamic_kb_provider_count if preprocess_state.dynamic_kb_ready else "Pending" }}</div>
+                          {% if preprocess_state.use_local_article_evidence or preprocess_state.article_pdf_folder or preprocess_state.local_article_evidence_status %}
+                          <div><strong>Local PDF folder:</strong> <code>{{ preprocess_state.article_pdf_folder or "Not selected" }}</code></div>
+                          <div><strong>Local article snippets:</strong> {{ preprocess_state.local_article_evidence_record_count if preprocess_state.dynamic_kb_ready else "Pending" }} from {{ preprocess_state.local_article_pdf_count if preprocess_state.dynamic_kb_ready else "pending" }} PDF file(s)</div>
+                          {% if preprocess_state.local_article_evidence_status %}
+                          <div><strong>Local PDF status:</strong> {{ preprocess_state.local_article_evidence_status }}</div>
+                          {% endif %}
+                          {% endif %}
                           {% if preprocess_state.dynamic_kb_workflow_summary %}
                           <details class="field-details">
                             <summary>Workflow summary</summary>
@@ -3435,6 +3659,7 @@
                   <div class="subtab-nav" aria-label="Result previews">
                     <button type="button" class="subtab-button" data-subtab-target="variants" aria-selected="false">Genetic Variant Results</button>
                     <button type="button" class="subtab-button" data-subtab-target="methylation" aria-selected="false">Methylation Preview</button>
+                    <button type="button" class="subtab-button" data-subtab-target="data_sources" aria-selected="false">Data Sources</button>
                   </div>
 
                   <section class="subtab-panel" data-subtab-panel="variants">
@@ -4195,6 +4420,101 @@
                       </div>
                     </section>
                   </section>
+
+                  <section class="subtab-panel" data-subtab-panel="data_sources">
+                    <h3>Data Sources</h3>
+                    <p class="status-note">{{ result.data_sources.summary }}</p>
+                    <div class="viewer-scroll">
+                      {% if result.data_sources.groups %}
+                      <div class="insight-stack">
+                        {% for group in result.data_sources.groups %}
+                        <section class="data-source-group">
+                          <div class="panel-head">
+                            <div>
+                              <span class="insight-kicker">Source provenance</span>
+                              <h4>{{ group.label }}</h4>
+                            </div>
+                            <span class="panel-chip">{{ group.cards | length }} card{{ "" if (group.cards | length) == 1 else "s" }}</span>
+                          </div>
+                          <div class="data-source-card-grid">
+                            {% for card in group.cards %}
+                            <details class="insight-card expandable-card">
+                              <summary class="expandable-summary">
+                                <div class="expandable-copy">
+                                  <span class="insight-kicker">{{ card.source_key }}</span>
+                                  <h4>{{ card.source_name }}</h4>
+                                  <p>{{ card.summary }}</p>
+                                  <div class="source-status-row">
+                                    <span class="muted-badge">{{ card.status }}</span>
+                                    <span class="muted-badge">{{ card.record_count }} record{{ "" if card.record_count == 1 else "s" }}</span>
+                                  </div>
+                                </div>
+                              </summary>
+                              <div class="expandable-body">
+                                {% if card.findings %}
+                                <h4>What this source found</h4>
+                                <ul class="insight-list">
+                                  {% for finding in card.findings %}
+                                  <li>{{ finding }}</li>
+                                  {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p>No normalized finding text was available for this source in the current run.</p>
+                                {% endif %}
+
+                                {% if card.links %}
+                                <h4>Links</h4>
+                                <ul class="source-link-list">
+                                  {% for link in card.links %}
+                                  <li>
+                                    {% if link.url %}
+                                    <a href="{{ link.url }}" target="_blank" rel="noreferrer">{{ link.label }}</a>
+                                    {% else %}
+                                    <span>{{ link.label }}</span>
+                                    {% endif %}
+                                  </li>
+                                  {% endfor %}
+                                </ul>
+                                {% endif %}
+
+                                {% if card.warnings %}
+                                <h4>Warnings</h4>
+                                <ul class="insight-list">
+                                  {% for warning in card.warnings %}
+                                  <li>{{ warning }}</li>
+                                  {% endfor %}
+                                </ul>
+                                {% endif %}
+
+                                {% if card.errors %}
+                                <h4>Errors</h4>
+                                <ul class="insight-list">
+                                  {% for error in card.errors %}
+                                  <li>{{ error }}</li>
+                                  {% endfor %}
+                                </ul>
+                                {% endif %}
+
+                                {% if card.license_note %}
+                                <p class="status-note">{{ card.license_note }}</p>
+                                {% endif %}
+                              </div>
+                            </details>
+                            {% endfor %}
+                          </div>
+                        </section>
+                        {% endfor %}
+                      </div>
+                      {% else %}
+                      <section class="empty-state">
+                        <div class="empty-state-inner">
+                          <h3>No source provenance available</h3>
+                          <p>Run analysis with a bundled gene database or build a dynamic knowledge base during preprocessing to populate this tab.</p>
+                        </div>
+                      </section>
+                      {% endif %}
+                    </div>
+                  </section>
                 </div>
                 {% else %}
                 <section class="empty-state loading-hideable">
@@ -4546,7 +4866,7 @@
           { threshold: 0, label: "Preparing source queries", note: "Status Viewer is tracking progress", overlayText: "Prepare the selected source registry." },
           { threshold: 22, label: "Loading observed variants", note: "The VCF region is being decoded for source lookup", overlayText: "Load observed variants from the selected VCF." },
           { threshold: 48, label: "Joining methylation loci", note: "The filtered manifest subset is being added to the query context", overlayText: "Attach epigenetic loci from the filtered manifest." },
-          { threshold: 74, label: "Querying source cards", note: "Open APIs and metadata-only sources are being resolved", overlayText: "Query available database connectors." },
+          { threshold: 74, label: "Querying source cards", note: "Open APIs, metadata-only sources, and optional local PDFs are being resolved", overlayText: "Query available database connectors and local article snippets." },
           { threshold: 92, label: "Writing dynamic KB", note: "The variant_kb.json artifact is being written", overlayText: "Save the dynamic knowledge-base artifact." }
         ]
       };

@@ -218,6 +218,10 @@ def test_job_validation_rejects_empty_and_oversized_gene_lists() -> None:
             "options": {
                 "knowledge_workflows": "clinical_variant_triage,population_frequency_association",
                 "knowledge_sources": ["clinvar"],
+                "use_local_article_evidence": True,
+                "article_pdf_folder": "data/articles",
+                "article_pdf_recursive": False,
+                "max_article_pdfs": "25",
             },
         }
     )
@@ -225,6 +229,21 @@ def test_job_validation_rejects_empty_and_oversized_gene_lists() -> None:
         "clinical_variant_triage",
         "population_frequency_association",
     ]
+    assert normalized["options"]["use_local_article_evidence"] is True
+    assert normalized["options"]["article_pdf_folder"] == "data/articles"
+    assert normalized["options"]["article_pdf_recursive"] is False
+    assert normalized["options"]["max_article_pdfs"] == 25
+
+    with pytest.raises(Exception) as bad_article_limit:
+        normalize_job_request(
+            {
+                "operation": "build_knowledge_bases",
+                "genes": ["DRD4"],
+                "profile_id": "sample-one",
+                "options": {"max_article_pdfs": "many"},
+            }
+        )
+    assert getattr(bad_article_limit.value, "code", "") == "invalid_max_article_pdfs"
 
 
 def test_running_jobs_are_marked_interrupted_and_queued_jobs_can_be_cancelled(tmp_path: Path) -> None:

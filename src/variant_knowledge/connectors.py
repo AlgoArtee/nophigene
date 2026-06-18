@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import time
 from typing import Any
 
@@ -27,6 +28,60 @@ def _literature_query(query: KnowledgeQuery) -> str:
     if rsid:
         return f"{query.gene} {rsid}"
     return query.gene
+
+
+NCBI_EUTILS_BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+NCBI_TOOL_NAME = "NophiGeneDynamicKB"
+NLM_CLINICAL_TABLES_VARIANTS_URL = "https://clinicaltables.nlm.nih.gov/api/variants/v4/search"
+
+
+def _ncbi_request_params(params: dict[str, Any]) -> dict[str, Any]:
+    out = dict(params)
+    tool = os.environ.get("NOPHIGENE_NCBI_TOOL", NCBI_TOOL_NAME).strip() or NCBI_TOOL_NAME
+    out["tool"] = tool.replace(" ", "_")
+    email = os.environ.get("NOPHIGENE_NCBI_EMAIL", "").strip()
+    if email:
+        out["email"] = email
+    api_key = os.environ.get("NOPHIGENE_NCBI_API_KEY", "").strip() or os.environ.get("NCBI_API_KEY", "").strip()
+    if api_key:
+        out["api_key"] = api_key
+    return out
+
+
+def _request_failure_result(
+    spec: SourceSpec,
+    exc: KnowledgeRequestError,
+    *,
+    queried_urls: list[str],
+    started: float,
+) -> SourceResult:
+    remediation = getattr(exc, "remediation", "")
+    code = getattr(exc, "code", "request_failed")
+    message = str(exc)
+    return SourceResult(
+        source_key=spec.key,
+        status="failed",
+        message=message,
+        errors=[message],
+        queried_urls=queried_urls,
+        elapsed_ms=_elapsed_ms(started),
+        error_code=code,
+        remediation=remediation,
+    )
+
+
+def _clean_cell(value: Any) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, list):
+        return "; ".join(_clean_cell(item) for item in value if _clean_cell(item))
+    if isinstance(value, dict):
+        for key in ("description", "name", "label", "title", "trait_name", "variation_name"):
+            cleaned = _clean_cell(value.get(key))
+            if cleaned:
+                return cleaned
+        return ""
+    return str(value).strip()
 
 
 class BaseConnector:
@@ -110,19 +165,19 @@ class NcbiEutilsConnector(BaseConnector):
         records: list[dict[str, Any]] = []
         urls: list[str] = []
         try:
-            search_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+            search_url = f"{NCBI_EUTILS_BASE_URL}/esearch.fcgi"
             search = self.client.get_json(
                 search_url,
-                params={"db": db, "term": term, "retmode": "json", "retmax": 5},
+                params=_ncbi_request_params({"db": db, "term": term, "retmode": "json", "retmax": 5}),
                 rate_limit_per_second=self.spec.rate_limit_per_second,
             )
             urls.append(search_url)
             ids = list(search.get("esearchresult", {}).get("idlist", []))
             if ids:
-                summary_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+                summary_url = f"{NCBI_EUTILS_BASE_URL}/esummary.fcgi"
                 summary = self.client.get_json(
                     summary_url,
-                    params={"db": db, "id": ",".join(ids[:5]), "retmode": "json"},
+                    params=_ncbi_request_params({"db": db, "id": ",".join(ids[:5]), "retmode": "json"}),
                     rate_limit_per_second=self.spec.rate_limit_per_second,
                 )
                 urls.append(summary_url)
@@ -150,14 +205,7 @@ class NcbiEutilsConnector(BaseConnector):
                 elapsed_ms=_elapsed_ms(started),
             )
         except KnowledgeRequestError as exc:
-            return SourceResult(
-                source_key=self.spec.key,
-                status="failed",
-                message=str(exc),
-                errors=[str(exc)],
-                queried_urls=urls,
-                elapsed_ms=_elapsed_ms(started),
-            )
+            return _request_failure_result(self.spec, exc, queried_urls=urls, started=started)
 
     def _term(self, context: KnowledgeQuery) -> str:
         rsid = _first_rsid(context)
@@ -188,6 +236,272 @@ class NcbiEutilsConnector(BaseConnector):
         if db == "clinvar":
             return f"https://www.ncbi.nlm.nih.gov/clinvar/variation/{item_id}/"
         return f"https://www.ncbi.nlm.nih.gov/{db}/{item_id}"
+
+
+class ClinVarConnector(BaseConnector):
+    """ClinVar connector using official NCBI query patterns."""
+
+    RETMAX = 10
+
+    def query(self, context: KnowledgeQuery) -> SourceResult:
+        started = time.monotonic()
+        queried_urls: list[str] = []
+        warnings: list[str] = []
+        seen_ids: set[str] = set()
+        records: list[dict[str, Any]] = []
+        try:
+            for rsid in context.rsids:
+                ids = self._esearch_ids(rsid, queried_urls)
+                records.extend(self._esummary_records(ids, context, seen_ids, queried_urls))
+
+            gene_ids = self._esearch_ids(f"{context.gene}[gene] AND single_gene[prop]", queried_urls)
+            if not gene_ids:
+                gene_ids = self._esearch_ids(f"{context.gene}[gene]", queried_urls)
+            records.extend(self._esummary_records(gene_ids, context, seen_ids, queried_urls))
+
+            if not records:
+                try:
+                    records.extend(self._clinical_tables_records(context, seen_ids, queried_urls))
+                except KnowledgeRequestError as exc:
+                    warnings.append(str(exc))
+
+            return SourceResult(
+                source_key=self.spec.key,
+                status="ok",
+                message=f"Queried ClinVar; {len(records)} clinical variant record(s) returned.",
+                records=records,
+                warnings=warnings,
+                queried_urls=queried_urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
+        except KnowledgeRequestError as exc:
+            return _request_failure_result(self.spec, exc, queried_urls=queried_urls, started=started)
+
+    def _esearch_ids(self, term: str, queried_urls: list[str]) -> list[str]:
+        url = f"{NCBI_EUTILS_BASE_URL}/esearch.fcgi"
+        payload = self.client.get_json(
+            url,
+            params=_ncbi_request_params(
+                {
+                    "db": "clinvar",
+                    "term": term,
+                    "retmode": "json",
+                    "retmax": self.RETMAX,
+                }
+            ),
+            rate_limit_per_second=self.spec.rate_limit_per_second,
+        )
+        queried_urls.append(url)
+        idlist = payload.get("esearchresult", {}).get("idlist", [])
+        return [str(item_id) for item_id in idlist[: self.RETMAX]]
+
+    def _esummary_records(
+        self,
+        ids: list[str],
+        context: KnowledgeQuery,
+        seen_ids: set[str],
+        queried_urls: list[str],
+    ) -> list[dict[str, Any]]:
+        if not ids:
+            return []
+        url = f"{NCBI_EUTILS_BASE_URL}/esummary.fcgi"
+        payload = self.client.get_json(
+            url,
+            params=_ncbi_request_params(
+                {
+                    "db": "clinvar",
+                    "id": ",".join(ids[: self.RETMAX]),
+                    "retmode": "json",
+                }
+            ),
+            rate_limit_per_second=self.spec.rate_limit_per_second,
+        )
+        queried_urls.append(url)
+        result = payload.get("result", {})
+        records: list[dict[str, Any]] = []
+        for item_id in ids[: self.RETMAX]:
+            item = result.get(str(item_id), {})
+            if not isinstance(item, dict):
+                continue
+            source_id = self._variation_id(item, item_id)
+            if source_id in seen_ids:
+                continue
+            seen_ids.add(source_id)
+            records.append(self._record_from_summary(item, source_id, context))
+        return records
+
+    def _clinical_tables_records(
+        self,
+        context: KnowledgeQuery,
+        seen_ids: set[str],
+        queried_urls: list[str],
+    ) -> list[dict[str, Any]]:
+        terms = context.rsids[0] if context.rsids else context.gene
+        payload = self.client.get_json(
+            NLM_CLINICAL_TABLES_VARIANTS_URL,
+            params={
+                "terms": terms,
+                "maxList": 5,
+                "df": "VariationID,GeneSymbol,dbSNP,Name",
+            },
+            rate_limit_per_second=self.spec.rate_limit_per_second,
+        )
+        queried_urls.append(NLM_CLINICAL_TABLES_VARIANTS_URL)
+        if not isinstance(payload, list) or len(payload) < 4 or not isinstance(payload[3], list):
+            return []
+        records: list[dict[str, Any]] = []
+        for row in payload[3][:5]:
+            if not isinstance(row, list):
+                continue
+            cells = [_clean_cell(value) for value in row]
+            source_id = cells[0] if cells else ""
+            if not source_id or source_id in seen_ids:
+                continue
+            seen_ids.add(source_id)
+            gene_symbol = cells[1] if len(cells) > 1 else context.gene
+            rsid = cells[2] if len(cells) > 2 else ""
+            label = cells[3] if len(cells) > 3 else f"ClinVar variation {source_id}"
+            records.append(
+                {
+                    "category": "clinical_variant",
+                    "source": self.spec.name,
+                    "label": label or f"ClinVar variation {source_id}",
+                    "summary": f"ClinVar Clinical Tables record for {gene_symbol or context.gene}.",
+                    "source_id": source_id,
+                    "url": self._record_url(source_id),
+                    "variant": rsid or source_id,
+                    "rsid": rsid,
+                    "gene": gene_symbol or context.gene,
+                }
+            )
+        return records
+
+    def _record_from_summary(
+        self,
+        item: dict[str, Any],
+        source_id: str,
+        context: KnowledgeQuery,
+    ) -> dict[str, Any]:
+        title = (
+            _clean_cell(item.get("title"))
+            or self._first_variation_name(item)
+            or _clean_cell(item.get("accession"))
+            or f"ClinVar variation {source_id}"
+        )
+        significance = self._clinical_significance(item)
+        traits = self._traits(item)
+        rsid = self._rsid(item) or _first_rsid(context)
+        summary_parts = []
+        if significance:
+            summary_parts.append(f"Clinical significance: {significance}")
+        if traits:
+            summary_parts.append(f"Phenotype/trait: {'; '.join(traits[:3])}")
+        variant_type = _clean_cell(item.get("variant_type") or item.get("obj_type"))
+        if variant_type:
+            summary_parts.append(f"Variant type: {variant_type}")
+        summary = "; ".join(summary_parts) or _clean_cell(item.get("description")) or title
+        record = {
+            "category": "clinical_variant",
+            "source": self.spec.name,
+            "label": title,
+            "summary": summary,
+            "source_id": source_id,
+            "url": self._record_url(source_id),
+            "variant": rsid or source_id,
+            "rsid": rsid,
+            "gene": context.gene,
+        }
+        if significance:
+            record["clinical_significance"] = significance
+            record["assertion"] = significance
+        if traits:
+            record["phenotype"] = "; ".join(traits[:5])
+        return record
+
+    def _variation_id(self, item: dict[str, Any], fallback: str) -> str:
+        for key in ("variation_id", "uid", "id"):
+            value = _clean_cell(item.get(key))
+            if value:
+                return value
+        return str(fallback)
+
+    def _first_variation_name(self, item: dict[str, Any]) -> str:
+        variation_set = item.get("variation_set")
+        if not isinstance(variation_set, list):
+            return ""
+        for variation in variation_set:
+            if isinstance(variation, dict):
+                name = _clean_cell(variation.get("variation_name"))
+                if name:
+                    return name
+        return ""
+
+    def _clinical_significance(self, item: dict[str, Any]) -> str:
+        for key in (
+            "clinical_significance",
+            "germline_classification",
+            "somatic_clinical_impact",
+            "oncogenicity_classification",
+        ):
+            value = item.get(key)
+            if isinstance(value, dict):
+                cleaned = _clean_cell(value.get("description") or value.get("review_status"))
+            else:
+                cleaned = _clean_cell(value)
+            if cleaned:
+                return cleaned
+        return ""
+
+    def _traits(self, item: dict[str, Any]) -> list[str]:
+        traits: list[str] = []
+        for key in ("trait_set", "traits"):
+            value = item.get(key)
+            if isinstance(value, list):
+                for trait in value:
+                    cleaned = _clean_cell(trait)
+                    if cleaned:
+                        traits.append(cleaned)
+            else:
+                cleaned = _clean_cell(value)
+                if cleaned:
+                    traits.append(cleaned)
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for trait in traits:
+            normalized = trait.lower()
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            ordered.append(trait)
+        return ordered
+
+    def _rsid(self, item: dict[str, Any]) -> str:
+        for key in ("rsid", "dbsnp", "refsnp_id"):
+            value = _clean_cell(item.get(key))
+            if value:
+                return value if value.lower().startswith("rs") else f"rs{value}"
+        variation_set = item.get("variation_set")
+        if not isinstance(variation_set, list):
+            return ""
+        for variation in variation_set:
+            if not isinstance(variation, dict):
+                continue
+            xrefs = variation.get("variation_xrefs")
+            if not isinstance(xrefs, list):
+                continue
+            for xref in xrefs:
+                if not isinstance(xref, dict):
+                    continue
+                source = _clean_cell(xref.get("db_source") or xref.get("db"))
+                if source.lower() != "dbsnp":
+                    continue
+                value = _clean_cell(xref.get("db_id") or xref.get("id"))
+                if value:
+                    return value if value.lower().startswith("rs") else f"rs{value}"
+        return ""
+
+    def _record_url(self, source_id: str) -> str:
+        return f"https://www.ncbi.nlm.nih.gov/clinvar/variation/{source_id}/"
 
 
 class EnsemblConnector(BaseConnector):
@@ -561,7 +875,7 @@ CONNECTOR_CLASSES = {
     "metadata": BaseConnector,
     "auth_metadata": AuthMetadataConnector,
     "licensed_metadata": LicensedMetadataConnector,
-    "clinvar": NcbiEutilsConnector,
+    "clinvar": ClinVarConnector,
     "dbsnp": NcbiEutilsConnector,
     "ncbi_gene": NcbiEutilsConnector,
     "pubmed": NcbiEutilsConnector,
