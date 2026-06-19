@@ -10,16 +10,23 @@
       --bg-2: #f2d3d6;
       --panel: rgba(255, 247, 247, 0.90);
       --panel-strong: rgba(255, 252, 252, 0.96);
+      --surface-blush: linear-gradient(145deg, rgba(255, 252, 252, 0.96), rgba(255, 238, 242, 0.88));
+      --surface-rose: linear-gradient(145deg, rgba(255, 244, 248, 0.96), rgba(251, 220, 229, 0.88));
+      --surface-amaranth: linear-gradient(145deg, rgba(255, 239, 245, 0.96), rgba(245, 199, 214, 0.86));
+      --surface-red: linear-gradient(145deg, rgba(255, 236, 239, 0.96), rgba(238, 190, 201, 0.86));
       --ink: #2a1118;
       --muted: #6b4b56;
       --line: rgba(118, 19, 45, 0.14);
+      --emboss-border: rgba(118, 19, 45, 0.16);
       --accent: #a1143d;
       --accent-2: #d11f4f;
       --accent-3: #7c0d2d;
       --accent-soft: rgba(161, 20, 61, 0.08);
       --danger: #8d0c2c;
       --success: #7f1d1d;
-      --shadow: 0 24px 70px rgba(90, 12, 36, 0.14);
+      --shadow: 0 24px 70px rgba(90, 12, 36, 0.16);
+      --emboss-shadow: 0 18px 38px rgba(90, 12, 36, 0.16), 0 3px 9px rgba(90, 12, 36, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.86), inset 0 -1px 0 rgba(118, 19, 45, 0.08);
+      --emboss-shadow-deep: 0 30px 78px rgba(90, 12, 36, 0.20), 0 8px 22px rgba(90, 12, 36, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.90), inset 0 -1px 0 rgba(118, 19, 45, 0.10);
       --radius-xl: 30px;
       --radius-lg: 24px;
       --radius-md: 18px;
@@ -44,10 +51,10 @@
       padding: 18px 0 34px;
     }
     .frame {
-      background: var(--panel);
-      border: 1px solid var(--line);
+      background: var(--surface-blush);
+      border: 1px solid var(--emboss-border);
       border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
+      box-shadow: var(--emboss-shadow-deep);
       backdrop-filter: blur(14px);
     }
     .frame-header {
@@ -1843,6 +1850,98 @@
     }
     .literature-list li {
       line-height: 1.6;
+    }
+    .overview-card,
+    .diagram-card,
+    .analysis-panel-inner,
+    .field-card,
+    .preprocess-domain-panel,
+    .preprocess-detail-card,
+    .knowledge-card,
+    .protein-toggle-card,
+    .protein-meta-card,
+    .database-filter-bar,
+    .table-shell,
+    .data-source-group,
+    .insight-card,
+    .stat-card,
+    .predictive-card,
+    .predictive-empty,
+    .marker-catalog-shell {
+      background: var(--surface-blush);
+      border-color: var(--emboss-border);
+      box-shadow: var(--emboss-shadow);
+    }
+    .data-source-group {
+      padding: 14px;
+      border: 1px solid var(--emboss-border);
+      border-radius: 22px;
+    }
+    .knowledge-card,
+    .field-card,
+    .overview-card,
+    .diagram-card,
+    .preprocess-detail-card,
+    .insight-card,
+    .stat-card,
+    .predictive-card,
+    .protein-meta-card {
+      transition: box-shadow 160ms ease, transform 160ms ease, border-color 160ms ease;
+    }
+    .knowledge-card:nth-child(3n+1),
+    .field-card:nth-child(3n+1),
+    .overview-card:nth-child(3n+1),
+    .diagram-card:nth-child(3n+1),
+    .preprocess-detail-card:nth-child(3n+1),
+    .data-source-group:nth-child(3n+1),
+    .data-source-card-grid .insight-card:nth-child(3n+1),
+    .insight-grid .insight-card:nth-child(3n+1),
+    .stat-card:nth-child(3n+1),
+    .predictive-card:nth-child(3n+1),
+    .protein-meta-card:nth-child(3n+1) {
+      background: var(--surface-blush);
+    }
+    .knowledge-card:nth-child(3n+2),
+    .field-card:nth-child(3n+2),
+    .overview-card:nth-child(3n+2),
+    .diagram-card:nth-child(3n+2),
+    .preprocess-detail-card:nth-child(3n+2),
+    .data-source-group:nth-child(3n+2),
+    .data-source-card-grid .insight-card:nth-child(3n+2),
+    .insight-grid .insight-card:nth-child(3n+2),
+    .stat-card:nth-child(3n+2),
+    .predictive-card:nth-child(3n+2),
+    .protein-meta-card:nth-child(3n+2) {
+      background: var(--surface-rose);
+    }
+    .knowledge-card:nth-child(3n),
+    .field-card:nth-child(3n),
+    .overview-card:nth-child(3n),
+    .diagram-card:nth-child(3n),
+    .preprocess-detail-card:nth-child(3n),
+    .data-source-group:nth-child(3n),
+    .data-source-card-grid .insight-card:nth-child(3n),
+    .insight-grid .insight-card:nth-child(3n),
+    .stat-card:nth-child(3n),
+    .predictive-card:nth-child(3n),
+    .protein-meta-card:nth-child(3n) {
+      background: var(--surface-amaranth);
+    }
+    .preprocess-domain-panel--genetics {
+      background: var(--surface-red);
+    }
+    .preprocess-domain-panel--epigenetics {
+      background: var(--surface-amaranth);
+    }
+    .preprocess-domain-panel--knowledge {
+      background: var(--surface-rose);
+    }
+    .expandable-card[open],
+    .predictive-card[open],
+    .knowledge-card:hover,
+    .field-card:hover {
+      border-color: rgba(161, 20, 61, 0.24);
+      box-shadow: var(--emboss-shadow-deep);
     }
     .population-grid {
       display: grid;

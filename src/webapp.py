@@ -1519,6 +1519,73 @@ def _findings_from_variant_record(record: dict[str, Any]) -> list[str]:
     return [label or text] if (label or text) else []
 
 
+def _source_text_contains(haystack: str, needle: str) -> bool:
+    """Return whether compact source text already contains a value."""
+    return bool(needle and needle.casefold() in haystack.casefold())
+
+
+def _clinvar_identity_has_source_id(identity: str, source_id: str) -> bool:
+    """Return whether a ClinVar identity already includes the variation ID."""
+    if not source_id:
+        return False
+    normalized = identity.casefold()
+    normalized_id = source_id.casefold()
+    return (
+        normalized == normalized_id
+        or f"variation id {normalized_id}" in normalized
+        or f"variation {normalized_id}" in normalized
+    )
+
+
+def _clinvar_source_record_identity(record: dict[str, Any]) -> str:
+    """Build a compact ClinVar variant identity for source-card findings."""
+    label = _clean_source_text(record.get("label") or record.get("title") or record.get("name"), limit=220)
+    variant = _clean_source_text(record.get("variant"), limit=120)
+    rsid = _clean_source_text(record.get("rsid"), limit=120)
+    source_id = _clean_source_text(record.get("source_id"), limit=120)
+    identity = label or variant or rsid or (f"Variation ID {source_id}" if source_id else "")
+    if not identity:
+        return ""
+
+    details: list[str] = []
+    if source_id and not _clinvar_identity_has_source_id(identity, source_id):
+        details.append(f"Variation ID {source_id}")
+
+    rsid_detail = rsid or (variant if variant.lower().startswith("rs") else "")
+    if rsid_detail and not _source_text_contains(identity, rsid_detail):
+        details.append(rsid_detail)
+
+    deduped_details: list[str] = []
+    for detail in details:
+        if any(
+            _source_text_contains(existing, detail) or _source_text_contains(detail, existing)
+            for existing in deduped_details
+        ):
+            continue
+        deduped_details.append(detail)
+    if deduped_details:
+        return f"{identity} ({'; '.join(deduped_details)})"
+    return identity
+
+
+def _finding_from_clinvar_source_record(record: dict[str, Any]) -> str:
+    """Summarize one ClinVar source record with an explicit variant identity."""
+    identity = _clinvar_source_record_identity(record)
+    summary = _clean_source_text(
+        record.get("summary")
+        or record.get("clinical_significance")
+        or record.get("clinical_interpretation")
+        or record.get("assertion")
+        or record.get("title")
+        or record.get("label")
+    )
+    if identity and summary:
+        if summary.casefold().startswith(identity.casefold()):
+            return summary
+        return f"{identity}: {summary}"
+    return identity or summary
+
+
 def _records_by_source(records: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
     """Group normalized dynamic records by source key."""
     grouped: dict[str, list[dict[str, Any]]] = {}
@@ -1646,10 +1713,13 @@ def _build_data_sources_payload(
                 continue
             status_source_keys.add(source_key)
             source_records = dynamic_records_by_source.get(source_key, [])
-            source_findings = [
-                record.get("summary") or record.get("title") or record.get("label")
-                for record in source_records[:8]
-            ]
+            if source_key == "clinvar":
+                source_findings = [_finding_from_clinvar_source_record(record) for record in source_records[:8]]
+            else:
+                source_findings = [
+                    record.get("summary") or record.get("title") or record.get("label")
+                    for record in source_records[:8]
+                ]
             links = _source_links_from_records(source_records)
             _append_source_link(links, label=status.get("name"), url=status.get("homepage"))
             for url in status.get("queried_urls", []) or []:

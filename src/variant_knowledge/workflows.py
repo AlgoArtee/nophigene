@@ -82,6 +82,7 @@ WORKFLOW_SPECS: tuple[WorkflowSpec, ...] = (
         ordered_source_keys=(
             "clinvar",
             "clingen",
+            "medgen",
             "ensembl",
             "dbsnp",
             "civic",

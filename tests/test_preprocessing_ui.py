@@ -66,6 +66,15 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "homepage": "https://clinicalgenome.org/",
                 },
                 {
+                    "source_key": "medgen",
+                    "name": "MedGen",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "Queried MedGen; 1 condition or phenotype record(s) returned for DRD4.",
+                    "record_count": 1,
+                    "homepage": "https://www.ncbi.nlm.nih.gov/medgen/",
+                },
+                {
                     "source_key": "hgmd",
                     "name": "HGMD",
                     "lane": "licensed",
@@ -80,8 +89,11 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                 {
                     "source_key": "clinvar",
                     "category": "clinical",
-                    "label": "ClinVar DRD4 record",
-                    "summary": "ClinVar summary",
+                    "label": "DRD4 c.1A>G",
+                    "summary": "Clinical significance: Likely benign; Variant type: single nucleotide variant",
+                    "source_id": "123",
+                    "variant": "rs1800955",
+                    "rsid": "rs1800955",
                     "url": "https://example.com/clinvar-drd4",
                 },
                 {
@@ -92,6 +104,20 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "classification": "Definitive",
                     "disease": "Example syndrome",
                     "url": "https://search.clinicalgenome.org/kb/gene-validity/DRD4",
+                },
+                {
+                    "source_key": "medgen",
+                    "category": "clinical_condition",
+                    "label": "DRD4-related phenotype",
+                    "summary": "MedGen clinical condition associated with DRD4.",
+                    "concept_id": "C123456",
+                    "url": "https://www.ncbi.nlm.nih.gov/medgen/C123456",
+                    "research_links": [
+                        {
+                            "label": "MedGen GTR clinical-test records for DRD4",
+                            "url": "https://www.ncbi.nlm.nih.gov/medgen/?term=%22medgen%20gtr%20tests%20clinical%22%5BFilter%5D%20AND%20DRD4%5Bgene%5D",
+                        }
+                    ],
                 }
             ],
             "literature_records": [
@@ -127,9 +153,16 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
     assert by_key["curated_gene_bundle"]["status"] == "ok"
     assert any("NCBI Gene 1815" in link["label"] for link in by_key["curated_gene_bundle"]["links"])
     assert by_key["clinvar"]["status"] == "ok"
+    assert by_key["clinvar"]["findings"] == [
+        "DRD4 c.1A>G (Variation ID 123; rs1800955): "
+        "Clinical significance: Likely benign; Variant type: single nucleotide variant"
+    ]
     assert by_key["clingen"]["status"] == "ok"
     assert by_key["clingen"]["findings"] == ["Definitive gene-disease validity for Example syndrome (AD)"]
     assert "Expert assessment of gene" not in by_key["clingen"]["summary"]
+    assert by_key["medgen"]["status"] == "ok"
+    assert by_key["medgen"]["findings"] == ["MedGen clinical condition associated with DRD4."]
+    assert any("GTR clinical-test" in link["label"] for link in by_key["medgen"]["links"])
     assert by_key["hgmd"]["status"] == "needs_export"
     assert by_key["hgmd"]["license_note"] == "License-gated source."
     assert "europe_pmc_literature" in by_key
@@ -340,7 +373,7 @@ def test_knowledge_workflows_render_core_safety_defaults(monkeypatch) -> None:
 
     assert "Knowledge Workflows" in page
     assert 'value="clinical_variant_triage"' in page
-    assert 'data-workflow-sources="clinvar,clingen,ensembl,dbsnp,civic,panelapp,mavedb,omim,oncokb,hgmd,varsome,franklin"' in page
+    assert 'data-workflow-sources="clinvar,clingen,medgen,ensembl,dbsnp,civic,panelapp,mavedb,omim,oncokb,hgmd,varsome,franklin"' in page
     assert 'value="local_pdf_article_evidence"' in page
     assert 'data-workflow-sources="local_pdf_articles"' in page
     assert 'value="licensed_aggregator_review"' in page

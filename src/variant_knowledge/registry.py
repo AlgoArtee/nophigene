@@ -42,6 +42,7 @@ LIVE_CONNECTOR_KINDS = {
     "clinvar",
     "dbsnp",
     "ncbi_gene",
+    "medgen",
     "pubmed",
     "pmc",
     "geo",
@@ -111,6 +112,7 @@ def _canonical_key(name: str) -> str:
         ("disgenet", "disgenet"),
         ("clinvar", "clinvar"),
         ("clingen", "clingen"),
+        ("medgen", "medgen"),
         ("hgmd", "hgmd"),
         ("dbsnp", "dbsnp"),
         ("dbvar", "dbvar"),
@@ -303,6 +305,12 @@ SOURCE_OVERRIDES: dict[str, dict[str, Any]] = {
         "connector_kind": "clingen",
         "access_type": "open_api",
         "homepage": "https://clinicalgenome.org/",
+    },
+    "medgen": {
+        "connector_kind": "medgen",
+        "access_type": "open_api",
+        "homepage": "https://www.ncbi.nlm.nih.gov/medgen/",
+        "lane": "clinical",
     },
     "hgmd": {
         "connector_kind": "licensed_metadata",

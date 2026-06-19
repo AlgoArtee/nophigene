@@ -189,6 +189,75 @@ class RecordingClinGenClient:
         return "\n".join(csv_text.splitlines()[:line_count]) + "\n"
 
 
+class RecordingMedGenClient:
+    def __init__(
+        self,
+        *,
+        ids_by_term: dict[str, list[str]] | None = None,
+        summaries: dict[str, dict[str, object]] | None = None,
+        malformed_concept_meta: bool = False,
+        fail_all: bool = False,
+    ) -> None:
+        self.ids_by_term = ids_by_term or {
+            "GENE1[gene]": ["100", "101"],
+            '"medgen gtr tests clinical"[Filter] AND GENE1[gene]': ["101"],
+        }
+        concept_meta = (
+            "<GeneSymbol>GENE1</GeneSymbol> OMIM:123456 HP:0000001 Orphanet:12345 "
+            "ClinVar Genetic Testing Registry"
+        )
+        if malformed_concept_meta:
+            concept_meta = "<ConceptMeta><Broken>"
+        self.summaries = summaries or {
+            "100": {
+                "uid": "100",
+                "title": "Example syndrome",
+                "conceptid": "C0000001",
+                "definition": "Example syndrome associated with GENE1.",
+                "semanticid": "T047",
+                "semantictype": "Disease or Syndrome",
+                "modificationdate": "2026/01/01",
+                "conceptmeta": concept_meta,
+            },
+            "101": {
+                "uid": "101",
+                "title": "GENE1 phenotype",
+                "conceptid": "CN000002",
+                "definition": "",
+                "semanticid": "T033",
+                "semantictype": "Finding",
+                "modificationdate": "2026/01/02",
+                "conceptmeta": "GTR",
+            },
+        }
+        self.fail_all = fail_all
+        self.calls: list[dict[str, object]] = []
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None):
+        params = dict(params or {})
+        self.calls.append({"url": url, "params": params})
+        if self.fail_all:
+            raise KnowledgeRequestError(
+                "GET MedGen failed: TLS certificate verification failed.",
+                code="tls_certificate_verification_failed",
+                remediation="Configure NOPHIGENE_CA_BUNDLE.",
+            )
+        if "esearch.fcgi" in url:
+            return {"esearchresult": {"idlist": self.ids_by_term.get(str(params.get("term", "")), [])}}
+        if "esummary.fcgi" in url:
+            return {
+                "result": {
+                    item_id: self.summaries[item_id]
+                    for item_id in str(params.get("id", "")).split(",")
+                    if item_id in self.summaries
+                }
+            }
+        raise AssertionError(f"Unexpected MedGen fake GET URL: {url}")
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
+        raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+
 def _write_simple_pdf(path: Path, text: str) -> None:
     escaped = text.replace("\\", "\\\\").replace("(", r"\(").replace(")", r"\)")
     stream = f"BT /F1 12 Tf 72 720 Td ({escaped}) Tj ET"
@@ -249,14 +318,21 @@ def test_workflow_registry_references_valid_sources_and_core_defaults():
     source_keys = {spec.key for spec in list_source_specs()}
     synthetic_local_sources = {LOCAL_ARTICLE_SOURCE_KEY}
     workflows = list_workflow_specs()
+    medgen_spec = get_source_spec("medgen")
 
     assert [workflow.key for workflow in workflows if workflow.default_selected] == list(CORE_SAFETY_WORKFLOW_KEYS)
+    assert medgen_spec is not None
+    assert medgen_spec.access_type == "open_api"
+    assert medgen_spec.connector_kind == "medgen"
+    assert medgen_spec.ingestion_modes == ("official_api", "linkout_only")
     assert workflows
     for workflow in workflows:
         assert workflow.label
         assert workflow.purpose
         assert workflow.report_section
         assert set(workflow.ordered_source_keys) <= source_keys | synthetic_local_sources
+        if workflow.key == "clinical_variant_triage":
+            assert workflow.ordered_source_keys[:4] == ("clinvar", "clingen", "medgen", "ensembl")
         if workflow.key == LOCAL_ARTICLE_WORKFLOW_KEY:
             assert workflow.ordered_source_keys == (LOCAL_ARTICLE_SOURCE_KEY,)
             assert not workflow.default_selected
@@ -422,6 +498,79 @@ def test_clinvar_connector_reports_tls_error_without_traceback():
 
     result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
     status = result.to_status(get_source_spec("clinvar"))
+
+    assert result.status == "failed"
+    assert status["error_code"] == "tls_certificate_verification_failed"
+    assert status["remediation"] == "Configure NOPHIGENE_CA_BUNDLE."
+    assert "Traceback" not in json.dumps(status)
+
+
+def test_medgen_connector_queries_gene_and_gtr_filter_with_ncbi_params(monkeypatch):
+    monkeypatch.setenv("NOPHIGENE_NCBI_EMAIL", "researcher@example.org")
+    monkeypatch.setenv("NOPHIGENE_NCBI_API_KEY", "secret-ncbi-key")
+    client = RecordingMedGenClient()
+    connector = connector_for(get_source_spec("medgen"), client, ResolvedCredential("medgen"))
+
+    result = connector.query(KnowledgeQuery(gene="GENE1", region="1:1-10", genome_build="hg19"))
+
+    search_calls = [call for call in client.calls if "esearch.fcgi" in str(call["url"])]
+    summary_calls = [call for call in client.calls if "esummary.fcgi" in str(call["url"])]
+    assert [call["params"]["term"] for call in search_calls] == [
+        "GENE1[gene]",
+        '"medgen gtr tests clinical"[Filter] AND GENE1[gene]',
+    ]
+    assert search_calls[0]["params"]["tool"] == "NophiGeneDynamicKB"
+    assert search_calls[0]["params"]["email"] == "researcher@example.org"
+    assert search_calls[0]["params"]["api_key"] == "secret-ncbi-key"
+    assert len(summary_calls) == 1
+    assert summary_calls[0]["params"]["id"] == "100,101"
+    assert result.status == "ok"
+    assert len(result.records) == 2
+    first = result.records[0]
+    assert first["category"] == "clinical_condition"
+    assert first["concept_id"] == "C0000001"
+    assert first["semantic_type"] == "Disease or Syndrome"
+    assert first["url"] == "https://www.ncbi.nlm.nih.gov/medgen/C0000001"
+    assert first["omim_ids"] == ["123456"]
+    assert first["hpo_ids"] == ["HP:0000001"]
+    assert first["orphanet_ids"] == ["orphanet_12345"]
+    assert first["related_genes"] == ["GENE1"]
+    assert first["has_clinvar"] is True
+    assert first["has_gtr"] is True
+    assert any(link["url"].endswith("#Additional_description") for link in first["research_links"])
+    assert result.records[1]["query_contexts"] == ["gene", "gtr_clinical_tests"]
+    serialized = json.dumps(result.to_status(get_source_spec("medgen")), sort_keys=True)
+    assert "secret-ncbi-key" not in serialized
+
+
+def test_medgen_connector_returns_ok_for_zero_results():
+    client = RecordingMedGenClient(ids_by_term={})
+    connector = connector_for(get_source_spec("medgen"), client, ResolvedCredential("medgen"))
+
+    result = connector.query(KnowledgeQuery(gene="DRD4", region="11:1-10", genome_build="hg19"))
+
+    assert result.status == "ok"
+    assert result.records == []
+    assert "no MedGen records found for DRD4" in result.message
+
+
+def test_medgen_connector_keeps_records_when_conceptmeta_is_malformed():
+    client = RecordingMedGenClient(malformed_concept_meta=True)
+    connector = connector_for(get_source_spec("medgen"), client, ResolvedCredential("medgen"))
+
+    result = connector.query(KnowledgeQuery(gene="GENE1", region="1:1-10", genome_build="hg19"))
+
+    assert result.status == "ok"
+    assert result.records[0]["title"] == "Example syndrome"
+    assert any("MedGen ConceptMeta for UID 100 could not be fully parsed" in warning for warning in result.warnings)
+
+
+def test_medgen_connector_reports_request_failure_without_traceback():
+    client = RecordingMedGenClient(fail_all=True)
+    connector = connector_for(get_source_spec("medgen"), client, ResolvedCredential("medgen"))
+
+    result = connector.query(KnowledgeQuery(gene="GENE1", region="1:1-10", genome_build="hg19"))
+    status = result.to_status(get_source_spec("medgen"))
 
     assert result.status == "failed"
     assert status["error_code"] == "tls_certificate_verification_failed"
@@ -696,6 +845,24 @@ def test_dynamic_builder_merges_clingen_curations_into_workflow_records():
     }
     assert any(record["classification"] == "Definitive" for record in payload["source_records"])
     assert payload["workflow_runs"][0]["record_counts"]["source_records"] == 5
+
+
+def test_dynamic_builder_merges_medgen_conditions_into_workflow_records():
+    payload = build_dynamic_knowledge_base(
+        gene="GENE1",
+        region="1:1-10",
+        genome_build="hg19",
+        selected_sources=["medgen"],
+        request_client=RecordingMedGenClient(),
+        generated_at="2026-06-17T00:00:00Z",
+    )
+
+    assert payload["provider_statuses"][0]["source_key"] == "medgen"
+    assert payload["provider_statuses"][0]["status"] == "ok"
+    assert payload["workflow_source_matrix"]["medgen"] == ["clinical_variant_triage"]
+    assert {record["category"] for record in payload["source_records"]} == {"clinical_condition"}
+    assert any(record["concept_id"] == "C0000001" for record in payload["source_records"])
+    assert payload["workflow_runs"][0]["record_counts"]["source_records"] == 2
 
 
 def test_source_import_parser_normalizes_json_csv_and_discards_raw_columns(tmp_path: Path):

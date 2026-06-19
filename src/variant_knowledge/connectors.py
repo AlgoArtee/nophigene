@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import csv
+import html
 import io
 import os
+import re
 import time
 from typing import Any
+from urllib.parse import quote
+from xml.etree import ElementTree
 
 from .client import KnowledgeRequestError, RequestClient
 from .credentials import ResolvedCredential
@@ -44,6 +48,8 @@ CLINGEN_ACTIONABILITY_URLS = (
 )
 CLINGEN_PRIMARY_TIMEOUT_SECONDS = 20
 CLINGEN_OPTIONAL_TIMEOUT_SECONDS = 8
+MEDGEN_RETMAX = 20
+MEDGEN_GTR_CLINICAL_FILTER = '"medgen gtr tests clinical"[Filter]'
 
 
 def _ncbi_request_params(params: dict[str, Any]) -> dict[str, Any]:
@@ -513,6 +519,223 @@ class ClinVarConnector(BaseConnector):
 
     def _record_url(self, source_id: str) -> str:
         return f"https://www.ncbi.nlm.nih.gov/clinvar/variation/{source_id}/"
+
+
+class MedGenConnector(BaseConnector):
+    """MedGen connector using official NCBI ESearch and ESummary endpoints."""
+
+    def query(self, context: KnowledgeQuery) -> SourceResult:
+        started = time.monotonic()
+        queried_urls: list[str] = []
+        warnings: list[str] = []
+        ordered_ids: list[str] = []
+        query_contexts_by_id: dict[str, list[str]] = {}
+
+        try:
+            for query_context, term in self._search_terms(context):
+                ids = self._esearch_ids(term, queried_urls)
+                for item_id in ids:
+                    contexts = query_contexts_by_id.setdefault(item_id, [])
+                    if query_context not in contexts:
+                        contexts.append(query_context)
+                    if item_id not in ordered_ids:
+                        ordered_ids.append(item_id)
+
+            records = self._esummary_records(
+                ordered_ids,
+                context,
+                query_contexts_by_id,
+                queried_urls,
+                warnings,
+            )
+            if records:
+                message = f"Queried MedGen; {len(records)} condition or phenotype record(s) returned for {context.gene}."
+            else:
+                message = f"Queried MedGen; no MedGen records found for {context.gene}."
+            return SourceResult(
+                source_key=self.spec.key,
+                status="ok",
+                message=message,
+                records=records,
+                warnings=warnings,
+                queried_urls=queried_urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
+        except KnowledgeRequestError as exc:
+            return _request_failure_result(self.spec, exc, queried_urls=queried_urls, started=started)
+
+    def _search_terms(self, context: KnowledgeQuery) -> tuple[tuple[str, str], ...]:
+        gene_term = f"{context.gene}[gene]"
+        return (
+            ("gene", gene_term),
+            ("gtr_clinical_tests", f"{MEDGEN_GTR_CLINICAL_FILTER} AND {gene_term}"),
+        )
+
+    def _esearch_ids(self, term: str, queried_urls: list[str]) -> list[str]:
+        url = f"{NCBI_EUTILS_BASE_URL}/esearch.fcgi"
+        payload = self.client.get_json(
+            url,
+            params=_ncbi_request_params(
+                {
+                    "db": "medgen",
+                    "term": term,
+                    "retmode": "json",
+                    "retmax": MEDGEN_RETMAX,
+                }
+            ),
+            rate_limit_per_second=self.spec.rate_limit_per_second,
+        )
+        queried_urls.append(url)
+        idlist = payload.get("esearchresult", {}).get("idlist", [])
+        return [str(item_id) for item_id in idlist[:MEDGEN_RETMAX]]
+
+    def _esummary_records(
+        self,
+        ids: list[str],
+        context: KnowledgeQuery,
+        query_contexts_by_id: dict[str, list[str]],
+        queried_urls: list[str],
+        warnings: list[str],
+    ) -> list[dict[str, Any]]:
+        if not ids:
+            return []
+        url = f"{NCBI_EUTILS_BASE_URL}/esummary.fcgi"
+        payload = self.client.get_json(
+            url,
+            params=_ncbi_request_params(
+                {
+                    "db": "medgen",
+                    "id": ",".join(ids[:MEDGEN_RETMAX]),
+                    "retmode": "json",
+                }
+            ),
+            rate_limit_per_second=self.spec.rate_limit_per_second,
+        )
+        queried_urls.append(url)
+        result = payload.get("result", {})
+        records: list[dict[str, Any]] = []
+        for item_id in ids[:MEDGEN_RETMAX]:
+            item = result.get(str(item_id), {})
+            if not isinstance(item, dict):
+                continue
+            records.append(self._record_from_summary(item, item_id, context, query_contexts_by_id, warnings))
+        return records
+
+    def _record_from_summary(
+        self,
+        item: dict[str, Any],
+        item_id: str,
+        context: KnowledgeQuery,
+        query_contexts_by_id: dict[str, list[str]],
+        warnings: list[str],
+    ) -> dict[str, Any]:
+        title = self._summary_value(item, "title", "Title") or f"MedGen record {item_id}"
+        concept_id = self._summary_value(item, "conceptid", "concept_id", "ConceptId", "cui")
+        definition = self._summary_value(item, "definition", "Definition")
+        semantic_id = self._summary_value(item, "semanticid", "SemanticId")
+        semantic_type = self._summary_value(item, "semantictype", "SemanticType")
+        modification_date = self._summary_value(item, "modificationdate", "ModificationDate")
+        record_url = self._record_url(concept_id or item_id)
+        meta = self._parse_concept_meta(self._summary_value(item, "conceptmeta", "ConceptMeta"), item_id, warnings)
+        summary = definition or f"MedGen {semantic_type or 'medical genetics'} concept associated with {context.gene}: {title}."
+        return {
+            "category": "clinical_condition",
+            "source": self.spec.name,
+            "source_key": self.spec.key,
+            "source_id": item_id,
+            "gene": context.gene,
+            "medgen_uid": item_id,
+            "concept_id": concept_id,
+            "title": title,
+            "definition": definition,
+            "semantic_id": semantic_id,
+            "semantic_type": semantic_type,
+            "modification_date": modification_date,
+            "summary": summary,
+            "label": title,
+            "url": record_url,
+            "query_contexts": query_contexts_by_id.get(item_id, []),
+            "research_links": self._research_links(context, record_url),
+            **meta,
+        }
+
+    def _parse_concept_meta(self, raw_meta: Any, item_id: str, warnings: list[str]) -> dict[str, Any]:
+        text = html.unescape(_clean_cell(raw_meta))
+        if not text:
+            return {}
+        parsed: dict[str, Any] = {}
+        parsed["hpo_ids"] = sorted({match.upper() for match in re.findall(r"\bHP:\d{7}\b", text, flags=re.IGNORECASE)})
+        parsed["orphanet_ids"] = sorted(
+            {
+                match.lower().replace(":", "_")
+                for match in re.findall(r"\borphanet[:_]\d+\b", text, flags=re.IGNORECASE)
+            }
+        )
+        parsed["omim_ids"] = sorted(
+            {
+                match
+                for match in re.findall(r"\b(?:OMIM|MIM)[:_\s-]*(\d{3,6})\b", text, flags=re.IGNORECASE)
+            }
+        )
+        parsed["related_genes"] = sorted(
+            {
+                match.strip()
+                for match in re.findall(r"<(?:GeneSymbol|Gene|Symbol)>([^<]+)</(?:GeneSymbol|Gene|Symbol)>", text)
+                if match.strip()
+            }
+        )
+        lower = text.lower()
+        if "clinvar" in lower:
+            parsed["has_clinvar"] = True
+        if "gtr" in lower or "genetic testing registry" in lower:
+            parsed["has_gtr"] = True
+        if "<" in text and ">" in text:
+            try:
+                ElementTree.fromstring(f"<root>{text}</root>")
+            except ElementTree.ParseError as exc:
+                warnings.append(f"MedGen ConceptMeta for UID {item_id} could not be fully parsed: {exc}")
+        return {key: value for key, value in parsed.items() if value not in ("", [], {}, False)}
+
+    def _summary_value(self, item: dict[str, Any], *keys: str) -> str:
+        for key in keys:
+            if key in item:
+                value = _clean_cell(item.get(key))
+                if value:
+                    return value
+        requested = {key.lower() for key in keys}
+        for key, value in item.items():
+            if str(key).lower() in requested:
+                cleaned = _clean_cell(value)
+                if cleaned:
+                    return cleaned
+        return ""
+
+    def _research_links(self, context: KnowledgeQuery, record_url: str) -> list[dict[str, str]]:
+        gene_term = f"{context.gene}[gene]"
+        gtr_term = f"{MEDGEN_GTR_CLINICAL_FILTER} AND {gene_term}"
+        return [
+            {
+                "label": f"MedGen records for {context.gene}",
+                "url": self._search_url(gene_term),
+            },
+            {
+                "label": f"MedGen GTR clinical-test records for {context.gene}",
+                "url": self._search_url(gtr_term),
+            },
+            {
+                "label": "MedGen additional descriptions",
+                "url": f"{record_url}#Additional_description",
+            },
+        ]
+
+    def _search_url(self, term: str) -> str:
+        return f"https://www.ncbi.nlm.nih.gov/medgen/?term={quote(term)}"
+
+    def _record_url(self, identifier: str) -> str:
+        clean_identifier = identifier.strip()
+        if not clean_identifier:
+            return self.spec.homepage
+        return f"https://www.ncbi.nlm.nih.gov/medgen/{quote(clean_identifier)}"
 
 
 class EnsemblConnector(BaseConnector):
@@ -1160,6 +1383,7 @@ CONNECTOR_CLASSES = {
     "auth_metadata": AuthMetadataConnector,
     "licensed_metadata": LicensedMetadataConnector,
     "clinvar": ClinVarConnector,
+    "medgen": MedGenConnector,
     "dbsnp": NcbiEutilsConnector,
     "ncbi_gene": NcbiEutilsConnector,
     "pubmed": NcbiEutilsConnector,

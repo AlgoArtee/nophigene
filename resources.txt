@@ -12,6 +12,7 @@ GeneCards	Integrative human-gene knowledgebase combining genomic, transcriptomic
 DISGENET	Gene–disease and variant–disease associations extracted and curated from publications and other databases. Access conditions now include commercial plans.
 ClinVar	Public archive of submitted clinical interpretations for variants associated with inherited disease, cancer phenotypes and drug response.
 ClinGen	Expert assessment of gene–disease validity, dosage sensitivity and variant pathogenicity, plus clinical interpretation standards.
+MedGen	NCBI portal aggregating medical genetics concepts, conditions, phenotypes, clinical features, GTR test links, ClinVar, OMIM, GeneReviews and related gene associations.
 HGMD — Human Gene Mutation Database	Curated published germline variants associated with inherited disease. The current professional version is commercial; a delayed public version also exists.
 dbSNP	NCBI archive of short genetic variants and their identifiers, including SNVs and small insertions/deletions.
 dbVar	NCBI archive for human structural variants, including deletions, duplications, inversions, insertions and complex variants.

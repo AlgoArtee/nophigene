@@ -78,6 +78,10 @@ def test_knowledge_source_endpoints_support_single_and_batch_tests(tmp_path: Pat
     assert any(card["selected"] for card in listing_payload["sources"])
     assert not all(card["selected"] for card in listing_payload["sources"])
     assert next(card for card in listing_payload["sources"] if card["key"] == "clinvar")["selected"] is True
+    medgen_card = next(card for card in listing_payload["sources"] if card["key"] == "medgen")
+    assert medgen_card["selected"] is True
+    assert medgen_card["access_type"] == "open_api"
+    assert medgen_card["ingestion_modes"] == ["official_api", "linkout_only"]
     assert next(card for card in listing_payload["sources"] if card["key"] == "foodb")["selected"] is False
     hgmd_card = next(card for card in listing_payload["sources"] if card["key"] == "hgmd")
     assert hgmd_card["ingestion_modes"] == ["user_export", "linkout_only"]
@@ -121,6 +125,7 @@ def test_knowledge_source_endpoints_support_single_and_batch_tests(tmp_path: Pat
     assert workflow_cards["clinical_variant_triage"]["selected"] is True
     assert workflow_cards["licensed_aggregator_review"]["selected"] is False
     assert "clinvar" in workflow_cards["clinical_variant_triage"]["ordered_source_keys"]
+    assert "medgen" in workflow_cards["clinical_variant_triage"]["ordered_source_keys"]
 
 
 def test_profile_crud_validates_files_and_keeps_id_immutable(tmp_path: Path) -> None:
