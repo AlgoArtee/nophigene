@@ -37,6 +37,8 @@ def _literature_query(query: KnowledgeQuery) -> str:
 
 
 NCBI_EUTILS_BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+NCBI_REFSNP_BASE_URL = "https://api.ncbi.nlm.nih.gov/variation/v0/refsnp"
+NCBI_REFSNP_TIMEOUT_SECONDS = 8
 NCBI_TOOL_NAME = "NophiGeneDynamicKB"
 NLM_CLINICAL_TABLES_VARIANTS_URL = "https://clinicaltables.nlm.nih.gov/api/variants/v4/search"
 CLINGEN_VALIDITY_URL = "https://search.clinicalgenome.org/kb/gene-validity/download"
@@ -47,9 +49,27 @@ CLINGEN_ACTIONABILITY_URLS = (
     ("Pediatric", "https://actionability.clinicalgenome.org/ac/Pediatric/api/summ?flavor=flat"),
 )
 CLINGEN_PRIMARY_TIMEOUT_SECONDS = 20
+CLINGEN_SUMMARY_TIMEOUT_SECONDS = 20
 CLINGEN_OPTIONAL_TIMEOUT_SECONDS = 8
 MEDGEN_RETMAX = 20
 MEDGEN_GTR_CLINICAL_FILTER = '"medgen gtr tests clinical"[Filter]'
+GNOMAD_API_URL = "https://gnomad.broadinstitute.org/api/"
+GNOMAD_DATASET = "gnomad_r4"
+GWAS_CATALOG_API_V2_BASE = "https://www.ebi.ac.uk/gwas/rest/api/v2"
+GWAS_CATALOG_MAX_ASSOCIATIONS = 5
+PGS_CATALOG_REST_BASE = "https://www.pgscatalog.org/rest"
+PGS_CATALOG_MAX_LINKED_SCORES = 5
+PGS_CATALOG_MAX_PERFORMANCE_RECORDS = 3
+IGSR_PORTAL_URL = "https://www.internationalgenome.org/data-portal/"
+IGSR_FTP_BASE = "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp"
+IGSR_PHASE3_RELEASE_URL = f"{IGSR_FTP_BASE}/release/20130502/"
+IGSR_PHASE3_README_URL = f"{IGSR_PHASE3_RELEASE_URL}README_phase3_callset_20150220"
+IGSR_PHASE3_ANNOTATION_README_URL = f"{IGSR_PHASE3_RELEASE_URL}README_vcf_info_annotation.20141104"
+IGSR_HIGH_COVERAGE_URL = f"{IGSR_FTP_BASE}/data_collections/1000G_2504_high_coverage/"
+IGSR_HIGH_COVERAGE_PHASED_URL = f"{IGSR_HIGH_COVERAGE_URL}working/20201028_3202_phased/"
+IGSR_HIGH_COVERAGE_README_URL = f"{IGSR_HIGH_COVERAGE_URL}20190405_1000G_2504_high_cov_README.md"
+UCSC_API_BASE = "https://api.genome.ucsc.edu"
+UCSC_TRACK_MAX_ITEMS = 5
 
 
 def _ncbi_request_params(params: dict[str, Any]) -> dict[str, Any]:
@@ -181,6 +201,7 @@ class NcbiEutilsConnector(BaseConnector):
         term = self._term(context)
         records: list[dict[str, Any]] = []
         urls: list[str] = []
+        warnings: list[str] = []
         try:
             search_url = f"{NCBI_EUTILS_BASE_URL}/esearch.fcgi"
             search = self.client.get_json(
@@ -201,6 +222,9 @@ class NcbiEutilsConnector(BaseConnector):
                 result = summary.get("result", {})
                 for item_id in ids[:5]:
                     item = result.get(str(item_id), {})
+                    if self.spec.connector_kind == "dbsnp":
+                        records.append(self._dbsnp_record(str(item_id), item, context, urls, warnings))
+                        continue
                     title = str(item.get("title") or item.get("name") or item.get("uid") or item_id)
                     records.append(
                         {
@@ -218,11 +242,597 @@ class NcbiEutilsConnector(BaseConnector):
                 status="ok",
                 message=f"Queried NCBI {db}; {len(records)} record(s) returned.",
                 records=records,
+                warnings=warnings,
                 queried_urls=urls,
                 elapsed_ms=_elapsed_ms(started),
             )
         except KnowledgeRequestError as exc:
             return _request_failure_result(self.spec, exc, queried_urls=urls, started=started)
+
+    def _dbsnp_record(
+        self,
+        item_id: str,
+        item: dict[str, Any],
+        context: KnowledgeQuery,
+        urls: list[str],
+        warnings: list[str],
+    ) -> dict[str, Any]:
+        rsid = self._dbsnp_rsid(item_id)
+        esummary_fields = self._dbsnp_esummary_fields(item, item_id)
+        detail_fields = self._dbsnp_refsnp_fields(item_id, context, urls, warnings)
+        fields = self._merge_dbsnp_fields(esummary_fields, detail_fields)
+        fields["rsid"] = fields.get("rsid") or rsid
+        fields["source_id"] = fields.get("source_id") or str(item_id)
+        label = fields["rsid"]
+        record = {
+            "category": self._category(),
+            "source": self.spec.name,
+            "label": label,
+            "summary": self._dbsnp_summary(label, fields),
+            "source_id": str(item_id),
+            "url": self._record_url("snp", str(item_id)),
+            "variant": _first_rsid(context) or label,
+        }
+        record.update(fields)
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _dbsnp_esummary_fields(self, item: dict[str, Any], item_id: str) -> dict[str, Any]:
+        fields: dict[str, Any] = {
+            "rsid": self._dbsnp_rsid(item.get("snp_id") or item.get("uid") or item_id),
+            "source_id": _clean_cell(item.get("snp_id") or item.get("uid") or item_id),
+            "snp_class": _clean_cell(item.get("snp_class")),
+            "chromosome": _clean_cell(item.get("chr")),
+            "chrpos": _clean_cell(item.get("chrpos")),
+            "spdi": _clean_cell(item.get("spdi")),
+            "validated": self._clean_string_list(item.get("validated")),
+            "submitter_handle": _clean_cell(item.get("handle")),
+            "createdate": _clean_cell(item.get("createdate")),
+            "updatedate": _clean_cell(item.get("updatedate")),
+        }
+        if fields["chrpos"] and ":" in fields["chrpos"]:
+            chromosome, position = fields["chrpos"].split(":", 1)
+            fields["chromosome"] = fields["chromosome"] or chromosome
+            fields["position"] = position
+        fields["functional_classes"] = self._split_dbsnp_terms(item.get("fxn_class"))
+        fields["genes"] = self._dbsnp_esummary_genes(item)
+        fields["global_mafs"] = self._dbsnp_global_mafs(item.get("global_mafs"))
+        if fields["global_mafs"]:
+            fields["frequencies"] = list(fields["global_mafs"])
+
+        docsum = self._parse_dbsnp_docsum(_clean_cell(item.get("docsum")))
+        if docsum.get("HGVS"):
+            fields["hgvs"] = self._dedupe_clean(docsum["HGVS"].split(","))
+        if docsum.get("SEQ"):
+            fields["alleles"] = docsum["SEQ"].strip("[]")
+        if docsum.get("GENE"):
+            gene_name, _, gene_id = docsum["GENE"].partition(":")
+            gene_record = {
+                "name": _clean_cell(gene_name),
+                "gene_id": _clean_cell(gene_id),
+            }
+            fields["genes"] = self._dedupe_gene_records([*fields["genes"], gene_record])
+        return {key: value for key, value in fields.items() if value not in ("", [], {}, None)}
+
+    def _dbsnp_refsnp_fields(
+        self,
+        item_id: str,
+        context: KnowledgeQuery,
+        urls: list[str],
+        warnings: list[str],
+    ) -> dict[str, Any]:
+        rsid = self._dbsnp_rsid(item_id)
+        detail_url = f"{NCBI_REFSNP_BASE_URL}/{quote(str(item_id))}"
+        fields: dict[str, Any] = {"refsnp_detail_url": detail_url}
+        try:
+            payload = self.client.get_json(
+                detail_url,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+                timeout=NCBI_REFSNP_TIMEOUT_SECONDS,
+            )
+            urls.append(detail_url)
+        except KnowledgeRequestError:
+            warnings.append(f"Optional dbSNP RefSNP detail lookup failed for {rsid}; ESummary details were still used.")
+            return fields
+
+        if not isinstance(payload, dict):
+            return fields
+        source_id = _clean_cell(payload.get("refsnp_id") or item_id)
+        if source_id:
+            fields["source_id"] = source_id
+            fields["rsid"] = self._dbsnp_rsid(source_id)
+        fields["createdate"] = _clean_cell(payload.get("create_date")) or fields.get("createdate", "")
+        fields["updatedate"] = _clean_cell(payload.get("last_update_date")) or fields.get("updatedate", "")
+
+        snapshot = payload.get("primary_snapshot_data") if isinstance(payload.get("primary_snapshot_data"), dict) else {}
+        fields["variant_type"] = _clean_cell(snapshot.get("variant_type"))
+        fields["mane_select_ids"] = self._clean_string_list(snapshot.get("mane_select_ids"))
+
+        placement = self._dbsnp_primary_placement(snapshot, context)
+        fields.update(self._dbsnp_placement_fields(placement))
+        fields.update(self._dbsnp_annotation_fields(snapshot.get("allele_annotations")))
+
+        support = self._dbsnp_support(snapshot.get("support"))
+        if support:
+            fields["support"] = support
+            fields.setdefault("submitter_handle", support[0])
+
+        merged_rsids = self._dbsnp_merged_rsids(payload.get("dbsnp1_merges"))
+        if merged_rsids:
+            fields["merged_rsids"] = merged_rsids
+        citations = payload.get("citations")
+        if isinstance(citations, list):
+            fields["citation_count"] = len(citations)
+        return {key: value for key, value in fields.items() if value not in ("", [], {}, None)}
+
+    def _dbsnp_primary_placement(self, snapshot: dict[str, Any], context: KnowledgeQuery) -> dict[str, Any]:
+        placements = snapshot.get("placements_with_allele")
+        if not isinstance(placements, list):
+            return {}
+        target_assembly = "GRCh38" if context.genome_build == "hg38" else "GRCh37"
+        first: dict[str, Any] = {}
+        ptlp: dict[str, Any] = {}
+        for placement in placements:
+            if not isinstance(placement, dict):
+                continue
+            first = first or placement
+            assemblies = self._dbsnp_placement_assemblies(placement)
+            if any(assembly.startswith(target_assembly) for assembly in assemblies):
+                return placement
+            annot = placement.get("placement_annot") if isinstance(placement.get("placement_annot"), dict) else {}
+            if annot.get("is_ptlp") or placement.get("is_ptlp"):
+                ptlp = ptlp or placement
+        return ptlp or first
+
+    def _dbsnp_placement_assemblies(self, placement: dict[str, Any]) -> list[str]:
+        annot = placement.get("placement_annot") if isinstance(placement.get("placement_annot"), dict) else {}
+        traits = annot.get("seq_id_traits_by_assembly")
+        assemblies: list[str] = []
+        if isinstance(traits, list):
+            for trait in traits:
+                if isinstance(trait, dict):
+                    assemblies.extend(self._clean_string_list(trait.get("assembly_name")))
+        assemblies.extend(self._clean_string_list(placement.get("assembly_name")))
+        return self._dedupe_clean(assemblies)
+
+    def _dbsnp_placement_fields(self, placement: dict[str, Any]) -> dict[str, Any]:
+        if not placement:
+            return {}
+        fields: dict[str, Any] = {}
+        assemblies = self._dbsnp_placement_assemblies(placement)
+        if assemblies:
+            fields["assembly"] = assemblies[0]
+        hgvs: list[str] = []
+        spdis: list[str] = []
+        alleles: list[str] = []
+        placement_alleles = placement.get("alleles")
+        if isinstance(placement_alleles, list):
+            for item in placement_alleles:
+                if not isinstance(item, dict):
+                    continue
+                hgvs.extend(self._clean_string_list(item.get("hgvs")))
+                spdi = self._dbsnp_spdi_dict(item)
+                spdi_text = self._dbsnp_spdi_text(spdi)
+                if spdi_text:
+                    spdis.append(spdi_text)
+                allele_text = self._dbsnp_allele_text(spdi)
+                if allele_text:
+                    alleles.append(allele_text)
+        if hgvs:
+            fields["hgvs"] = self._dedupe_clean(hgvs)[:6]
+        if spdis:
+            fields["spdi"] = self._dedupe_clean(spdis)[0]
+            fields["spdis"] = self._dedupe_clean(spdis)[:6]
+        if alleles:
+            fields["alleles"] = "/".join(self._dedupe_clean(alleles)[:4])
+        return fields
+
+    def _dbsnp_annotation_fields(self, annotations: Any) -> dict[str, Any]:
+        if not isinstance(annotations, list):
+            return {}
+        genes: list[dict[str, str]] = []
+        transcripts: list[dict[str, Any]] = []
+        proteins: list[dict[str, Any]] = []
+        sequence_ontology: list[str] = []
+        hgvs: list[str] = []
+        frequencies: list[dict[str, str]] = []
+        clinical: list[str] = []
+
+        for annotation in annotations:
+            if not isinstance(annotation, dict):
+                continue
+            frequencies.extend(self._dbsnp_frequency_rows(annotation.get("frequency")))
+            clinical.extend(self._dbsnp_clinical_terms(annotation.get("clinical")))
+            assembly_annotations = annotation.get("assembly_annotation")
+            if not isinstance(assembly_annotations, list):
+                continue
+            for assembly_annotation in assembly_annotations:
+                if not isinstance(assembly_annotation, dict):
+                    continue
+                sequence_ontology.extend(self._dbsnp_sequence_ontology_terms(assembly_annotation))
+                for gene in assembly_annotation.get("genes") or []:
+                    if not isinstance(gene, dict):
+                        continue
+                    gene_record = {
+                        "name": _clean_cell(gene.get("name") or gene.get("symbol")),
+                        "gene_id": _clean_cell(gene.get("id") or gene.get("gene_id")),
+                    }
+                    genes.append(gene_record)
+                    for rna in gene.get("rnas") or []:
+                        if not isinstance(rna, dict):
+                            continue
+                        rna_hgvs = self._dbsnp_hgvs_values(rna)
+                        rna_so = self._dbsnp_sequence_ontology_terms(rna)
+                        hgvs.extend(rna_hgvs)
+                        sequence_ontology.extend(rna_so)
+                        transcript = {
+                            "accession": _clean_cell(rna.get("accession_version") or rna.get("id")),
+                            "hgvs": rna_hgvs[:3],
+                            "sequence_ontology": rna_so,
+                        }
+                        transcripts.append({key: value for key, value in transcript.items() if value not in ("", [], None)})
+                        protein = rna.get("protein") or rna.get("product")
+                        if isinstance(protein, dict):
+                            protein_hgvs = self._dbsnp_hgvs_values(protein)
+                            protein_so = self._dbsnp_sequence_ontology_terms(protein)
+                            hgvs.extend(protein_hgvs)
+                            sequence_ontology.extend(protein_so)
+                            protein_record = {
+                                "accession": _clean_cell(protein.get("accession_version") or protein.get("id")),
+                                "hgvs": protein_hgvs[:3],
+                                "sequence_ontology": protein_so,
+                            }
+                            proteins.append(
+                                {key: value for key, value in protein_record.items() if value not in ("", [], None)}
+                            )
+
+        fields: dict[str, Any] = {
+            "genes": self._dedupe_gene_records(genes),
+            "transcripts": self._dedupe_record_list(transcripts, ("accession", "hgvs")),
+            "proteins": self._dedupe_record_list(proteins, ("accession", "hgvs")),
+            "sequence_ontology": self._dedupe_clean(sequence_ontology),
+            "hgvs": self._dedupe_clean(hgvs)[:8],
+            "frequencies": self._dedupe_record_list(frequencies, ("study", "allele_count", "total_count", "frequency")),
+            "clinical_significance": self._dedupe_clean(clinical),
+        }
+        return {key: value for key, value in fields.items() if value not in ("", [], {}, None)}
+
+    def _dbsnp_summary(self, label: str, fields: dict[str, Any]) -> str:
+        coordinate = _clean_cell(fields.get("chrpos"))
+        if not coordinate and fields.get("chromosome") and fields.get("position"):
+            coordinate = f"{fields['chromosome']}:{fields['position']}"
+        variant_type = self._dbsnp_variant_type_text(fields.get("variant_type") or fields.get("snp_class"))
+        main = variant_type or "dbSNP variant"
+        if coordinate:
+            main = f"{main} at {coordinate}"
+        spdi = _clean_cell(fields.get("spdi"))
+        if spdi:
+            main = f"{main} ({spdi})"
+
+        gene_text = ", ".join(self._dbsnp_gene_names(fields.get("genes"))[:3])
+        consequences = self._dedupe_clean(
+            [
+                *self._clean_string_list(fields.get("sequence_ontology")),
+                *self._clean_string_list(fields.get("functional_classes")),
+            ]
+        )
+        if gene_text and consequences:
+            main = f"{main}; {gene_text} {' / '.join(consequences[:4])}"
+        elif gene_text:
+            main = f"{main}; gene {gene_text}"
+        elif consequences:
+            main = f"{main}; {' / '.join(consequences[:4])}"
+
+        details: list[str] = []
+        hgvs = self._clean_string_list(fields.get("hgvs"))
+        if hgvs:
+            details.append(f"HGVS {', '.join(hgvs[:3])}")
+        frequency_text = self._dbsnp_frequency_summary(fields.get("frequencies") or fields.get("global_mafs"))
+        if frequency_text:
+            details.append(f"frequency {frequency_text}")
+        clinical = self._clean_string_list(fields.get("clinical_significance"))
+        if clinical:
+            details.append(f"clinical significance: {', '.join(clinical[:3])}")
+        validated = self._clean_string_list(fields.get("validated"))
+        if validated:
+            details.append(f"validated {', '.join(validated[:3])}")
+        submitter = _clean_cell(fields.get("submitter_handle"))
+        if submitter:
+            details.append(f"submitted by {submitter}")
+        suffix = f"; {'; '.join(details)}" if details else ""
+        return f"{label}: {main}{suffix}."
+
+    def _merge_dbsnp_fields(self, base: dict[str, Any], enrichment: dict[str, Any]) -> dict[str, Any]:
+        merged = dict(base)
+        for key, value in enrichment.items():
+            if value in ("", [], {}, None):
+                continue
+            if key == "frequencies" and isinstance(value, list) and isinstance(merged.get(key), list):
+                merged[key] = self._dedupe_record_list(
+                    [*value, *merged[key]],
+                    ("study", "allele", "allele_count", "total_count", "frequency"),
+                )
+            elif isinstance(value, list) and isinstance(merged.get(key), list):
+                if value and all(isinstance(item, dict) for item in value):
+                    merged[key] = self._dedupe_record_list([*merged[key], *value], ("name", "accession", "study", "hgvs"))
+                else:
+                    merged[key] = self._dedupe_clean([*merged[key], *value])
+            elif key == "genes" and isinstance(value, list):
+                merged[key] = self._dedupe_gene_records([*merged.get(key, []), *value])
+            elif key == "hgvs" and isinstance(value, list) and isinstance(merged.get(key), list):
+                merged[key] = self._dedupe_clean([*value, *merged[key]])[:8]
+            else:
+                merged[key] = value
+        return merged
+
+    def _dbsnp_esummary_genes(self, item: dict[str, Any]) -> list[dict[str, str]]:
+        genes: list[dict[str, str]] = []
+        raw_genes = item.get("genes")
+        if isinstance(raw_genes, list):
+            for gene in raw_genes:
+                if not isinstance(gene, dict):
+                    continue
+                genes.append(
+                    {
+                        "name": _clean_cell(gene.get("name") or gene.get("symbol")),
+                        "gene_id": _clean_cell(gene.get("gene_id") or gene.get("id")),
+                    }
+                )
+        return self._dedupe_gene_records(genes)
+
+    def _dbsnp_global_mafs(self, values: Any) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "study": _clean_cell(value.get("study") or value.get("study_name")),
+                "frequency": _clean_cell(value.get("freq") or value.get("frequency")),
+            }
+            if row["study"] or row["frequency"]:
+                rows.append({key: item for key, item in row.items() if item})
+        return self._dedupe_record_list(rows, ("study", "frequency"))
+
+    def _dbsnp_frequency_rows(self, values: Any) -> list[dict[str, str]]:
+        if isinstance(values, dict):
+            values = [values]
+        if not isinstance(values, list):
+            return []
+        rows: list[dict[str, str]] = []
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            study_value = value.get("study")
+            if isinstance(study_value, dict):
+                study = _clean_cell(study_value.get("name") or study_value.get("study_name"))
+            else:
+                study = _clean_cell(value.get("study_name") or study_value or value.get("source"))
+            row = {
+                "study": study,
+                "allele": _clean_cell(value.get("allele") or value.get("observation")),
+                "allele_count": _clean_cell(value.get("allele_count") or value.get("local_obs_count") or value.get("count")),
+                "total_count": _clean_cell(
+                    value.get("total_count") or value.get("local_allele_count") or value.get("allele_total")
+                ),
+                "frequency": _clean_cell(value.get("frequency") or value.get("freq") or value.get("allele_frequency")),
+            }
+            cleaned = {key: item for key, item in row.items() if item}
+            if cleaned:
+                rows.append(cleaned)
+        return self._dedupe_record_list(rows, ("study", "allele", "allele_count", "total_count", "frequency"))
+
+    def _dbsnp_frequency_summary(self, values: Any) -> str:
+        rows = self._dbsnp_frequency_rows(values)
+        if not rows and isinstance(values, list):
+            rows = [row for row in values if isinstance(row, dict)]
+        if not rows:
+            return ""
+        row = rows[0]
+        study = _clean_cell(row.get("study"))
+        allele_count = _clean_cell(row.get("allele_count"))
+        total_count = _clean_cell(row.get("total_count"))
+        frequency = _clean_cell(row.get("frequency"))
+        allele = _clean_cell(row.get("allele"))
+        prefix = f"{study} " if study else ""
+        if allele_count and total_count:
+            text = f"{prefix}{allele_count}/{total_count}"
+        elif frequency:
+            text = f"{prefix}{frequency}"
+        else:
+            text = study
+        if allele and text:
+            text = f"{text} allele {allele}"
+        return text.strip()
+
+    def _dbsnp_clinical_terms(self, values: Any) -> list[str]:
+        if isinstance(values, dict):
+            values = [values]
+        if not isinstance(values, list):
+            return []
+        terms: list[str] = []
+        for value in values:
+            if isinstance(value, dict):
+                for key in ("clinical_significance", "significance", "review_status", "trait", "disease_names"):
+                    terms.extend(self._clean_string_list(value.get(key)))
+            else:
+                terms.extend(self._clean_string_list(value))
+        return self._dedupe_clean(terms)
+
+    def _dbsnp_sequence_ontology_terms(self, value: Any) -> list[str]:
+        terms: list[str] = []
+        if isinstance(value, list):
+            for item in value:
+                terms.extend(self._dbsnp_sequence_ontology_terms(item))
+        elif isinstance(value, dict):
+            name = _clean_cell(value.get("name") or value.get("term") or value.get("so_term"))
+            accession = _clean_cell(value.get("accession") or value.get("id"))
+            if name and (name.endswith("_variant") or accession.upper().startswith("SO:")):
+                terms.append(name)
+            for key, child in value.items():
+                if key in {"sequence_ontology", "so_terms", "genes", "rnas", "protein", "product", "assembly_annotation"}:
+                    terms.extend(self._dbsnp_sequence_ontology_terms(child))
+        return self._dedupe_clean(terms)
+
+    def _dbsnp_hgvs_values(self, value: Any) -> list[str]:
+        hgvs: list[str] = []
+        if isinstance(value, list):
+            for item in value:
+                hgvs.extend(self._dbsnp_hgvs_values(item))
+        elif isinstance(value, dict):
+            for key, item in value.items():
+                if key.lower().startswith("hgvs"):
+                    hgvs.extend(self._clean_string_list(item))
+                elif key in {"protein", "product", "rnas", "genes", "assembly_annotation"}:
+                    hgvs.extend(self._dbsnp_hgvs_values(item))
+        return self._dedupe_clean(hgvs)
+
+    def _dbsnp_spdi_dict(self, item: dict[str, Any]) -> dict[str, Any]:
+        allele = item.get("allele") if isinstance(item.get("allele"), dict) else {}
+        spdi = allele.get("spdi") if isinstance(allele.get("spdi"), dict) else item.get("spdi")
+        return spdi if isinstance(spdi, dict) else {}
+
+    def _dbsnp_spdi_text(self, spdi: dict[str, Any]) -> str:
+        if not spdi:
+            return ""
+        parts = [
+            _clean_cell(spdi.get("seq_id")),
+            _clean_cell(spdi.get("position")),
+            _clean_cell(spdi.get("deleted_sequence")),
+            _clean_cell(spdi.get("inserted_sequence")),
+        ]
+        if not parts[0] or not parts[1]:
+            return ""
+        return ":".join(parts)
+
+    def _dbsnp_allele_text(self, spdi: dict[str, Any]) -> str:
+        deleted = _clean_cell(spdi.get("deleted_sequence"))
+        inserted = _clean_cell(spdi.get("inserted_sequence"))
+        if deleted and inserted:
+            return f"{deleted}>{inserted}"
+        if deleted and inserted == "":
+            return f"{deleted}>deletion"
+        if inserted:
+            return f"insertion {inserted}"
+        return ""
+
+    def _dbsnp_support(self, value: Any) -> list[str]:
+        handles: list[str] = []
+        if isinstance(value, list):
+            for item in value:
+                handles.extend(self._dbsnp_support(item))
+        elif isinstance(value, dict):
+            for key, item in value.items():
+                if "handle" in str(key).lower() or "submitter" in str(key).lower():
+                    handles.extend(self._clean_string_list(item))
+                elif isinstance(item, (dict, list)):
+                    handles.extend(self._dbsnp_support(item))
+        return self._dedupe_clean(handles)
+
+    def _dbsnp_merged_rsids(self, values: Any) -> list[str]:
+        if not isinstance(values, list):
+            return []
+        rsids: list[str] = []
+        for value in values:
+            if isinstance(value, dict):
+                rsids.extend(
+                    self._dbsnp_rsid(item)
+                    for item in (
+                        value.get("merged_rsid"),
+                        value.get("merged_refsnp_id"),
+                        value.get("rsid"),
+                        value.get("refsnp_id"),
+                    )
+                    if _clean_cell(item)
+                )
+        return self._dedupe_clean(rsids)
+
+    def _parse_dbsnp_docsum(self, docsum: str) -> dict[str, str]:
+        if not docsum:
+            return {}
+        fields: dict[str, str] = {}
+        for match in re.finditer(r"(HGVS|SEQ|LEN|GENE)=([^|]+)", docsum):
+            fields[match.group(1)] = match.group(2).strip()
+        return fields
+
+    def _split_dbsnp_terms(self, value: Any) -> list[str]:
+        terms: list[str] = []
+        for item in self._clean_string_list(value):
+            terms.extend(part.strip() for part in re.split(r"[,;]", item) if part.strip())
+        return self._dedupe_clean(terms)
+
+    def _dbsnp_gene_names(self, values: Any) -> list[str]:
+        names: list[str] = []
+        if isinstance(values, list):
+            for value in values:
+                if isinstance(value, dict):
+                    names.append(_clean_cell(value.get("name") or value.get("symbol")))
+                else:
+                    names.append(_clean_cell(value))
+        return self._dedupe_clean(names)
+
+    def _dbsnp_variant_type_text(self, value: Any) -> str:
+        text = _clean_cell(value)
+        lookup = {
+            "del": "deletion",
+            "ins": "insertion",
+            "mnv": "multi-nucleotide variant",
+            "snv": "SNV",
+            "snp": "SNP",
+        }
+        return lookup.get(text.lower(), text)
+
+    def _dbsnp_rsid(self, value: Any) -> str:
+        text = _clean_cell(value)
+        if not text:
+            return ""
+        return text if text.lower().startswith("rs") else f"rs{text}"
+
+    def _clean_string_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            values = re.split(r"[,;]", values)
+        elif not isinstance(values, list):
+            values = [values]
+        return self._dedupe_clean(_clean_cell(value) for value in values)
+
+    def _dedupe_clean(self, values: Any) -> list[str]:
+        seen: set[str] = set()
+        cleaned: list[str] = []
+        for value in values or []:
+            text = _clean_cell(value)
+            if not text:
+                continue
+            key = text.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            cleaned.append(text)
+        return cleaned
+
+    def _dedupe_gene_records(self, records: list[dict[str, str]]) -> list[dict[str, str]]:
+        return self._dedupe_record_list(
+            [{key: value for key, value in record.items() if value} for record in records],
+            ("name", "gene_id"),
+        )
+
+    def _dedupe_record_list(self, records: list[dict[str, Any]], keys: tuple[str, ...]) -> list[dict[str, Any]]:
+        seen: set[tuple[str, ...]] = set()
+        deduped: list[dict[str, Any]] = []
+        for record in records:
+            if not isinstance(record, dict):
+                continue
+            cleaned = {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+            if not cleaned:
+                continue
+            marker = tuple(_clean_cell(cleaned.get(key)).casefold() for key in keys)
+            if marker in seen:
+                continue
+            seen.add(marker)
+            deduped.append(cleaned)
+        return deduped
 
     def _term(self, context: KnowledgeQuery) -> str:
         rsid = _first_rsid(context)
@@ -744,9 +1354,11 @@ class EnsemblConnector(BaseConnector):
     def query(self, context: KnowledgeQuery) -> SourceResult:
         started = time.monotonic()
         server = "https://rest.ensembl.org" if context.genome_build == "hg38" else "https://grch37.rest.ensembl.org"
-        headers = {"Content-Type": "application/json"}
+        assembly_name = "GRCh38" if context.genome_build == "hg38" else "GRCh37"
+        headers = {"Accept": "application/json", "Content-Type": "application/json"}
         urls: list[str] = []
         records: list[dict[str, Any]] = []
+        warnings: list[str] = []
         try:
             lookup_url = f"{server}/lookup/symbol/homo_sapiens/{context.gene}"
             gene_payload = self.client.get_json(lookup_url, params={"expand": 1}, headers=headers)
@@ -756,7 +1368,7 @@ class EnsemblConnector(BaseConnector):
                     "category": "gene_annotation",
                     "source": self.spec.name,
                     "label": f"Ensembl {context.gene}",
-                    "summary": f"{context.gene} resolved to {gene_payload.get('seq_region_name')}:{gene_payload.get('start')}-{gene_payload.get('end')}.",
+                    "summary": self._gene_summary(context, gene_payload, assembly_name),
                     "source_id": gene_payload.get("id"),
                     "url": f"https://www.ensembl.org/Homo_sapiens/Gene/Summary?g={gene_payload.get('id')}",
                 }
@@ -764,52 +1376,1071 @@ class EnsemblConnector(BaseConnector):
             variant = _first_variant(context)
             if variant is not None:
                 region = f"{variant.chrom.removeprefix('chr')}:{variant.pos}-{variant.pos}"
-                overlap_url = f"{server}/overlap/region/human/{region}"
+                overlap_url = f"{server}/overlap/region/homo_sapiens/{region}"
                 overlap = self.client.get_json(overlap_url, params={"feature": "variation"}, headers=headers)
                 urls.append(overlap_url)
-                for item in overlap[:5] if isinstance(overlap, list) else []:
+                vep_payload = self._vep_payload(context, variant, server, headers, urls, warnings)
+                for item in self._dedupe_overlap_items(overlap)[:5]:
                     records.append(
-                        {
-                            "category": "variant_annotation",
-                            "source": self.spec.name,
-                            "label": str(item.get("id") or variant.label),
-                            "summary": str(item.get("consequence_type") or item.get("source") or "Ensembl variation overlap"),
-                            "source_id": item.get("id"),
-                            "url": f"https://www.ensembl.org/Homo_sapiens/Variation/Explore?v={item.get('id')}",
-                            "variant": variant.label,
-                        }
+                        self._variant_record(
+                            context,
+                            variant,
+                            item,
+                            server=server,
+                            headers=headers,
+                            urls=urls,
+                            warnings=warnings,
+                            assembly_name=assembly_name,
+                            vep_payload=vep_payload,
+                        )
                     )
-            return SourceResult(self.spec.key, "ok", f"Queried Ensembl; {len(records)} record(s).", records, queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                f"Queried Ensembl; {len(records)} record(s).",
+                records,
+                warnings=warnings,
+                queried_urls=urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
         except KnowledgeRequestError as exc:
             return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+
+    def _gene_summary(self, context: KnowledgeQuery, gene_payload: dict[str, Any], assembly_name: str) -> str:
+        region = f"{gene_payload.get('seq_region_name')}:{gene_payload.get('start')}-{gene_payload.get('end')}"
+        details = [
+            _clean_cell(gene_payload.get("id")),
+            _clean_cell(gene_payload.get("canonical_transcript")),
+            _clean_cell(gene_payload.get("biotype")),
+        ]
+        detail_text = "; ".join(detail for detail in details if detail)
+        if detail_text:
+            return f"{context.gene} resolved on {assembly_name} to {region} ({detail_text})."
+        return f"{context.gene} resolved on {assembly_name} to {region}."
+
+    def _vep_payload(
+        self,
+        context: KnowledgeQuery,
+        variant: Any,
+        server: str,
+        headers: dict[str, str],
+        urls: list[str],
+        warnings: list[str],
+    ) -> list[dict[str, Any]]:
+        if not self._is_simple_snv(variant):
+            return []
+        chrom = variant.chrom.removeprefix("chr")
+        vep_url = f"{server}/vep/homo_sapiens/region/{chrom}:{variant.pos}:{variant.pos}/{quote(variant.alt)}"
+        try:
+            payload = self.client.get_json(
+                vep_url,
+                params={"canonical": 1, "numbers": 1, "variant_class": 1},
+                headers=headers,
+            )
+            urls.append(vep_url)
+            return payload if isinstance(payload, list) else []
+        except KnowledgeRequestError as exc:
+            warnings.append(f"Optional Ensembl VEP annotation failed for {variant.label}; overlap details were still used.")
+            return []
+
+    def _variant_record(
+        self,
+        context: KnowledgeQuery,
+        variant: Any,
+        overlap_item: dict[str, Any],
+        *,
+        server: str,
+        headers: dict[str, str],
+        urls: list[str],
+        warnings: list[str],
+        assembly_name: str,
+        vep_payload: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        source_id = _clean_cell(overlap_item.get("id"))
+        variation_payload = self._variation_payload(source_id, variant, server, headers, urls, warnings)
+        vep_record = self._matching_vep_record(source_id, vep_payload)
+        transcript_consequence = self._canonical_transcript_consequence(context, vep_record)
+        colocated_variant = self._matching_colocated_variant(source_id, vep_record)
+
+        location = self._variant_location(variation_payload, overlap_item, assembly_name)
+        alleles = self._variant_alleles(variation_payload, overlap_item, assembly_name)
+        consequence = _clean_cell(
+            (vep_record or {}).get("most_severe_consequence")
+            or variation_payload.get("most_severe_consequence")
+            or overlap_item.get("consequence_type")
+        )
+        variant_class = _clean_cell(
+            variation_payload.get("var_class")
+            or (vep_record or {}).get("variant_class")
+            or overlap_item.get("feature_type")
+        )
+        evidence = self._clean_string_list(variation_payload.get("evidence"))
+        clinical_significance = self._clean_string_list(
+            variation_payload.get("clinical_significance") or overlap_item.get("clinical_significance")
+        )
+        synonyms = self._clean_string_list(variation_payload.get("synonyms"))
+        phenotypes = self._phenotype_summaries(variation_payload.get("phenotypes"))
+        label = source_id or variant.label
+        record = {
+            "category": "variant_annotation",
+            "source": self.spec.name,
+            "label": label,
+            "summary": self._variant_summary(
+                context=context,
+                variant=variant,
+                label=label,
+                location=location,
+                alleles=alleles,
+                consequence=consequence,
+                variant_class=variant_class,
+                clinical_significance=clinical_significance,
+                evidence=evidence,
+                source=_clean_cell(overlap_item.get("source") or variation_payload.get("source")),
+                transcript_consequence=transcript_consequence,
+                phenotypes=phenotypes,
+                assembly_name=assembly_name,
+            ),
+            "source_id": source_id,
+            "url": f"https://www.ensembl.org/Homo_sapiens/Variation/Explore?v={quote(label)}",
+            "variant": variant.label,
+            "rsid": source_id if source_id.lower().startswith("rs") else "",
+            "location": location,
+            "alleles": alleles,
+            "consequence": consequence,
+            "variant_class": variant_class,
+            "clinical_significance": clinical_significance,
+            "evidence": evidence,
+            "synonyms": synonyms,
+            "phenotypes": phenotypes,
+            "minor_allele": _clean_cell(variation_payload.get("minor_allele")),
+            "maf": variation_payload.get("MAF"),
+            "transcript_consequence": transcript_consequence,
+            "colocated_variant": colocated_variant,
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], None)}
+
+    def _variation_payload(
+        self,
+        source_id: str,
+        variant: Any,
+        server: str,
+        headers: dict[str, str],
+        urls: list[str],
+        warnings: list[str],
+    ) -> dict[str, Any]:
+        if not source_id:
+            return {}
+        variation_url = f"{server}/variation/homo_sapiens/{quote(source_id)}"
+        try:
+            payload = self.client.get_json(variation_url, params={"phenotypes": 1}, headers=headers)
+            urls.append(variation_url)
+            return payload if isinstance(payload, dict) else {}
+        except KnowledgeRequestError:
+            warnings.append(f"Optional Ensembl variation detail failed for {source_id}; overlap details were still used.")
+            return {}
+
+    def _dedupe_overlap_items(self, overlap: Any) -> list[dict[str, Any]]:
+        if not isinstance(overlap, list):
+            return []
+        seen: set[tuple[str, str, str, str]] = set()
+        deduped: list[dict[str, Any]] = []
+        for item in overlap:
+            if not isinstance(item, dict):
+                continue
+            key = (
+                _clean_cell(item.get("id")),
+                _clean_cell(item.get("seq_region_name")),
+                _clean_cell(item.get("start")),
+                _clean_cell(item.get("end")),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(item)
+        return deduped
+
+    def _is_simple_snv(self, variant: Any) -> bool:
+        return (
+            len(str(getattr(variant, "ref", "") or "")) == 1
+            and len(str(getattr(variant, "alt", "") or "")) == 1
+            and str(getattr(variant, "ref", "")).upper() in {"A", "C", "G", "T"}
+            and str(getattr(variant, "alt", "")).upper() in {"A", "C", "G", "T"}
+        )
+
+    def _variant_location(self, variation_payload: dict[str, Any], overlap_item: dict[str, Any], assembly_name: str) -> str:
+        for mapping in variation_payload.get("mappings") or []:
+            if not isinstance(mapping, dict):
+                continue
+            if _clean_cell(mapping.get("assembly_name")) == assembly_name and _clean_cell(mapping.get("location")):
+                return f"{assembly_name} {_clean_cell(mapping.get('location'))}"
+        seq_region = _clean_cell(overlap_item.get("seq_region_name"))
+        start = _clean_cell(overlap_item.get("start"))
+        end = _clean_cell(overlap_item.get("end"))
+        if seq_region and start and end:
+            return f"{assembly_name} {seq_region}:{start}-{end}"
+        return ""
+
+    def _variant_alleles(self, variation_payload: dict[str, Any], overlap_item: dict[str, Any], assembly_name: str) -> str:
+        for mapping in variation_payload.get("mappings") or []:
+            if not isinstance(mapping, dict):
+                continue
+            if _clean_cell(mapping.get("assembly_name")) == assembly_name and _clean_cell(mapping.get("allele_string")):
+                return _clean_cell(mapping.get("allele_string"))
+        alleles = self._clean_string_list(overlap_item.get("alleles"))
+        return "/".join(alleles)
+
+    def _matching_vep_record(self, source_id: str, vep_payload: list[dict[str, Any]]) -> dict[str, Any]:
+        for record in vep_payload:
+            if not isinstance(record, dict):
+                continue
+            colocated = record.get("colocated_variants") or []
+            if source_id and any(_clean_cell(item.get("id")) == source_id for item in colocated if isinstance(item, dict)):
+                return record
+        for record in vep_payload:
+            if isinstance(record, dict):
+                return record
+        return {}
+
+    def _matching_colocated_variant(self, source_id: str, vep_record: dict[str, Any]) -> dict[str, Any]:
+        for item in vep_record.get("colocated_variants") or []:
+            if not isinstance(item, dict):
+                continue
+            if source_id and _clean_cell(item.get("id")) == source_id:
+                return item
+        colocated = vep_record.get("colocated_variants") or []
+        return colocated[0] if colocated and isinstance(colocated[0], dict) else {}
+
+    def _canonical_transcript_consequence(self, context: KnowledgeQuery, vep_record: dict[str, Any]) -> dict[str, Any]:
+        consequences = [item for item in vep_record.get("transcript_consequences") or [] if isinstance(item, dict)]
+        if not consequences:
+            return {}
+        gene = context.gene.casefold()
+        for item in consequences:
+            if item.get("canonical") == 1 and _clean_cell(item.get("gene_symbol")).casefold() == gene:
+                return item
+        for item in consequences:
+            if _clean_cell(item.get("gene_symbol")).casefold() == gene:
+                return item
+        return consequences[0]
+
+    def _phenotype_summaries(self, phenotypes: Any) -> list[dict[str, str]]:
+        summaries: list[dict[str, str]] = []
+        if not isinstance(phenotypes, list):
+            return summaries
+        for item in phenotypes[:3]:
+            if not isinstance(item, dict):
+                continue
+            summary = {
+                "trait": _clean_cell(item.get("trait")),
+                "source": _clean_cell(item.get("source")),
+                "pvalue": _clean_cell(item.get("pvalue")),
+                "risk_allele": _clean_cell(item.get("risk_allele")),
+                "study": _clean_cell(item.get("study")),
+            }
+            summaries.append({key: value for key, value in summary.items() if value})
+        return summaries
+
+    def _clean_string_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            return [values] if values.strip() else []
+        if not isinstance(values, list):
+            return [_clean_cell(values)] if _clean_cell(values) else []
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _variant_summary(
+        self,
+        *,
+        context: KnowledgeQuery,
+        variant: Any,
+        label: str,
+        location: str,
+        alleles: str,
+        consequence: str,
+        variant_class: str,
+        clinical_significance: list[str],
+        evidence: list[str],
+        source: str,
+        transcript_consequence: dict[str, Any],
+        phenotypes: list[dict[str, str]],
+        assembly_name: str,
+    ) -> str:
+        identity = label
+        if alleles and alleles not in identity:
+            identity = f"{identity} ({alleles})"
+        if location:
+            identity = f"{identity} at {location}"
+
+        main = consequence or "Ensembl variation overlap"
+        transcript_text = self._transcript_summary(context, transcript_consequence)
+        if transcript_text:
+            main = f"{main} {transcript_text}"
+
+        details: list[str] = []
+        if variant_class:
+            details.append(f"variant class {variant_class}")
+        if clinical_significance:
+            details.append(f"clinical significance: {', '.join(clinical_significance[:3])}")
+        if evidence:
+            details.append(f"evidence: {', '.join(evidence[:4])}")
+        if phenotypes:
+            phenotype_text = self._phenotype_summary_text(phenotypes)
+            if phenotype_text:
+                details.append(f"phenotype annotations: {phenotype_text}")
+        if source:
+            details.append(f"source {source}")
+        details.append(f"input variant {variant.label}")
+
+        suffix = f"; {'; '.join(details)}" if details else ""
+        return f"{identity}: {main}{suffix}."
+
+    def _transcript_summary(self, context: KnowledgeQuery, transcript_consequence: dict[str, Any]) -> str:
+        if not transcript_consequence:
+            return ""
+        gene_symbol = _clean_cell(transcript_consequence.get("gene_symbol")) or context.gene
+        transcript_id = _clean_cell(transcript_consequence.get("transcript_id"))
+        canonical = " canonical" if transcript_consequence.get("canonical") == 1 else ""
+        parts = [f"in {gene_symbol}{canonical} transcript {transcript_id}".strip()]
+        exon = _clean_cell(transcript_consequence.get("exon"))
+        if exon:
+            parts.append(f"exon {exon}")
+        cdna_start = _clean_cell(transcript_consequence.get("cdna_start"))
+        cdna_end = _clean_cell(transcript_consequence.get("cdna_end"))
+        if cdna_start and cdna_end:
+            cdna = cdna_start if cdna_start == cdna_end else f"{cdna_start}-{cdna_end}"
+            parts.append(f"cDNA position {cdna}")
+        impact = _clean_cell(transcript_consequence.get("impact"))
+        if impact:
+            parts.append(f"impact {impact}")
+        return ", ".join(part for part in parts if part)
+
+    def _phenotype_summary_text(self, phenotypes: list[dict[str, str]]) -> str:
+        entries: list[str] = []
+        for item in phenotypes[:2]:
+            text = item.get("trait", "")
+            if item.get("pvalue"):
+                text = f"{text} p={item['pvalue']}"
+            if item.get("source"):
+                text = f"{text} ({item['source']})"
+            if text:
+                entries.append(text)
+        return "; ".join(entries)
 
 
 class UcscConnector(BaseConnector):
-    """UCSC Genome Browser public API connector."""
+    """UCSC Genome Browser API connector for compact track context."""
 
     def query(self, context: KnowledgeQuery) -> SourceResult:
         started = time.monotonic()
-        genome = "hg38" if context.genome_build == "hg38" else "hg19"
+        genome = self._genome(context)
+        headers = {"Accept": "application/json"}
         urls: list[str] = []
         records: list[dict[str, Any]] = []
+        warnings: list[str] = []
+
+        variant = _first_variant(context)
+        region = self._parse_region(context.region)
+        search_payload: dict[str, Any] = {}
+        if not region:
+            search_payload = self._get_json(
+                f"{UCSC_API_BASE}/search",
+                {"search": context.gene, "genome": genome},
+                headers,
+                urls,
+                warnings,
+                "search",
+            )
+            region = self._region_from_search(search_payload, context.gene)
+        if not region:
+            region = self._variant_window(variant)
+        if not region:
+            return SourceResult(
+                self.spec.key,
+                "skipped",
+                "No genome region or variant coordinate was available for UCSC Genome Browser lookup.",
+                warnings=warnings,
+                queried_urls=urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        variant_interval = self._variant_interval(variant, region)
+        track_url = f"{UCSC_API_BASE}/getData/track"
+        sequence_url = f"{UCSC_API_BASE}/getData/sequence"
+
+        refseq_payload = self._track_payload(track_url, genome, "ncbiRefSeq", region, headers, urls, warnings)
+        gene_models = self._track_items(refseq_payload, "ncbiRefSeq")
+        if gene_models:
+            records.append(self._gene_model_record(context, genome, region, gene_models[0]))
+        elif search_payload:
+            records.extend(self._search_records(context, genome, search_payload))
+
+        if variant_interval:
+            sequence_payload = self._get_json(
+                sequence_url,
+                {
+                    "genome": genome,
+                    "chrom": variant_interval["chrom"],
+                    "start": variant_interval["start0"],
+                    "end": variant_interval["end1"],
+                },
+                headers,
+                urls,
+                warnings,
+                "reference sequence",
+            )
+            sequence_record = self._sequence_record(context, genome, variant, variant_interval, sequence_payload)
+            if sequence_record:
+                records.append(sequence_record)
+
+        cpg_payload = self._track_payload(track_url, genome, "cpgIslandExt", region, headers, urls, warnings)
+        cpg_items = self._track_items(cpg_payload, "cpgIslandExt")
+        if cpg_items:
+            records.append(self._cpg_record(context, genome, region, cpg_items[0]))
+
+        ccre_payload = self._track_payload(track_url, genome, "encodeCcreCombined", region, headers, urls, warnings)
+        ccre_items = self._track_items(ccre_payload, "encodeCcreCombined")
+        if ccre_items:
+            records.append(self._ccre_record(context, genome, region, ccre_items, bool(ccre_payload.get("maxItemsLimit"))))
+
+        tfbs_payload = self._track_payload(track_url, genome, "encRegTfbsClustered", region, headers, urls, warnings)
+        tfbs_items = self._track_items(tfbs_payload, "encRegTfbsClustered")
+        if tfbs_items:
+            records.append(self._tfbs_record(context, genome, region, tfbs_items, bool(tfbs_payload.get("maxItemsLimit"))))
+
+        repeat_payload = self._track_payload(track_url, genome, "rmsk", region, headers, urls, warnings)
+        repeat_items = self._track_items(repeat_payload, "rmsk")
+        if repeat_items:
+            records.append(self._repeat_record(context, genome, region, repeat_items, bool(repeat_payload.get("maxItemsLimit"))))
+
+        snp_items: list[dict[str, Any]] = []
+        snp_scope = "query window"
+        if variant_interval:
+            snp_exact_payload = self._track_payload(
+                track_url,
+                genome,
+                "snp151Common",
+                variant_interval,
+                headers,
+                urls,
+                warnings,
+                warn_label="snp151Common exact-variant track",
+            )
+            snp_items = self._track_items(snp_exact_payload, "snp151Common")
+            snp_scope = "exact variant coordinate"
+        if not snp_items:
+            snp_region_payload = self._track_payload(track_url, genome, "snp151Common", region, headers, urls, warnings)
+            snp_items = self._track_items(snp_region_payload, "snp151Common")
+            snp_scope = "query window"
+        if snp_items:
+            records.append(self._snp_record(context, genome, region, variant, snp_items, snp_scope))
+
+        if not records and search_payload:
+            records.extend(self._search_records(context, genome, search_payload))
+
+        status = "failed" if not records and warnings else "ok"
+        if not records and not warnings:
+            message = f"Queried UCSC Genome Browser API tracks for {self._region_text(genome, region)}, but no compact annotations were returned."
+        elif status == "failed":
+            message = "UCSC Genome Browser lookup failed; no track annotations were returned."
+        else:
+            message = (
+                f"Queried UCSC Genome Browser API tracks for {self._region_text(genome, region)}; "
+                f"{len(records)} compact annotation record(s) returned."
+            )
+        return SourceResult(
+            self.spec.key,
+            status,
+            message,
+            records,
+            warnings=warnings,
+            errors=warnings if status == "failed" else [],
+            queried_urls=urls,
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _genome(self, context: KnowledgeQuery) -> str:
+        build = (context.genome_build or "").casefold()
+        return "hg38" if "38" in build else "hg19"
+
+    def _get_json(
+        self,
+        url: str,
+        params: dict[str, Any],
+        headers: dict[str, str],
+        urls: list[str],
+        warnings: list[str],
+        label: str,
+    ) -> dict[str, Any]:
+        urls.append(url)
         try:
-            search_url = "https://api.genome.ucsc.edu/search"
-            payload = self.client.get_json(search_url, params={"search": context.gene, "genome": genome})
-            urls.append(search_url)
-            for group in payload.get("positionMatches", [])[:3]:
-                for match in group.get("matches", [])[:3]:
-                    records.append(
-                        {
-                            "category": "gene_annotation",
-                            "source": self.spec.name,
-                            "label": str(match.get("posName") or context.gene),
-                            "summary": str(match.get("position") or ""),
-                            "url": f"https://genome.ucsc.edu/cgi-bin/hgTracks?db={genome}&position={match.get('position', context.region)}",
-                        }
-                    )
-            return SourceResult(self.spec.key, "ok", f"Queried UCSC; {len(records)} record(s).", records, queried_urls=urls, elapsed_ms=_elapsed_ms(started))
-        except KnowledgeRequestError as exc:
-            return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+            payload = self.client.get_json(
+                url,
+                params=params,
+                headers=headers,
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+        except KnowledgeRequestError:
+            warnings.append(f"Optional UCSC {label} lookup failed; other UCSC annotations were still used.")
+            return {}
+        if not isinstance(payload, dict):
+            warnings.append(f"Optional UCSC {label} lookup returned no usable data; other UCSC annotations were still used.")
+            return {}
+        if payload.get("error"):
+            warnings.append(f"Optional UCSC {label} lookup failed; other UCSC annotations were still used.")
+            return {}
+        return payload
+
+    def _track_payload(
+        self,
+        url: str,
+        genome: str,
+        track: str,
+        interval: dict[str, Any],
+        headers: dict[str, str],
+        urls: list[str],
+        warnings: list[str],
+        *,
+        warn_label: str = "",
+    ) -> dict[str, Any]:
+        return self._get_json(
+            url,
+            {
+                "genome": genome,
+                "track": track,
+                "chrom": interval["chrom"],
+                "start": interval["start0"],
+                "end": interval["end1"],
+                "maxItemsOutput": UCSC_TRACK_MAX_ITEMS,
+            },
+            headers,
+            urls,
+            warnings,
+            warn_label or f"{track} track",
+        )
+
+    def _track_items(self, payload: dict[str, Any], track: str) -> list[dict[str, Any]]:
+        items = payload.get(track) or payload.get("items") or []
+        if not isinstance(items, list):
+            return []
+        deduped: list[dict[str, Any]] = []
+        seen: set[tuple[str, str, str]] = set()
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            key = (
+                _clean_cell(item.get("name") or item.get("chrom")),
+                _clean_cell(item.get("chromStart") or item.get("txStart") or item.get("start")),
+                _clean_cell(item.get("chromEnd") or item.get("txEnd") or item.get("end")),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(item)
+        return deduped
+
+    def _parse_region(self, value: Any) -> dict[str, Any]:
+        text = _clean_cell(value).replace(",", "")
+        match = re.search(r"(?P<chrom>(?:chr)?[A-Za-z0-9_.]+)\s*:\s*(?P<start>\d+)\s*-\s*(?P<end>\d+)", text)
+        if not match:
+            return {}
+        start1 = self._as_int(match.group("start"))
+        end1 = self._as_int(match.group("end"))
+        if start1 is None or end1 is None:
+            return {}
+        if end1 < start1:
+            start1, end1 = end1, start1
+        return self._interval(match.group("chrom"), start1, end1)
+
+    def _region_from_search(self, payload: dict[str, Any], gene: str) -> dict[str, Any]:
+        gene_lower = gene.casefold()
+        fallback: dict[str, Any] = {}
+        for group in payload.get("positionMatches") or []:
+            if not isinstance(group, dict):
+                continue
+            for match in group.get("matches") or []:
+                if not isinstance(match, dict):
+                    continue
+                interval = self._parse_region(match.get("position"))
+                if not interval:
+                    continue
+                if not fallback:
+                    fallback = interval
+                name = _clean_cell(match.get("posName") or match.get("name")).casefold()
+                if name == gene_lower or gene_lower in name:
+                    return interval
+        return fallback
+
+    def _variant_window(self, variant: Any) -> dict[str, Any]:
+        if variant is None:
+            return {}
+        chrom = _clean_cell(getattr(variant, "chrom", ""))
+        pos = self._as_int(getattr(variant, "pos", None))
+        if not (chrom and pos):
+            return {}
+        return self._interval(chrom, max(1, pos - 250), pos + 250)
+
+    def _variant_interval(self, variant: Any, fallback_region: dict[str, Any]) -> dict[str, Any]:
+        if variant is None:
+            return {}
+        chrom = _clean_cell(getattr(variant, "chrom", "")) or _clean_cell(fallback_region.get("chrom"))
+        pos = self._as_int(getattr(variant, "pos", None))
+        if not (chrom and pos):
+            return {}
+        return self._interval(chrom, pos, pos)
+
+    def _interval(self, chrom: str, start1: int, end1: int) -> dict[str, Any]:
+        return {
+            "chrom": self._ucsc_chrom(chrom),
+            "start1": max(1, start1),
+            "end1": max(1, end1),
+            "start0": max(0, start1 - 1),
+        }
+
+    def _ucsc_chrom(self, chrom: str) -> str:
+        text = _clean_cell(chrom)
+        if not text:
+            return ""
+        if text.lower().startswith("chr"):
+            return f"chr{text[3:]}"
+        if text in {"M", "MT"}:
+            return "chrM"
+        return f"chr{text}"
+
+    def _gene_model_record(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        region: dict[str, Any],
+        item: dict[str, Any],
+    ) -> dict[str, Any]:
+        transcript = _clean_cell(item.get("name"))
+        gene = _clean_cell(item.get("name2")) or context.gene
+        tx_interval = self._item_interval(item, "txStart", "txEnd")
+        cds_interval = self._item_interval(item, "cdsStart", "cdsEnd")
+        exons = self._exon_intervals(item)
+        record = {
+            "category": "gene_model",
+            "source": self.spec.name,
+            "label": f"UCSC ncbiRefSeq {transcript or gene}",
+            "summary": self._gene_model_summary(context, genome, region, item, tx_interval, cds_interval, exons),
+            "source_id": transcript,
+            "url": self._browser_url(genome, region),
+            "track": "ncbiRefSeq",
+            "genome": genome,
+            "gene": gene,
+            "transcript": transcript,
+            "strand": _clean_cell(item.get("strand")),
+            "chromosome": _clean_cell(item.get("chrom")),
+            "transcript_interval": tx_interval,
+            "cds_interval": cds_interval,
+            "exon_count": self._as_int(item.get("exonCount")),
+            "exons": exons,
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _gene_model_summary(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        region: dict[str, Any],
+        item: dict[str, Any],
+        tx_interval: str,
+        cds_interval: str,
+        exons: list[str],
+    ) -> str:
+        transcript = _clean_cell(item.get("name")) or "RefSeq transcript"
+        gene = _clean_cell(item.get("name2")) or context.gene
+        strand = _clean_cell(item.get("strand"))
+        exon_count = self._as_int(item.get("exonCount")) or len(exons)
+        parts = [f"{exon_count} exons" if exon_count else ""]
+        if cds_interval:
+            parts.append(f"CDS {cds_interval}")
+        cds_status = self._cds_status(item)
+        if cds_status:
+            parts.append(cds_status)
+        parts.append(f"query window {self._region_text(genome, region)}")
+        detail = "; ".join(part for part in parts if part)
+        strand_text = f" ({strand})" if strand else ""
+        return f"UCSC ncbiRefSeq {transcript} for {gene} on {genome} {tx_interval}{strand_text}: {detail}."
+
+    def _sequence_record(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        variant: Any,
+        interval: dict[str, Any],
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        dna = _clean_cell(payload.get("dna")).upper()
+        if not dna:
+            return {}
+        label = _clean_cell(getattr(variant, "label", "")) or self._region_text(genome, interval)
+        allele_text = self._variant_allele_text(variant)
+        allele_clause = f"; sample allele {allele_text} can be compared against this UCSC assembly coordinate" if allele_text else ""
+        position_text = f"{interval['chrom']}:{interval['start1']}"
+        return {
+            "category": "reference_sequence",
+            "source": self.spec.name,
+            "label": f"UCSC reference base {position_text}",
+            "summary": f"UCSC {genome} reference base at {label} / {position_text} is {dna}{allele_clause}.",
+            "source_id": f"{genome}:{position_text}",
+            "url": self._browser_url(genome, interval),
+            "genome": genome,
+            "chromosome": interval["chrom"],
+            "position": interval["start1"],
+            "reference_base": dna,
+            "variant": label,
+            "gene": context.gene,
+        }
+
+    def _cpg_record(self, context: KnowledgeQuery, genome: str, region: dict[str, Any], item: dict[str, Any]) -> dict[str, Any]:
+        interval = self._item_interval(item, "chromStart", "chromEnd")
+        label = _clean_cell(item.get("name")) or "CpG island"
+        length = self._format_int(item.get("length"))
+        cpg_num = self._format_int(item.get("cpgNum"))
+        gc_percent = self._format_float(item.get("perGc"))
+        obs_exp = self._format_float(item.get("obsExp"))
+        details = []
+        if length:
+            details.append(f"length {length} bp")
+        if cpg_num:
+            details.append(f"CpG count {cpg_num}")
+        if gc_percent:
+            details.append(f"GC {gc_percent}%")
+        if obs_exp:
+            details.append(f"observed/expected CpG {obs_exp}")
+        summary = f"UCSC CpG island {label} overlaps the {context.gene} query window at {genome} {interval}"
+        if details:
+            summary = f"{summary}: {', '.join(details)}"
+        record = {
+            "category": "cpg_island",
+            "source": self.spec.name,
+            "label": label,
+            "summary": f"{summary}.",
+            "source_id": label,
+            "url": self._browser_url(genome, region),
+            "track": "cpgIslandExt",
+            "genome": genome,
+            "location": f"{genome} {interval}",
+            "length": item.get("length"),
+            "cpg_count": item.get("cpgNum"),
+            "gc_percent": item.get("perGc"),
+            "observed_expected": item.get("obsExp"),
+            "gene": context.gene,
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _ccre_record(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        region: dict[str, Any],
+        items: list[dict[str, Any]],
+        capped: bool,
+    ) -> dict[str, Any]:
+        first = items[0]
+        first_id = _clean_cell(first.get("name"))
+        first_desc = _clean_cell(first.get("description")) or _clean_cell(first.get("ccre"))
+        first_interval = self._item_interval(first, "chromStart", "chromEnd")
+        labels = self._dedupe_clean(
+            _clean_cell(item.get("encodeLabel") or item.get("ucscLabel") or item.get("ccre"))
+            for item in items
+        )
+        z_score = self._format_float(first.get("zScore"))
+        first_parts = [first_id, first_desc]
+        first_text = " ".join(part for part in first_parts if part)
+        label_text = _clean_cell(first.get("ccre"))
+        if label_text:
+            first_text = f"{first_text} ({label_text}"
+            if z_score:
+                first_text = f"{first_text}, z={z_score}"
+            first_text = f"{first_text})"
+        count_text = self._count_phrase(len(items), "regulatory element")
+        cap_text = ", capped by maxItemsOutput" if capped else ""
+        summary = f"UCSC ENCODE cCRE returned {count_text} in the {context.gene} window{cap_text}; first {first_text} at {genome} {first_interval}"
+        if labels:
+            summary = f"{summary}; labels include {', '.join(labels[:4])}"
+        record = {
+            "category": "regulatory_element",
+            "source": self.spec.name,
+            "label": f"UCSC ENCODE cCRE {first_id or context.gene}",
+            "summary": f"{summary}.",
+            "source_id": first_id,
+            "url": self._browser_url(genome, region),
+            "track": "encodeCcreCombined",
+            "genome": genome,
+            "gene": context.gene,
+            "count": len(items),
+            "capped": capped,
+            "first_element": self._compact_items(items[:1])[0] if items else {},
+            "labels": labels,
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _tfbs_record(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        region: dict[str, Any],
+        items: list[dict[str, Any]],
+        capped: bool,
+    ) -> dict[str, Any]:
+        ranked = sorted(items, key=lambda item: self._as_int(item.get("score")) or 0, reverse=True)
+        signals = []
+        for item in ranked[:4]:
+            name = _clean_cell(item.get("name"))
+            score = _clean_cell(item.get("score"))
+            sources = self._format_int(item.get("sourceCount"))
+            if not name:
+                continue
+            text = f"{name} score {score}" if score else name
+            if sources:
+                text = f"{text} ({sources} sources)"
+            signals.append(text)
+        count_text = self._count_phrase(len(items), "transcription-factor binding cluster")
+        cap_text = ", capped by maxItemsOutput" if capped else ""
+        summary = f"UCSC ENCODE TFBS clustered track returned {count_text} in the {context.gene} window{cap_text}"
+        if signals:
+            summary = f"{summary}; top signals: {', '.join(signals)}"
+        record = {
+            "category": "transcription_factor_binding",
+            "source": self.spec.name,
+            "label": f"UCSC ENCODE TFBS clusters for {context.gene}",
+            "summary": f"{summary}.",
+            "source_id": "encRegTfbsClustered",
+            "url": self._browser_url(genome, region),
+            "track": "encRegTfbsClustered",
+            "genome": genome,
+            "gene": context.gene,
+            "count": len(items),
+            "capped": capped,
+            "top_signals": self._compact_items(ranked[:4]),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _repeat_record(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        region: dict[str, Any],
+        items: list[dict[str, Any]],
+        capped: bool,
+    ) -> dict[str, Any]:
+        examples = []
+        for item in items[:3]:
+            name = _clean_cell(item.get("repName") or item.get("name"))
+            repeat_class = _clean_cell(item.get("repClass"))
+            family = _clean_cell(item.get("repFamily"))
+            interval = self._item_interval(item, "chromStart", "chromEnd")
+            label = name
+            class_text = "/".join(part for part in (repeat_class, family) if part)
+            if class_text:
+                label = f"{label} {class_text}" if label else class_text
+            if label and interval:
+                examples.append(f"{label} at {genome} {interval}")
+        count_text = self._count_phrase(len(items), "repeat/low-complexity annotation")
+        cap_text = ", capped by maxItemsOutput" if capped else ""
+        summary = f"UCSC RepeatMasker returned {count_text} in the {context.gene} window{cap_text}"
+        if examples:
+            summary = f"{summary}; examples: {'; '.join(examples)}"
+        record = {
+            "category": "repeat_annotation",
+            "source": self.spec.name,
+            "label": f"UCSC RepeatMasker annotations for {context.gene}",
+            "summary": f"{summary}.",
+            "source_id": "rmsk",
+            "url": self._browser_url(genome, region),
+            "track": "rmsk",
+            "genome": genome,
+            "gene": context.gene,
+            "count": len(items),
+            "capped": capped,
+            "examples": self._compact_items(items[:3]),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _snp_record(
+        self,
+        context: KnowledgeQuery,
+        genome: str,
+        region: dict[str, Any],
+        variant: Any,
+        items: list[dict[str, Any]],
+        scope: str,
+    ) -> dict[str, Any]:
+        examples = []
+        for item in items[:3]:
+            name = _clean_cell(item.get("name"))
+            observed = _clean_cell(item.get("observed") or item.get("alleles"))
+            snp_class = _clean_cell(item.get("class"))
+            valid = _clean_cell(item.get("valid")).replace(",", "/")
+            interval = self._item_interval(item, "chromStart", "chromEnd")
+            parts = [name, f"at {genome} {interval}" if interval else "", observed, snp_class]
+            if valid:
+                parts.append(f"validated {valid}")
+            examples.append(" ".join(part for part in parts if part))
+        variant_label = _clean_cell(getattr(variant, "label", "")) if variant is not None else ""
+        nearby = f" near {variant_label}" if variant_label and scope != "exact variant coordinate" else ""
+        count_text = self._count_phrase(len(items), "common dbSNP variant")
+        summary = f"UCSC dbSNP Common (snp151Common) found {count_text} at the {scope}{nearby}"
+        if examples:
+            summary = f"{summary}; examples: {'; '.join(examples)}"
+        record = {
+            "category": "common_variant",
+            "source": self.spec.name,
+            "label": f"UCSC dbSNP Common variants for {context.gene}",
+            "summary": f"{summary}.",
+            "source_id": "snp151Common",
+            "url": self._browser_url(genome, region),
+            "track": "snp151Common",
+            "genome": genome,
+            "gene": context.gene,
+            "variant": variant_label,
+            "count": len(items),
+            "scope": scope,
+            "examples": self._compact_items(items[:3]),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _search_records(self, context: KnowledgeQuery, genome: str, payload: dict[str, Any]) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        for group in payload.get("positionMatches") or []:
+            if not isinstance(group, dict):
+                continue
+            for match in group.get("matches") or []:
+                if not isinstance(match, dict):
+                    continue
+                position = _clean_cell(match.get("position"))
+                if not position:
+                    continue
+                interval = self._parse_region(position)
+                records.append(
+                    {
+                        "category": "gene_annotation",
+                        "source": self.spec.name,
+                        "label": _clean_cell(match.get("posName")) or context.gene,
+                        "summary": f"UCSC search resolved {context.gene} to {genome} {position}.",
+                        "url": self._browser_url(genome, interval) if interval else self.spec.homepage,
+                    }
+                )
+                if len(records) >= 3:
+                    return records
+        return records
+
+    def _item_interval(self, item: dict[str, Any], start_key: str, end_key: str) -> str:
+        chrom = _clean_cell(item.get("chrom"))
+        start0 = self._as_int(item.get(start_key))
+        end1 = self._as_int(item.get(end_key))
+        if not (chrom and start0 is not None and end1 is not None):
+            return ""
+        return f"{chrom}:{start0 + 1}-{end1}"
+
+    def _exon_intervals(self, item: dict[str, Any]) -> list[str]:
+        chrom = _clean_cell(item.get("chrom"))
+        starts = self._split_ints(item.get("exonStarts"))
+        ends = self._split_ints(item.get("exonEnds"))
+        intervals = []
+        for start0, end1 in zip(starts, ends):
+            if chrom:
+                intervals.append(f"{chrom}:{start0 + 1}-{end1}")
+        return intervals
+
+    def _cds_status(self, item: dict[str, Any]) -> str:
+        start_status = _clean_cell(item.get("cdsStartStat"))
+        end_status = _clean_cell(item.get("cdsEndStat"))
+        if start_status == "cmpl" and end_status == "cmpl":
+            return "complete CDS start/end"
+        statuses = [status for status in (start_status, end_status) if status]
+        if statuses:
+            return f"CDS status {'/'.join(statuses)}"
+        return ""
+
+    def _variant_allele_text(self, variant: Any) -> str:
+        if variant is None:
+            return ""
+        ref = _clean_cell(getattr(variant, "ref", ""))
+        alt = _clean_cell(getattr(variant, "alt", ""))
+        if ref and alt:
+            return f"{ref}>{alt}"
+        return ""
+
+    def _region_text(self, genome: str, interval: dict[str, Any]) -> str:
+        return f"{genome} {interval['chrom']}:{interval['start1']}-{interval['end1']}"
+
+    def _browser_url(self, genome: str, interval: dict[str, Any]) -> str:
+        if not interval:
+            return self.spec.homepage
+        position = f"{interval['chrom']}:{interval['start1']}-{interval['end1']}"
+        return f"https://genome.ucsc.edu/cgi-bin/hgTracks?db={quote(genome)}&position={quote(position, safe=':-,')}"
+
+    def _compact_items(self, items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        compact: list[dict[str, Any]] = []
+        keys = (
+            "name",
+            "chrom",
+            "chromStart",
+            "chromEnd",
+            "score",
+            "sourceCount",
+            "ccre",
+            "encodeLabel",
+            "ucscLabel",
+            "repName",
+            "repClass",
+            "repFamily",
+            "observed",
+            "class",
+            "valid",
+        )
+        for item in items:
+            row = {key: item.get(key) for key in keys if item.get(key) not in ("", [], {}, None)}
+            if row:
+                compact.append(row)
+        return compact
+
+    def _split_ints(self, value: Any) -> list[int]:
+        ints: list[int] = []
+        for part in _clean_cell(value).split(","):
+            number = self._as_int(part)
+            if number is not None:
+                ints.append(number)
+        return ints
+
+    def _dedupe_clean(self, values: Any) -> list[str]:
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _count_phrase(self, count: int, singular: str) -> str:
+        noun = singular if count == 1 else f"{singular}(s)"
+        return f"{count} {noun}"
+
+    def _as_int(self, value: Any) -> int | None:
+        try:
+            return int(str(value).replace(",", "").strip())
+        except (TypeError, ValueError):
+            return None
+
+    def _format_int(self, value: Any) -> str:
+        number = self._as_int(value)
+        if number is None:
+            return _clean_cell(value)
+        return f"{number:,}"
+
+    def _format_float(self, value: Any) -> str:
+        try:
+            return f"{float(value):.3g}"
+        except (TypeError, ValueError):
+            return _clean_cell(value)
 
 
 class LiteratureSearchConnector(BaseConnector):
@@ -912,26 +2543,418 @@ class GwasCatalogConnector(BaseConnector):
         rsid = _first_rsid(context)
         records: list[dict[str, Any]] = []
         urls: list[str] = []
-        if not rsid:
-            return SourceResult(self.spec.key, "skipped", "No rsID was available for GWAS Catalog lookup.")
+        warnings: list[str] = []
         try:
-            url = f"https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/{rsid}"
-            payload = self.client.get_json(url)
-            urls.append(url)
-            records.append(
-                {
-                    "category": "population_association",
-                    "source": self.spec.name,
-                    "label": rsid,
-                    "summary": str(payload.get("rsId") or rsid),
-                    "source_id": payload.get("rsId"),
-                    "url": f"https://www.ebi.ac.uk/gwas/variants/{rsid}",
-                    "variant": rsid,
-                }
+            metadata = self._gwas_metadata(urls, warnings)
+            query_context = "gene"
+            payload: dict[str, Any] = {}
+            rsid_total = 0
+            if rsid:
+                query_context = "rsid"
+                payload = self._gwas_associations({"rs_id": rsid, "size": GWAS_CATALOG_MAX_ASSOCIATIONS}, urls)
+                rsid_total = self._gwas_total(payload)
+            if not self._gwas_association_rows(payload) and context.gene:
+                query_context = "gene_fallback" if rsid else "gene"
+                payload = self._gwas_associations(
+                    {"mapped_gene": context.gene, "size": GWAS_CATALOG_MAX_ASSOCIATIONS},
+                    urls,
+                )
+
+            for item in self._gwas_association_rows(payload)[:GWAS_CATALOG_MAX_ASSOCIATIONS]:
+                records.append(self._gwas_record(item, context, metadata, query_context, urls, warnings))
+
+            if not records:
+                label = f"{rsid} / {context.gene}" if rsid else context.gene
+                message = f"Queried GWAS Catalog; no association records found for {label}."
+            else:
+                total = self._gwas_total(payload)
+                message = f"Queried GWAS Catalog; {len(records)} GWAS association record(s) returned"
+                if total and total != len(records):
+                    message = f"{message} ({total} total available)"
+                if query_context == "gene_fallback":
+                    message = f"{message} for {context.gene}; no rsID-specific associations were found for {rsid}."
+                elif query_context == "rsid":
+                    message = f"{message} for {rsid}."
+                else:
+                    message = f"{message} for {context.gene}."
+                if query_context == "gene_fallback" and rsid_total:
+                    message = f"{message} rsID query returned {rsid_total} record(s)."
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                message,
+                records,
+                warnings=warnings,
+                queried_urls=urls,
+                elapsed_ms=_elapsed_ms(started),
             )
-            return SourceResult(self.spec.key, "ok", f"Queried GWAS Catalog for {rsid}.", records, queried_urls=urls, elapsed_ms=_elapsed_ms(started))
         except KnowledgeRequestError as exc:
             return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+
+    def _gwas_metadata(self, urls: list[str], warnings: list[str]) -> dict[str, Any]:
+        url = f"{GWAS_CATALOG_API_V2_BASE}/metadata"
+        try:
+            payload = self.client.get_json(
+                url,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
+            return payload if isinstance(payload, dict) else {}
+        except KnowledgeRequestError:
+            warnings.append("Optional GWAS Catalog metadata lookup failed; association details were still used.")
+            return {}
+
+    def _gwas_associations(self, params: dict[str, Any], urls: list[str]) -> dict[str, Any]:
+        url = f"{GWAS_CATALOG_API_V2_BASE}/associations"
+        payload = self.client.get_json(
+            url,
+            params=params,
+            headers={"Accept": "application/json"},
+            rate_limit_per_second=self.spec.rate_limit_per_second,
+        )
+        urls.append(url)
+        return payload if isinstance(payload, dict) else {}
+
+    def _gwas_record(
+        self,
+        item: dict[str, Any],
+        context: KnowledgeQuery,
+        metadata: dict[str, Any],
+        query_context: str,
+        urls: list[str],
+        warnings: list[str],
+    ) -> dict[str, Any]:
+        association_id = _clean_cell(item.get("association_id"))
+        accession_id = _clean_cell(item.get("accession_id"))
+        study = self._gwas_study(accession_id, urls, warnings) if accession_id else {}
+        loci = self._gwas_loci(item, association_id, urls, warnings)
+        snp_alleles = self._gwas_snp_alleles(item.get("snp_allele"))
+        effect_alleles = self._gwas_clean_list(item.get("snp_effect_allele"))
+        rsids = self._gwas_rsids(snp_alleles, effect_alleles, item)
+        traits = self._gwas_clean_list(item.get("reported_trait"))
+        efo_traits = self._gwas_efo_traits(item.get("efo_traits"))
+        label_variant = effect_alleles[0] if effect_alleles else (rsids[0] if rsids else context.gene)
+        label_trait = traits[0] if traits else (efo_traits[0]["trait"] if efo_traits else "GWAS association")
+        record = {
+            "category": "population_association",
+            "source": self.spec.name,
+            "label": f"{label_variant} - {label_trait}",
+            "summary": self._gwas_summary(item, study, loci, metadata, label_variant),
+            "source_id": association_id,
+            "url": self._gwas_link(item, "self", f"{GWAS_CATALOG_API_V2_BASE}/associations/{association_id}"),
+            "browser_url": f"https://www.ebi.ac.uk/gwas/associations/{quote(association_id)}" if association_id else "",
+            "variant": _first_rsid(context) or (rsids[0] if rsids else ""),
+            "query_context": query_context,
+            "association_id": association_id,
+            "accession_id": accession_id,
+            "study_url": f"https://www.ebi.ac.uk/gwas/studies/{quote(accession_id)}" if accession_id else "",
+            "snp_url": self._gwas_link(item, "snp", ""),
+            "rsids": rsids,
+            "snp_effect_alleles": effect_alleles,
+            "snp_alleles": snp_alleles,
+            "risk_frequency": _clean_cell(item.get("risk_frequency")),
+            "p_value": item.get("p_value"),
+            "pvalue_mantissa": item.get("pvalue_mantissa"),
+            "pvalue_exponent": item.get("pvalue_exponent"),
+            "pvalue_description": _clean_cell(item.get("pvalue_description")),
+            "beta": _clean_cell(item.get("beta")),
+            "odds_ratio": _clean_cell(item.get("or_per_copy_number") or item.get("odds_ratio")),
+            "range": _clean_cell(item.get("range")),
+            "ci_lower": item.get("ci_lower"),
+            "ci_upper": item.get("ci_upper"),
+            "reported_traits": traits,
+            "efo_traits": efo_traits,
+            "background_efo_traits": self._gwas_efo_traits(item.get("bg_efo_traits")),
+            "mapped_genes": self._gwas_clean_list(item.get("mapped_genes")),
+            "locations": self._gwas_clean_list(item.get("locations")),
+            "pubmed_id": _clean_cell(item.get("pubmed_id")),
+            "first_author": _clean_cell(item.get("first_author")),
+            "multi_snp_haplotype": item.get("multi_snp_haplotype"),
+            "snp_interaction": item.get("snp_interaction"),
+            "study": study,
+            "loci": loci,
+            "data_release_date": _clean_cell(metadata.get("data_release_date")),
+            "api_release_date": _clean_cell(metadata.get("api_release_date")),
+            "dbsnp_build": _clean_cell(metadata.get("dbsnp_build")),
+            "gene_build": _clean_cell(metadata.get("gene_build")),
+            "efo_version": _clean_cell(metadata.get("efo_version")),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _gwas_study(self, accession_id: str, urls: list[str], warnings: list[str]) -> dict[str, Any]:
+        url = f"{GWAS_CATALOG_API_V2_BASE}/studies/{quote(accession_id)}"
+        try:
+            payload = self.client.get_json(
+                url,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
+        except KnowledgeRequestError:
+            warnings.append(f"Optional GWAS Catalog study detail lookup failed for {accession_id}; association details were still used.")
+            return {}
+        if not isinstance(payload, dict):
+            return {}
+        row = {
+            "accession_id": _clean_cell(payload.get("accession_id")),
+            "disease_trait": _clean_cell(payload.get("disease_trait")),
+            "initial_sample_size": _clean_cell(payload.get("initial_sample_size")),
+            "replication_sample_size": _clean_cell(payload.get("replication_sample_size")),
+            "discovery_ancestry": self._gwas_clean_list(payload.get("discovery_ancestry")),
+            "replication_ancestry": self._gwas_clean_list(payload.get("replication_ancestry")),
+            "full_summary_stats_available": payload.get("full_summary_stats_available"),
+            "full_summary_stats": _clean_cell(payload.get("full_summary_stats")),
+            "terms_of_license": _clean_cell(payload.get("terms_of_license")),
+            "snp_count": payload.get("snp_count"),
+            "imputed": payload.get("imputed"),
+            "pooled": payload.get("pooled"),
+            "platforms": _clean_cell(payload.get("platforms")),
+            "genotyping_technologies": self._gwas_clean_list(payload.get("genotyping_technologies")),
+            "cohort": self._gwas_clean_list(payload.get("cohort")),
+        }
+        return {key: value for key, value in row.items() if value not in ("", [], None)}
+
+    def _gwas_loci(
+        self,
+        item: dict[str, Any],
+        association_id: str,
+        urls: list[str],
+        warnings: list[str],
+    ) -> list[dict[str, Any]]:
+        url = self._gwas_link(item, "loci", "")
+        if not url:
+            return []
+        try:
+            payload = self.client.get_json(
+                url,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
+        except KnowledgeRequestError:
+            warnings.append(f"Optional GWAS Catalog loci lookup failed for association {association_id}; association details were still used.")
+            return []
+        rows = ((payload.get("_embedded") or {}).get("loci") or []) if isinstance(payload, dict) else []
+        loci: list[dict[str, Any]] = []
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            locus = {
+                "description": _clean_cell(row.get("description")),
+                "strongest_risk_alleles": self._gwas_risk_alleles(row.get("strongest_risk_alleles")),
+                "author_reported_genes": self._gwas_clean_list(row.get("author_reported_genes")),
+                "url": self._gwas_link(row, "self", ""),
+            }
+            cleaned = {key: value for key, value in locus.items() if value not in ("", [], None)}
+            if cleaned:
+                loci.append(cleaned)
+        return loci
+
+    def _gwas_summary(
+        self,
+        item: dict[str, Any],
+        study: dict[str, Any],
+        loci: list[dict[str, Any]],
+        metadata: dict[str, Any],
+        label_variant: str,
+    ) -> str:
+        traits = self._gwas_clean_list(item.get("reported_trait"))
+        efo_traits = [row["trait"] for row in self._gwas_efo_traits(item.get("efo_traits")) if row.get("trait")]
+        trait_text = self._gwas_join([*traits[:2], *[trait for trait in efo_traits[:2] if trait not in traits]])
+        if not trait_text:
+            trait_text = _clean_cell(study.get("disease_trait")) or "reported trait"
+        mapped_genes = self._gwas_clean_list(item.get("mapped_genes"))
+        locations = self._gwas_clean_list(item.get("locations"))
+        lead = f"GWAS Catalog association {label_variant} with {trait_text}"
+        if mapped_genes:
+            lead = f"{lead} mapped to {', '.join(mapped_genes[:3])}"
+        if locations:
+            lead = f"{lead} at {', '.join(locations[:2])}"
+
+        parts: list[str] = []
+        p_value = self._gwas_pvalue_text(item)
+        if p_value:
+            parts.append(f"p={p_value}")
+        effect = self._gwas_effect_text(item)
+        if effect:
+            parts.append(effect)
+        risk_frequency = _clean_cell(item.get("risk_frequency"))
+        if risk_frequency:
+            parts.append(f"risk frequency {risk_frequency}")
+        accession_id = _clean_cell(item.get("accession_id"))
+        pubmed_id = _clean_cell(item.get("pubmed_id"))
+        first_author = _clean_cell(item.get("first_author"))
+        study_parts = []
+        if accession_id:
+            study_parts.append(accession_id)
+        if pubmed_id:
+            study_parts.append(f"PMID {pubmed_id}")
+        if first_author:
+            study_parts.append(f"first author {first_author}")
+        if study_parts:
+            parts.append(f"study {', '.join(study_parts)}")
+        sample_size = _clean_cell(study.get("initial_sample_size"))
+        if sample_size:
+            parts.append(f"initial sample {self._gwas_clip(sample_size, 180)}")
+        discovery_ancestry = self._gwas_clean_list(study.get("discovery_ancestry"))
+        if discovery_ancestry:
+            parts.append(f"discovery ancestry {self._gwas_clip(discovery_ancestry[0], 180)}")
+        if study.get("full_summary_stats_available") is True:
+            parts.append("full summary statistics available")
+        elif study.get("full_summary_stats_available") is False:
+            parts.append("full summary statistics not marked available")
+        strongest = self._gwas_loci_text(loci)
+        if strongest:
+            parts.append(strongest)
+        release = _clean_cell(metadata.get("data_release_date"))
+        if release:
+            parts.append(f"data release {release}")
+        return f"{lead}: {'; '.join(parts)}." if parts else f"{lead}."
+
+    def _gwas_association_rows(self, payload: dict[str, Any]) -> list[dict[str, Any]]:
+        rows = ((payload.get("_embedded") or {}).get("associations") or []) if isinstance(payload, dict) else []
+        return [row for row in rows if isinstance(row, dict)]
+
+    def _gwas_total(self, payload: dict[str, Any]) -> int:
+        page = payload.get("page") if isinstance(payload, dict) else {}
+        try:
+            return int(page.get("totalElements") or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    def _gwas_snp_alleles(self, values: Any) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "rsid": _clean_cell(value.get("rs_id")),
+                "effect_allele": _clean_cell(value.get("effect_allele")),
+            }
+            cleaned = {key: item for key, item in row.items() if item}
+            if cleaned and cleaned not in rows:
+                rows.append(cleaned)
+        return rows
+
+    def _gwas_rsids(self, snp_alleles: list[dict[str, str]], effect_alleles: list[str], item: dict[str, Any]) -> list[str]:
+        rsids = [row["rsid"] for row in snp_alleles if row.get("rsid")]
+        for effect_allele in effect_alleles:
+            rsid, _, _allele = effect_allele.partition("-")
+            if rsid.lower().startswith("rs"):
+                rsids.append(rsid)
+        snp_href = self._gwas_link(item, "snp", "")
+        if "/single-nucleotide-polymorphisms/" in snp_href:
+            rsids.append(snp_href.rsplit("/", 1)[-1])
+        return self._gwas_clean_list(rsids)
+
+    def _gwas_efo_traits(self, values: Any) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "id": _clean_cell(value.get("efo_id")),
+                "trait": _clean_cell(value.get("efo_trait")),
+            }
+            cleaned = {key: item for key, item in row.items() if item}
+            if cleaned and cleaned not in rows:
+                rows.append(cleaned)
+        return rows
+
+    def _gwas_risk_alleles(self, values: Any) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "risk_allele_name": _clean_cell(value.get("risk_allele_name")),
+                "genome_wide": value.get("genome_wide"),
+                "limited_list": value.get("limited_list"),
+            }
+            cleaned = {key: item for key, item in row.items() if item not in ("", None)}
+            if cleaned:
+                rows.append(cleaned)
+        return rows
+
+    def _gwas_pvalue_text(self, item: dict[str, Any]) -> str:
+        value = item.get("p_value")
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            mantissa = _clean_cell(item.get("pvalue_mantissa"))
+            exponent = _clean_cell(item.get("pvalue_exponent"))
+            return f"{mantissa}e{exponent}" if mantissa and exponent else _clean_cell(value)
+        return f"{number:.3g}"
+
+    def _gwas_effect_text(self, item: dict[str, Any]) -> str:
+        parts: list[str] = []
+        beta = _clean_cell(item.get("beta"))
+        odds_ratio = _clean_cell(item.get("or_per_copy_number") or item.get("odds_ratio"))
+        if beta:
+            parts.append(f"beta {beta}")
+        if odds_ratio:
+            parts.append(f"OR {odds_ratio}")
+        ci_lower = _clean_cell(item.get("ci_lower"))
+        ci_upper = _clean_cell(item.get("ci_upper"))
+        range_text = _clean_cell(item.get("range"))
+        if ci_lower and ci_upper:
+            parts.append(f"CI {ci_lower}-{ci_upper}")
+        elif range_text and range_text != "-":
+            parts.append(f"range {range_text}")
+        return "; ".join(parts)
+
+    def _gwas_loci_text(self, loci: list[dict[str, Any]]) -> str:
+        if not loci:
+            return ""
+        first = loci[0]
+        alleles = first.get("strongest_risk_alleles") if isinstance(first, dict) else []
+        allele_names = [
+            _clean_cell(allele.get("risk_allele_name"))
+            for allele in alleles
+            if isinstance(allele, dict) and _clean_cell(allele.get("risk_allele_name"))
+        ]
+        author_genes = self._gwas_clean_list(first.get("author_reported_genes"))
+        parts = []
+        if allele_names:
+            parts.append(f"strongest risk allele {', '.join(allele_names[:3])}")
+        if author_genes:
+            parts.append(f"author-reported genes {', '.join(author_genes[:3])}")
+        return "; ".join(parts)
+
+    def _gwas_link(self, item: dict[str, Any], rel: str, fallback: str) -> str:
+        links = item.get("_links") if isinstance(item.get("_links"), dict) else {}
+        link = links.get(rel) if isinstance(links.get(rel), dict) else {}
+        return _clean_cell(link.get("href")) or fallback
+
+    def _gwas_clean_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            values = [values]
+        if not isinstance(values, list):
+            values = [values]
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _gwas_join(self, values: list[str]) -> str:
+        cleaned = self._gwas_clean_list(values)
+        return " / ".join(cleaned[:4])
+
+    def _gwas_clip(self, value: str, limit: int) -> str:
+        if len(value) <= limit:
+            return value
+        return value[: limit - 1].rstrip() + "..."
 
 
 class PgsCatalogConnector(BaseConnector):
@@ -940,25 +2963,787 @@ class PgsCatalogConnector(BaseConnector):
     def query(self, context: KnowledgeQuery) -> SourceResult:
         started = time.monotonic()
         rsid = _first_rsid(context)
+        urls: list[str] = []
+        warnings: list[str] = []
         if not rsid:
             return SourceResult(self.spec.key, "skipped", "No rsID was available for PGS Catalog lookup.")
-        url = f"https://www.pgscatalog.org/rest/variant/{rsid}"
+        url = f"{PGS_CATALOG_REST_BASE}/variant/{quote(rsid)}"
         try:
-            payload = self.client.get_json(url)
-            records = [
-                {
-                    "category": "polygenic_score",
-                    "source": self.spec.name,
-                    "label": rsid,
-                    "summary": f"PGS Catalog variant record with {len(payload.get('associated_pgs_ids', []) or [])} linked score(s).",
-                    "source_id": rsid,
-                    "url": f"https://www.pgscatalog.org/variant/{rsid}/",
-                    "variant": rsid,
-                }
-            ]
-            return SourceResult(self.spec.key, "ok", f"Queried PGS Catalog for {rsid}.", records, queried_urls=[url], elapsed_ms=_elapsed_ms(started))
+            payload = self.client.get_json(
+                url,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
         except KnowledgeRequestError as exc:
-            return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=[url], elapsed_ms=_elapsed_ms(started))
+            urls.append(url)
+            if self._pgs_is_not_found(exc):
+                return SourceResult(
+                    self.spec.key,
+                    "ok",
+                    f"Queried PGS Catalog; no deposited score variant record found for {rsid}.",
+                    [],
+                    queried_urls=urls,
+                    elapsed_ms=_elapsed_ms(started),
+                )
+            return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+
+        pgs_ids = self._pgs_associated_ids(payload)
+        if not pgs_ids:
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                f"Queried PGS Catalog; variant {rsid} is present but has no linked polygenic scores.",
+                [],
+                queried_urls=urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        records: list[dict[str, Any]] = []
+        for pgs_id in pgs_ids[:PGS_CATALOG_MAX_LINKED_SCORES]:
+            score = self._pgs_score(pgs_id, urls, warnings)
+            performance_records = self._pgs_performance(pgs_id, urls, warnings) if score else []
+            records.append(self._pgs_record(rsid, pgs_id, payload, score, performance_records))
+
+        message = f"Queried PGS Catalog; {len(records)} linked polygenic score record(s) returned for {rsid}."
+        if len(pgs_ids) > len(records):
+            message = f"{message} {len(pgs_ids)} total linked score(s) are available."
+        return SourceResult(
+            self.spec.key,
+            "ok",
+            message,
+            records,
+            warnings=warnings,
+            queried_urls=urls,
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _pgs_score(self, pgs_id: str, urls: list[str], warnings: list[str]) -> dict[str, Any]:
+        url = f"{PGS_CATALOG_REST_BASE}/score/{quote(pgs_id)}"
+        try:
+            payload = self.client.get_json(
+                url,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
+            return payload if isinstance(payload, dict) else {}
+        except KnowledgeRequestError:
+            urls.append(url)
+            warnings.append(f"Optional PGS Catalog score detail lookup failed for {pgs_id}; variant link was still used.")
+            return {}
+
+    def _pgs_performance(self, pgs_id: str, urls: list[str], warnings: list[str]) -> list[dict[str, Any]]:
+        url = f"{PGS_CATALOG_REST_BASE}/performance/search"
+        try:
+            payload = self.client.get_json(
+                url,
+                params={"pgs_id": pgs_id},
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
+        except KnowledgeRequestError:
+            urls.append(url)
+            warnings.append(f"Optional PGS Catalog performance lookup failed for {pgs_id}; score details were still used.")
+            return []
+        rows = payload.get("results") if isinstance(payload, dict) else []
+        performance: list[dict[str, Any]] = []
+        for row in (rows or [])[:PGS_CATALOG_MAX_PERFORMANCE_RECORDS]:
+            if isinstance(row, dict):
+                performance.append(self._pgs_performance_record(row))
+        return performance
+
+    def _pgs_record(
+        self,
+        rsid: str,
+        pgs_id: str,
+        variant_payload: dict[str, Any],
+        score: dict[str, Any],
+        performance_records: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        score_id = _clean_cell(score.get("id")) or pgs_id
+        name = _clean_cell(score.get("name"))
+        trait = _clean_cell(score.get("trait_reported"))
+        label_parts = [score_id]
+        if name:
+            label_parts.append(name)
+        if trait:
+            label_parts.append(trait)
+        record = {
+            "category": "polygenic_score",
+            "source": self.spec.name,
+            "label": " - ".join(label_parts),
+            "summary": self._pgs_summary(rsid, pgs_id, score, performance_records),
+            "source_id": score_id,
+            "url": f"https://www.pgscatalog.org/score/{quote(score_id)}/",
+            "variant_url": f"https://www.pgscatalog.org/variant/{quote(rsid)}/",
+            "variant": rsid,
+            "linked_variant": rsid,
+            "pgs_id": score_id,
+            "name": name,
+            "trait_reported": trait,
+            "trait_additional": _clean_cell(score.get("trait_additional")),
+            "trait_efo": self._pgs_traits(score.get("trait_efo")),
+            "method_name": _clean_cell(score.get("method_name")),
+            "method_params": _clean_cell(score.get("method_params")),
+            "variants_number": score.get("variants_number"),
+            "variants_interactions": score.get("variants_interactions"),
+            "variants_genomebuild": _clean_cell(score.get("variants_genomebuild")),
+            "weight_type": _clean_cell(score.get("weight_type")),
+            "publication": self._pgs_publication(score.get("publication")),
+            "matches_publication": score.get("matches_publication"),
+            "samples_variants": self._pgs_samples(score.get("samples_variants")),
+            "samples_training": self._pgs_samples(score.get("samples_training")),
+            "ancestry_distribution": score.get("ancestry_distribution"),
+            "performance": performance_records,
+            "ftp_scoring_file": _clean_cell(score.get("ftp_scoring_file")),
+            "ftp_harmonized_scoring_files": self._pgs_harmonized_files(score.get("ftp_harmonized_scoring_files")),
+            "date_release": _clean_cell(score.get("date_release")),
+            "license": _clean_cell(score.get("license")),
+            "associated_pgs_ids": self._pgs_associated_ids(variant_payload),
+        }
+        if not score:
+            record["summary"] = (
+                f"PGS Catalog variant {rsid} is linked to polygenic score {pgs_id}, "
+                "but score details were not returned by the optional lookup."
+            )
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _pgs_summary(
+        self,
+        rsid: str,
+        pgs_id: str,
+        score: dict[str, Any],
+        performance_records: list[dict[str, Any]],
+    ) -> str:
+        score_id = _clean_cell(score.get("id")) or pgs_id
+        name = _clean_cell(score.get("name"))
+        trait = _clean_cell(score.get("trait_reported")) or "reported trait"
+        lead = f"PGS Catalog score {score_id}"
+        if name:
+            lead = f"{lead} ({name})"
+        lead = f"{lead} includes variant {rsid} and predicts {trait}"
+
+        parts: list[str] = []
+        mapped_traits = [trait_row["label"] for trait_row in self._pgs_traits(score.get("trait_efo")) if trait_row.get("label")]
+        if mapped_traits:
+            parts.append(f"mapped traits: {', '.join(mapped_traits[:3])}")
+        variants_number = self._pgs_count(score.get("variants_number"))
+        if variants_number:
+            parts.append(f"{variants_number} variants")
+        interactions = self._pgs_count(score.get("variants_interactions"))
+        if interactions and interactions != "0":
+            parts.append(f"{interactions} interaction terms")
+        method = _clean_cell(score.get("method_name"))
+        method_params = _clean_cell(score.get("method_params"))
+        if method:
+            method_text = f"method {method}"
+            if method_params:
+                method_text = f"{method_text} ({method_params})"
+            parts.append(method_text)
+        weight_type = _clean_cell(score.get("weight_type"))
+        if weight_type and weight_type != "NR":
+            parts.append(f"weight type {weight_type}")
+        genome_build = _clean_cell(score.get("variants_genomebuild"))
+        if genome_build and genome_build != "NR":
+            parts.append(f"variant genome build {genome_build}")
+        sample_text = self._pgs_sample_text(score.get("samples_variants"), "variant-source sample")
+        if sample_text:
+            parts.append(sample_text)
+        training_text = self._pgs_sample_text(score.get("samples_training"), "training sample")
+        if training_text:
+            parts.append(training_text)
+        ancestry_text = self._pgs_ancestry_distribution_text(score.get("ancestry_distribution"))
+        if ancestry_text:
+            parts.append(ancestry_text)
+        performance_text = self._pgs_performance_text(performance_records)
+        if performance_text:
+            parts.append(performance_text)
+        publication_text = self._pgs_publication_text(score.get("publication"))
+        if publication_text:
+            parts.append(publication_text)
+        harmonized = self._pgs_harmonized_files(score.get("ftp_harmonized_scoring_files"))
+        if harmonized:
+            parts.append(f"harmonized scoring files: {', '.join(harmonized.keys())}")
+        release = _clean_cell(score.get("date_release"))
+        if release:
+            parts.append(f"released {release}")
+        return f"{lead}: {'; '.join(parts)}." if parts else f"{lead}."
+
+    def _pgs_associated_ids(self, payload: Any) -> list[str]:
+        if not isinstance(payload, dict):
+            return []
+        values = payload.get("associated_pgs_ids") or payload.get("associated_PGS_ids") or payload.get("pgs_ids")
+        ids: list[str] = []
+        if isinstance(values, dict):
+            for nested in values.values():
+                ids.extend(self._pgs_clean_list(nested))
+        else:
+            ids.extend(self._pgs_clean_list(values))
+        return [value for value in ids if value.upper().startswith("PGS")]
+
+    def _pgs_traits(self, values: Any) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "id": _clean_cell(value.get("id")),
+                "label": _clean_cell(value.get("label")),
+                "description": _clean_cell(value.get("description")),
+                "url": _clean_cell(value.get("url")),
+            }
+            cleaned = {key: item for key, item in row.items() if item}
+            if cleaned and cleaned not in rows:
+                rows.append(cleaned)
+        return rows
+
+    def _pgs_publication(self, value: Any) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            return {}
+        row = {
+            "id": _clean_cell(value.get("id")),
+            "title": _clean_cell(value.get("title")),
+            "doi": _clean_cell(value.get("doi")),
+            "pmid": _clean_cell(value.get("PMID") or value.get("pmid")),
+            "journal": _clean_cell(value.get("journal")),
+            "first_author": _clean_cell(value.get("firstauthor") or value.get("first_author")),
+            "date_publication": _clean_cell(value.get("date_publication")),
+        }
+        return {key: item for key, item in row.items() if item}
+
+    def _pgs_samples(self, values: Any) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values[:5]:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "sample_number": value.get("sample_number"),
+                "sample_cases": value.get("sample_cases"),
+                "sample_controls": value.get("sample_controls"),
+                "sample_percent_male": value.get("sample_percent_male"),
+                "sample_age": _clean_cell(value.get("sample_age")),
+                "phenotyping": _clean_cell(value.get("phenotyping_free")),
+                "followup_time": _clean_cell(value.get("followup_time")),
+                "ancestry_broad": _clean_cell(value.get("ancestry_broad")),
+                "ancestry_free": _clean_cell(value.get("ancestry_free")),
+                "ancestry_country": _clean_cell(value.get("ancestry_country")),
+                "ancestry_additional": _clean_cell(value.get("ancestry_additional")),
+                "source_gwas_catalog": _clean_cell(value.get("source_GWAS_catalog")),
+                "source_pmid": _clean_cell(value.get("source_PMID")),
+                "source_doi": _clean_cell(value.get("source_DOI")),
+                "cohorts": self._pgs_cohorts(value.get("cohorts")),
+                "cohorts_additional": _clean_cell(value.get("cohorts_additional")),
+            }
+            rows.append({key: item for key, item in row.items() if item not in ("", [], None)})
+        return rows
+
+    def _pgs_cohorts(self, values: Any) -> list[str]:
+        if not isinstance(values, list):
+            return []
+        cohorts: list[str] = []
+        for value in values:
+            if isinstance(value, dict):
+                text = _clean_cell(value.get("name_short") or value.get("name_full") or value.get("name_others"))
+            else:
+                text = _clean_cell(value)
+            if text and text not in cohorts:
+                cohorts.append(text)
+        return cohorts
+
+    def _pgs_performance_record(self, value: dict[str, Any]) -> dict[str, Any]:
+        sampleset = value.get("sampleset") if isinstance(value.get("sampleset"), dict) else {}
+        row = {
+            "id": _clean_cell(value.get("id")),
+            "associated_pgs_id": _clean_cell(value.get("associated_pgs_id")),
+            "phenotyping_reported": _clean_cell(value.get("phenotyping_reported")),
+            "publication": self._pgs_publication(value.get("publication")),
+            "sampleset_id": _clean_cell(sampleset.get("id")),
+            "samples": self._pgs_samples(sampleset.get("samples")),
+            "metrics": self._pgs_performance_metrics(value.get("performance_metrics")),
+            "covariates": _clean_cell(value.get("covariates")),
+            "performance_comments": _clean_cell(value.get("performance_comments")),
+        }
+        return {key: item for key, item in row.items() if item not in ("", [], {}, None)}
+
+    def _pgs_performance_metrics(self, value: Any) -> list[dict[str, Any]]:
+        if not isinstance(value, dict):
+            return []
+        rows: list[dict[str, Any]] = []
+        for category, label in (
+            ("effect_sizes", "effect_size"),
+            ("class_acc", "classification_accuracy"),
+            ("othermetrics", "other"),
+        ):
+            for metric in value.get(category) or []:
+                if not isinstance(metric, dict):
+                    continue
+                row = {
+                    "category": label,
+                    "name_long": _clean_cell(metric.get("name_long")),
+                    "name_short": _clean_cell(metric.get("name_short")),
+                    "estimate": metric.get("estimate"),
+                    "ci_lower": metric.get("ci_lower"),
+                    "ci_upper": metric.get("ci_upper"),
+                }
+                rows.append({key: item for key, item in row.items() if item not in ("", None)})
+        return rows
+
+    def _pgs_harmonized_files(self, value: Any) -> dict[str, str]:
+        if not isinstance(value, dict):
+            return {}
+        rows: dict[str, str] = {}
+        for build, payload in value.items():
+            if not isinstance(payload, dict):
+                continue
+            url = _clean_cell(payload.get("positions") or payload.get("effect_allele") or payload.get("url"))
+            if url:
+                rows[_clean_cell(build)] = url
+        return rows
+
+    def _pgs_sample_text(self, values: Any, label: str) -> str:
+        samples = self._pgs_samples(values)
+        if not samples:
+            return ""
+        first = samples[0]
+        sample_number = self._pgs_count(first.get("sample_number"))
+        ancestry = _clean_cell(first.get("ancestry_broad"))
+        countries = _clean_cell(first.get("ancestry_country"))
+        parts = [label]
+        if sample_number:
+            parts.append(sample_number)
+        if ancestry:
+            parts.append(ancestry)
+        if countries:
+            parts.append(f"({self._pgs_clip(countries, 120)})")
+        source = _clean_cell(first.get("source_gwas_catalog") or first.get("source_pmid") or first.get("source_doi"))
+        if source:
+            parts.append(f"source {source}")
+        return " ".join(parts)
+
+    def _pgs_ancestry_distribution_text(self, value: Any) -> str:
+        if not isinstance(value, dict):
+            return ""
+        parts: list[str] = []
+        for key, label in (("gwas", "GWAS"), ("eval", "evaluation")):
+            payload = value.get(key)
+            if not isinstance(payload, dict):
+                continue
+            count = self._pgs_count(payload.get("count"))
+            dist = payload.get("dist") if isinstance(payload.get("dist"), dict) else {}
+            dist_text = ", ".join(f"{group} {amount}%" for group, amount in dist.items())
+            text = f"{label} ancestry"
+            if count:
+                text = f"{text} n={count}"
+            if dist_text:
+                text = f"{text} ({dist_text})"
+            parts.append(text)
+        return "; ".join(parts)
+
+    def _pgs_performance_text(self, performance_records: list[dict[str, Any]]) -> str:
+        if not performance_records:
+            return ""
+        first = performance_records[0]
+        metrics = first.get("metrics") if isinstance(first.get("metrics"), list) else []
+        metric_texts = []
+        for metric in metrics[:3]:
+            name = _clean_cell(metric.get("name_short") or metric.get("name_long"))
+            estimate = _clean_cell(metric.get("estimate"))
+            ci_lower = _clean_cell(metric.get("ci_lower"))
+            ci_upper = _clean_cell(metric.get("ci_upper"))
+            if not (name and estimate):
+                continue
+            text = f"{name} {estimate}"
+            if ci_lower and ci_upper:
+                text = f"{text} ({ci_lower}-{ci_upper})"
+            metric_texts.append(text)
+        if not metric_texts:
+            return ""
+        phenotype = _clean_cell(first.get("phenotyping_reported"))
+        sample_text = self._pgs_sample_text(first.get("samples"), "evaluated sample")
+        details = ", ".join(metric_texts)
+        if phenotype:
+            details = f"{phenotype}: {details}"
+        if sample_text:
+            details = f"{details}; {sample_text}"
+        return f"performance {details}"
+
+    def _pgs_publication_text(self, value: Any) -> str:
+        publication = self._pgs_publication(value)
+        if not publication:
+            return ""
+        parts = []
+        if publication.get("first_author"):
+            parts.append(publication["first_author"])
+        if publication.get("date_publication"):
+            parts.append(publication["date_publication"])
+        if publication.get("pmid"):
+            parts.append(f"PMID {publication['pmid']}")
+        if publication.get("doi"):
+            parts.append(f"DOI {publication['doi']}")
+        return f"publication {', '.join(parts)}" if parts else ""
+
+    def _pgs_clean_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            values = [values]
+        if not isinstance(values, list):
+            values = [values]
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _pgs_count(self, value: Any) -> str:
+        try:
+            return f"{int(value):,}"
+        except (TypeError, ValueError):
+            return _clean_cell(value)
+
+    def _pgs_clip(self, value: str, limit: int) -> str:
+        if len(value) <= limit:
+            return value
+        return value[: limit - 1].rstrip() + "..."
+
+    def _pgs_is_not_found(self, exc: KnowledgeRequestError) -> bool:
+        text = str(exc).lower()
+        return "404" in text or "not found" in text
+
+
+class IgsrConnector(BaseConnector):
+    """1000 Genomes Project / IGSR data-access connector."""
+
+    def query(self, context: KnowledgeQuery) -> SourceResult:
+        started = time.monotonic()
+        variant = _first_variant(context)
+        chrom = self._chromosome(context, variant)
+        if not chrom:
+            return SourceResult(
+                self.spec.key,
+                "skipped",
+                "No chromosome or variant coordinate was available for 1000 Genomes/IGSR lookup.",
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        urls: list[str] = []
+        warnings: list[str] = []
+        high_listing = self._get_listing(
+            IGSR_HIGH_COVERAGE_PHASED_URL,
+            urls,
+            warnings,
+            "high-coverage GRCh38 phased VCF listing",
+        )
+        phase3_listing = self._get_listing(
+            IGSR_PHASE3_RELEASE_URL,
+            urls,
+            warnings,
+            "Phase 3 GRCh37 release listing",
+        )
+        high_file = self._file_meta(high_listing, IGSR_HIGH_COVERAGE_PHASED_URL, self._high_coverage_filename(chrom))
+        phase3_file = self._file_meta(phase3_listing, IGSR_PHASE3_RELEASE_URL, self._phase3_filename(chrom))
+        phase3_site_file = self._file_meta(
+            phase3_listing,
+            IGSR_PHASE3_RELEASE_URL,
+            "ALL.wgs.phase3_shapeit2_mvncall_integrated_v5c.20130502.sites.vcf.gz",
+        )
+        sample_panel = self._file_meta(
+            phase3_listing,
+            IGSR_PHASE3_RELEASE_URL,
+            "integrated_call_samples_v3.20130502.ALL.panel",
+        )
+
+        primary_kind = self._primary_kind(context, high_file, phase3_file)
+        primary_file = high_file if primary_kind == "high_coverage" else phase3_file
+        if not primary_file:
+            primary_file = high_file or phase3_file
+            primary_kind = "high_coverage" if primary_file == high_file else "phase3"
+
+        if not primary_file:
+            message = "Queried IGSR/1000 Genomes release listings, but no chromosome VCF was identified for chromosome "
+            message = f"{message}{chrom}."
+            status = "failed" if warnings and len(warnings) >= 2 else "ok"
+            return SourceResult(
+                self.spec.key,
+                status,
+                message,
+                [],
+                warnings=warnings,
+                errors=warnings if status == "failed" else [],
+                queried_urls=urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        record = self._record(
+            context,
+            variant,
+            chrom,
+            primary_kind,
+            primary_file,
+            high_file,
+            phase3_file,
+            phase3_site_file,
+            sample_panel,
+        )
+        label = self._variant_label(context, variant, chrom)
+        return SourceResult(
+            self.spec.key,
+            "ok",
+            f"Queried IGSR/1000 Genomes FTP release listings; 1 data-access record returned for {label}.",
+            [record],
+            warnings=warnings,
+            queried_urls=urls,
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _get_listing(self, url: str, urls: list[str], warnings: list[str], label: str) -> str:
+        try:
+            text = self.client.get_text(
+                url,
+                headers={"Accept": "text/html,text/plain,*/*"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            urls.append(url)
+            return text
+        except KnowledgeRequestError:
+            urls.append(url)
+            warnings.append(f"Optional IGSR {label} lookup failed; available release details were still used.")
+            return ""
+
+    def _record(
+        self,
+        context: KnowledgeQuery,
+        variant: Any,
+        chrom: str,
+        primary_kind: str,
+        primary_file: dict[str, str],
+        high_file: dict[str, str],
+        phase3_file: dict[str, str],
+        phase3_site_file: dict[str, str],
+        sample_panel: dict[str, str],
+    ) -> dict[str, Any]:
+        is_high = primary_kind == "high_coverage"
+        assembly = "GRCh38" if is_high else "GRCh37"
+        dataset = (
+            "1000 Genomes 2504 high-coverage phased callset"
+            if is_high
+            else "1000 Genomes Phase 3 integrated callset"
+        )
+        record = {
+            "category": "population_reference_panel",
+            "source": self.spec.name,
+            "label": f"{dataset} chr{chrom}",
+            "summary": self._summary(context, variant, chrom, primary_kind, primary_file, high_file, phase3_file),
+            "source_id": self._source_id(primary_kind, chrom),
+            "url": primary_file.get("url"),
+            "data_portal_url": IGSR_PORTAL_URL,
+            "variant": _clean_cell(getattr(variant, "label", "")) or self._variant_label(context, variant, chrom),
+            "rsid": _clean_cell(getattr(variant, "rsid", "")),
+            "gene": context.gene,
+            "chromosome": chrom,
+            "position": getattr(variant, "pos", None),
+            "query_build": context.genome_build,
+            "assembly": assembly,
+            "dataset": dataset,
+            "samples": 2504,
+            "populations": 26,
+            "population_groups": ["AFR", "AMR", "EAS", "EUR", "SAS"],
+            "file_url": primary_file.get("url"),
+            "index_url": primary_file.get("index_url"),
+            "file_name": primary_file.get("name"),
+            "file_size": primary_file.get("size"),
+            "last_modified": primary_file.get("last_modified"),
+            "data_fields": self._data_fields(primary_kind),
+            "readme_urls": [IGSR_HIGH_COVERAGE_README_URL, IGSR_PHASE3_README_URL, IGSR_PHASE3_ANNOTATION_README_URL],
+            "related_files": self._related_files(primary_kind, high_file, phase3_file, phase3_site_file, sample_panel),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _summary(
+        self,
+        context: KnowledgeQuery,
+        variant: Any,
+        chrom: str,
+        primary_kind: str,
+        primary_file: dict[str, str],
+        high_file: dict[str, str],
+        phase3_file: dict[str, str],
+    ) -> str:
+        variant_label = self._variant_label(context, variant, chrom)
+        file_text = self._file_text(primary_file)
+        if primary_kind == "high_coverage":
+            lead = (
+                f"IGSR/1000 Genomes high-coverage GRCh38 data-access context for {variant_label}: "
+                f"chromosome VCF {file_text} and tabix index are available for the 30x NYGC 2504-sample "
+                "Phase 3 panel"
+            )
+            parts = [
+                "use the indexed VCF to extract exact genotypes, AC/AN, or allele counts for this coordinate",
+            ]
+            if phase3_file:
+                parts.append(
+                    "legacy Phase 3 GRCh37 integrated data are also available via "
+                    f"{phase3_file.get('name')} ({phase3_file.get('size')}) with global and superpopulation AF tags"
+                )
+            parts.append("rsIDs were removed from the Phase 3 v5b VCF, so coordinate lookup or Ensembl rsID mapping is needed")
+            return f"{lead}; {'; '.join(parts)}."
+
+        lead = (
+            f"IGSR/1000 Genomes Phase 3 GRCh37 data-access context for {variant_label}: "
+            f"chromosome genotype VCF {file_text} and tabix index are available"
+        )
+        parts = [
+            "final Phase 3 release has phased genotypes for 2,504 individuals from 26 populations",
+            "VCF INFO contains AN, AC, global AF, and EAS/EUR/AFR/AMR/SAS allele-frequency tags",
+            "rsIDs were removed from the v5b VCF, so coordinate lookup or Ensembl rsID mapping is needed",
+        ]
+        if self._is_hg38(context):
+            parts.append("input build is GRCh38; lift over coordinates or prefer the high-coverage GRCh38 file before direct extraction")
+        elif high_file:
+            parts.append(f"a GRCh38 high-coverage phased file is also available as {high_file.get('name')} ({high_file.get('size')})")
+        return f"{lead}; {'; '.join(parts)}."
+
+    def _data_fields(self, primary_kind: str) -> list[str]:
+        if primary_kind == "phase3":
+            return ["phased genotypes", "AN", "AC", "AF", "EAS_AF", "EUR_AF", "AFR_AF", "AMR_AF", "SAS_AF"]
+        return ["phased genotypes", "indexed chromosome VCF", "sample-level genotype extraction"]
+
+    def _related_files(
+        self,
+        primary_kind: str,
+        high_file: dict[str, str],
+        phase3_file: dict[str, str],
+        phase3_site_file: dict[str, str],
+        sample_panel: dict[str, str],
+    ) -> list[dict[str, str]]:
+        files: list[dict[str, str]] = []
+        for label, row in (
+            ("High-coverage GRCh38 phased chromosome VCF", high_file),
+            ("Phase 3 GRCh37 integrated chromosome VCF", phase3_file),
+            ("Phase 3 WGS sites VCF", phase3_site_file),
+            ("Phase 3 sample population panel", sample_panel),
+        ):
+            if not row:
+                continue
+            files.append(
+                {
+                    "label": label,
+                    "name": row.get("name", ""),
+                    "url": row.get("url", ""),
+                    "index_url": row.get("index_url", ""),
+                    "size": row.get("size", ""),
+                    "last_modified": row.get("last_modified", ""),
+                    "primary": label.startswith("High-coverage") if primary_kind == "high_coverage" else label.startswith("Phase 3 GRCh37"),
+                }
+            )
+        return [{key: value for key, value in row.items() if value not in ("", None)} for row in files]
+
+    def _file_meta(self, listing: str, base_url: str, filename: str) -> dict[str, str]:
+        if not listing or not filename:
+            return {}
+        entries = self._listing_entries(listing, base_url)
+        row = entries.get(filename)
+        if not row:
+            return {}
+        index_name = f"{filename}.tbi"
+        index_row = entries.get(index_name, {})
+        if index_row:
+            row["index_url"] = index_row.get("url", "")
+            row["index_size"] = index_row.get("size", "")
+            row["index_last_modified"] = index_row.get("last_modified", "")
+        return row
+
+    def _listing_entries(self, listing: str, base_url: str) -> dict[str, dict[str, str]]:
+        entries: dict[str, dict[str, str]] = {}
+        pattern = re.compile(
+            r'<tr><td[^>]*>.*?</td><td><a href="(?P<href>[^"]+)">(?P<name>.*?)</a></td>'
+            r'<td[^>]*>(?P<modified>.*?)</td><td[^>]*>(?P<size>.*?)</td>',
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        for match in pattern.finditer(listing):
+            name = html.unescape(re.sub(r"<.*?>", "", match.group("name"))).strip()
+            href = html.unescape(match.group("href")).strip()
+            if not name or name == "Parent Directory" or href.endswith("/"):
+                continue
+            url = href if href.startswith(("http://", "https://")) else f"{base_url.rstrip('/')}/{href.lstrip('/')}"
+            entries[name] = {
+                "name": name,
+                "url": url,
+                "last_modified": html.unescape(re.sub(r"<.*?>", "", match.group("modified"))).strip(),
+                "size": html.unescape(re.sub(r"<.*?>", "", match.group("size"))).strip(),
+            }
+        return entries
+
+    def _primary_kind(self, context: KnowledgeQuery, high_file: dict[str, str], phase3_file: dict[str, str]) -> str:
+        if self._is_hg38(context) and high_file:
+            return "high_coverage"
+        if phase3_file:
+            return "phase3"
+        return "high_coverage" if high_file else "phase3"
+
+    def _source_id(self, primary_kind: str, chrom: str) -> str:
+        if primary_kind == "high_coverage":
+            return f"1000G_2504_high_coverage_GRCh38_chr{chrom}"
+        return f"1000G_phase3_20130502_GRCh37_chr{chrom}"
+
+    def _file_text(self, row: dict[str, str]) -> str:
+        name = row.get("name", "the chromosome VCF")
+        size = row.get("size")
+        modified = row.get("last_modified")
+        details = []
+        if size:
+            details.append(size)
+        if modified:
+            details.append(f"updated {modified}")
+        return f"{name} ({', '.join(details)})" if details else name
+
+    def _variant_label(self, context: KnowledgeQuery, variant: Any, chrom: str) -> str:
+        label = _clean_cell(getattr(variant, "rsid", ""))
+        position = getattr(variant, "pos", None)
+        coordinate = f"{chrom}:{position}" if position else context.region or f"chr{chrom}"
+        change = ""
+        ref = _clean_cell(getattr(variant, "ref", ""))
+        alt = _clean_cell(getattr(variant, "alt", ""))
+        if ref and alt:
+            change = f" {ref}>{alt}"
+        return f"{label} at {coordinate}{change}" if label else f"{coordinate}{change}"
+
+    def _chromosome(self, context: KnowledgeQuery, variant: Any) -> str:
+        chrom = _clean_cell(getattr(variant, "chrom", ""))
+        if not chrom and context.region:
+            chrom = context.region.split(":", 1)[0]
+        chrom = chrom.removeprefix("chr").removeprefix("Chr").strip()
+        upper = chrom.upper()
+        if upper in {"M", "MT", "MITO", "MITOCHONDRIAL"}:
+            return "MT"
+        return upper if upper in {"X", "Y"} else chrom
+
+    def _is_hg38(self, context: KnowledgeQuery) -> bool:
+        build = context.genome_build.lower()
+        return "38" in build or "grch38" in build or "b38" in build
+
+    def _high_coverage_filename(self, chrom: str) -> str:
+        if chrom == "X":
+            return "CCDG_14151_B01_GRM_WGS_2020-08-05_chrX.filtered.eagle2-phased.v2.vcf.gz"
+        if chrom in {"Y", "MT"}:
+            return ""
+        return f"CCDG_14151_B01_GRM_WGS_2020-08-05_chr{chrom}.filtered.shapeit2-duohmm-phased.vcf.gz"
+
+    def _phase3_filename(self, chrom: str) -> str:
+        if chrom == "X":
+            return "ALL.chrX.phase3_shapeit2_mvncall_integrated_v1c.20130502.genotypes.vcf.gz"
+        if chrom == "Y":
+            return "ALL.chrY.phase3_integrated_v2b.20130502.genotypes.vcf.gz"
+        if chrom == "MT":
+            return "ALL.chrMT.phase3_callmom-v0_4.20130502.genotypes.vcf.gz"
+        return f"ALL.chr{chrom}.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz"
 
 
 class EncodeConnector(BaseConnector):
@@ -1017,73 +3802,1151 @@ class GraphqlConnector(BaseConnector):
 
     def query(self, context: KnowledgeQuery) -> SourceResult:
         started = time.monotonic()
-        variant = _first_variant(context)
-        urls: list[str] = []
-        records: list[dict[str, Any]] = []
         if self.spec.connector_kind == "gnomad":
-            if variant is None:
-                return SourceResult(self.spec.key, "skipped", "No variant was available for gnomAD lookup.")
-            variant_id = f"{variant.chrom.removeprefix('chr')}-{variant.pos}-{variant.ref}-{variant.alt.split(',')[0]}"
-            url = "https://gnomad.broadinstitute.org/api/"
-            query = """
-            query Variant($variantId: String!, $dataset: DatasetId!) {
-              variant(variantId: $variantId, dataset: $dataset) {
-                variantId
-                genome { ac an af }
-                exome { ac an af }
-              }
-            }
-            """
-            variables = {"variantId": variant_id, "dataset": "gnomad_r4"}
-            try:
-                payload = self.client.post_json(url, json_payload={"query": query, "variables": variables})
-                urls.append(url)
-                item = payload.get("data", {}).get("variant")
-                if item:
-                    records.append(
-                        {
-                            "category": "population_frequency",
-                            "source": self.spec.name,
-                            "label": variant_id,
-                            "summary": f"gnomAD frequency context for {variant_id}.",
-                            "source_id": item.get("variantId"),
-                            "url": f"https://gnomad.broadinstitute.org/variant/{variant_id}",
-                            "variant": variant.label,
-                            "frequencies": {"genome": item.get("genome"), "exome": item.get("exome")},
-                        }
-                    )
-                return SourceResult(self.spec.key, "ok", f"Queried gnomAD; {len(records)} record(s).", records, queried_urls=urls, elapsed_ms=_elapsed_ms(started))
-            except KnowledgeRequestError as exc:
-                return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+            return self._query_gnomad(context, started)
 
-        url = "https://civicdb.org/api/graphql"
-        query = """
-        query Gene($name: String!) {
-          gene(name: $name) {
-            id
+        return self._query_civic(context, started)
+
+    def _query_gnomad(self, context: KnowledgeQuery, started: float) -> SourceResult:
+        variant = _first_variant(context)
+        variant_id = self._gnomad_variant_id(variant)
+        rsid = _clean_cell(variant.rsid if variant else _first_rsid(context))
+        has_variant_lookup = bool(variant_id or rsid)
+        variables = {
+            "dataset": GNOMAD_DATASET,
+            "geneSymbol": context.gene,
+            "referenceGenome": self._gnomad_reference_genome(context),
+        }
+        if has_variant_lookup:
+            variables.update({"variantId": variant_id or None, "rsid": None if variant_id else rsid})
+            query = self._gnomad_variant_gene_query()
+        else:
+            query = self._gnomad_gene_query()
+
+        try:
+            payload = self.client.post_json(
+                GNOMAD_API_URL,
+                json_payload={"query": query, "variables": variables},
+                headers={"Accept": "application/json", "Content-Type": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+        except KnowledgeRequestError as exc:
+            return SourceResult(
+                self.spec.key,
+                "failed",
+                str(exc),
+                errors=[str(exc)],
+                queried_urls=[GNOMAD_API_URL],
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        errors = payload.get("errors") if isinstance(payload, dict) else None
+        if errors:
+            message = self._graphql_error_message(errors, "gnomAD GraphQL query failed.", "gnomAD")
+            return SourceResult(
+                self.spec.key,
+                "failed",
+                message,
+                errors=[message],
+                queried_urls=[GNOMAD_API_URL],
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        data = payload.get("data", {}) if isinstance(payload, dict) else {}
+        if not isinstance(data, dict):
+            data = {}
+        meta = data.get("meta") if isinstance(data.get("meta"), dict) else {}
+        variant_payload = data.get("variant") if isinstance(data.get("variant"), dict) else {}
+        gene_payload = data.get("gene") if isinstance(data.get("gene"), dict) else {}
+
+        records: list[dict[str, Any]] = []
+        if variant_payload:
+            records.append(self._gnomad_variant_record(context, variant, variant_payload, gene_payload, meta))
+        if gene_payload:
+            records.append(self._gnomad_gene_record(context, gene_payload, meta))
+
+        lookup_label = variant_id or rsid
+        if not records:
+            if has_variant_lookup:
+                message = f"Queried gnomAD; no variant or gene records found for {lookup_label} / {context.gene}."
+            else:
+                message = f"Queried gnomAD; no gene constraint record found for {context.gene}."
+        elif variant_payload and gene_payload:
+            message = f"Queried gnomAD; variant frequency and gene constraint records returned for {lookup_label}."
+        elif variant_payload:
+            message = f"Queried gnomAD; variant frequency record returned for {lookup_label}."
+        else:
+            message = f"Queried gnomAD; gene constraint record returned for {context.gene}."
+        return SourceResult(
+            self.spec.key,
+            "ok",
+            message,
+            records,
+            queried_urls=[GNOMAD_API_URL],
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _gnomad_variant_gene_query(self) -> str:
+        return """
+        query GnomadVariantAndGene(
+          $variantId: String,
+          $rsid: String,
+          $dataset: DatasetId!,
+          $geneSymbol: String!,
+          $referenceGenome: ReferenceGenomeId!
+        ) {
+          meta { clinvar_release_date }
+          variant(variantId: $variantId, rsid: $rsid, dataset: $dataset) {
+            variantId
+            variant_id
+            reference_genome
+            chrom
+            pos
+            ref
+            alt
+            caid
+            rsid
+            rsids
+            flags
+            exome {
+              ac an af homozygote_count hemizygote_count ac_hom ac_hemi filters flags
+              faf95 { popmax popmax_population }
+              faf99 { popmax popmax_population }
+              populations { id ac an homozygote_count hemizygote_count ac_hom ac_hemi }
+            }
+            genome {
+              ac an af homozygote_count hemizygote_count ac_hom ac_hemi filters flags
+              faf95 { popmax popmax_population }
+              faf99 { popmax popmax_population }
+              populations { id ac an homozygote_count hemizygote_count ac_hom ac_hemi }
+            }
+            joint {
+              ac an homozygote_count hemizygote_count filters
+              faf95 { popmax popmax_population }
+              faf99 { popmax popmax_population }
+              populations { id ac an homozygote_count hemizygote_count ac_hom ac_hemi }
+            }
+            transcript_consequences {
+              gene_id
+              gene_symbol
+              transcript_id
+              transcript_version
+              is_canonical
+              is_mane_select
+              major_consequence
+              consequence_terms
+              hgvsc
+              hgvsp
+              hgvs
+              lof
+              lof_filter
+              lof_flags
+              polyphen_prediction
+              sift_prediction
+              domains
+            }
+            in_silico_predictors { id value flags }
+            lof_curations { gene_id gene_symbol verdict flags project }
+            non_coding_constraint { chrom start stop element_id possible observed expected oe z }
+          }
+          gene(gene_symbol: $geneSymbol, reference_genome: $referenceGenome) {
+            gene_id
+            gene_version
+            symbol
+            gencode_symbol
+            hgnc_id
+            ncbi_id
+            omim_id
             name
-            variants(first: 5) { nodes { id name } }
+            reference_genome
+            chrom
+            start
+            stop
+            strand
+            canonical_transcript_id
+            mane_select_transcript { ensembl_id ensembl_version refseq_id refseq_version }
+            flags
+            gnomad_constraint {
+              exp_lof exp_mis exp_syn
+              obs_lof obs_mis obs_syn
+              oe_lof oe_lof_lower oe_lof_upper oe_lof_percentile
+              oe_mis oe_mis_lower oe_mis_upper
+              oe_syn oe_syn_lower oe_syn_upper
+              lof_z mis_z syn_z pli pLI flags
+            }
           }
         }
         """
+
+    def _gnomad_gene_query(self) -> str:
+        return """
+        query GnomadGene($geneSymbol: String!, $referenceGenome: ReferenceGenomeId!) {
+          meta { clinvar_release_date }
+          gene(gene_symbol: $geneSymbol, reference_genome: $referenceGenome) {
+            gene_id
+            gene_version
+            symbol
+            gencode_symbol
+            hgnc_id
+            ncbi_id
+            omim_id
+            name
+            reference_genome
+            chrom
+            start
+            stop
+            strand
+            canonical_transcript_id
+            mane_select_transcript { ensembl_id ensembl_version refseq_id refseq_version }
+            flags
+            gnomad_constraint {
+              exp_lof exp_mis exp_syn
+              obs_lof obs_mis obs_syn
+              oe_lof oe_lof_lower oe_lof_upper oe_lof_percentile
+              oe_mis oe_mis_lower oe_mis_upper
+              oe_syn oe_syn_lower oe_syn_upper
+              lof_z mis_z syn_z pli pLI flags
+            }
+          }
+        }
+        """
+
+    def _gnomad_variant_record(
+        self,
+        context: KnowledgeQuery,
+        input_variant: Any,
+        item: dict[str, Any],
+        gene: dict[str, Any],
+        meta: dict[str, Any],
+    ) -> dict[str, Any]:
+        variant_id = _clean_cell(item.get("variantId") or item.get("variant_id"))
+        rsids = self._gnomad_clean_list(item.get("rsids"))
+        rsid = _clean_cell(item.get("rsid")) or (rsids[0] if rsids else "")
+        transcript_consequences = self._gnomad_transcript_consequences(item.get("transcript_consequences"), context)
+        primary_transcript = self._gnomad_primary_transcript(transcript_consequences, context)
+        frequencies = {
+            "joint": self._gnomad_frequency_block(item.get("joint"), compute_af=True),
+            "genome": self._gnomad_frequency_block(item.get("genome")),
+            "exome": self._gnomad_frequency_block(item.get("exome")),
+        }
+        frequencies = {key: value for key, value in frequencies.items() if value}
+        record = {
+            "category": "population_frequency",
+            "source": self.spec.name,
+            "label": rsid or variant_id or (input_variant.label if input_variant else context.gene),
+            "summary": self._gnomad_variant_summary(item, frequencies, primary_transcript),
+            "source_id": variant_id,
+            "url": self._gnomad_variant_url(variant_id or (input_variant.label if input_variant else "")),
+            "variant": input_variant.label if input_variant else (rsid or variant_id),
+            "variant_id": variant_id,
+            "rsid": rsid,
+            "rsids": rsids,
+            "caid": _clean_cell(item.get("caid")),
+            "dataset": GNOMAD_DATASET,
+            "reference_genome": _clean_cell(item.get("reference_genome")),
+            "chromosome": _clean_cell(item.get("chrom")),
+            "position": item.get("pos"),
+            "ref": _clean_cell(item.get("ref")),
+            "alt": _clean_cell(item.get("alt")),
+            "filters": self._gnomad_variant_filters(frequencies),
+            "flags": self._gnomad_clean_list(item.get("flags")),
+            "frequencies": frequencies,
+            "top_populations": self._gnomad_top_populations(frequencies),
+            "faf": self._gnomad_faf_summary(frequencies),
+            "transcript_consequence": primary_transcript,
+            "transcript_consequences": transcript_consequences[:5],
+            "in_silico_predictors": self._gnomad_predictors(item.get("in_silico_predictors")),
+            "lof_curations": self._gnomad_lof_curations(item.get("lof_curations")),
+            "non_coding_constraint": self._gnomad_non_coding_constraint(item.get("non_coding_constraint")),
+            "gene_constraint": self._gnomad_constraint(gene.get("gnomad_constraint") if gene else {}),
+            "clinvar_release_date": _clean_cell(meta.get("clinvar_release_date")),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _gnomad_gene_record(self, context: KnowledgeQuery, gene: dict[str, Any], meta: dict[str, Any]) -> dict[str, Any]:
+        symbol = _clean_cell(gene.get("symbol")) or context.gene
+        record = {
+            "category": "gene_constraint",
+            "source": self.spec.name,
+            "label": f"{symbol} gnomAD constraint",
+            "summary": self._gnomad_gene_summary(gene),
+            "source_id": _clean_cell(gene.get("gene_id")),
+            "url": self._gnomad_gene_url(symbol),
+            "gene": symbol,
+            "gene_id": _clean_cell(gene.get("gene_id")),
+            "gene_version": _clean_cell(gene.get("gene_version")),
+            "gene_name": _clean_cell(gene.get("name")),
+            "gencode_symbol": _clean_cell(gene.get("gencode_symbol")),
+            "hgnc_id": _clean_cell(gene.get("hgnc_id")),
+            "ncbi_id": _clean_cell(gene.get("ncbi_id")),
+            "omim_id": _clean_cell(gene.get("omim_id")),
+            "reference_genome": _clean_cell(gene.get("reference_genome")),
+            "location": self._gnomad_gene_location(gene),
+            "canonical_transcript_id": _clean_cell(gene.get("canonical_transcript_id")),
+            "mane_select_transcript": self._gnomad_mane_transcript(gene.get("mane_select_transcript")),
+            "flags": self._gnomad_clean_list(gene.get("flags")),
+            "constraint": self._gnomad_constraint(gene.get("gnomad_constraint")),
+            "clinvar_release_date": _clean_cell(meta.get("clinvar_release_date")),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _gnomad_variant_id(self, variant: Any) -> str:
+        if not variant or not variant.chrom or not variant.pos or not variant.ref or not variant.alt:
+            return ""
+        alt = str(variant.alt).split(",", 1)[0].strip()
+        if not alt:
+            return ""
+        return f"{variant.chrom.removeprefix('chr')}-{variant.pos}-{variant.ref}-{alt}"
+
+    def _gnomad_reference_genome(self, context: KnowledgeQuery) -> str:
+        return "GRCh38" if str(context.genome_build).lower() in {"hg38", "grch38"} else "GRCh37"
+
+    def _gnomad_variant_summary(
+        self,
+        item: dict[str, Any],
+        frequencies: dict[str, dict[str, Any]],
+        transcript: dict[str, Any],
+    ) -> str:
+        variant_id = _clean_cell(item.get("variantId") or item.get("variant_id"))
+        rsid = _clean_cell(item.get("rsid"))
+        identity = rsid or variant_id or "variant"
+        coordinate = self._gnomad_variant_coordinate(item)
+        prefix = f"gnomAD v4 {identity}"
+        if variant_id and variant_id != identity:
+            prefix = f"{prefix} ({variant_id})"
+        if coordinate:
+            prefix = f"{prefix} at {coordinate}"
+
+        parts: list[str] = []
+        for key, label in (("joint", "joint"), ("genome", "genomes"), ("exome", "exomes")):
+            text = self._gnomad_frequency_text(label, frequencies.get(key))
+            if text:
+                parts.append(text)
+        pop_text = self._gnomad_top_population_text(frequencies)
+        if pop_text:
+            parts.append(pop_text)
+        if transcript:
+            transcript_text = self._gnomad_transcript_text(transcript)
+            if transcript_text:
+                parts.append(transcript_text)
+        predictors_text = self._gnomad_predictor_text(item.get("in_silico_predictors"))
+        if predictors_text:
+            parts.append(predictors_text)
+        filters = self._gnomad_variant_filters(frequencies)
+        if filters:
+            parts.append(f"filters: {', '.join(filters[:4])}")
+        flags = self._gnomad_clean_list(item.get("flags"))
+        if flags:
+            parts.append(f"flags: {', '.join(flags[:4])}")
+        return f"{prefix}: {'; '.join(parts)}." if parts else f"{prefix}: no population frequency counts returned."
+
+    def _gnomad_gene_summary(self, gene: dict[str, Any]) -> str:
+        symbol = _clean_cell(gene.get("symbol")) or "gene"
+        gene_id = _clean_cell(gene.get("gene_id"))
+        constraint = self._gnomad_constraint(gene.get("gnomad_constraint"))
+        prefix = f"gnomAD v4 {symbol} gene constraint"
+        if gene_id:
+            prefix = f"{prefix} ({gene_id})"
+        parts: list[str] = []
+        pli = self._gnomad_float_text(constraint.get("pLI") if constraint else None)
+        if pli:
+            parts.append(f"pLI {pli}")
+        oe_lof = self._gnomad_float_text(constraint.get("oe_lof") if constraint else None)
+        if oe_lof:
+            ci = self._gnomad_ci_text(constraint, "oe_lof")
+            lof_z = self._gnomad_float_text(constraint.get("lof_z"))
+            text = f"LoF O/E {oe_lof}{ci}"
+            if lof_z:
+                text = f"{text}, Z {lof_z}"
+            parts.append(text)
+        oe_mis = self._gnomad_float_text(constraint.get("oe_mis") if constraint else None)
+        if oe_mis:
+            ci = self._gnomad_ci_text(constraint, "oe_mis")
+            mis_z = self._gnomad_float_text(constraint.get("mis_z"))
+            text = f"missense O/E {oe_mis}{ci}"
+            if mis_z:
+                text = f"{text}, Z {mis_z}"
+            parts.append(text)
+        observed_expected = self._gnomad_observed_expected_text(constraint)
+        if observed_expected:
+            parts.append(observed_expected)
+        flags = self._gnomad_clean_list(constraint.get("flags") if constraint else [])
+        if flags:
+            parts.append(f"constraint flags: {', '.join(flags[:4])}")
+        location = self._gnomad_gene_location(gene)
+        if location:
+            parts.append(f"gene location {location}")
+        return f"{prefix}: {'; '.join(parts)}." if parts else f"{prefix}: no constraint metrics returned."
+
+    def _gnomad_frequency_block(self, value: Any, *, compute_af: bool = False) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            return {}
+        ac = self._gnomad_int(value.get("ac"))
+        an = self._gnomad_int(value.get("an"))
+        af = value.get("af")
+        if af is None and compute_af and ac is not None and an:
+            af = ac / an
+        homozygote_count = self._gnomad_int(value.get("homozygote_count"))
+        if homozygote_count is None:
+            homozygote_count = self._gnomad_int(value.get("ac_hom"))
+        hemizygote_count = self._gnomad_int(value.get("hemizygote_count"))
+        if hemizygote_count is None:
+            hemizygote_count = self._gnomad_int(value.get("ac_hemi"))
+        block = {
+            "ac": ac,
+            "an": an,
+            "af": af,
+            "homozygote_count": homozygote_count,
+            "hemizygote_count": hemizygote_count,
+            "filters": self._gnomad_clean_list(value.get("filters")),
+            "flags": self._gnomad_clean_list(value.get("flags")),
+            "faf95": self._gnomad_faf(value.get("faf95")),
+            "faf99": self._gnomad_faf(value.get("faf99")),
+            "populations": self._gnomad_population_rows(value.get("populations")),
+        }
+        return {key: item for key, item in block.items() if item not in ("", [], {}, None)}
+
+    def _gnomad_population_rows(self, values: Any) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            ac = self._gnomad_int(value.get("ac"))
+            an = self._gnomad_int(value.get("an"))
+            homozygote_count = self._gnomad_int(value.get("homozygote_count"))
+            if homozygote_count is None:
+                homozygote_count = self._gnomad_int(value.get("ac_hom"))
+            hemizygote_count = self._gnomad_int(value.get("hemizygote_count"))
+            if hemizygote_count is None:
+                hemizygote_count = self._gnomad_int(value.get("ac_hemi"))
+            row = {
+                "id": _clean_cell(value.get("id")),
+                "ac": ac,
+                "an": an,
+                "af": ac / an if ac is not None and an else None,
+                "homozygote_count": homozygote_count,
+                "hemizygote_count": hemizygote_count,
+            }
+            rows.append({key: item for key, item in row.items() if item not in ("", None)})
+        return rows
+
+    def _gnomad_faf(self, value: Any) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            return {}
+        row = {
+            "popmax": value.get("popmax"),
+            "popmax_population": _clean_cell(value.get("popmax_population")),
+        }
+        return {key: item for key, item in row.items() if item not in ("", None)}
+
+    def _gnomad_faf_summary(self, frequencies: dict[str, dict[str, Any]]) -> dict[str, Any]:
+        summary: dict[str, Any] = {}
+        for key, block in frequencies.items():
+            for faf_key in ("faf95", "faf99"):
+                if block.get(faf_key):
+                    summary[f"{key}_{faf_key}"] = block[faf_key]
+        return summary
+
+    def _gnomad_top_populations(self, frequencies: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+        top_rows: list[dict[str, Any]] = []
+        for dataset, block in frequencies.items():
+            populations = block.get("populations") if isinstance(block, dict) else []
+            if not isinstance(populations, list):
+                continue
+            eligible = [
+                row
+                for row in populations
+                if isinstance(row, dict)
+                and self._gnomad_int(row.get("ac"))
+                and not self._gnomad_population_is_sex_specific(row.get("id"))
+            ]
+            if not eligible:
+                continue
+            top = sorted(
+                eligible,
+                key=lambda row: (float(row.get("af") or 0), self._gnomad_int(row.get("ac")) or 0),
+                reverse=True,
+            )[0]
+            top_rows.append({"dataset": dataset, **top})
+        return sorted(
+            top_rows,
+            key=lambda row: (float(row.get("af") or 0), self._gnomad_int(row.get("ac")) or 0),
+            reverse=True,
+        )
+
+    def _gnomad_variant_filters(self, frequencies: dict[str, dict[str, Any]]) -> list[str]:
+        filters: list[str] = []
+        for block in frequencies.values():
+            if not isinstance(block, dict):
+                continue
+            filters.extend(self._gnomad_clean_list(block.get("filters")))
+        return self._gnomad_clean_list(filters)
+
+    def _gnomad_frequency_text(self, label: str, block: dict[str, Any] | None) -> str:
+        if not block:
+            return ""
+        ac = self._gnomad_int(block.get("ac"))
+        an = self._gnomad_int(block.get("an"))
+        af = block.get("af")
+        if af is None and ac is not None and an:
+            af = ac / an
+        if ac is None and an is None and af is None:
+            return ""
+        parts = [f"{label} AF {self._gnomad_float_text(af)}" if af is not None else f"{label} counts"]
+        if ac is not None and an is not None:
+            parts.append(f"AC {self._gnomad_count(ac)}/AN {self._gnomad_count(an)}")
+        hom = self._gnomad_int(block.get("homozygote_count"))
+        hemi = self._gnomad_int(block.get("hemizygote_count"))
+        if hom is not None:
+            parts.append(f"hom {self._gnomad_count(hom)}")
+        if hemi:
+            parts.append(f"hemi {self._gnomad_count(hemi)}")
+        faf95 = block.get("faf95") if isinstance(block.get("faf95"), dict) else {}
+        faf_pop = _clean_cell(faf95.get("popmax_population"))
+        faf_value = self._gnomad_float_text(faf95.get("popmax"))
+        if faf_pop and faf_value:
+            parts.append(f"FAF95 {faf_pop} {faf_value}")
+        return " ".join([parts[0], f"({'; '.join(parts[1:])})" if len(parts) > 1 else ""]).strip()
+
+    def _gnomad_top_population_text(self, frequencies: dict[str, dict[str, Any]]) -> str:
+        top_rows = self._gnomad_top_populations(frequencies)
+        if not top_rows:
+            return ""
+        best = sorted(
+            top_rows,
+            key=lambda row: (float(row.get("af") or 0), self._gnomad_int(row.get("ac")) or 0),
+            reverse=True,
+        )[0]
+        return (
+            f"highest observed population {best.get('dataset')} {best.get('id')} "
+            f"AF {self._gnomad_float_text(best.get('af'))} "
+            f"(AC {self._gnomad_count(best.get('ac'))}/AN {self._gnomad_count(best.get('an'))})"
+        )
+
+    def _gnomad_transcript_consequences(self, values: Any, context: KnowledgeQuery) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "gene_id": _clean_cell(value.get("gene_id")),
+                "gene_symbol": _clean_cell(value.get("gene_symbol")),
+                "transcript_id": _clean_cell(value.get("transcript_id")),
+                "transcript_version": _clean_cell(value.get("transcript_version")),
+                "is_canonical": value.get("is_canonical"),
+                "is_mane_select": value.get("is_mane_select"),
+                "major_consequence": _clean_cell(value.get("major_consequence")),
+                "consequence_terms": self._gnomad_clean_list(value.get("consequence_terms")),
+                "hgvsc": _clean_cell(value.get("hgvsc")),
+                "hgvsp": _clean_cell(value.get("hgvsp")),
+                "hgvs": _clean_cell(value.get("hgvs")),
+                "lof": _clean_cell(value.get("lof")),
+                "lof_filter": _clean_cell(value.get("lof_filter")),
+                "lof_flags": _clean_cell(value.get("lof_flags")),
+                "polyphen_prediction": _clean_cell(value.get("polyphen_prediction")),
+                "sift_prediction": _clean_cell(value.get("sift_prediction")),
+                "domains": self._gnomad_clean_list(value.get("domains")),
+            }
+            rows.append({key: item for key, item in row.items() if item not in ("", [], None)})
+        return sorted(
+            rows,
+            key=lambda row: (
+                not bool(row.get("is_mane_select")),
+                not bool(row.get("is_canonical")),
+                _clean_cell(row.get("gene_symbol")).upper() != context.gene.upper(),
+            ),
+        )
+
+    def _gnomad_primary_transcript(self, rows: list[dict[str, Any]], context: KnowledgeQuery) -> dict[str, Any]:
+        if not rows:
+            return {}
+        for row in rows:
+            if row.get("is_mane_select"):
+                return row
+        for row in rows:
+            if row.get("is_canonical"):
+                return row
+        for row in rows:
+            if _clean_cell(row.get("gene_symbol")).upper() == context.gene.upper():
+                return row
+        return rows[0]
+
+    def _gnomad_transcript_text(self, transcript: dict[str, Any]) -> str:
+        consequences = self._gnomad_clean_list(
+            transcript.get("consequence_terms") or transcript.get("major_consequence")
+        )
+        text = ", ".join(consequences[:3]) if consequences else _clean_cell(transcript.get("major_consequence"))
+        gene = _clean_cell(transcript.get("gene_symbol"))
+        transcript_id = _clean_cell(transcript.get("transcript_id"))
+        if text and gene and transcript_id:
+            text = f"consequence {text} in {gene} transcript {transcript_id}"
+        elif text and transcript_id:
+            text = f"consequence {text} in transcript {transcript_id}"
+        elif text:
+            text = f"consequence {text}"
+        hgvs = _clean_cell(transcript.get("hgvsc") or transcript.get("hgvsp") or transcript.get("hgvs"))
+        if hgvs:
+            text = f"{text}; HGVS {hgvs}" if text else f"HGVS {hgvs}"
+        lof = _clean_cell(transcript.get("lof"))
+        if lof:
+            text = f"{text}; LoF {lof}" if text else f"LoF {lof}"
+        return text
+
+    def _gnomad_predictors(self, values: Any) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "id": _clean_cell(value.get("id")),
+                "value": _clean_cell(value.get("value")),
+                "flags": self._gnomad_clean_list(value.get("flags")),
+            }
+            cleaned = {key: item for key, item in row.items() if item not in ("", [], None)}
+            if cleaned:
+                rows.append(cleaned)
+        return rows
+
+    def _gnomad_predictor_text(self, values: Any) -> str:
+        predictors = self._gnomad_predictors(values)
+        if not predictors:
+            return ""
+        parts = []
+        for predictor in predictors[:3]:
+            if predictor.get("id") and predictor.get("value"):
+                parts.append(f"{predictor['id']} {predictor['value']}")
+        return f"predictors: {', '.join(parts)}" if parts else ""
+
+    def _gnomad_lof_curations(self, values: Any) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        if not isinstance(values, list):
+            return rows
+        for value in values:
+            if not isinstance(value, dict):
+                continue
+            row = {
+                "gene_id": _clean_cell(value.get("gene_id")),
+                "gene_symbol": _clean_cell(value.get("gene_symbol")),
+                "verdict": _clean_cell(value.get("verdict")),
+                "flags": self._gnomad_clean_list(value.get("flags")),
+                "project": _clean_cell(value.get("project")),
+            }
+            cleaned = {key: item for key, item in row.items() if item not in ("", [], None)}
+            if cleaned:
+                rows.append(cleaned)
+        return rows
+
+    def _gnomad_non_coding_constraint(self, value: Any) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            return {}
+        keys = ("chrom", "start", "stop", "element_id", "possible", "observed", "expected", "oe", "z")
+        row = {key: (_clean_cell(value.get(key)) if key in {"chrom", "element_id"} else value.get(key)) for key in keys}
+        return {key: item for key, item in row.items() if item not in ("", None)}
+
+    def _gnomad_constraint(self, value: Any) -> dict[str, Any]:
+        if not isinstance(value, dict):
+            return {}
+        keys = (
+            "exp_lof",
+            "exp_mis",
+            "exp_syn",
+            "obs_lof",
+            "obs_mis",
+            "obs_syn",
+            "oe_lof",
+            "oe_lof_lower",
+            "oe_lof_upper",
+            "oe_lof_percentile",
+            "oe_mis",
+            "oe_mis_lower",
+            "oe_mis_upper",
+            "oe_syn",
+            "oe_syn_lower",
+            "oe_syn_upper",
+            "lof_z",
+            "mis_z",
+            "syn_z",
+            "pli",
+            "pLI",
+        )
+        row = {key: value.get(key) for key in keys}
+        row["flags"] = self._gnomad_clean_list(value.get("flags"))
+        return {key: item for key, item in row.items() if item not in ("", [], None)}
+
+    def _gnomad_mane_transcript(self, value: Any) -> dict[str, str]:
+        if not isinstance(value, dict):
+            return {}
+        row = {
+            "ensembl_id": _clean_cell(value.get("ensembl_id")),
+            "ensembl_version": _clean_cell(value.get("ensembl_version")),
+            "refseq_id": _clean_cell(value.get("refseq_id")),
+            "refseq_version": _clean_cell(value.get("refseq_version")),
+        }
+        return {key: item for key, item in row.items() if item}
+
+    def _gnomad_gene_location(self, gene: dict[str, Any]) -> str:
+        chrom = _clean_cell(gene.get("chrom"))
+        start = _clean_cell(gene.get("start"))
+        stop = _clean_cell(gene.get("stop"))
+        reference_genome = _clean_cell(gene.get("reference_genome"))
+        if chrom and start and stop:
+            prefix = f"{reference_genome} " if reference_genome else ""
+            return f"{prefix}{chrom}:{start}-{stop}"
+        return ""
+
+    def _gnomad_variant_coordinate(self, item: dict[str, Any]) -> str:
+        reference = _clean_cell(item.get("reference_genome"))
+        chrom = _clean_cell(item.get("chrom"))
+        pos = _clean_cell(item.get("pos"))
+        ref = _clean_cell(item.get("ref"))
+        alt = _clean_cell(item.get("alt"))
+        if not (chrom and pos):
+            return ""
+        allele = f" {ref}>{alt}" if ref or alt else ""
+        prefix = f"{reference} " if reference else ""
+        return f"{prefix}{chrom}:{pos}{allele}"
+
+    def _gnomad_observed_expected_text(self, constraint: dict[str, Any]) -> str:
+        if not constraint:
+            return ""
+        parts: list[str] = []
+        obs_lof = self._gnomad_count(constraint.get("obs_lof"))
+        exp_lof = self._gnomad_float_text(constraint.get("exp_lof"))
+        if obs_lof and exp_lof:
+            parts.append(f"LoF observed/expected {obs_lof}/{exp_lof}")
+        obs_mis = self._gnomad_count(constraint.get("obs_mis"))
+        exp_mis = self._gnomad_float_text(constraint.get("exp_mis"))
+        if obs_mis and exp_mis:
+            parts.append(f"missense observed/expected {obs_mis}/{exp_mis}")
+        return "; ".join(parts)
+
+    def _gnomad_ci_text(self, constraint: dict[str, Any], key: str) -> str:
+        lower = self._gnomad_float_text(constraint.get(f"{key}_lower"))
+        upper = self._gnomad_float_text(constraint.get(f"{key}_upper"))
+        return f" ({lower}-{upper})" if lower and upper else ""
+
+    def _gnomad_clean_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            values = [values]
+        if not isinstance(values, list):
+            values = [values]
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _gnomad_int(self, value: Any) -> int | None:
         try:
-            payload = self.client.post_json(url, json_payload={"query": query, "variables": {"name": context.gene}})
-            urls.append(url)
-            gene = payload.get("data", {}).get("gene") or {}
-            for item in (gene.get("variants") or {}).get("nodes", [])[:5]:
-                records.append(
-                    {
-                        "category": "cancer_variant",
-                        "source": self.spec.name,
-                        "label": str(item.get("name") or context.gene),
-                        "summary": f"CIViC variant entry for {context.gene}.",
-                        "source_id": item.get("id"),
-                        "url": f"https://civicdb.org/links/variants/{item.get('id')}",
-                    }
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    def _gnomad_count(self, value: Any) -> str:
+        integer = self._gnomad_int(value)
+        if integer is None:
+            return _clean_cell(value)
+        return f"{integer:,}"
+
+    def _gnomad_float_text(self, value: Any) -> str:
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return _clean_cell(value)
+        if number == 0:
+            return "0"
+        if abs(number) < 0.001 or abs(number) >= 1000:
+            return f"{number:.3g}"
+        return f"{number:.4g}"
+
+    def _gnomad_population_is_sex_specific(self, value: Any) -> bool:
+        text = _clean_cell(value)
+        return text in {"XX", "XY"} or text.endswith("_XX") or text.endswith("_XY")
+
+    def _gnomad_variant_url(self, variant_id: str) -> str:
+        if variant_id:
+            return f"https://gnomad.broadinstitute.org/variant/{quote(variant_id)}?dataset={GNOMAD_DATASET}"
+        return f"https://gnomad.broadinstitute.org/?dataset={GNOMAD_DATASET}"
+
+    def _gnomad_gene_url(self, symbol: str) -> str:
+        return f"https://gnomad.broadinstitute.org/gene/{quote(symbol)}?dataset={GNOMAD_DATASET}"
+
+    def _query_civic(self, context: KnowledgeQuery, started: float) -> SourceResult:
+        url = "https://civicdb.org/api/graphql"
+        variables = {"entrezSymbol": context.gene, "variantFirst": 5, "evidenceFirst": 3}
+        try:
+            payload = self.client.post_json(
+                url,
+                json_payload={"query": self._civic_gene_evidence_query(), "variables": variables},
+                headers={"Accept": "application/json", "Content-Type": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+            errors = payload.get("errors") if isinstance(payload, dict) else None
+            if errors:
+                message = self._civic_graphql_error_message(errors, "CIViC GraphQL query failed.")
+                return SourceResult(
+                    self.spec.key,
+                    "failed",
+                    message,
+                    errors=[message],
+                    queried_urls=[url],
+                    elapsed_ms=_elapsed_ms(started),
                 )
-            return SourceResult(self.spec.key, "ok", f"Queried CIViC; {len(records)} record(s).", records, queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+
+            gene = (payload.get("data", {}) if isinstance(payload, dict) else {}).get("gene") or {}
+            if not gene:
+                return SourceResult(
+                    self.spec.key,
+                    "ok",
+                    f"Queried CIViC; no gene record found for {context.gene}.",
+                    [],
+                    queried_urls=[url],
+                    elapsed_ms=_elapsed_ms(started),
+                )
+
+            records = self._civic_records(context, gene)
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                f"Queried CIViC; {len(records)} variant evidence record(s) returned for {context.gene}.",
+                records,
+                queried_urls=[url],
+                elapsed_ms=_elapsed_ms(started),
+            )
         except KnowledgeRequestError as exc:
-            return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=urls, elapsed_ms=_elapsed_ms(started))
+            return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=[url], elapsed_ms=_elapsed_ms(started))
+
+    def _civic_gene_evidence_query(self) -> str:
+        return """
+        query CivicGeneEvidence($entrezSymbol: String!, $variantFirst: Int!, $evidenceFirst: Int!) {
+          gene(entrezSymbol: $entrezSymbol) {
+            id
+            name
+            link
+            description
+            featureAliases
+            variants(first: $variantFirst) {
+              totalCount
+              nodes {
+                id
+                name
+                link
+                variantAliases
+                variantTypes { id name }
+                hgvsDescriptions
+                clinvarIds
+                alleleRegistryId
+                maneSelectTranscript
+                singleVariantMolecularProfile {
+                  id
+                  name
+                  link
+                  description
+                  evidenceItems(first: $evidenceFirst, includeRejected: false) {
+                    totalCount
+                    nodes {
+                      id
+                      name
+                      link
+                      description
+                      descriptionWithNames
+                      status
+                      evidenceType
+                      evidenceLevel
+                      evidenceRating
+                      evidenceDirection
+                      significance
+                      variantOrigin
+                      variantHgvs
+                      therapyInteractionType
+                      disease { id name link }
+                      therapies { id name link }
+                      source { id citation citationId sourceType link }
+                      phenotypes { id name link }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        """
+
+    def _civic_records(self, context: KnowledgeQuery, gene: dict[str, Any]) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        variants = ((gene.get("variants") or {}).get("nodes") or []) if isinstance(gene, dict) else []
+        for variant in variants[:5]:
+            if not isinstance(variant, dict):
+                continue
+            molecular_profile = variant.get("singleVariantMolecularProfile") or {}
+            if not isinstance(molecular_profile, dict):
+                molecular_profile = {}
+            evidence_connection = molecular_profile.get("evidenceItems") or {}
+            if not isinstance(evidence_connection, dict):
+                evidence_connection = {}
+            evidence_nodes = [item for item in (evidence_connection.get("nodes") or [])[:3] if isinstance(item, dict)]
+            evidence_items = [self._civic_evidence_item(item) for item in evidence_nodes]
+            evidence_count = self._civic_int(evidence_connection.get("totalCount")) or len(evidence_items)
+            first_evidence = evidence_items[0] if evidence_items else {}
+
+            variant_name = _clean_cell(variant.get("name")) or context.gene
+            molecular_profile_name = _clean_cell(molecular_profile.get("name"))
+            variant_types = self._civic_names(variant.get("variantTypes"))
+            record = {
+                "category": "cancer_variant",
+                "source": self.spec.name,
+                "label": molecular_profile_name or variant_name,
+                "summary": self._civic_summary(
+                    context=context,
+                    gene=gene,
+                    variant=variant,
+                    molecular_profile=molecular_profile,
+                    evidence_items=evidence_items,
+                    evidence_count=evidence_count,
+                ),
+                "source_id": _clean_cell(variant.get("id")),
+                "url": self._civic_url(variant.get("link"), f"https://civicdb.org/variants/{_clean_cell(variant.get('id'))}"),
+                "gene": _clean_cell(gene.get("name")) or context.gene,
+                "gene_id": _clean_cell(gene.get("id")),
+                "variant": variant_name,
+                "variant_aliases": self._civic_clean_list(variant.get("variantAliases")),
+                "variant_types": variant_types,
+                "hgvs_descriptions": self._civic_clean_list(variant.get("hgvsDescriptions")),
+                "clinvar_ids": self._civic_clean_list(variant.get("clinvarIds")),
+                "allele_registry_id": _clean_cell(variant.get("alleleRegistryId")),
+                "mane_select_transcript": _clean_cell(variant.get("maneSelectTranscript")),
+                "molecular_profile": molecular_profile_name,
+                "molecular_profile_id": _clean_cell(molecular_profile.get("id")),
+                "molecular_profile_description": _clean_cell(molecular_profile.get("description")),
+                "evidence_count": evidence_count,
+                "evidence_items": evidence_items,
+            }
+            record.update(
+                {
+                    "evidence_type": first_evidence.get("evidence_type", ""),
+                    "evidence_level": first_evidence.get("evidence_level", ""),
+                    "evidence_rating": first_evidence.get("evidence_rating", ""),
+                    "evidence_direction": first_evidence.get("evidence_direction", ""),
+                    "significance": first_evidence.get("significance", ""),
+                    "variant_origin": first_evidence.get("variant_origin", ""),
+                    "variant_hgvs": first_evidence.get("variant_hgvs", ""),
+                    "disease": first_evidence.get("disease", ""),
+                    "therapies": first_evidence.get("therapies", []),
+                    "therapy_interaction_type": first_evidence.get("therapy_interaction_type", ""),
+                    "citation": first_evidence.get("citation", ""),
+                    "citation_id": first_evidence.get("citation_id", ""),
+                    "source_type": first_evidence.get("source_type", ""),
+                }
+            )
+            records.append({key: value for key, value in record.items() if value not in ("", [], None)})
+        return records
+
+    def _civic_summary(
+        self,
+        *,
+        context: KnowledgeQuery,
+        gene: dict[str, Any],
+        variant: dict[str, Any],
+        molecular_profile: dict[str, Any],
+        evidence_items: list[dict[str, Any]],
+        evidence_count: int,
+    ) -> str:
+        gene_name = _clean_cell(gene.get("name")) or context.gene
+        variant_name = _clean_cell(variant.get("name")) or gene_name
+        molecular_profile_name = _clean_cell(molecular_profile.get("name"))
+        identity = variant_name
+        if molecular_profile_name and molecular_profile_name != variant_name:
+            identity = f"{identity} / {molecular_profile_name}"
+
+        annotations: list[str] = []
+        variant_types = self._civic_names(variant.get("variantTypes"))
+        if variant_types:
+            annotations.append(f"variant type {', '.join(variant_types[:3])}")
+        aliases = self._civic_clean_list(variant.get("variantAliases"))
+        if aliases:
+            annotations.append(f"aliases: {', '.join(aliases[:3])}")
+        hgvs = self._civic_clean_list(variant.get("hgvsDescriptions"))
+        if hgvs:
+            annotations.append(f"HGVS {', '.join(hgvs[:3])}")
+        clinvar_ids = self._civic_clean_list(variant.get("clinvarIds"))
+        if clinvar_ids:
+            annotations.append(f"ClinVar {', '.join(clinvar_ids[:3])}")
+        mane_transcript = _clean_cell(variant.get("maneSelectTranscript"))
+        if mane_transcript:
+            annotations.append(f"MANE {mane_transcript}")
+        allele_registry_id = _clean_cell(variant.get("alleleRegistryId"))
+        if allele_registry_id:
+            annotations.append(f"Allele Registry {allele_registry_id}")
+
+        prefix = f"CIViC {gene_name} variant {identity}"
+        if annotations:
+            prefix = f"{prefix} ({'; '.join(annotations)})"
+
+        if not evidence_items:
+            if evidence_count:
+                return f"{prefix}: {evidence_count} accepted evidence item(s) available in CIViC."
+            return f"{prefix}: no accepted single-variant evidence items returned by this query."
+
+        evidence = evidence_items[0]
+        clauses: list[str] = []
+        evidence_label_parts = []
+        evidence_type = evidence.get("evidence_type", "")
+        if evidence_type:
+            evidence_label_parts.append(f"{evidence_type} evidence")
+        evidence_level = evidence.get("evidence_level", "")
+        if evidence_level:
+            evidence_label_parts.append(f"level {evidence_level}")
+        evidence_rating = evidence.get("evidence_rating", "")
+        if evidence_rating:
+            evidence_label_parts.append(f"rating {evidence_rating}")
+        evidence_direction = evidence.get("evidence_direction", "")
+        if evidence_direction:
+            evidence_label_parts.append(evidence_direction)
+        if evidence_label_parts:
+            clauses.append(", ".join(evidence_label_parts))
+
+        for label, key in (
+            ("significance", "significance"),
+            ("disease", "disease"),
+            ("variant origin", "variant_origin"),
+            ("variant HGVS", "variant_hgvs"),
+            ("therapy interaction", "therapy_interaction_type"),
+            ("status", "status"),
+        ):
+            value = evidence.get(key, "")
+            if value:
+                clauses.append(f"{label} {value}")
+        therapies = evidence.get("therapies") or []
+        if therapies:
+            clauses.append(f"therapies {', '.join(therapies[:3])}")
+        source_text = self._civic_source_text(evidence)
+        if source_text:
+            clauses.append(source_text)
+        if evidence_count > 1:
+            clauses.append(f"{evidence_count} total accepted evidence item(s)")
+
+        summary = f"{prefix}: {'; '.join(clauses)}."
+        description = self._civic_clip(evidence.get("description_with_names") or evidence.get("description"), 220)
+        if description:
+            summary = f"{summary} {description}"
+        return summary
+
+    def _civic_evidence_item(self, item: dict[str, Any]) -> dict[str, Any]:
+        source = item.get("source") or {}
+        if not isinstance(source, dict):
+            source = {}
+        record = {
+            "id": _clean_cell(item.get("id")),
+            "name": _clean_cell(item.get("name")),
+            "status": _clean_cell(item.get("status")),
+            "evidence_type": _clean_cell(item.get("evidenceType")),
+            "evidence_level": _clean_cell(item.get("evidenceLevel")),
+            "evidence_rating": _clean_cell(item.get("evidenceRating")),
+            "evidence_direction": _clean_cell(item.get("evidenceDirection")),
+            "significance": _clean_cell(item.get("significance")),
+            "variant_origin": _clean_cell(item.get("variantOrigin")),
+            "variant_hgvs": _clean_cell(item.get("variantHgvs")),
+            "therapy_interaction_type": _clean_cell(item.get("therapyInteractionType")),
+            "disease": self._civic_name(item.get("disease")),
+            "therapies": self._civic_names(item.get("therapies")),
+            "phenotypes": self._civic_names(item.get("phenotypes")),
+            "citation": _clean_cell(source.get("citation")),
+            "citation_id": _clean_cell(source.get("citationId")),
+            "source_type": _clean_cell(source.get("sourceType")),
+            "source_id": _clean_cell(source.get("id")),
+            "source_url": self._civic_url(source.get("link"), ""),
+            "url": self._civic_url(item.get("link"), f"https://civicdb.org/evidence/{_clean_cell(item.get('id'))}"),
+            "description": _clean_cell(item.get("description")),
+            "description_with_names": _clean_cell(item.get("descriptionWithNames")),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], None)}
+
+    def _civic_source_text(self, evidence: dict[str, Any]) -> str:
+        citation_id = _clean_cell(evidence.get("citation_id"))
+        source_type = _clean_cell(evidence.get("source_type"))
+        citation = _clean_cell(evidence.get("citation"))
+        if citation_id and source_type.upper() == "PUBMED":
+            return f"source PMID {citation_id}"
+        if citation_id and source_type:
+            return f"source {source_type} {citation_id}"
+        if citation:
+            return f"source {citation}"
+        return ""
+
+    def _graphql_error_message(self, errors: Any, fallback: str, source_name: str) -> str:
+        if isinstance(errors, list) and errors:
+            first_error = errors[0]
+            if isinstance(first_error, dict):
+                message = _clean_cell(first_error.get("message"))
+                if message:
+                    return f"{source_name} GraphQL query failed: {message}"
+            message = _clean_cell(first_error)
+            if message:
+                return f"{source_name} GraphQL query failed: {message}"
+        return fallback
+
+    def _civic_graphql_error_message(self, errors: Any, fallback: str) -> str:
+        return self._graphql_error_message(errors, fallback, "CIViC")
+
+    def _civic_url(self, value: Any, fallback: str) -> str:
+        text = _clean_cell(value)
+        if text.startswith("http://") or text.startswith("https://"):
+            return text
+        if text.startswith("/"):
+            return f"https://civicdb.org{text}"
+        return fallback
+
+    def _civic_name(self, value: Any) -> str:
+        if isinstance(value, dict):
+            return _clean_cell(value.get("name")) or _clean_cell(value.get("id"))
+        return _clean_cell(value)
+
+    def _civic_names(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if not isinstance(values, list):
+            values = [values]
+        names: list[str] = []
+        for value in values:
+            text = self._civic_name(value)
+            if text and text not in names:
+                names.append(text)
+        return names
+
+    def _civic_clean_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            return [values.strip()] if values.strip() else []
+        if not isinstance(values, list):
+            values = [values]
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _civic_int(self, value: Any) -> int:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return 0
+
+    def _civic_clip(self, value: Any, limit: int) -> str:
+        text = _clean_cell(value)
+        if len(text) <= limit:
+            return text
+        return f"{text[: limit - 3].rstrip()}..."
 
 
 class ClinGenConnector(BaseConnector):
@@ -1099,12 +4962,6 @@ class ClinGenConnector(BaseConnector):
         download_steps = (
             ("Gene-Disease Validity", CLINGEN_VALIDITY_URL, self._validity_records, CLINGEN_PRIMARY_TIMEOUT_SECONDS),
             ("Dosage Sensitivity", CLINGEN_DOSAGE_URL, self._dosage_records, CLINGEN_PRIMARY_TIMEOUT_SECONDS),
-            (
-                "Curation Activity Summary",
-                CLINGEN_SUMMARY_URL,
-                self._summary_records,
-                CLINGEN_OPTIONAL_TIMEOUT_SECONDS,
-            ),
         )
         for label, url, parser, timeout_seconds in download_steps:
             try:
@@ -1120,6 +4977,27 @@ class ClinGenConnector(BaseConnector):
                 warnings.append(f"{label} request failed: {exc}")
             except (ValueError, csv.Error) as exc:
                 warnings.append(f"{label} response could not be parsed: {exc}")
+
+        try:
+            text = self.client.get_text(
+                CLINGEN_SUMMARY_URL,
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+                timeout=CLINGEN_SUMMARY_TIMEOUT_SECONDS,
+            )
+            urls.append(CLINGEN_SUMMARY_URL)
+            records.extend(self._summary_records(text, context))
+        except KnowledgeRequestError as exc:
+            request_errors.append(exc)
+            if "timed out" in str(exc).lower() or "timeout" in str(exc).lower():
+                warnings.append(
+                    "Optional ClinGen curation activity summary timed out; primary ClinGen feeds were still used."
+                )
+            else:
+                warnings.append(
+                    "Optional ClinGen curation activity summary request failed; primary ClinGen feeds were still used."
+                )
+        except (ValueError, csv.Error) as exc:
+            warnings.append(f"Optional ClinGen curation activity summary response could not be parsed: {exc}")
 
         for context_label, url in CLINGEN_ACTIONABILITY_URLS:
             try:
@@ -1137,7 +5015,8 @@ class ClinGenConnector(BaseConnector):
                 warnings.append(f"Clinical Actionability {context_label} response could not be parsed: {exc}")
 
         records = self._dedupe_records(records)
-        if request_errors and not records and len(request_errors) == len(download_steps) + len(CLINGEN_ACTIONABILITY_URLS):
+        expected_request_count = len(download_steps) + 1 + len(CLINGEN_ACTIONABILITY_URLS)
+        if request_errors and not records and len(request_errors) == expected_request_count:
             first_error = request_errors[0]
             return _request_failure_result(self.spec, first_error, queried_urls=urls, started=started)
 
@@ -1359,6 +5238,456 @@ class ClinGenConnector(BaseConnector):
         return deduped
 
 
+class PanelAppConnector(BaseConnector):
+    """Genomics England PanelApp connector for exact gene panel memberships."""
+
+    def query(self, context: KnowledgeQuery) -> SourceResult:
+        started = time.monotonic()
+        url = "https://panelapp.genomicsengland.co.uk/api/v1/genes/"
+        params = {"entity_name": context.gene}
+        try:
+            payload = self.client.get_json(
+                url,
+                params=params,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+        except KnowledgeRequestError as exc:
+            return _request_failure_result(self.spec, exc, queried_urls=[url], started=started)
+
+        raw_results = payload.get("results") if isinstance(payload, dict) else []
+        exact_results = [item for item in raw_results or [] if self._matches_gene(item, context.gene)]
+        records = [self._record_from_entry(item, context) for item in exact_results[:5]]
+        if not records:
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                f"Queried PanelApp; no exact gene panel entries found for {context.gene}.",
+                [],
+                queried_urls=[url],
+                elapsed_ms=_elapsed_ms(started),
+            )
+        return SourceResult(
+            self.spec.key,
+            "ok",
+            f"Queried PanelApp; {len(records)} exact gene panel record(s) returned for {context.gene}.",
+            records,
+            queried_urls=[url],
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _matches_gene(self, item: Any, gene: str) -> bool:
+        if not isinstance(item, dict):
+            return False
+        gene_data = item.get("gene_data") if isinstance(item.get("gene_data"), dict) else {}
+        candidates = (
+            item.get("entity_name"),
+            gene_data.get("gene_symbol"),
+            gene_data.get("hgnc_symbol"),
+        )
+        return any(_clean_cell(value).upper() == gene.upper() for value in candidates)
+
+    def _record_from_entry(self, item: dict[str, Any], context: KnowledgeQuery) -> dict[str, Any]:
+        gene_data = item.get("gene_data") if isinstance(item.get("gene_data"), dict) else {}
+        panel = item.get("panel") if isinstance(item.get("panel"), dict) else {}
+        panel_id = _clean_cell(panel.get("id"))
+        gene_symbol = _clean_cell(item.get("entity_name")) or _clean_cell(gene_data.get("gene_symbol")) or context.gene
+        panel_name = _clean_cell(panel.get("name")) or "PanelApp panel"
+        confidence_level = _clean_cell(item.get("confidence_level"))
+        confidence_label = self._confidence_label(confidence_level)
+        record = {
+            "category": "gene_panel",
+            "source": self.spec.name,
+            "label": f"{gene_symbol} in {panel_name}",
+            "summary": self._summary(item, gene_data, panel, gene_symbol, panel_name, confidence_level, confidence_label),
+            "source_id": f"{panel_id}:{gene_symbol}" if panel_id else gene_symbol,
+            "url": self._panel_gene_url(panel_id, gene_symbol),
+            "gene": gene_symbol,
+            "gene_name": _clean_cell(gene_data.get("gene_name")),
+            "hgnc_id": _clean_cell(gene_data.get("hgnc_id")),
+            "omim_gene": self._clean_list(gene_data.get("omim_gene")),
+            "aliases": self._clean_list(gene_data.get("alias")),
+            "biotype": _clean_cell(gene_data.get("biotype")),
+            "panel_id": panel_id,
+            "panel_name": panel_name,
+            "panel_status": _clean_cell(panel.get("status")),
+            "panel_version": _clean_cell(panel.get("version")),
+            "panel_version_created": _clean_cell(panel.get("version_created")),
+            "panel_disease_group": _clean_cell(panel.get("disease_group")),
+            "panel_disease_sub_group": _clean_cell(panel.get("disease_sub_group")),
+            "panel_types": self._names(panel.get("types")),
+            "relevant_disorders": self._clean_list(panel.get("relevant_disorders")),
+            "confidence_level": confidence_level,
+            "confidence_label": confidence_label,
+            "phenotypes": self._clean_list(item.get("phenotypes")),
+            "mode_of_inheritance": _clean_cell(item.get("mode_of_inheritance")),
+            "mode_of_pathogenicity": _clean_cell(item.get("mode_of_pathogenicity")),
+            "penetrance": _clean_cell(item.get("penetrance")),
+            "evidence": self._clean_list(item.get("evidence")),
+            "publications": self._clean_list(item.get("publications")),
+            "tags": self._clean_list(item.get("tags")),
+            "transcripts": self._clean_list(item.get("transcript")),
+            "genomic_locations": self._locations(gene_data.get("ensembl_genes")),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _summary(
+        self,
+        item: dict[str, Any],
+        gene_data: dict[str, Any],
+        panel: dict[str, Any],
+        gene_symbol: str,
+        panel_name: str,
+        confidence_level: str,
+        confidence_label: str,
+    ) -> str:
+        panel_status = _clean_cell(panel.get("status"))
+        panel_version = _clean_cell(panel.get("version"))
+        panel_text = panel_name
+        if panel_status or panel_version:
+            details = ", ".join(part for part in (panel_status, f"v{panel_version}" if panel_version else "") if part)
+            panel_text = f"{panel_text} ({details})"
+
+        parts = [f"{gene_symbol} is listed on PanelApp panel {panel_text}"]
+        if confidence_level:
+            confidence_text = f"confidence {confidence_level}"
+            if confidence_label:
+                confidence_text = f"{confidence_text} ({confidence_label})"
+            parts.append(confidence_text)
+        phenotypes = self._clean_list(item.get("phenotypes"))
+        if phenotypes:
+            parts.append(f"phenotypes: {', '.join(phenotypes[:3])}")
+        inheritance = _clean_cell(item.get("mode_of_inheritance"))
+        if inheritance:
+            parts.append(f"inheritance: {inheritance}")
+        penetrance = _clean_cell(item.get("penetrance"))
+        if penetrance:
+            parts.append(f"penetrance: {penetrance}")
+        evidence = self._clean_list(item.get("evidence"))
+        if evidence:
+            parts.append(f"evidence: {', '.join(evidence[:4])}")
+        publications = self._clean_list(item.get("publications"))
+        if publications:
+            parts.append(f"publications: {', '.join(publications[:4])}")
+        panel_types = self._names(panel.get("types"))
+        if panel_types:
+            parts.append(f"panel type: {', '.join(panel_types[:3])}")
+        locations = self._locations(gene_data.get("ensembl_genes"))
+        if locations:
+            first_location = locations[0]
+            location_text = f"{first_location.get('assembly')} {first_location.get('location')}".strip()
+            ensembl_id = first_location.get("ensembl_id")
+            if ensembl_id:
+                location_text = f"{location_text} ({ensembl_id})"
+            if location_text:
+                parts.append(f"gene location: {location_text}")
+        return "; ".join(parts) + "."
+
+    def _confidence_label(self, value: str) -> str:
+        labels = {"3": "green/high evidence", "2": "amber/moderate evidence", "1": "red/low evidence"}
+        return labels.get(value, "")
+
+    def _panel_gene_url(self, panel_id: str, gene_symbol: str) -> str:
+        if panel_id:
+            return f"https://panelapp.genomicsengland.co.uk/panels/{quote(panel_id)}/gene/{quote(gene_symbol)}/"
+        return f"https://panelapp.genomicsengland.co.uk/api/v1/genes/?entity_name={quote(gene_symbol)}"
+
+    def _clean_list(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if isinstance(values, str):
+            return [values.strip()] if values.strip() else []
+        if not isinstance(values, list):
+            values = [values]
+        cleaned: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in cleaned:
+                cleaned.append(text)
+        return cleaned
+
+    def _names(self, values: Any) -> list[str]:
+        if values is None:
+            return []
+        if not isinstance(values, list):
+            values = [values]
+        names: list[str] = []
+        for value in values:
+            text = _clean_cell(value.get("name") if isinstance(value, dict) else value)
+            if text and text not in names:
+                names.append(text)
+        return names
+
+    def _locations(self, ensembl_genes: Any) -> list[dict[str, str]]:
+        if not isinstance(ensembl_genes, dict):
+            return []
+        rows: list[dict[str, str]] = []
+        for assembly, releases in ensembl_genes.items():
+            if not isinstance(releases, dict):
+                continue
+            for release, payload in releases.items():
+                if not isinstance(payload, dict):
+                    continue
+                row = {
+                    "assembly": _clean_cell(assembly),
+                    "release": _clean_cell(release),
+                    "location": _clean_cell(payload.get("location")),
+                    "ensembl_id": _clean_cell(payload.get("ensembl_id")),
+                }
+                if row["location"] or row["ensembl_id"]:
+                    rows.append({key: value for key, value in row.items() if value})
+        return rows
+
+
+class MaveDbConnector(BaseConnector):
+    """MaveDB connector for published multiplexed functional assay score sets."""
+
+    MAX_SCORE_SETS = 5
+    GENE_API_BASE_URL = "https://api.mavedb.org/api/v1/genes"
+    SCORE_SET_WEB_BASE_URL = "https://www.mavedb.org/score-sets"
+
+    def query(self, context: KnowledgeQuery) -> SourceResult:
+        started = time.monotonic()
+        gene = context.gene.strip()
+        url = f"{self.GENE_API_BASE_URL}/{quote(gene, safe='')}"
+        params = {"limit": self.MAX_SCORE_SETS, "offset": 0}
+        try:
+            payload = self.client.get_json(
+                url,
+                params=params,
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+        except KnowledgeRequestError as exc:
+            return _request_failure_result(self.spec, exc, queried_urls=[url], started=started)
+
+        if not isinstance(payload, dict):
+            message = "MaveDB gene response was not a JSON object."
+            return SourceResult(
+                self.spec.key,
+                "failed",
+                message,
+                [],
+                errors=[message],
+                queried_urls=[url],
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        raw_score_sets = payload.get("scoreSets")
+        score_sets = [item for item in raw_score_sets if isinstance(item, dict)] if isinstance(raw_score_sets, list) else []
+        records = [self._record_from_score_set(item, payload, context) for item in score_sets[: self.MAX_SCORE_SETS]]
+        records = [record for record in records if record]
+        gene_symbol = _clean_cell(payload.get("symbol")) or gene
+        if not records:
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                f"Queried MaveDB; {gene_symbol} has no published MAVE score sets.",
+                [],
+                queried_urls=[url],
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        total = _clean_cell(payload.get("total")) or str(len(records))
+        message = f"Queried MaveDB; {len(records)} published score set record(s) returned for {gene_symbol}."
+        if total and total != str(len(records)):
+            message = f"{message} {total} total score set(s) are available."
+        return SourceResult(
+            self.spec.key,
+            "ok",
+            message,
+            records,
+            queried_urls=[url],
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _record_from_score_set(
+        self,
+        score_set: dict[str, Any],
+        gene_payload: dict[str, Any],
+        context: KnowledgeQuery,
+    ) -> dict[str, Any]:
+        urn = _clean_cell(score_set.get("urn"))
+        title = _clean_cell(score_set.get("title")) or urn or "MaveDB score set"
+        gene_symbol = _clean_cell(gene_payload.get("symbol")) or context.gene
+        experiment = score_set.get("experiment") if isinstance(score_set.get("experiment"), dict) else {}
+        target_genes = self._target_genes(score_set.get("targetGenes"))
+        publications = self._publications(
+            list(self._as_list(score_set.get("primaryPublicationIdentifiers")))
+            + list(self._as_list(score_set.get("secondaryPublicationIdentifiers")))
+        )
+        record = {
+            "category": "functional_assay_score_set",
+            "source": self.spec.name,
+            "label": title,
+            "summary": self._summary(score_set, gene_payload, experiment, target_genes, publications, urn, title),
+            "source_id": urn,
+            "url": self._score_set_url(urn) if urn else self.spec.homepage,
+            "gene": gene_symbol,
+            "gene_name": _clean_cell(gene_payload.get("name")),
+            "hgnc_id": _clean_cell(gene_payload.get("hgncId")),
+            "omim_id": _clean_cell(gene_payload.get("omimId")),
+            "gene_location": _clean_cell(gene_payload.get("location")),
+            "locus_group": _clean_cell(gene_payload.get("locusGroup")),
+            "score_set_urn": urn,
+            "title": title,
+            "short_description": _clean_cell(score_set.get("shortDescription")),
+            "published_date": _clean_cell(score_set.get("publishedDate")),
+            "num_variants": score_set.get("numVariants"),
+            "total_gene_score_sets": gene_payload.get("total"),
+            "total_gene_scored_variants": gene_payload.get("totalScoredVariants"),
+            "experiment_urn": _clean_cell(experiment.get("urn")),
+            "experiment_title": _clean_cell(experiment.get("title")),
+            "experiment_short_description": _clean_cell(experiment.get("shortDescription")),
+            "target_genes": target_genes,
+            "publications": publications,
+            "license": self._license_text(score_set.get("license")),
+            "private": score_set.get("private"),
+            "record_type": _clean_cell(score_set.get("recordType")),
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _summary(
+        self,
+        score_set: dict[str, Any],
+        gene_payload: dict[str, Any],
+        experiment: dict[str, Any],
+        target_genes: list[dict[str, Any]],
+        publications: list[str],
+        urn: str,
+        title: str,
+    ) -> str:
+        gene_symbol = _clean_cell(gene_payload.get("symbol"))
+        gene_name = _clean_cell(gene_payload.get("name"))
+        gene_text = gene_symbol or "queried gene"
+        if gene_name and gene_name.lower() != gene_text.lower():
+            gene_text = f"{gene_text} ({gene_name})"
+        lead = f"MaveDB score set {urn} for {gene_text}: {title}" if urn else f"MaveDB score set for {gene_text}: {title}"
+
+        parts: list[str] = []
+        num_variants = self._format_int(score_set.get("numVariants"))
+        if num_variants:
+            parts.append(f"{num_variants} scored variants")
+        published_date = _clean_cell(score_set.get("publishedDate"))
+        if published_date:
+            parts.append(f"published {published_date}")
+        experiment_title = _clean_cell(experiment.get("title"))
+        if experiment_title and experiment_title.lower() != title.lower():
+            parts.append(f"experiment: {experiment_title}")
+        short_description = _clean_cell(score_set.get("shortDescription"))
+        if short_description and short_description.lower() != title.lower():
+            parts.append(f"assay summary: {self._clip(short_description, 220)}")
+        target_names = [row["name"] for row in target_genes if row.get("name")]
+        if target_names:
+            parts.append(f"target genes: {', '.join(target_names[:4])}")
+        if publications:
+            parts.append(f"publications: {', '.join(publications[:4])}")
+        license_text = self._license_text(score_set.get("license"))
+        if license_text:
+            parts.append(f"license {license_text}")
+        total_scored = self._format_int(gene_payload.get("totalScoredVariants"))
+        if total_scored and total_scored != num_variants:
+            parts.append(f"{gene_symbol or 'gene'} total scored variants in MaveDB: {total_scored}")
+        return f"{lead}; {'; '.join(parts)}." if parts else f"{lead}."
+
+    def _target_genes(self, values: Any) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        for value in self._as_list(values):
+            if isinstance(value, dict):
+                name = (
+                    _clean_cell(value.get("name"))
+                    or _clean_cell(value.get("symbol"))
+                    or _clean_cell(value.get("mappedHgncName"))
+                    or _clean_cell(value.get("hgncSymbol"))
+                )
+                row = {
+                    "name": name,
+                    "category": _clean_cell(value.get("category")),
+                    "mapped_hgnc_name": _clean_cell(value.get("mappedHgncName")),
+                    "uniprot_id": _clean_cell(value.get("uniprotIdFromMappedMetadata") or value.get("uniprotId")),
+                    "external_identifiers": self._external_identifiers(value.get("externalIdentifiers")),
+                }
+            else:
+                row = {"name": _clean_cell(value)}
+            cleaned = {key: item for key, item in row.items() if item not in ("", [], {}, None)}
+            if cleaned and cleaned not in rows:
+                rows.append(cleaned)
+        return rows
+
+    def _external_identifiers(self, values: Any) -> list[str]:
+        identifiers: list[str] = []
+        for value in self._as_list(values):
+            if isinstance(value, dict):
+                identifier_payload = value.get("identifier") if isinstance(value.get("identifier"), dict) else value
+                db_name = _clean_cell(identifier_payload.get("dbName") or identifier_payload.get("db_name"))
+                identifier = _clean_cell(
+                    identifier_payload.get("identifier")
+                    or identifier_payload.get("id")
+                    or identifier_payload.get("accession")
+                )
+                if db_name and identifier and not identifier.lower().startswith(f"{db_name.lower()}:"):
+                    text = f"{db_name}:{identifier}"
+                else:
+                    text = identifier or db_name
+            else:
+                text = _clean_cell(value)
+            if text and text not in identifiers:
+                identifiers.append(text)
+        return identifiers
+
+    def _publications(self, values: list[Any]) -> list[str]:
+        publications: list[str] = []
+        for value in values:
+            if isinstance(value, dict):
+                db_name = _clean_cell(value.get("dbName") or value.get("db_name") or value.get("source"))
+                identifier = _clean_cell(
+                    value.get("identifier")
+                    or value.get("id")
+                    or value.get("pmid")
+                    or value.get("doi")
+                    or value.get("accession")
+                )
+                if db_name.lower() == "pubmed" and identifier:
+                    text = f"PMID {identifier}"
+                elif db_name and identifier:
+                    text = f"{db_name} {identifier}"
+                else:
+                    text = identifier or _clean_cell(value.get("title"))
+            else:
+                text = _clean_cell(value)
+            if text and text not in publications:
+                publications.append(text)
+        return publications
+
+    def _license_text(self, value: Any) -> str:
+        if isinstance(value, dict):
+            short_name = _clean_cell(value.get("shortName") or value.get("short_name") or value.get("name"))
+            version = _clean_cell(value.get("version"))
+            if short_name and version and version not in short_name:
+                return f"{short_name} {version}"
+            return short_name or _clean_cell(value.get("longName") or value.get("long_name"))
+        return _clean_cell(value)
+
+    def _score_set_url(self, urn: str) -> str:
+        return f"{self.SCORE_SET_WEB_BASE_URL}/{quote(urn, safe=':')}"
+
+    def _as_list(self, values: Any) -> list[Any]:
+        if values is None:
+            return []
+        return values if isinstance(values, list) else [values]
+
+    def _format_int(self, value: Any) -> str:
+        try:
+            return f"{int(value):,}"
+        except (TypeError, ValueError):
+            return _clean_cell(value)
+
+    def _clip(self, value: str, limit: int) -> str:
+        if len(value) <= limit:
+            return value
+        return value[: limit - 1].rstrip() + "..."
+
+
 class LinkoutOfficialConnector(BaseConnector):
     """Official-source linkout connector for open resources without a compact stable API path."""
 
@@ -1401,14 +5730,15 @@ CONNECTOR_CLASSES = {
     "medrxiv": LiteratureSearchConnector,
     "gwas_catalog": GwasCatalogConnector,
     "pgs_catalog": PgsCatalogConnector,
+    "igsr": IgsrConnector,
     "encode": EncodeConnector,
     "screen": EncodeConnector,
     "biostudies": BioStudiesConnector,
     "gnomad": GraphqlConnector,
     "civic": GraphqlConnector,
     "pharmgkb": LinkoutOfficialConnector,
-    "mavedb": LinkoutOfficialConnector,
-    "panelapp": LinkoutOfficialConnector,
+    "mavedb": MaveDbConnector,
+    "panelapp": PanelAppConnector,
     "pharmvar": LinkoutOfficialConnector,
     "cpic": LinkoutOfficialConnector,
     "fda_pgx": LinkoutOfficialConnector,

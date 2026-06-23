@@ -57,6 +57,7 @@ LIVE_CONNECTOR_KINDS = {
     "medrxiv",
     "gwas_catalog",
     "pgs_catalog",
+    "igsr",
     "encode",
     "screen",
     "biostudies",
@@ -242,11 +243,12 @@ def _infer_lane(key: str, name: str) -> str:
 
 SOURCE_OVERRIDES: dict[str, dict[str, Any]] = {
     "igsr": {
-        "connector_kind": "metadata",
+        "connector_kind": "igsr",
         "access_type": "open_download",
         "homepage": "https://www.internationalgenome.org/",
-        "license_note": "Open population data; this v1 connector records linkout metadata.",
+        "license_note": "Open population data; this connector records IGSR/1000 Genomes file provenance and extraction context.",
         "lane": "population",
+        "rate_limit_per_second": 1.0,
     },
     "pharmgkb": {
         "connector_kind": "pharmgkb",
@@ -566,6 +568,7 @@ SOURCE_OVERRIDES: dict[str, dict[str, Any]] = {
         "access_type": "open_api",
         "homepage": "https://api.genome.ucsc.edu/",
         "lane": "regulatory",
+        "rate_limit_per_second": 1.0,
     },
     "drugbank": {
         "connector_kind": "auth_metadata",

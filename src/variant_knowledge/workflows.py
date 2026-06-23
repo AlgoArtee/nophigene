@@ -107,7 +107,7 @@ WORKFLOW_SPECS: tuple[WorkflowSpec, ...] = (
         key="population_frequency_association",
         label="Population Frequency and Association",
         purpose=(
-            "Check population frequency, rsID context, GWAS/PGS associations, and 1000 Genomes linkout metadata "
+            "Check population frequency, rsID context, GWAS/PGS associations, and 1000 Genomes/IGSR data-file context "
             "to separate rare-disease plausibility from common-trait context."
         ),
         default_selected=True,

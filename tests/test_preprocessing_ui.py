@@ -75,6 +75,105 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "homepage": "https://www.ncbi.nlm.nih.gov/medgen/",
                 },
                 {
+                    "source_key": "ensembl",
+                    "name": "Ensembl",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "Queried Ensembl; 2 record(s).",
+                    "record_count": 2,
+                    "homepage": "https://rest.ensembl.org/",
+                },
+                {
+                    "source_key": "dbsnp",
+                    "name": "dbSNP",
+                    "lane": "population",
+                    "status": "ok",
+                    "message": "Queried NCBI snp; 1 record(s) returned.",
+                    "record_count": 1,
+                    "homepage": "https://www.ncbi.nlm.nih.gov/snp/",
+                },
+                {
+                    "source_key": "gnomad",
+                    "name": "gnomAD",
+                    "lane": "population",
+                    "status": "ok",
+                    "message": "Queried gnomAD; variant frequency and gene constraint records returned for 11-637293-C-T.",
+                    "record_count": 2,
+                    "homepage": "https://gnomad.broadinstitute.org/",
+                },
+                {
+                    "source_key": "gwas_catalog",
+                    "name": "GWAS Catalog",
+                    "lane": "population",
+                    "status": "ok",
+                    "message": (
+                        "Queried GWAS Catalog; 1 GWAS association record(s) returned for DRD4; "
+                        "no rsID-specific associations were found for rs927984495."
+                    ),
+                    "record_count": 1,
+                    "homepage": "https://www.ebi.ac.uk/gwas/",
+                },
+                {
+                    "source_key": "pgs_catalog",
+                    "name": "PGS Catalog",
+                    "lane": "population",
+                    "status": "ok",
+                    "message": "Queried PGS Catalog; 1 linked polygenic score record(s) returned for rs123.",
+                    "record_count": 1,
+                    "homepage": "https://www.pgscatalog.org/",
+                },
+                {
+                    "source_key": "igsr",
+                    "name": "1000 Genomes Project (IGSR)",
+                    "lane": "population",
+                    "status": "ok",
+                    "message": (
+                        "Queried IGSR/1000 Genomes FTP release listings; "
+                        "1 data-access record returned for rs927984495 at 11:637293 C>T."
+                    ),
+                    "record_count": 1,
+                    "homepage": "https://www.internationalgenome.org/",
+                },
+                {
+                    "source_key": "ucsc",
+                    "name": "UCSC Genome Browser",
+                    "lane": "regulatory",
+                    "status": "ok",
+                    "message": (
+                        "Queried UCSC Genome Browser API tracks for hg38 chr11:637293-640706; "
+                        "1 compact annotation record(s) returned."
+                    ),
+                    "record_count": 1,
+                    "homepage": "https://api.genome.ucsc.edu/",
+                },
+                {
+                    "source_key": "civic",
+                    "name": "CIViC",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "Queried CIViC; 1 variant evidence record(s) returned for DRD4.",
+                    "record_count": 1,
+                    "homepage": "https://civicdb.org/",
+                },
+                {
+                    "source_key": "panelapp",
+                    "name": "PanelApp",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "Queried PanelApp; 1 exact gene panel record(s) returned for BRCA1.",
+                    "record_count": 1,
+                    "homepage": "https://panelapp.genomicsengland.co.uk/",
+                },
+                {
+                    "source_key": "mavedb",
+                    "name": "MaveDB",
+                    "lane": "clinical",
+                    "status": "ok",
+                    "message": "Queried MaveDB; 1 published score set record(s) returned for BRCA1.",
+                    "record_count": 1,
+                    "homepage": "https://www.mavedb.org/",
+                },
+                {
                     "source_key": "hgmd",
                     "name": "HGMD",
                     "lane": "licensed",
@@ -118,7 +217,205 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                             "url": "https://www.ncbi.nlm.nih.gov/medgen/?term=%22medgen%20gtr%20tests%20clinical%22%5BFilter%5D%20AND%20DRD4%5Bgene%5D",
                         }
                     ],
-                }
+                },
+                {
+                    "source_key": "ensembl",
+                    "category": "variant_annotation",
+                    "label": "rs927984495",
+                    "summary": (
+                        "rs927984495 (C/T) at GRCh37 11:637293-637293: "
+                        "5_prime_UTR_variant in DRD4 canonical transcript ENST00000176183, "
+                        "exon 1/4, cDNA position 1; variant class SNP; evidence: Frequency, TOPMed, gnomAD."
+                    ),
+                    "source_id": "rs927984495",
+                    "variant": "11:637293:C>T",
+                    "rsid": "rs927984495",
+                    "url": "https://www.ensembl.org/Homo_sapiens/Variation/Explore?v=rs927984495",
+                },
+                {
+                    "source_key": "dbsnp",
+                    "category": "population",
+                    "label": "rs2533154733",
+                    "summary": (
+                        "rs2533154733: deletion at 11:637373 (NC_000011.10:637372:T:); "
+                        "DRD4 coding_sequence_variant / frameshift_variant; "
+                        "HGVS NC_000011.10:g.637373del, NM_000797.4:c.69del; "
+                        "frequency GnomAD_exomes 1/998848; validated by-frequency; submitted by GNOMAD."
+                    ),
+                    "source_id": "2533154733",
+                    "variant": "rs2533154733",
+                    "rsid": "rs2533154733",
+                    "url": "https://www.ncbi.nlm.nih.gov/snp/2533154733",
+                },
+                {
+                    "source_key": "gnomad",
+                    "category": "population_frequency",
+                    "label": "rs927984495",
+                    "summary": (
+                        "gnomAD v4 rs927984495 (11-637293-C-T) at GRCh38 11:637293 C>T: "
+                        "joint AF 1.67e-05 (AC 20/AN 1,195,848; hom 0; FAF95 nfe 1.35e-05); "
+                        "genomes AF 3.97e-05 (AC 6/AN 151,146; hom 0; FAF95 nfe 3.78e-05); "
+                        "exomes AF 1.34e-05 (AC 14/AN 1,044,702; hom 0; FAF95 nfe 9.05e-06); "
+                        "highest observed population genome nfe AF 8.86e-05 (AC 6/AN 67,718); "
+                        "consequence 5_prime_UTR_variant in DRD4 transcript ENST00000176183; "
+                        "HGVS ENST00000176183.5:c.-11C>T; predictors: CADD 3.2; "
+                        "filters: discrepant_frequencies."
+                    ),
+                    "source_id": "11-637293-C-T",
+                    "variant": "rs927984495",
+                    "rsid": "rs927984495",
+                    "url": "https://gnomad.broadinstitute.org/variant/11-637293-C-T?dataset=gnomad_r4",
+                },
+                {
+                    "source_key": "gnomad",
+                    "category": "gene_constraint",
+                    "label": "DRD4 gnomAD constraint",
+                    "summary": (
+                        "gnomAD v4 DRD4 gene constraint (ENSG00000069696): pLI 1.03e-10; "
+                        "LoF O/E 1.175 (0.512-2.211), Z -0.6971; "
+                        "missense O/E 1.444 (1.18-1.76), Z -4.759; "
+                        "LoF observed/expected 4/3.405; missense observed/expected 114/79.21; "
+                        "constraint flags: outlier_mis, outlier_syn; gene location GRCh38 11:637269-640706."
+                    ),
+                    "source_id": "ENSG00000069696",
+                    "gene": "DRD4",
+                    "url": "https://gnomad.broadinstitute.org/gene/DRD4?dataset=gnomad_r4",
+                },
+                {
+                    "source_key": "gwas_catalog",
+                    "category": "population_association",
+                    "label": "rs1870723-A - Hypothyroidism",
+                    "summary": (
+                        "GWAS Catalog association rs1870723-A with Hypothyroidism / hypothyroidism "
+                        "mapped to DRD4 at 11:640349: p=5e-18; "
+                        "beta 0.0352 unit decrease; CI 0.027-0.043; risk frequency 0.2688; "
+                        "study GCST90627750, PMID 41644669, first author White SL; "
+                        "initial sample 257,365 cases, 2,186,763 controls; "
+                        "full summary statistics available; strongest risk allele rs1870723-A; "
+                        "data release 2026-06-22."
+                    ),
+                    "source_id": "216548355",
+                    "variant": "rs927984495",
+                    "rsids": ["rs1870723"],
+                    "accession_id": "GCST90627750",
+                    "url": "https://www.ebi.ac.uk/gwas/rest/api/v2/associations/216548355",
+                },
+                {
+                    "source_key": "pgs_catalog",
+                    "category": "polygenic_score",
+                    "label": "PGS000001 - PRS77_BC - Breast cancer",
+                    "summary": (
+                        "PGS Catalog score PGS000001 (PRS77_BC) includes variant rs123 and predicts "
+                        "Breast cancer: mapped traits: breast carcinoma; 77 variants; "
+                        "method SNPs passing genome-wide significance (P<5x10-8); weight type beta; "
+                        "variant-source sample 22,627 European (Finland, Sweden, U.S., Australia, "
+                        "Netherlands, Germany, U.K.) source GCST001937; "
+                        "GWAS ancestry n=22,627 (EUR 100%); evaluation ancestry n=10 (EUR 80%, NR 20%); "
+                        "performance All breast cancer: OR 1.55 (1.52-1.58), "
+                        "C-index 0.622 (0.619-0.627); evaluated sample 67,054 European; "
+                        "publication Mavaddat N, 2015-04-08, PMID 25855707, DOI 10.1093/jnci/djv036; "
+                        "harmonized scoring files: GRCh37, GRCh38; released 2019-10-14."
+                    ),
+                    "source_id": "PGS000001",
+                    "variant": "rs123",
+                    "pgs_id": "PGS000001",
+                    "url": "https://www.pgscatalog.org/score/PGS000001/",
+                },
+                {
+                    "source_key": "igsr",
+                    "category": "population_reference_panel",
+                    "label": "1000 Genomes 2504 high-coverage phased callset chr11",
+                    "summary": (
+                        "IGSR/1000 Genomes high-coverage GRCh38 data-access context for "
+                        "rs927984495 at 11:637293 C>T: chromosome VCF "
+                        "CCDG_14151_B01_GRM_WGS_2020-08-05_chr11.filtered.shapeit2-duohmm-phased.vcf.gz "
+                        "(1.6G, updated 2020-10-29 16:36) and tabix index are available "
+                        "for the 30x NYGC 2504-sample Phase 3 panel; use the indexed VCF "
+                        "to extract exact genotypes, AC/AN, or allele counts for this coordinate; "
+                        "legacy Phase 3 GRCh37 integrated data are also available via "
+                        "ALL.chr11.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz "
+                        "(701M) with global and superpopulation AF tags; rsIDs were removed "
+                        "from the Phase 3 v5b VCF, so coordinate lookup or Ensembl rsID mapping is needed."
+                    ),
+                    "source_id": "1000G_2504_high_coverage_GRCh38_chr11",
+                    "variant": "rs927984495",
+                    "rsid": "rs927984495",
+                    "url": (
+                        "http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/"
+                        "1000G_2504_high_coverage/working/20201028_3202_phased/"
+                        "CCDG_14151_B01_GRM_WGS_2020-08-05_chr11.filtered.shapeit2-duohmm-phased.vcf.gz"
+                    ),
+                },
+                {
+                    "source_key": "ucsc",
+                    "category": "gene_model",
+                    "label": "UCSC ncbiRefSeq NM_000797.4",
+                    "summary": (
+                        "UCSC ncbiRefSeq NM_000797.4 for DRD4 on hg38 chr11:637269-640706 (+): "
+                        "4 exons; CDS chr11:637305-640603; complete CDS start/end; "
+                        "query window hg38 chr11:637293-640706."
+                    ),
+                    "source_id": "NM_000797.4",
+                    "gene": "DRD4",
+                    "transcript": "NM_000797.4",
+                    "url": "https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=chr11:637293-640706",
+                },
+                {
+                    "source_key": "civic",
+                    "category": "cancer_variant",
+                    "label": "DRD4 V194G",
+                    "summary": (
+                        "CIViC DRD4 variant DRD4 V194G (variant type missense_variant; aliases: rs1800955; "
+                        "HGVS NM_000797.4:c.581T>G): PREDICTIVE evidence, level B, rating 4, SUPPORTS; "
+                        "significance SENSITIVITYRESPONSE; disease Example cancer; therapies Example therapy; "
+                        "source PMID 123456; status ACCEPTED."
+                    ),
+                    "source_id": "101",
+                    "variant": "DRD4 V194G",
+                    "evidence_type": "PREDICTIVE",
+                    "evidence_level": "B",
+                    "disease": "Example cancer",
+                    "therapies": ["Example therapy"],
+                    "url": "https://civicdb.org/variants/101",
+                },
+                {
+                    "source_key": "panelapp",
+                    "category": "gene_panel",
+                    "label": "BRCA1 in Inherited ovarian cancer (without breast cancer)",
+                    "summary": (
+                        "BRCA1 is listed on PanelApp panel Inherited ovarian cancer (without breast cancer) "
+                        "(public, v5.1); confidence 3 (green/high evidence); "
+                        "phenotypes: {Breast-ovarian cancer, familial, 1}, OMIM:604370; "
+                        "inheritance: BOTH monoallelic and biallelic, autosomal or pseudoautosomal; "
+                        "evidence: NHS GMS, Expert Review Green, Expert list."
+                    ),
+                    "source_id": "143:BRCA1",
+                    "gene": "BRCA1",
+                    "panel_name": "Inherited ovarian cancer (without breast cancer)",
+                    "confidence_level": "3",
+                    "confidence_label": "green/high evidence",
+                    "url": "https://panelapp.genomicsengland.co.uk/panels/143/gene/BRCA1/",
+                },
+                {
+                    "source_key": "mavedb",
+                    "category": "functional_assay_score_set",
+                    "label": "Scores from multiplexed functional assay of BRCA1 variants",
+                    "summary": (
+                        "MaveDB score set urn:mavedb:00001222-b-2 for BRCA1 "
+                        "(BRCA1 DNA repair associated): "
+                        "Scores from multiplexed functional assay of BRCA1 variants; "
+                        "2,271 scored variants; published 2025-10-22; "
+                        "experiment: Multiplexed functional assay of BRCA1 variants; "
+                        "assay summary: Multiplexed assay of BRCA1 variants measuring "
+                        "homology directed repair activity; target genes: BRCA1; "
+                        "publications: PMID 39999999; license CC BY 4.0."
+                    ),
+                    "source_id": "urn:mavedb:00001222-b-2",
+                    "gene": "BRCA1",
+                    "score_set_urn": "urn:mavedb:00001222-b-2",
+                    "num_variants": 2271,
+                    "url": "https://www.mavedb.org/score-sets/urn:mavedb:00001222-b-2",
+                },
             ],
             "literature_records": [
                 {
@@ -163,6 +460,103 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
     assert by_key["medgen"]["status"] == "ok"
     assert by_key["medgen"]["findings"] == ["MedGen clinical condition associated with DRD4."]
     assert any("GTR clinical-test" in link["label"] for link in by_key["medgen"]["links"])
+    assert by_key["ensembl"]["status"] == "ok"
+    assert by_key["ensembl"]["findings"] == [
+        "rs927984495 (C/T) at GRCh37 11:637293-637293: "
+        "5_prime_UTR_variant in DRD4 canonical transcript ENST00000176183, "
+        "exon 1/4, cDNA position 1; variant class SNP; evidence: Frequency, TOPMed, gnomAD."
+    ]
+    assert by_key["dbsnp"]["status"] == "ok"
+    assert by_key["dbsnp"]["findings"] == [
+        "rs2533154733: deletion at 11:637373 (NC_000011.10:637372:T:); "
+        "DRD4 coding_sequence_variant / frameshift_variant; "
+        "HGVS NC_000011.10:g.637373del, NM_000797.4:c.69del; "
+        "frequency GnomAD_exomes 1/998848; validated by-frequency; submitted by GNOMAD."
+    ]
+    assert by_key["gnomad"]["status"] == "ok"
+    assert by_key["gnomad"]["findings"] == [
+        "gnomAD v4 rs927984495 (11-637293-C-T) at GRCh38 11:637293 C>T: "
+        "joint AF 1.67e-05 (AC 20/AN 1,195,848; hom 0; FAF95 nfe 1.35e-05); "
+        "genomes AF 3.97e-05 (AC 6/AN 151,146; hom 0; FAF95 nfe 3.78e-05); "
+        "exomes AF 1.34e-05 (AC 14/AN 1,044,702; hom 0; FAF95 nfe 9.05e-06); "
+        "highest observed population genome nfe AF 8.86e-05 (AC 6/AN 67,718); "
+        "consequence 5_prime_UTR_variant in DRD4 transcript ENST00000176183; "
+        "HGVS ENST00000176183.5:c.-11C>T; predictors: CADD 3.2; "
+        "filters: discrepant_frequencies.",
+        "gnomAD v4 DRD4 gene constraint (ENSG00000069696): pLI 1.03e-10; "
+        "LoF O/E 1.175 (0.512-2.211), Z -0.6971; "
+        "missense O/E 1.444 (1.18-1.76), Z -4.759; "
+        "LoF observed/expected 4/3.405; missense observed/expected 114/79.21; "
+        "constraint flags: outlier_mis, outlier_syn; gene location GRCh38 11:637269-640706.",
+    ]
+    assert by_key["gwas_catalog"]["status"] == "ok"
+    assert by_key["gwas_catalog"]["findings"] == [
+        "GWAS Catalog association rs1870723-A with Hypothyroidism / hypothyroidism "
+        "mapped to DRD4 at 11:640349: p=5e-18; "
+        "beta 0.0352 unit decrease; CI 0.027-0.043; risk frequency 0.2688; "
+        "study GCST90627750, PMID 41644669, first author White SL; "
+        "initial sample 257,365 cases, 2,186,763 controls; "
+        "full summary statistics available; strongest risk allele rs1870723-A; "
+        "data release 2026-06-22."
+    ]
+    assert by_key["pgs_catalog"]["status"] == "ok"
+    assert by_key["pgs_catalog"]["findings"] == [
+        "PGS Catalog score PGS000001 (PRS77_BC) includes variant rs123 and predicts "
+        "Breast cancer: mapped traits: breast carcinoma; 77 variants; "
+        "method SNPs passing genome-wide significance (P<5x10-8); weight type beta; "
+        "variant-source sample 22,627 European (Finland, Sweden, U.S., Australia, "
+        "Netherlands, Germany, U.K.) source GCST001937; "
+        "GWAS ancestry n=22,627 (EUR 100%); evaluation ancestry n=10 (EUR 80%, NR 20%); "
+        "performance All breast cancer: OR 1.55 (1.52-1.58), "
+        "C-index 0.622 (0.619-0.627); evaluated sample 67,054 European; "
+        "publication Mavaddat N, 2015-04-08, PMID 25855707, DOI 10.1093/jnci/djv036; "
+        "harmonized scoring files: GRCh37, GRCh38; released 2019-10-14."
+    ]
+    assert by_key["igsr"]["status"] == "ok"
+    assert by_key["igsr"]["findings"] == [
+        "IGSR/1000 Genomes high-coverage GRCh38 data-access context for "
+        "rs927984495 at 11:637293 C>T: chromosome VCF "
+        "CCDG_14151_B01_GRM_WGS_2020-08-05_chr11.filtered.shapeit2-duohmm-phased.vcf.gz "
+        "(1.6G, updated 2020-10-29 16:36) and tabix index are available "
+        "for the 30x NYGC 2504-sample Phase 3 panel; use the indexed VCF "
+        "to extract exact genotypes, AC/AN, or allele counts for this coordinate; "
+        "legacy Phase 3 GRCh37 integrated data are also available via "
+        "ALL.chr11.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz "
+        "(701M) with global and superpopulation AF tags; rsIDs were removed "
+        "from the Phase 3 v5b VCF, so coordinate lookup or Ensembl rsID mapping is needed."
+    ]
+    assert by_key["ucsc"]["status"] == "ok"
+    assert by_key["ucsc"]["findings"] == [
+        "UCSC ncbiRefSeq NM_000797.4 for DRD4 on hg38 chr11:637269-640706 (+): "
+        "4 exons; CDS chr11:637305-640603; complete CDS start/end; "
+        "query window hg38 chr11:637293-640706."
+    ]
+    assert by_key["civic"]["status"] == "ok"
+    assert by_key["civic"]["findings"] == [
+        "CIViC DRD4 variant DRD4 V194G (variant type missense_variant; aliases: rs1800955; "
+        "HGVS NM_000797.4:c.581T>G): PREDICTIVE evidence, level B, rating 4, SUPPORTS; "
+        "significance SENSITIVITYRESPONSE; disease Example cancer; therapies Example therapy; "
+        "source PMID 123456; status ACCEPTED."
+    ]
+    assert by_key["panelapp"]["status"] == "ok"
+    assert by_key["panelapp"]["findings"] == [
+        "BRCA1 is listed on PanelApp panel Inherited ovarian cancer (without breast cancer) "
+        "(public, v5.1); confidence 3 (green/high evidence); "
+        "phenotypes: {Breast-ovarian cancer, familial, 1}, OMIM:604370; "
+        "inheritance: BOTH monoallelic and biallelic, autosomal or pseudoautosomal; "
+        "evidence: NHS GMS, Expert Review Green, Expert list."
+    ]
+    assert by_key["mavedb"]["status"] == "ok"
+    assert by_key["mavedb"]["findings"] == [
+        "MaveDB score set urn:mavedb:00001222-b-2 for BRCA1 "
+        "(BRCA1 DNA repair associated): "
+        "Scores from multiplexed functional assay of BRCA1 variants; "
+        "2,271 scored variants; published 2025-10-22; "
+        "experiment: Multiplexed functional assay of BRCA1 variants; "
+        "assay summary: Multiplexed assay of BRCA1 variants measuring "
+        "homology directed repair activity; target genes: BRCA1; "
+        "publications: PMID 39999999; license CC BY 4.0."
+    ]
     assert by_key["hgmd"]["status"] == "needs_export"
     assert by_key["hgmd"]["license_note"] == "License-gated source."
     assert "europe_pmc_literature" in by_key

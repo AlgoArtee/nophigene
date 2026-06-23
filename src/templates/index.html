@@ -1482,6 +1482,24 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 12px;
     }
+    .data-source-group--dynamic .data-source-card-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .data-source-group--dynamic .data-source-card-grid > .insight-card {
+      width: 100%;
+      max-width: none;
+    }
+    .data-source-card-grid .expandable-copy,
+    .data-source-card-grid .expandable-copy h4,
+    .data-source-card-grid .expandable-copy p,
+    .data-source-card-grid .expandable-body,
+    .data-source-card-grid .insight-list,
+    .data-source-card-grid .source-link-list,
+    .data-source-card-grid .source-link-list a,
+    .source-status-row .muted-badge {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
     .source-status-row {
       display: flex;
       flex-wrap: wrap;
@@ -4527,7 +4545,7 @@
                       {% if result.data_sources.groups %}
                       <div class="insight-stack">
                         {% for group in result.data_sources.groups %}
-                        <section class="data-source-group">
+                        <section class="data-source-group data-source-group--{{ group.key }}">
                           <div class="panel-head">
                             <div>
                               <span class="insight-kicker">Source provenance</span>
