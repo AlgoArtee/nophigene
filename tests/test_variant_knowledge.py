@@ -1393,6 +1393,150 @@ class RecordingUcscClient:
         raise AssertionError(f"Unexpected fake POST URL: {url}")
 
 
+class RecordingEncodeClient:
+    def __init__(self, *, empty: bool = False, fail_region: bool = False) -> None:
+        self.empty = empty
+        self.fail_region = fail_region
+        self.calls: list[dict[str, object]] = []
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        params = dict(params or {})
+        self.calls.append(
+            {
+                "url": str(url),
+                "params": params,
+                "headers": dict(headers or {}),
+                "rate_limit_per_second": rate_limit_per_second,
+                "timeout": timeout,
+            }
+        )
+        if str(url).endswith("/region-search/"):
+            if self.fail_region:
+                raise KnowledgeRequestError("GET ENCODE region search failed: timed out")
+            if self.empty:
+                return {
+                    "@graph": [],
+                    "total": 0,
+                    "notification": "Error during search",
+                    "assembly": "GRCh38",
+                }
+            return {
+                "@graph": [
+                    {
+                        "@id": "/experiments/ENCSRREGION1/",
+                        "accession": "ENCSRREGION1",
+                        "assay_title": "DNase-seq",
+                        "biosample_summary": "Homo sapiens K562 cell line",
+                        "status": "released",
+                    }
+                ],
+                "total": 1,
+                "notification": "Success",
+                "assembly": "GRCh38",
+            }
+        if not str(url).endswith("/search/"):
+            raise AssertionError(f"Unexpected ENCODE fake GET URL: {url}")
+        if params.get("target.genes.symbol") == "DRD4":
+            if self.empty:
+                return {"@graph": [], "total": 0, "notification": "No results found"}
+            return {
+                "@graph": [
+                    {
+                        "@id": "/experiments/ENCSRDRD4TF/",
+                        "accession": "ENCSRDRD4TF",
+                        "assay_title": "TF ChIP-seq",
+                        "assay_term_name": "ChIP-seq",
+                        "target": {
+                            "label": "DRD4",
+                            "genes": [{"symbol": "DRD4"}],
+                        },
+                        "biosample_summary": "Homo sapiens K562 cell line",
+                        "biosample_ontology": {"term_name": "K562", "classification": "cell line"},
+                        "replicates": [
+                            {
+                                "biological_replicate_number": 1,
+                                "technical_replicate_number": 1,
+                                "library": {
+                                    "biosample": {
+                                        "organism": {"scientific_name": "Homo sapiens"},
+                                    }
+                                },
+                            },
+                            {
+                                "biological_replicate_number": 2,
+                                "technical_replicate_number": 1,
+                                "library": {
+                                    "biosample": {
+                                        "organism": {"scientific_name": "Homo sapiens"},
+                                    }
+                                },
+                            },
+                        ],
+                        "files": [
+                            {
+                                "status": "released",
+                                "assembly": "GRCh38",
+                                "output_type": "optimal IDR thresholded peaks",
+                                "file_format": "bed narrowPeak",
+                            },
+                            {
+                                "status": "released",
+                                "assembly": "GRCh38",
+                                "output_type": "signal p-value",
+                                "file_format": "bigWig",
+                            },
+                        ],
+                        "lab": {"title": "ENCODE Processing Pipeline"},
+                        "award": {"project": "ENCODE"},
+                        "status": "released",
+                        "date_released": "2026-01-15",
+                        "replication_type": "isogenic",
+                    }
+                ],
+                "total": 1,
+                "notification": "Success",
+            }
+        if params.get("searchTerm") == "DRD4":
+            if self.empty:
+                return {"@graph": [], "total": 0, "notification": "No results found"}
+            return {
+                "@graph": [
+                    {
+                        "@id": "/experiments/ENCSRDRD4TF/",
+                        "accession": "ENCSRDRD4TF",
+                        "assay_title": "TF ChIP-seq",
+                    },
+                    {
+                        "@id": "/experiments/ENCSRDRD4RNA/",
+                        "accession": "ENCSRDRD4RNA",
+                        "assay_title": "total RNA-seq",
+                        "biosample_summary": "Homo sapiens neural progenitor cell",
+                        "biosample_ontology": {"term_name": "neural progenitor cell", "classification": "cell line"},
+                        "replicates": [
+                            {
+                                "biological_replicate_number": 1,
+                                "library": {
+                                    "biosample": {
+                                        "organism": {"scientific_name": "Homo sapiens"},
+                                    }
+                                },
+                            }
+                        ],
+                        "files": [{"status": "released", "assembly": "GRCh38", "output_type": "gene quantifications"}],
+                        "lab": {"title": "Thomas Gingeras, CSHL"},
+                        "award": {"project": "ENCODE"},
+                        "status": "released",
+                    },
+                ],
+                "total": 2,
+                "notification": "Success",
+            }
+        raise AssertionError(f"Unexpected ENCODE fake params: {params}")
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
+        raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+
 def _write_simple_pdf(path: Path, text: str) -> None:
     escaped = text.replace("\\", "\\\\").replace("(", r"\(").replace(")", r"\)")
     stream = f"BT /F1 12 Tf 72 720 Td ({escaped}) Tj ET"
@@ -2492,6 +2636,109 @@ def test_ucsc_connector_keeps_partial_annotations_when_optional_track_fails():
     assert "reference_sequence" in categories
     assert "regulatory_element" in categories
     assert "cpg_island" not in categories
+
+
+def test_encode_connector_returns_experiment_and_region_context():
+    client = RecordingEncodeClient()
+    connector = connector_for(get_source_spec("encode"), client, ResolvedCredential("encode"))
+    query = KnowledgeQuery(
+        gene="DRD4",
+        region="11:637293-640706",
+        genome_build="hg38",
+        variants=(QueryVariant(chrom="11", pos=637293, ref="C", alt="T", rsid="rs927984495"),),
+    )
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == []
+    assert "2 experiment record(s), 1 region-search record(s)" in result.message
+    categories = [record["category"] for record in result.records]
+    assert categories == ["regulatory_experiment", "regulatory_experiment", "regulatory_region_hit"]
+
+    target_record = result.records[0]
+    assert target_record["label"] == "ENCSRDRD4TF - TF ChIP-seq"
+    assert target_record["match_type"] == "target_gene"
+    assert target_record["target"] == "DRD4"
+    assert target_record["target_genes"] == ["DRD4"]
+    assert target_record["biological_replicates"] == 2
+    assert target_record["files"]["total"] == 2
+    assert target_record["files"]["released"] == 2
+    assert target_record["files"]["assemblies"] == ["GRCh38"]
+    assert target_record["files"]["output_types"] == ["optimal IDR thresholded peaks", "signal p-value"]
+    assert "ENCODE DCC ENCSRDRD4TF TF ChIP-seq matched DRD4 through target gene metadata" in target_record[
+        "summary"
+    ]
+    assert "target DRD4 (DRD4)" in target_record["summary"]
+    assert "biosample Homo sapiens K562 cell line" in target_record["summary"]
+    assert "2 biological replicate(s)" in target_record["summary"]
+    assert "2/2 released file(s); outputs optimal IDR thresholded peaks, signal p-value; assemblies GRCh38" in target_record[
+        "summary"
+    ]
+    assert "lab ENCODE Processing Pipeline" in target_record["summary"]
+    assert "released 2026-01-15" in target_record["summary"]
+
+    text_record = result.records[1]
+    assert text_record["source_id"] == "ENCSRDRD4RNA"
+    assert text_record["match_type"] == "gene_text"
+    assert "total RNA-seq matched DRD4 through portal text search" in text_record["summary"]
+    assert "gene quantifications" in text_record["summary"]
+
+    region_record = result.records[2]
+    assert region_record["category"] == "regulatory_region_hit"
+    assert region_record["source_id"] == "ENCSRREGION1"
+    assert region_record["region"] == "chr11:637293-640706"
+    assert "ENCODE DCC region search returned ENCSRREGION1 overlapping chr11:637293-640706 for DRD4" in region_record[
+        "summary"
+    ]
+    assert "assay DNase-seq" in region_record["summary"]
+
+    target_calls = [call for call in client.calls if call["params"].get("target.genes.symbol") == "DRD4"]
+    assert len(target_calls) == 1
+    assert target_calls[0]["params"]["frame"] == "object"
+    assert target_calls[0]["params"]["format"] == "json"
+    assert target_calls[0]["params"]["limit"] == 5
+    assert target_calls[0]["headers"]["Accept"] == "application/json"
+    assert target_calls[0]["rate_limit_per_second"] == 5.0
+    assert any(call["params"].get("searchTerm") == "DRD4" for call in client.calls)
+    assert any(str(call["url"]).endswith("/region-search/") and call["params"].get("region") == "chr11:637293-640706" for call in client.calls)
+
+
+def test_encode_connector_records_clear_context_when_no_direct_records_exist():
+    client = RecordingEncodeClient(empty=True)
+    connector = connector_for(get_source_spec("encode"), client, ResolvedCredential("encode"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg38")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == [
+        "Optional ENCODE region search did not return compact DCC rows; experiment searches were still used."
+    ]
+    assert "query context recorded" in result.message
+    assert len(result.records) == 1
+    record = result.records[0]
+    assert record["category"] == "encode_query_context"
+    assert record["target_search_total"] == 0
+    assert record["text_search_total"] == 0
+    assert "no direct experiment records were returned" in record["summary"]
+    assert "target-gene search total 0; gene-text search total 0" in record["summary"]
+    assert "region search note: Error during search" in record["summary"]
+
+
+def test_encode_connector_keeps_experiment_records_when_region_search_fails():
+    client = RecordingEncodeClient(fail_region=True)
+    connector = connector_for(get_source_spec("encode"), client, ResolvedCredential("encode"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg38")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == ["Optional ENCODE region search failed; other ENCODE Portal results were still used."]
+    assert "Traceback" not in json.dumps(result.warnings)
+    categories = {record["category"] for record in result.records}
+    assert categories == {"regulatory_experiment"}
+    assert len(result.records) == 2
 
 
 def test_clingen_connector_returns_gene_centered_curations():

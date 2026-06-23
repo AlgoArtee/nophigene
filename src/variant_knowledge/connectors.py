@@ -70,6 +70,10 @@ IGSR_HIGH_COVERAGE_PHASED_URL = f"{IGSR_HIGH_COVERAGE_URL}working/20201028_3202_
 IGSR_HIGH_COVERAGE_README_URL = f"{IGSR_HIGH_COVERAGE_URL}20190405_1000G_2504_high_cov_README.md"
 UCSC_API_BASE = "https://api.genome.ucsc.edu"
 UCSC_TRACK_MAX_ITEMS = 5
+ENCODE_PORTAL_BASE_URL = "https://www.encodeproject.org"
+ENCODE_SEARCH_URL = f"{ENCODE_PORTAL_BASE_URL}/search/"
+ENCODE_REGION_SEARCH_URL = f"{ENCODE_PORTAL_BASE_URL}/region-search/"
+ENCODE_MAX_RECORDS = 5
 
 
 def _ncbi_request_params(params: dict[str, Any]) -> dict[str, Any]:
@@ -3747,15 +3751,121 @@ class IgsrConnector(BaseConnector):
 
 
 class EncodeConnector(BaseConnector):
-    """ENCODE portal search connector."""
+    """ENCODE Portal / SCREEN search connector."""
 
     def query(self, context: KnowledgeQuery) -> SourceResult:
         started = time.monotonic()
-        url = "https://www.encodeproject.org/search/"
+        if self.spec.connector_kind == "screen":
+            return self._query_screen_legacy(context, started)
+        return self._query_encode_portal(context, started)
+
+    def _query_encode_portal(self, context: KnowledgeQuery, started: float) -> SourceResult:
+        headers = {"Accept": "application/json"}
+        urls: list[str] = []
+        warnings: list[str] = []
+        records: list[dict[str, Any]] = []
+        failures = 0
+        seen: set[str] = set()
+
+        target_payload, failed = self._encode_get(
+            ENCODE_SEARCH_URL,
+            {
+                "type": "Experiment",
+                "target.genes.symbol": context.gene,
+                "format": "json",
+                "frame": "object",
+                "limit": ENCODE_MAX_RECORDS,
+            },
+            headers,
+            urls,
+            warnings,
+            "target-gene experiment search",
+        )
+        failures += 1 if failed else 0
+        records.extend(self._experiment_records(context, target_payload, seen, "target_gene"))
+
+        text_payload, failed = self._encode_get(
+            ENCODE_SEARCH_URL,
+            {
+                "type": "Experiment",
+                "searchTerm": context.gene,
+                "format": "json",
+                "frame": "object",
+                "limit": ENCODE_MAX_RECORDS,
+            },
+            headers,
+            urls,
+            warnings,
+            "gene-text experiment search",
+        )
+        failures += 1 if failed else 0
+        records.extend(self._experiment_records(context, text_payload, seen, "gene_text"))
+
+        region_payload: dict[str, Any] = {}
+        region = self._encode_region(context)
+        if region:
+            region_payload, _ = self._encode_get(
+                ENCODE_REGION_SEARCH_URL,
+                {
+                    "region": region,
+                    "format": "json",
+                    "limit": ENCODE_MAX_RECORDS,
+                },
+                headers,
+                urls,
+                warnings,
+                "region search",
+                optional=True,
+            )
+            records.extend(self._region_records(context, region_payload, seen, region))
+            notification = _clean_cell(region_payload.get("notification"))
+            if notification and notification.lower().startswith("error"):
+                warnings.append("Optional ENCODE region search did not return compact DCC rows; experiment searches were still used.")
+
+        if not records and failures >= 2:
+            message = "ENCODE Portal DCC lookup failed; no experiment or region-search records were returned."
+            return SourceResult(
+                self.spec.key,
+                "failed",
+                message,
+                [],
+                warnings=warnings,
+                errors=warnings or [message],
+                queried_urls=urls,
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+        if not records:
+            records.append(self._query_context_record(context, region, target_payload, text_payload, region_payload))
+
+        direct_count = sum(1 for record in records if record.get("category") == "regulatory_experiment")
+        region_count = sum(1 for record in records if record.get("category") == "regulatory_region_hit")
+        context_count = sum(1 for record in records if record.get("category") == "encode_query_context")
+        parts: list[str] = []
+        if direct_count:
+            parts.append(f"{direct_count} experiment record(s)")
+        if region_count:
+            parts.append(f"{region_count} region-search record(s)")
+        if context_count:
+            parts.append("query context recorded")
+        detail = ", ".join(parts) if parts else f"{len(records)} record(s)"
+        return SourceResult(
+            self.spec.key,
+            "ok",
+            f"Queried ENCODE Portal DCC; {detail} returned for {context.gene}.",
+            records,
+            warnings=warnings,
+            queried_urls=urls,
+            elapsed_ms=_elapsed_ms(started),
+        )
+
+    def _query_screen_legacy(self, context: KnowledgeQuery, started: float) -> SourceResult:
         try:
             payload = self.client.get_json(
-                url,
-                params={"type": "Experiment", "searchTerm": context.gene, "format": "json", "limit": "5"},
+                ENCODE_SEARCH_URL,
+                params={"type": "Experiment", "searchTerm": context.gene, "format": "json", "limit": ENCODE_MAX_RECORDS},
+                headers={"Accept": "application/json"},
+                rate_limit_per_second=self.spec.rate_limit_per_second,
             )
             records = [
                 {
@@ -3764,13 +3874,389 @@ class EncodeConnector(BaseConnector):
                     "label": str(item.get("accession") or item.get("@id") or context.gene),
                     "summary": str(item.get("assay_title") or item.get("description") or "ENCODE experiment"),
                     "source_id": item.get("accession"),
-                    "url": f"https://www.encodeproject.org{item.get('@id', '')}",
+                    "url": self._portal_url(item.get("@id")),
                 }
-                for item in payload.get("@graph", [])[:5]
+                for item in self._graph_items(payload)[:ENCODE_MAX_RECORDS]
             ]
-            return SourceResult(self.spec.key, "ok", f"Queried ENCODE; {len(records)} record(s).", records, queried_urls=[url], elapsed_ms=_elapsed_ms(started))
+            return SourceResult(
+                self.spec.key,
+                "ok",
+                f"Queried SCREEN/ENCODE search; {len(records)} record(s).",
+                records,
+                queried_urls=[ENCODE_SEARCH_URL],
+                elapsed_ms=_elapsed_ms(started),
+            )
         except KnowledgeRequestError as exc:
-            return SourceResult(self.spec.key, "failed", str(exc), errors=[str(exc)], queried_urls=[url], elapsed_ms=_elapsed_ms(started))
+            return SourceResult(
+                self.spec.key,
+                "failed",
+                str(exc),
+                errors=[str(exc)],
+                queried_urls=[ENCODE_SEARCH_URL],
+                elapsed_ms=_elapsed_ms(started),
+            )
+
+    def _encode_get(
+        self,
+        url: str,
+        params: dict[str, Any],
+        headers: dict[str, str],
+        urls: list[str],
+        warnings: list[str],
+        label: str,
+        *,
+        optional: bool = False,
+    ) -> tuple[dict[str, Any], bool]:
+        urls.append(url)
+        try:
+            payload = self.client.get_json(
+                url,
+                params=params,
+                headers=headers,
+                rate_limit_per_second=self.spec.rate_limit_per_second,
+            )
+        except KnowledgeRequestError:
+            warnings.append(f"Optional ENCODE {label} failed; other ENCODE Portal results were still used.")
+            return {}, True
+        if not isinstance(payload, dict):
+            warnings.append(f"Optional ENCODE {label} returned no usable data; other ENCODE Portal results were still used.")
+            return {}, not optional
+        return payload, False
+
+    def _experiment_records(
+        self,
+        context: KnowledgeQuery,
+        payload: dict[str, Any],
+        seen: set[str],
+        match_kind: str,
+    ) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        for item in self._graph_items(payload):
+            accession = _clean_cell(item.get("accession") or item.get("@id"))
+            dedupe_key = accession or _clean_cell(item.get("@id"))
+            if dedupe_key in seen:
+                continue
+            seen.add(dedupe_key)
+            records.append(self._experiment_record(context, item, match_kind))
+            if len(records) >= ENCODE_MAX_RECORDS:
+                break
+        return records
+
+    def _region_records(
+        self,
+        context: KnowledgeQuery,
+        payload: dict[str, Any],
+        seen: set[str],
+        region: str,
+    ) -> list[dict[str, Any]]:
+        records: list[dict[str, Any]] = []
+        for item in self._graph_items(payload):
+            accession = _clean_cell(item.get("accession") or item.get("@id") or item.get("uuid"))
+            dedupe_key = f"region:{accession}"
+            if not accession or dedupe_key in seen:
+                continue
+            seen.add(dedupe_key)
+            records.append(self._region_record(context, item, region))
+            if len(records) >= ENCODE_MAX_RECORDS:
+                break
+        return records
+
+    def _experiment_record(self, context: KnowledgeQuery, item: dict[str, Any], match_kind: str) -> dict[str, Any]:
+        accession = _clean_cell(item.get("accession") or item.get("@id") or context.gene)
+        assay = _clean_cell(item.get("assay_title") or item.get("assay_term_name"))
+        target = self._target_label(item)
+        target_genes = self._target_gene_symbols(item)
+        biosample = self._biosample_text(item)
+        files = self._file_summary(item.get("files"))
+        record = {
+            "category": "regulatory_experiment",
+            "source": self.spec.name,
+            "label": f"{accession} - {assay}" if assay else accession,
+            "summary": self._experiment_summary(context, item, match_kind, accession, assay, target, target_genes, biosample, files),
+            "source_id": accession,
+            "url": self._portal_url(item.get("@id") or f"/experiments/{accession}/"),
+            "gene": context.gene,
+            "match_type": match_kind,
+            "assay": assay,
+            "target": target,
+            "target_genes": target_genes,
+            "biosample": biosample,
+            "organism": self._organism_text(item),
+            "status": _clean_cell(item.get("status")),
+            "lab": self._lab_text(item),
+            "project": self._project_text(item),
+            "date_released": _clean_cell(item.get("date_released")),
+            "replication_type": _clean_cell(item.get("replication_type")),
+            "biological_replicates": self._biological_replicates(item.get("replicates")),
+            "files": files,
+        }
+        return {key: value for key, value in record.items() if value not in ("", [], {}, None)}
+
+    def _region_record(self, context: KnowledgeQuery, item: dict[str, Any], region: str) -> dict[str, Any]:
+        accession = _clean_cell(item.get("accession") or item.get("@id") or region)
+        assay = _clean_cell(item.get("assay_title") or item.get("assay_term_name") or item.get("annotation_type"))
+        biosample = self._biosample_text(item)
+        status = _clean_cell(item.get("status"))
+        details = [f"assay {assay}" if assay else "", biosample, f"status {status}" if status else ""]
+        summary = (
+            f"ENCODE DCC region search returned {accession} overlapping {region} for {context.gene}: "
+            f"{'; '.join(part for part in details if part)}."
+        )
+        return {
+            "category": "regulatory_region_hit",
+            "source": self.spec.name,
+            "label": f"{accession} region hit",
+            "summary": summary,
+            "source_id": accession,
+            "url": self._portal_url(item.get("@id")),
+            "gene": context.gene,
+            "region": region,
+            "assay": assay,
+            "biosample": biosample,
+            "status": status,
+        }
+
+    def _query_context_record(
+        self,
+        context: KnowledgeQuery,
+        region: str,
+        target_payload: dict[str, Any],
+        text_payload: dict[str, Any],
+        region_payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        target_total = self._payload_total(target_payload)
+        text_total = self._payload_total(text_payload)
+        notification = _clean_cell(region_payload.get("notification"))
+        region_text = f" and region {region}" if region else ""
+        detail = f"target-gene search total {target_total}; gene-text search total {text_total}"
+        if notification:
+            detail = f"{detail}; region search note: {notification}"
+        return {
+            "category": "encode_query_context",
+            "source": self.spec.name,
+            "label": f"ENCODE Portal query context for {context.gene}",
+            "summary": (
+                f"ENCODE Portal DCC searched released experiment metadata for {context.gene}{region_text}; "
+                f"no direct experiment records were returned ({detail})."
+            ),
+            "source_id": f"encode:{context.gene}",
+            "url": f"{ENCODE_SEARCH_URL}?type=Experiment&searchTerm={quote(context.gene)}",
+            "gene": context.gene,
+            "region": region,
+            "target_search_total": target_total,
+            "text_search_total": text_total,
+            "region_search_notification": notification,
+        }
+
+    def _experiment_summary(
+        self,
+        context: KnowledgeQuery,
+        item: dict[str, Any],
+        match_kind: str,
+        accession: str,
+        assay: str,
+        target: str,
+        target_genes: list[str],
+        biosample: str,
+        files: dict[str, Any],
+    ) -> str:
+        lead = f"ENCODE DCC {accession}"
+        if assay:
+            lead = f"{lead} {assay}"
+        if match_kind == "target_gene":
+            lead = f"{lead} matched {context.gene} through target gene metadata"
+        else:
+            lead = f"{lead} matched {context.gene} through portal text search"
+
+        details: list[str] = []
+        target_text = target
+        if target_genes:
+            gene_text = ", ".join(target_genes[:4])
+            target_text = f"{target_text} ({gene_text})" if target_text else gene_text
+        if target_text:
+            details.append(f"target {target_text}")
+        if biosample:
+            details.append(f"biosample {biosample}")
+        organism = self._organism_text(item)
+        if organism:
+            details.append(organism)
+        replicate_count = self._biological_replicates(item.get("replicates"))
+        if replicate_count:
+            details.append(f"{replicate_count} biological replicate(s)")
+        file_text = self._file_text(files)
+        if file_text:
+            details.append(file_text)
+        lab = self._lab_text(item)
+        if lab:
+            details.append(f"lab {lab}")
+        project = self._project_text(item)
+        if project:
+            details.append(f"project {project}")
+        status = _clean_cell(item.get("status"))
+        if status:
+            details.append(f"status {status}")
+        released = _clean_cell(item.get("date_released"))
+        if released:
+            details.append(f"released {released}")
+        return f"{lead}: {'; '.join(details)}." if details else f"{lead}."
+
+    def _file_summary(self, values: Any) -> dict[str, Any]:
+        files = values if isinstance(values, list) else []
+        released = 0
+        assemblies: list[str] = []
+        output_types: list[str] = []
+        formats: list[str] = []
+        for file_item in files:
+            if not isinstance(file_item, dict):
+                continue
+            if _clean_cell(file_item.get("status")) == "released":
+                released += 1
+            assemblies.extend(self._clean_list(file_item.get("assembly")))
+            output_types.extend(self._clean_list(file_item.get("output_type") or file_item.get("file_type")))
+            formats.extend(self._clean_list(file_item.get("file_format")))
+        return {
+            "total": len(files),
+            "released": released or None,
+            "assemblies": self._dedupe_text(assemblies),
+            "output_types": self._dedupe_text(output_types),
+            "formats": self._dedupe_text(formats),
+        }
+
+    def _file_text(self, files: dict[str, Any]) -> str:
+        total = files.get("total")
+        if not total:
+            return ""
+        parts = [f"{files.get('released') or total}/{total} released file(s)"]
+        output_types = files.get("output_types") or []
+        if output_types:
+            parts.append(f"outputs {', '.join(output_types[:4])}")
+        assemblies = files.get("assemblies") or []
+        if assemblies:
+            parts.append(f"assemblies {', '.join(assemblies[:3])}")
+        return "; ".join(parts)
+
+    def _target_label(self, item: dict[str, Any]) -> str:
+        target = item.get("target")
+        if isinstance(target, dict):
+            return _clean_cell(target.get("label") or target.get("name") or target.get("title"))
+        return _clean_cell(target)
+
+    def _target_gene_symbols(self, item: dict[str, Any]) -> list[str]:
+        targets = []
+        target = item.get("target")
+        if isinstance(target, dict):
+            targets.extend(self._target_genes_from_value(target.get("genes")))
+        targets.extend(self._target_genes_from_value(item.get("targets")))
+        return self._dedupe_text(targets)
+
+    def _target_genes_from_value(self, value: Any) -> list[str]:
+        genes: list[str] = []
+        values = value if isinstance(value, list) else [value]
+        for item in values:
+            if isinstance(item, dict):
+                symbol = _clean_cell(item.get("symbol") or item.get("gene_symbol") or item.get("name") or item.get("label"))
+                if symbol:
+                    genes.append(symbol)
+                genes.extend(self._target_genes_from_value(item.get("genes")))
+            else:
+                text = _clean_cell(item)
+                if text:
+                    genes.append(text)
+        return genes
+
+    def _biosample_text(self, item: dict[str, Any]) -> str:
+        summary = _clean_cell(item.get("biosample_summary") or item.get("simple_biosample_summary"))
+        ontology = item.get("biosample_ontology") if isinstance(item.get("biosample_ontology"), dict) else {}
+        term = _clean_cell(ontology.get("term_name"))
+        classification = _clean_cell(ontology.get("classification"))
+        if summary:
+            return summary
+        if term and classification:
+            return f"{term} {classification}"
+        return term or classification
+
+    def _organism_text(self, item: dict[str, Any]) -> str:
+        organisms: list[str] = []
+        replicates = item.get("replicates") if isinstance(item.get("replicates"), list) else []
+        for replicate in replicates:
+            if not isinstance(replicate, dict):
+                continue
+            biosample = ((replicate.get("library") or {}).get("biosample") or {}) if isinstance(replicate.get("library"), dict) else {}
+            organism = biosample.get("organism") if isinstance(biosample.get("organism"), dict) else {}
+            text = _clean_cell(organism.get("scientific_name"))
+            if text:
+                organisms.append(text)
+        return ", ".join(self._dedupe_text(organisms)[:3])
+
+    def _lab_text(self, item: dict[str, Any]) -> str:
+        lab = item.get("lab")
+        if isinstance(lab, dict):
+            return _clean_cell(lab.get("title") or lab.get("name"))
+        return _clean_cell(lab)
+
+    def _project_text(self, item: dict[str, Any]) -> str:
+        award = item.get("award")
+        if isinstance(award, dict):
+            return _clean_cell(award.get("project") or award.get("name"))
+        return _clean_cell(award)
+
+    def _biological_replicates(self, values: Any) -> int | None:
+        if not isinstance(values, list):
+            return None
+        reps: set[str] = set()
+        for item in values:
+            if not isinstance(item, dict):
+                continue
+            number = _clean_cell(item.get("biological_replicate_number"))
+            if number:
+                reps.add(number)
+        return len(reps) if reps else None
+
+    def _payload_total(self, payload: dict[str, Any]) -> int:
+        try:
+            return int(payload.get("total") or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    def _graph_items(self, payload: Any) -> list[dict[str, Any]]:
+        if not isinstance(payload, dict):
+            return []
+        graph = payload.get("@graph")
+        if not isinstance(graph, list):
+            return []
+        return [item for item in graph if isinstance(item, dict)]
+
+    def _encode_region(self, context: KnowledgeQuery) -> str:
+        text = _clean_cell(context.region).replace(",", "")
+        match = re.search(r"(?P<chrom>(?:chr)?[A-Za-z0-9_.]+)\s*:\s*(?P<start>\d+)\s*-\s*(?P<end>\d+)", text)
+        if not match:
+            return ""
+        chrom = match.group("chrom")
+        if not chrom.lower().startswith("chr"):
+            chrom = f"chr{chrom}"
+        return f"{chrom}:{match.group('start')}-{match.group('end')}"
+
+    def _portal_url(self, path: Any) -> str:
+        text = _clean_cell(path)
+        if not text:
+            return self.spec.homepage or ENCODE_PORTAL_BASE_URL
+        if text.startswith(("http://", "https://")):
+            return text
+        return f"{ENCODE_PORTAL_BASE_URL}{text if text.startswith('/') else f'/{text}'}"
+
+    def _clean_list(self, value: Any) -> list[str]:
+        if value is None:
+            return []
+        values = value if isinstance(value, list) else [value]
+        return [text for text in (_clean_cell(item) for item in values) if text]
+
+    def _dedupe_text(self, values: list[str]) -> list[str]:
+        deduped: list[str] = []
+        for value in values:
+            text = _clean_cell(value)
+            if text and text not in deduped:
+                deduped.append(text)
+        return deduped
 
 
 class BioStudiesConnector(BaseConnector):

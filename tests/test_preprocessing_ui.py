@@ -147,6 +147,15 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "homepage": "https://api.genome.ucsc.edu/",
                 },
                 {
+                    "source_key": "encode",
+                    "name": "ENCODE Portal (DCC)",
+                    "lane": "regulatory",
+                    "status": "ok",
+                    "message": "Queried ENCODE Portal DCC; 1 experiment record(s) returned for DRD4.",
+                    "record_count": 1,
+                    "homepage": "https://www.encodeproject.org/",
+                },
+                {
                     "source_key": "civic",
                     "name": "CIViC",
                     "lane": "clinical",
@@ -361,6 +370,24 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "url": "https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=chr11:637293-640706",
                 },
                 {
+                    "source_key": "encode",
+                    "category": "regulatory_experiment",
+                    "label": "ENCSRDRD4TF - TF ChIP-seq",
+                    "summary": (
+                        "ENCODE DCC ENCSRDRD4TF TF ChIP-seq matched DRD4 through target gene metadata: "
+                        "target DRD4 (DRD4); biosample Homo sapiens K562 cell line; "
+                        "Homo sapiens; 2 biological replicate(s); "
+                        "2/2 released file(s); outputs optimal IDR thresholded peaks, signal p-value; "
+                        "assemblies GRCh38; lab ENCODE Processing Pipeline; project ENCODE; "
+                        "status released; released 2026-01-15."
+                    ),
+                    "source_id": "ENCSRDRD4TF",
+                    "gene": "DRD4",
+                    "assay": "TF ChIP-seq",
+                    "target": "DRD4",
+                    "url": "https://www.encodeproject.org/experiments/ENCSRDRD4TF/",
+                },
+                {
                     "source_key": "civic",
                     "category": "cancer_variant",
                     "label": "DRD4 V194G",
@@ -530,6 +557,15 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
         "UCSC ncbiRefSeq NM_000797.4 for DRD4 on hg38 chr11:637269-640706 (+): "
         "4 exons; CDS chr11:637305-640603; complete CDS start/end; "
         "query window hg38 chr11:637293-640706."
+    ]
+    assert by_key["encode"]["status"] == "ok"
+    assert by_key["encode"]["findings"] == [
+        "ENCODE DCC ENCSRDRD4TF TF ChIP-seq matched DRD4 through target gene metadata: "
+        "target DRD4 (DRD4); biosample Homo sapiens K562 cell line; "
+        "Homo sapiens; 2 biological replicate(s); "
+        "2/2 released file(s); outputs optimal IDR thresholded peaks, signal p-value; "
+        "assemblies GRCh38; lab ENCODE Processing Pipeline; project ENCODE; "
+        "status released; released 2026-01-15."
     ]
     assert by_key["civic"]["status"] == "ok"
     assert by_key["civic"]["findings"] == [

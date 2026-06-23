@@ -263,6 +263,7 @@ SOURCE_OVERRIDES: dict[str, dict[str, Any]] = {
         "access_type": "open_api",
         "homepage": "https://www.encodeproject.org/",
         "lane": "regulatory",
+        "rate_limit_per_second": 5.0,
     },
     "civic": {
         "connector_kind": "civic",
