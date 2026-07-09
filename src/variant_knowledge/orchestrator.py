@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
 from typing import Any
 
 import pandas as pd
+
+try:
+    from ..interpretation import canonical_variant_alleles
+except ImportError:
+    from interpretation import canonical_variant_alleles
 
 from .client import RequestClient
 from .connectors import connector_for
@@ -44,26 +50,35 @@ def _variant_rsid(value: Any) -> str:
     return text if text.lower().startswith("rs") else ""
 
 
-def variants_from_dataframe(variants: pd.DataFrame | None) -> tuple[QueryVariant, ...]:
-    """Normalize a VCF-derived dataframe into query variants."""
+def variants_from_dataframe(
+    variants: pd.DataFrame | None,
+    *,
+    genome_build: str | None = None,
+) -> tuple[QueryVariant, ...]:
+    """Normalize a VCF-derived dataframe into one query variant per ALT allele."""
     if variants is None or variants.empty:
         return ()
     normalized: list[QueryVariant] = []
-    for _, row in variants.iterrows():
-        chrom = _clean_text(row.get("chrom") or row.get("CHROM")).removeprefix("chr")
-        pos = _safe_int(row.get("pos") or row.get("POS"))
-        if not chrom or pos is None:
+    for allele in canonical_variant_alleles(variants, genome_build=genome_build):
+        normalization = allele.get("normalization", {})
+        if normalization.get("identity_status") != "ready_for_external_matching":
+            continue
+        chrom = _clean_text(allele.get("chrom")).removeprefix("chr")
+        pos = _safe_int(normalization.get("normalized_pos"))
+        ref = _clean_text(normalization.get("normalized_ref")).upper()
+        alt = _clean_text(normalization.get("normalized_alt")).upper()
+        if not chrom or pos is None or not ref or not alt:
             continue
         normalized.append(
             QueryVariant(
                 chrom=chrom,
                 pos=pos,
-                ref=_clean_text(row.get("ref") or row.get("REF")).upper(),
-                alt=_clean_text(row.get("alt") or row.get("ALT")).upper(),
-                rsid=_variant_rsid(row.get("id") or row.get("ID")),
-                sample=_clean_text(row.get("sample")),
-                gt_raw=_clean_text(row.get("gt_raw")),
-                zygosity=_clean_text(row.get("zygosity")),
+                ref=ref,
+                alt=alt,
+                rsid=_variant_rsid(allele.get("rsid")),
+                sample=_clean_text(allele.get("sample")),
+                gt_raw=_clean_text(allele.get("gt_raw")),
+                zygosity=_clean_text(allele.get("zygosity")),
             )
         )
     return tuple(normalized)
@@ -146,14 +161,11 @@ def _build_dynamic_variant_records(
     specs: tuple[SourceSpec, ...],
 ) -> list[dict[str, Any]]:
     spec_lookup = {spec.key: spec for spec in specs}
-    fallback_records = [
-        record for record in source_records if record.get("category") not in {"source_metadata", "literature"}
-    ]
     dynamic_records: list[dict[str, Any]] = []
     for variant in query.variants:
         matched_records = [
             record for record in source_records if _record_mentions_variant(record, variant)
-        ] or fallback_records[:8]
+        ]
         evidence = [
             _evidence_from_record(record, spec_lookup)
             for record in matched_records[:12]
@@ -179,8 +191,8 @@ def _build_dynamic_variant_records(
                 "interpretation_scope": "Dynamic source aggregation / research triage context",
                 "clinical_interpretation": (
                     f"The dynamic knowledge-base builder queried selected external sources for {display}. "
-                    "Use this as provenance-rich triage context; do not treat it as a standalone diagnosis "
-                    "or prescribing recommendation."
+                    "Only exact variant matches are attached here. Sources that returned gene- or region-level "
+                    "records remain in their own evidence lane and are not promoted to this variant."
                 ),
                 "clinical_significance": _clinical_significance_for_variant(matched_records),
                 "functional_effects": [
@@ -193,7 +205,10 @@ def _build_dynamic_variant_records(
                     "Licensed or unavailable sources are represented by status metadata rather than scraped records.",
                     f"Providers contributing evidence: {', '.join(provider_names) if provider_names else 'none returned records'}",
                 ],
-                "usual_variant_note": "Automatically generated from the sample's queried variant locus.",
+                "usual_variant_note": (
+                    "Automatically generated from the sample's queried variant locus. "
+                    "No exact source evidence was found when the evidence list is empty."
+                ),
                 "methylation_interpretation": (
                     "Pair this sequence variant with nearby methylation only as local regulatory context unless "
                     "a source record explicitly supports a probe-variant mechanism."
@@ -204,6 +219,73 @@ def _build_dynamic_variant_records(
             }
         )
     return dynamic_records
+
+
+def _evidence_snapshot(
+    *,
+    gene: str,
+    region: str,
+    genome_build: str,
+    generated_at: str,
+    provider_statuses: list[dict[str, Any]],
+    source_records: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Build immutable source provenance for a dynamic knowledge-base run."""
+    normalized_records = sorted(
+        json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=True, default=str)
+        for record in source_records
+        if isinstance(record, dict)
+    )
+    normalized_evidence_checksum = hashlib.sha256(
+        "\n".join(normalized_records).encode("utf-8")
+    ).hexdigest()
+    providers = []
+    for status in provider_statuses:
+        source_key = str(status.get("source_key", ""))
+        source_rows = [
+            record for record in source_records if str(record.get("source_key", "")) == source_key
+        ]
+        release = next(
+            (
+                str(record.get("data_release_date") or record.get("release_date") or record.get("version") or "")
+                for record in source_rows
+                if record.get("data_release_date") or record.get("release_date") or record.get("version")
+            ),
+            "",
+        )
+        providers.append(
+            {
+                "source_key": source_key,
+                "source": str(status.get("name", "")),
+                "status": str(status.get("status", "not_assessed")),
+                "assessment_status": (
+                    "assessed" if status.get("status") in {"ok", "imported"} else "not_assessed"
+                ),
+                "retrieved_at": generated_at,
+                "record_count": int(status.get("record_count", 0) or 0),
+                "queried_urls": list(status.get("queried_urls", []) or []),
+                "source_release": release,
+            }
+        )
+    identity = {
+        "schema_version": "2.0",
+        "gene": gene,
+        "region": region,
+        "genome_build": genome_build,
+        "generated_at": generated_at,
+        "providers": providers,
+        "normalized_evidence_checksum_sha256": normalized_evidence_checksum,
+        "normalized_evidence_record_count": len(normalized_records),
+    }
+    checksum = hashlib.sha256(
+        json.dumps(identity, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+    ).hexdigest()
+    return {
+        **identity,
+        "snapshot_id": f"evidence-{checksum[:16]}",
+        "checksum_sha256": checksum,
+        "refresh_policy": "explicit_user_triggered",
+    }
 
 
 def _build_epigenetic_locus_records(query: KnowledgeQuery) -> list[dict[str, Any]]:
@@ -573,7 +655,10 @@ def build_dynamic_knowledge_base(
 ) -> dict[str, Any]:
     """Build a dynamic variant knowledge-base payload and optionally write it."""
     normalized_gene = _clean_text(gene).upper()
-    normalized_build = _clean_text(genome_build) or "hg19"
+    # Do not label an undeclared VCF as hg19. Source calls may still return
+    # research metadata, but schema-v2 clinical support will block unknown
+    # assemblies rather than treating an implicit default as validation.
+    normalized_build = _clean_text(genome_build) or "unknown"
     workflow_specs = select_workflow_specs(selected_workflows)
     local_article_requested = _local_article_requested(
         workflows=workflow_specs,
@@ -588,7 +673,7 @@ def build_dynamic_knowledge_base(
         gene=normalized_gene,
         region=region,
         genome_build=normalized_build,
-        variants=variants_from_dataframe(variants),
+        variants=variants_from_dataframe(variants, genome_build=normalized_build),
         epigenetic_loci=epigenetic_loci_from_dataframe(manifest_subset),
     )
     timestamp = generated_at or utc_now_iso()
@@ -669,7 +754,7 @@ def build_dynamic_knowledge_base(
         timestamp=timestamp,
     )
     payload = {
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "database_name": f"NophiGene Dynamic {normalized_gene} Variant Knowledge Base",
         "gene_name": normalized_gene,
         "region": region,
@@ -685,6 +770,14 @@ def build_dynamic_knowledge_base(
         "literature_records": _filter_source_records(source_records, {"literature"}),
         "source_records": source_records,
         "provider_statuses": provider_statuses,
+        "evidence_snapshot": _evidence_snapshot(
+            gene=normalized_gene,
+            region=region,
+            genome_build=normalized_build,
+            generated_at=timestamp,
+            provider_statuses=provider_statuses,
+            source_records=source_records,
+        ),
         "workflow_runs": workflow_runs,
         "workflow_source_matrix": workflow_source_matrix,
         "provenance": {

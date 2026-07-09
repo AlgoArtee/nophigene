@@ -19,6 +19,41 @@ except ImportError:
     from workflow import normalize_genome_build
 
 DEFAULT_PROFILE_PATH = PROJECT_ROOT / "data" / "api" / "sample_profiles.json"
+SAMPLE_CONTEXT_FIELDS = {
+    "tissue",
+    "sequencing_assay",
+    "variant_caller",
+    "ancestry",
+    "age_range",
+    "sex",
+    "batch_id",
+    "cell_composition_method",
+    "methylation_reference_cohort_id",
+}
+
+
+def _normalize_sample_context(payload: Any) -> dict[str, Any]:
+    """Keep optional interpretation metadata structured and JSON-safe."""
+    if payload in (None, ""):
+        return {}
+    if not isinstance(payload, dict):
+        raise APIError("invalid_profile", "'sample_context' must be an object.", 422)
+    context: dict[str, Any] = {}
+    for field in SAMPLE_CONTEXT_FIELDS:
+        value = str(payload.get(field) or "").strip()
+        if value:
+            context[field] = value
+    phenotype_terms = payload.get("phenotype_terms")
+    if phenotype_terms is not None:
+        if isinstance(phenotype_terms, str):
+            terms = [item.strip() for item in phenotype_terms.split(",") if item.strip()]
+        elif isinstance(phenotype_terms, list):
+            terms = [str(item).strip() for item in phenotype_terms if str(item).strip()]
+        else:
+            raise APIError("invalid_profile", "'sample_context.phenotype_terms' must be a list or comma-separated string.", 422)
+        if terms:
+            context["phenotype_terms"] = list(dict.fromkeys(terms))
+    return context
 
 
 def _resolve_local_path(value: Any, field_name: str, *, required: bool = True) -> str:
@@ -123,6 +158,7 @@ def normalize_profile(
         )
     except ValueError as exc:
         raise APIError("invalid_profile", str(exc), 422) from exc
+    sample_context = _normalize_sample_context(payload.get("sample_context"))
 
     return {
         "id": final_id,
@@ -133,6 +169,7 @@ def normalize_profile(
         "population_statistics_path": population_path,
         "vcf_sources": vcf_sources,
         "bam_sources": bam_sources,
+        "sample_context": sample_context,
         "created_at": (existing or {}).get("created_at", now),
         "updated_at": now,
     }

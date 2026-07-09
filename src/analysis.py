@@ -40,6 +40,7 @@ try:
         save_filtered_manifest,
     )
     from .variant_knowledge.merger import load_dynamic_knowledge_base, merge_dynamic_knowledge_base
+    from .interpretation import build_interpretation_payload, normalize_interpretation_mode
 except ImportError:
     from helper_functions.filter_manifest_region import (
         filter_probes_by_region,
@@ -49,6 +50,7 @@ except ImportError:
         save_filtered_manifest,
     )
     from variant_knowledge.merger import load_dynamic_knowledge_base, merge_dynamic_knowledge_base
+    from interpretation import build_interpretation_payload, normalize_interpretation_mode
 
 DEFAULT_REGION = "11:636269-640706"
 DEFAULT_REPORT_NAME = "drd4_report.html"
@@ -459,6 +461,7 @@ class AnalysisResult:
     general_database_status: str
     dynamic_knowledge_base_path: Path | None
     dynamic_knowledge_base_status: str
+    interpretation: dict[str, Any]
 
 
 @dataclass
@@ -481,6 +484,7 @@ class PreparedAnalysisResult:
     general_database_status: str
     dynamic_knowledge_base_path: Path | None
     dynamic_knowledge_base_status: str
+    interpretation: dict[str, Any]
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -536,6 +540,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--manifest-file",
         default=None,
         help="Optional manifest file passed through to methylprep.",
+    )
+    parser.add_argument(
+        "--genome-build",
+        choices=["hg19", "hg38"],
+        default=None,
+        help="Declared source VCF assembly. Required for clinical-support eligibility.",
+    )
+    parser.add_argument(
+        "--interpretation-mode",
+        choices=["research", "clinical_support", "dual"],
+        default="research",
+        help="Evidence-calibrated reporting mode. Defaults to research.",
     )
 
     return parser.parse_args(argv)
@@ -6030,6 +6046,139 @@ def _render_local_article_evidence_report(local_article_evidence: dict[str, Any]
     )
 
 
+def _render_evidence_calibrated_report(interpretation: dict[str, Any]) -> str:
+    """Render the additive schema-v2 evidence and eligibility view."""
+    if not interpretation:
+        return ""
+    context = interpretation.get("interpretation_context", {})
+    findings = interpretation.get("findings", [])
+    finding_rows: list[dict[str, Any]] = []
+    for finding in findings:
+        variant = finding.get("variant", {})
+        call_quality = finding.get("call_quality", {})
+        evidence_strength = finding.get("evidence_strength", {})
+        applicability = finding.get("study_applicability", {})
+        clinical = finding.get("clinical_support", {})
+        finding_rows.append(
+            {
+                "variant": variant.get("rsid") or variant.get("allele_key", ""),
+                "site": f"{variant.get('chrom', '')}:{variant.get('pos', '')} {variant.get('ref', '')}>{variant.get('alt', '')}",
+                "gt": variant.get("gt_raw", "./."),
+                "alt_dosage": variant.get("alt_dosage", 0),
+                "call_quality": call_quality.get("status", "not_assessed"),
+                "evidence_strength": evidence_strength.get("tier", "not_assessed"),
+                "study_applicability": applicability.get("status", "not_assessed"),
+                "clinical_support": clinical.get("status", "downgraded_to_research"),
+                "blockers": clinical.get("eligibility_blockers", []),
+                "evidence_count": evidence_strength.get("evidence_count", 0),
+            }
+        )
+    snapshot = interpretation.get("evidence_snapshot", {})
+    provider_rows = snapshot.get("providers", []) if isinstance(snapshot, dict) else []
+    methylation = interpretation.get("methylation_assessment", {})
+    models = interpretation.get("model_assessments", [])
+    details = [
+        f"<p><strong>Mode:</strong> {html.escape(str(context.get('mode', 'research')))}</p>",
+        f"<p><strong>Evidence snapshot:</strong> {html.escape(str(snapshot.get('snapshot_id', 'not available')))} "
+        f"({html.escape(str(snapshot.get('generated_at', '')))}; {html.escape(str(snapshot.get('refresh_policy', '')))}).</p>",
+        f"<p><strong>Normalized evidence checksum:</strong> {html.escape(str(snapshot.get('normalized_evidence_checksum_sha256', snapshot.get('checksum_sha256', 'not available'))))}</p>",
+        "<p>Call quality, evidence strength, and study applicability are shown independently. "
+        "Clinical-support findings without every prerequisite are downgraded to research-only.</p>",
+        "<h3>Research Report</h3>",
+    ]
+    if finding_rows:
+        details.append(
+            _render_section_table(
+                _report_df_from_rows(
+                    finding_rows,
+                    [
+                        ("variant", "Variant"),
+                        ("site", "Exact allele"),
+                        ("gt", "GT"),
+                        ("alt_dosage", "ALT dosage"),
+                        ("call_quality", "Call QC"),
+                        ("evidence_strength", "Evidence"),
+                        ("study_applicability", "Applicability"),
+                        ("clinical_support", "Clinical support"),
+                        ("blockers", "Eligibility blockers"),
+                        ("evidence_count", "Exact evidence records"),
+                    ],
+                ),
+                "Evidence-Calibrated Findings",
+                rows=None,
+            )
+        )
+    else:
+        details.append("<p>No GT-confirmed non-reference allele was available for schema-v2 interpretation.</p>")
+    mode_reports = interpretation.get("mode_reports", {})
+    clinical_report = mode_reports.get("clinical_support", {}) if isinstance(mode_reports, dict) else {}
+    eligible_keys = clinical_report.get("eligible_finding_keys", []) if isinstance(clinical_report, dict) else []
+    downgraded_keys = clinical_report.get("research_only_downgrade_keys", []) if isinstance(clinical_report, dict) else []
+    details.extend(
+        [
+            "<h3>Clinical-Support Report</h3>",
+            f"<p>Eligible findings: {len(eligible_keys)}. Research-only downgrades: {len(downgraded_keys)}. "
+            "No diagnosis, prescribing, or behavioral forecast is emitted by this report.</p>",
+        ]
+    )
+    if provider_rows:
+        details.append(
+            _render_section_table(
+                _report_df_from_rows(
+                    provider_rows,
+                    [
+                        ("source", "Source"),
+                        ("status", "Query status"),
+                        ("assessment_status", "Interpretation status"),
+                        ("record_count", "Records"),
+                        ("source_release", "Source release"),
+                        ("retrieved_at", "Retrieved"),
+                        ("queried_urls", "Source URLs"),
+                    ],
+                ),
+                "Evidence Snapshot Sources",
+                rows=None,
+            )
+        )
+    details.append(
+        "<p><strong>Methylation:</strong> "
+        + html.escape(str(methylation.get("status", "not_assessed")))
+        + ". Raw mean beta values are descriptive and are not used as phenotype predictions. "
+        + html.escape(
+            "; ".join(str(item) for item in methylation.get("eligibility_blockers", []))
+        )
+        + "</p>"
+    )
+    if models:
+        details.append(
+            _render_section_table(
+                _report_df_from_rows(
+                    models,
+                    [
+                        ("model_id", "Model"),
+                        ("status", "Eligibility"),
+                        ("weighted_call_coverage", "Weighted coverage"),
+                        ("performance_metric", "Performance"),
+                        ("calibration", "Calibration"),
+                        ("eligibility_blockers", "Blockers"),
+                    ],
+                ),
+                "Probabilistic Model Assessment",
+                rows=None,
+            )
+        )
+    drd4_repeat = interpretation.get("drd4_repeat_assay")
+    if isinstance(drd4_repeat, dict):
+        details.append(
+            "<p><strong>DRD4 repeat/SV assay:</strong> "
+            + html.escape(str(drd4_repeat.get("status", "not_assessed")))
+            + " — "
+            + html.escape(str(drd4_repeat.get("reason", "")))
+            + "</p>"
+        )
+    return "<section><h2>Evidence-Calibrated Interpretation</h2>" + "".join(details) + "</section>"
+
+
 def generate_report(
     variants: pd.DataFrame,
     methylation: pd.DataFrame,
@@ -6046,6 +6195,7 @@ def generate_report(
     analysis_scope: str = DEFAULT_ANALYSIS_SCOPE,
     dynamic_knowledge_base_status: str = "",
     dynamic_knowledge_base_path: str | Path | None = None,
+    interpretation: dict[str, Any] | None = None,
 ) -> Path:
     """Generate a report artifact from the assembled analysis tables.
 
@@ -6138,8 +6288,11 @@ def generate_report(
         methylation_interpretation_section = _render_methylation_interpretation_report(
             methylation_insights or {},
         )
-        predictive_theses_section = _render_predictive_theses_report(
-            predictive_theses or {},
+        evidence_calibrated_section = _render_evidence_calibrated_report(interpretation or {})
+        predictive_theses_section = (
+            ""
+            if interpretation
+            else _render_predictive_theses_report(predictive_theses or {})
         )
 
         report_html = f"""<!doctype html>
@@ -6356,6 +6509,7 @@ def generate_report(
     {_render_section_table(prepared_variants, "Genetic Variant Results", rows=None)}
     {_render_dynamic_workflow_report(dynamic_workflow_runs, artifact_path=dynamic_knowledge_base_path)}
     {_render_local_article_evidence_report(dynamic_local_article_evidence)}
+    {evidence_calibrated_section}
     {variant_interpretation_section}
     {predictive_theses_section}
     {methylation_interpretation_section}
@@ -6370,6 +6524,7 @@ def generate_report(
 
     if suffix == ".json":
         payload = {
+            "schema_version": "2.0" if interpretation else "1.0",
             "region": region,
             "analysis_scope": normalized_analysis_scope,
             "analysis_scope_label": analysis_scope_label,
@@ -6379,6 +6534,7 @@ def generate_report(
             "population_statistics": _serialize_popstats(popstats),
             "methylation_output_path": str(methylation_output_path) if methylation_output_path else None,
             "predictive_theses": predictive_theses or {},
+            "interpretation": interpretation or {},
             "dynamic_knowledge_base": {
                 "status": dynamic_knowledge_base_status,
                 "path": str(dynamic_knowledge_base_path) if dynamic_knowledge_base_path else "",
@@ -6406,6 +6562,14 @@ def generate_report(
                 {
                     "metric": "predictive_thesis_matched_cases",
                     "value": (predictive_theses or {}).get("matched_case_count", 0),
+                },
+                {
+                    "metric": "interpretation_schema_version",
+                    "value": (interpretation or {}).get("schema_version", "1.0"),
+                },
+                {
+                    "metric": "interpretation_mode",
+                    "value": (interpretation or {}).get("interpretation_context", {}).get("mode", "legacy"),
                 },
                 {
                     "metric": "dynamic_knowledge_base_status",
@@ -6442,6 +6606,10 @@ def run_analysis(
     overwrite_general_database: bool = False,
     general_database_path: str | Path = GENERAL_ANALYSIS_DATABASE_PATH,
     dynamic_knowledge_base_path: str | Path | None = None,
+    genome_build: str | None = None,
+    interpretation_mode: str = "research",
+    sample_context: dict[str, Any] | None = None,
+    requested_models: list[dict[str, Any]] | None = None,
 ) -> AnalysisResult:
     """Run the end-to-end gene analysis workflow.
 
@@ -6500,6 +6668,10 @@ def run_analysis(
         overwrite_general_database=overwrite_general_database,
         general_database_path=general_database_path,
         dynamic_knowledge_base_path=dynamic_knowledge_base_path,
+        genome_build=genome_build,
+        interpretation_mode=interpretation_mode,
+        sample_context=sample_context,
+        requested_models=requested_models,
     )
     variants = prepared.variants
     methylation = prepared.methylation
@@ -6527,6 +6699,7 @@ def run_analysis(
         analysis_scope=normalized_analysis_scope,
         dynamic_knowledge_base_status=prepared.dynamic_knowledge_base_status,
         dynamic_knowledge_base_path=prepared.dynamic_knowledge_base_path,
+        interpretation=prepared.interpretation,
     )
 
     return AnalysisResult(
@@ -6550,6 +6723,7 @@ def run_analysis(
         general_database_status=prepared.general_database_status,
         dynamic_knowledge_base_path=prepared.dynamic_knowledge_base_path,
         dynamic_knowledge_base_status=prepared.dynamic_knowledge_base_status,
+        interpretation=prepared.interpretation,
     )
 
 
@@ -6565,11 +6739,19 @@ def analyze_prepared_data(
     overwrite_general_database: bool = False,
     general_database_path: str | Path = GENERAL_ANALYSIS_DATABASE_PATH,
     dynamic_knowledge_base_path: str | Path | None = None,
+    genome_build: str | None = None,
+    interpretation_mode: str = "research",
+    sample_context: dict[str, Any] | None = None,
+    requested_models: list[dict[str, Any]] | None = None,
 ) -> PreparedAnalysisResult:
     """Interpret already loaded variant and methylation tables."""
     normalized_gene_name = gene_name.strip().upper() or DEFAULT_GENE_NAME
     normalized_analysis_scope = normalize_analysis_scope(analysis_scope)
     analysis_scope_label = get_analysis_scope_label(normalized_analysis_scope)
+    try:
+        normalized_interpretation_mode = normalize_interpretation_mode(interpretation_mode)
+    except ValueError as exc:
+        raise AnalysisError(str(exc)) from exc
 
     resolved_dynamic_knowledge_base_path = (
         Path(dynamic_knowledge_base_path) if dynamic_knowledge_base_path else None
@@ -6635,6 +6817,11 @@ def analyze_prepared_data(
         knowledge_base=knowledge_base,
         synthesis_database=synthesis_database,
     )
+    predictive_theses["deprecated_by_schema_v2"] = True
+    predictive_theses["deprecation_reason"] = (
+        "Schema-v2 reports use evidence-calibrated findings and registered-model eligibility; "
+        "legacy variant-plus-mean-beta theses are retained only for backward-compatible data consumers."
+    )
 
     population_database = load_gene_population_database(normalized_gene_name)
     if population_database is not None and knowledge_base.get("version") != "generic":
@@ -6645,6 +6832,18 @@ def analyze_prepared_data(
             "version": "generic",
         }
         population_insights = build_empty_population_insights(gene_name=normalized_gene_name)
+
+    interpretation = build_interpretation_payload(
+        variants=variants,
+        methylation=methylation,
+        gene_name=normalized_gene_name,
+        genome_build=genome_build,
+        interpretation_mode=normalized_interpretation_mode,
+        knowledge_base=knowledge_base,
+        dynamic_payload=dynamic_payload,
+        sample_context=sample_context,
+        requested_models=requested_models,
+    )
 
     if update_general_database_enabled and normalized_analysis_scope == DEFAULT_ANALYSIS_SCOPE:
         general_database_result = update_general_analysis_database(
@@ -6686,6 +6885,7 @@ def analyze_prepared_data(
         general_database_status=str(general_database_result["message"]),
         dynamic_knowledge_base_path=resolved_dynamic_knowledge_base_path if dynamic_payload else None,
         dynamic_knowledge_base_status=dynamic_knowledge_base_status,
+        interpretation=interpretation,
     )
 
 
@@ -6702,6 +6902,8 @@ def main(argv: list[str] | None = None) -> int:
             popstats_source=args.popstats,
             manifest_filepath=args.manifest_file,
             analysis_scope=args.analysis_scope,
+            genome_build=args.genome_build,
+            interpretation_mode=args.interpretation_mode,
         )
     except AnalysisError as exc:
         logger.error("%s", exc)

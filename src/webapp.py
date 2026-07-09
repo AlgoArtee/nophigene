@@ -3526,6 +3526,8 @@ def index() -> str:
                             if preprocess_state.get("dynamic_kb_ready") and preprocess_state.get("dynamic_kb_path")
                             else None
                         ),
+                        genome_build=str(preprocess_state.get("build", "")) or None,
+                        interpretation_mode="dual",
                     )
 
                     methylation_probe_preview = analysis_result.methylation_insights.get("probe_preview")
@@ -3598,6 +3600,7 @@ def index() -> str:
                             "version", "curated"
                         ),
                         "predictive_theses": getattr(analysis_result, "predictive_theses", {}),
+                        "interpretation": getattr(analysis_result, "interpretation", {}),
                         "general_database_path": (
                             _as_relative_display(getattr(analysis_result, "general_database_path"))
                             if getattr(analysis_result, "general_database_path", None)
@@ -3645,7 +3648,7 @@ def index() -> str:
     ]
     if analysis_unlocked:
         available_tabs.insert(3, "analysis")
-    if result and result.get("predictive_theses"):
+    if result and not result.get("interpretation") and result.get("predictive_theses"):
         available_tabs.insert(4, "predictive_theses")
     if initial_tab not in available_tabs:
         initial_tab = "preprocessing" if "preprocessing" in available_tabs else "overview"

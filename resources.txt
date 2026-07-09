@@ -22,7 +22,10 @@ DECIPHER	Genotype–phenotype matching and sharing for rare disease, sequence va
 MaveDB	Repository for multiplexed assays of variant effect and deep-mutational-scanning results. Useful for functional evidence.
 NHGRI-EBI GWAS Catalog	Curated genome-wide association studies, associations, traits and summary statistics.
 PGS Catalog	Published polygenic scores with variant weights, development cohorts, ancestry information and performance evaluations.
+GTEx Portal	Reference tissue expression and cis-eQTL data with tissue, donor and study metadata for contextual interpretation.
+eQTL Catalogue	Uniformly processed molecular-QTL associations across studies, tissues, cell types and molecular traits.
 PanelApp	Expert-reviewed diagnostic gene panels, including Genomics England and NHS-related panels.
+Open Targets Platform	Open target-disease evidence and tractability data aggregated from genetics, literature and curated databases.
 OncoKB	Precision-oncology knowledgebase connecting tumour alterations with biological and therapeutic implications, targeted therapies, evidence levels and resistance associations.
 VICC Meta-Knowledgebase	Aggregates and harmonises somatic cancer variant interpretations from multiple precision-oncology knowledgebases.
 EWAS Catalog	Curated epigenome-wide association studies, particularly associations between DNA methylation and traits or diseases.

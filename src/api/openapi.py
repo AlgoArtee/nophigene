@@ -30,6 +30,22 @@ def build_openapi_document() -> dict[str, Any]:
                 "type": "array",
                 "items": {"$ref": "#/components/schemas/GenomicSource"},
             },
+            "sample_context": {
+                "type": "object",
+                "description": "Optional tissue, batch, ancestry, phenotype, and methylation-reference context used for eligibility gating.",
+                "properties": {
+                    "tissue": {"type": "string"},
+                    "sequencing_assay": {"type": "string"},
+                    "variant_caller": {"type": "string"},
+                    "ancestry": {"type": "string"},
+                    "age_range": {"type": "string"},
+                    "sex": {"type": "string"},
+                    "batch_id": {"type": "string"},
+                    "cell_composition_method": {"type": "string"},
+                    "methylation_reference_cohort_id": {"type": "string"},
+                    "phenotype_terms": {"type": "array", "items": {"type": "string"}},
+                },
+            },
         },
     }
     return {
@@ -160,6 +176,19 @@ def build_openapi_document() -> dict[str, Any]:
                                 "update_general_database": {"type": "boolean", "default": False},
                                 "overwrite_general_database": {"type": "boolean", "default": False},
                                 "use_dynamic_knowledge_base": {"type": "boolean", "default": False},
+                                "interpretation_mode": {
+                                    "enum": ["research", "clinical_support", "dual"],
+                                    "default": "research",
+                                },
+                                "evidence_snapshot_id": {
+                                    "type": "string",
+                                    "description": "Reuse a snapshot from a compatible source job instead of refreshing evidence.",
+                                },
+                                "requested_models": {
+                                    "type": "array",
+                                    "description": "Registered-model metadata evaluated before any probability can be emitted.",
+                                    "items": {"type": "object"},
+                                },
                                 "knowledge_sources": {
                                     "oneOf": [
                                         {"type": "string"},

@@ -1537,6 +1537,219 @@ class RecordingEncodeClient:
         raise AssertionError(f"Unexpected fake POST URL: {url}")
 
 
+class RecordingScreenClient:
+    def __init__(self, *, fail_ccre: bool = False, graphql_errors: bool = False) -> None:
+        self.fail_ccre = fail_ccre
+        self.graphql_errors = graphql_errors
+        self.calls: list[dict[str, object]] = []
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        raise AssertionError(f"Unexpected fake GET URL: {url}")
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
+        payload = dict(json_payload or {})
+        self.calls.append(
+            {
+                "url": str(url),
+                "json_payload": payload,
+                "headers": dict(headers or {}),
+                "rate_limit_per_second": rate_limit_per_second,
+            }
+        )
+        if not str(url).endswith("/api/screen-graphql"):
+            raise AssertionError(f"Unexpected SCREEN fake POST URL: {url}")
+        if self.fail_ccre:
+            raise KnowledgeRequestError("POST SCREEN cCRE query failed: 500 Internal Server Error")
+        if self.graphql_errors:
+            return {
+                "errors": [{"message": "temporary SCREEN GraphQL validation issue"}],
+                "data": {"cCREQuery": []},
+            }
+        return {
+            "data": {
+                "cCREQuery": [
+                    {
+                        "accession": "EH38E2937824",
+                        "assembly": "grch38",
+                        "rDHS": "EH38D4573084",
+                        "group": "PLS",
+                        "ctcf_bound": True,
+                        "dnaseMax": 3.523491859436035,
+                        "h3k4me3Max": 3.9978396892547607,
+                        "h3k27acMax": 2.0321149826049805,
+                        "ctcfMax": 1.881090521812439,
+                        "coordinates": {"chromosome": "chr11", "start": 637025, "end": 637375},
+                        "nearby_genes": {
+                            "intersecting_genes": [
+                                {
+                                    "id": "ENSG00000069696.7",
+                                    "name": "DRD4",
+                                    "gene_type": "protein_coding",
+                                    "strand": "+",
+                                },
+                                {
+                                    "id": "ENSG00000069696.7",
+                                    "name": "DRD4",
+                                    "gene_type": "protein_coding",
+                                    "strand": "+",
+                                },
+                            ]
+                        },
+                    },
+                    {
+                        "accession": "EH38E2937825",
+                        "assembly": "grch38",
+                        "rDHS": "EH38D4573085",
+                        "group": "pELS",
+                        "ctcf_bound": True,
+                        "dnaseMax": 2.406550407409668,
+                        "h3k4me3Max": 4.400539875030518,
+                        "h3k27acMax": 3.127086877822876,
+                        "ctcfMax": 1.8611128330230713,
+                        "coordinates": {"chromosome": "chr11", "start": 637523, "end": 637724},
+                        "nearby_genes": {
+                            "intersecting_genes": [
+                                {
+                                    "id": "ENSG00000069696.7",
+                                    "name": "DRD4",
+                                    "gene_type": "protein_coding",
+                                    "strand": "+",
+                                }
+                            ]
+                        },
+                    },
+                ]
+            }
+        }
+
+
+class RecordingEwasCatalogClient:
+    def __init__(self, *, fail_tsv: bool = False) -> None:
+        self.fail_tsv = fail_tsv
+        self.calls: list[dict[str, object]] = []
+
+    def get_text(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        params = dict(params or {})
+        self.calls.append(
+            {
+                "url": str(url),
+                "params": params,
+                "headers": dict(headers or {}),
+                "rate_limit_per_second": rate_limit_per_second,
+                "timeout": timeout,
+            }
+        )
+        if str(url) == "https://www.ewascatalog.org/":
+            assert params == {"gene": "DRD4"}
+            return (
+                '<html><body><a href="/static//tmp/DRD4_test.tsv" download="DRD4.tsv">'
+                "Download</a></body></html>"
+            )
+        if str(url).endswith("/static//tmp/DRD4_test.tsv"):
+            if self.fail_tsv:
+                raise KnowledgeRequestError("GET EWAS Catalog TSV failed: timed out")
+            return (
+                "Author\tPMID\tOutcome\tExposure\tTissue\tAnalysis\tN\tCpG\tLocation\tGene\tBeta\tP\tStudyID\n"
+                "Mulder RH\t33450751\tDNA methylation\tage\tWhole blood\tModel 1 with age as a fixed effect\t"
+                "2338\tcg02762115\tchr11:640446\tDRD4\t0.0021\t0E+00\tEWAS0001\n"
+                "Example AB\t12345678\tDNA methylation\tcognitive function\tBrain\tAdjusted linear model\t"
+                "415\tcg15861585\tchr11:637038\tDRD4\t-0.032\t9.8E-05\tEWAS0002\n"
+            )
+        raise AssertionError(f"Unexpected EWAS Catalog fake GET URL: {url}")
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        raise AssertionError(f"Unexpected fake JSON GET URL: {url}")
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
+        raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+
+class RecordingEwasAtlasClient:
+    def __init__(self, *, empty: bool = False) -> None:
+        self.empty = empty
+        self.calls: list[dict[str, object]] = []
+
+    def get_json(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        params = dict(params or {})
+        self.calls.append(
+            {
+                "url": str(url),
+                "params": params,
+                "headers": dict(headers or {}),
+                "rate_limit_per_second": rate_limit_per_second,
+                "timeout": timeout,
+            }
+        )
+        if not str(url).endswith("/ewas/rest/pos"):
+            raise AssertionError(f"Unexpected EWAS Atlas fake GET URL: {url}")
+        assert params == {"chr": "11", "start": 637293, "end": 640706}
+        if self.empty:
+            return {"code": 0, "msg": "success", "data": []}
+        return {
+            "code": 0,
+            "msg": "success",
+            "data": [
+                {
+                    "probeId": "cg02762115",
+                    "chrHg19": 11,
+                    "posHg19": 640446,
+                    "cpgIsland": "Shelf",
+                    "relatedTranscription": [
+                        {
+                            "geneName": "DRD4",
+                            "posToTss": 3153,
+                            "ensemblTranscriptId": "ENST00000176183.5",
+                        }
+                    ],
+                    "associationList": [
+                        {
+                            "studyId": "ES00218",
+                            "trait": "maternal alcohol consumption",
+                            "correlation": "neg",
+                            "rank": 196,
+                            "pmid": 29172695,
+                        },
+                        {
+                            "studyId": "ES00743",
+                            "trait": "cognitive function",
+                            "correlation": "neg",
+                            "rank": 4,
+                            "pmid": 29311653,
+                        },
+                    ],
+                },
+                {
+                    "probeId": "cg03909863",
+                    "chrHg19": 11,
+                    "posHg19": 638404,
+                    "cpgIsland": "Shore",
+                    "relatedTranscription": [
+                        {
+                            "geneName": "DRD4",
+                            "posToTss": 1111,
+                            "ensemblTranscriptId": "ENST00000176183.5",
+                        }
+                    ],
+                    "associationList": [
+                        {
+                            "studyId": "ES00161",
+                            "trait": "ascending aortic dissection (AD)",
+                            "correlation": "pos",
+                            "rank": 98,
+                            "pmid": 28444195,
+                        }
+                    ],
+                },
+            ],
+        }
+
+    def get_text(self, url, *, params=None, headers=None, rate_limit_per_second=None, timeout=None):
+        raise AssertionError(f"Unexpected fake text GET URL: {url}")
+
+    def post_json(self, url, *, json_payload=None, headers=None, rate_limit_per_second=None):
+        raise AssertionError(f"Unexpected fake POST URL: {url}")
+
+
 def _write_simple_pdf(path: Path, text: str) -> None:
     escaped = text.replace("\\", "\\\\").replace("(", r"\(").replace(")", r"\)")
     stream = f"BT /F1 12 Tf 72 720 Td ({escaped}) Tj ET"
@@ -2739,6 +2952,184 @@ def test_encode_connector_keeps_experiment_records_when_region_search_fails():
     categories = {record["category"] for record in result.records}
     assert categories == {"regulatory_experiment"}
     assert len(result.records) == 2
+
+
+def test_screen_connector_returns_candidate_regulatory_element_details():
+    client = RecordingScreenClient()
+    connector = connector_for(get_source_spec("screen"), client, ResolvedCredential("screen"))
+    query = KnowledgeQuery(
+        gene="DRD4",
+        region="11:637293-640706",
+        genome_build="hg38",
+        variants=(QueryVariant(chrom="11", pos=637293, ref="C", alt="T", rsid="rs927984495"),),
+    )
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == []
+    assert "2 overlapping cCRE record(s)" in result.message
+    assert all("www.encodeproject.org/search" not in str(call["url"]) for call in client.calls)
+    assert len(client.calls) == 1
+    call = client.calls[0]
+    assert call["url"] == "https://screen.encodeproject.org/api/screen-graphql"
+    assert "cCREQuery" in call["json_payload"]["query"]
+    assert call["json_payload"]["variables"]["assembly"] == "GRCh38"
+    assert call["json_payload"]["variables"]["coordinates"] == [
+        {"chromosome": "chr11", "start": 637292, "end": 640706}
+    ]
+    assert call["headers"]["Accept"] == "application/json"
+    assert call["headers"]["Content-Type"] == "application/json"
+    assert call["rate_limit_per_second"] == 5.0
+
+    record = result.records[0]
+    assert record["category"] == "candidate_regulatory_element"
+    assert record["label"] == "EH38E2937824 - PLS"
+    assert record["source_id"] == "EH38E2937824"
+    assert record["location"] == "GRCh38 chr11:637026-637375"
+    assert record["nearby_genes"] == [
+        {
+            "name": "DRD4",
+            "id": "ENSG00000069696.7",
+            "gene_type": "protein_coding",
+            "strand": "+",
+        }
+    ]
+    assert record["max_z_scores"]["DNase"] == 3.523491859436035
+    assert record["url"] == "https://screen.encodeproject.org/search/?q=EH38E2937824&assembly=GRCh38"
+    assert "SCREEN cCRE EH38E2937824 overlaps DRD4 query window at GRCh38 chr11:637026-637375" in record[
+        "summary"
+    ]
+    assert "promoter-like signature (PLS)" in record["summary"]
+    assert "CTCF-bound" in record["summary"]
+    assert "intersecting genes: DRD4 (protein_coding)" in record["summary"]
+    assert "max assay Z-scores DNase 3.52, H3K4me3 4.00, H3K27ac 2.03, CTCF 1.88" in record["summary"]
+    assert "rDHS EH38D4573084" in record["summary"]
+    assert "query window chr11:637293-640706" in record["summary"]
+
+
+def test_screen_connector_records_registry_context_when_ccre_query_fails():
+    client = RecordingScreenClient(fail_ccre=True)
+    connector = connector_for(get_source_spec("screen"), client, ResolvedCredential("screen"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg38")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == ["Optional SCREEN cCRE GraphQL query failed; registry context was still recorded."]
+    assert "Traceback" not in json.dumps(result.warnings)
+    assert "500 Internal Server Error" not in json.dumps(result.warnings)
+    assert "SCREEN cCRE Registry context recorded" in result.message
+    assert len(result.records) == 1
+    record = result.records[0]
+    assert record["category"] == "screen_registry_context"
+    assert "candidate cis-regulatory element registry for human GRCh38" in record["summary"]
+    assert "PLS, pELS, dELS, DNase-H3K4me3, and CTCF-only" in record["summary"]
+    assert record["url"] == "https://screen.encodeproject.org/search/?q=chr11%3A637293-640706&assembly=GRCh38"
+
+
+def test_ewas_catalog_connector_parses_query_specific_tsv_records():
+    client = RecordingEwasCatalogClient()
+    connector = connector_for(get_source_spec("ewas_catalog"), client, ResolvedCredential("ewas_catalog"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg19")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == []
+    assert "2 compact association record(s)" in result.message
+    assert len(client.calls) == 2
+    assert client.calls[0]["url"] == "https://www.ewascatalog.org/"
+    assert client.calls[0]["params"] == {"gene": "DRD4"}
+    assert client.calls[0]["rate_limit_per_second"] == 1.0
+    assert client.calls[1]["url"] == "https://www.ewascatalog.org/static//tmp/DRD4_test.tsv"
+
+    record = result.records[0]
+    assert record["category"] == "ewas_association"
+    assert record["label"] == "cg02762115 - age"
+    assert record["source_id"] == "EWAS0001"
+    assert record["cpg"] == "cg02762115"
+    assert record["location"] == "chr11:640446"
+    assert record["beta"] == "0.0021"
+    assert record["p_value"] == "0E+00"
+    assert record["n"] == "2338"
+    assert record["url"] == "https://www.ewascatalog.org/?cpg=cg02762115"
+    assert "EWAS Catalog DRD4 CpG cg02762115 at chr11:640446" in record["summary"]
+    assert "exposure/trait age" in record["summary"]
+    assert "tissue Whole blood" in record["summary"]
+    assert "N=2,338" in record["summary"]
+    assert "PMID 33450751, Mulder RH" in record["summary"]
+
+
+def test_ewas_catalog_connector_records_context_when_tsv_download_fails():
+    client = RecordingEwasCatalogClient(fail_tsv=True)
+    connector = connector_for(get_source_spec("ewas_catalog"), client, ResolvedCredential("ewas_catalog"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg38")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == [
+        "EWAS Catalog reports CpG locations in hg19 coordinates; input build hg38 was used as provided.",
+        "Optional EWAS Catalog query-specific TSV download failed; query context was still recorded.",
+    ]
+    assert "Traceback" not in json.dumps(result.warnings)
+    assert "timed out" not in json.dumps(result.warnings)
+    assert len(result.records) == 1
+    record = result.records[0]
+    assert record["category"] == "ewas_catalog_context"
+    assert "Catalog rows include CpG, hg19 location, gene, beta" in record["summary"]
+
+
+def test_ewas_atlas_connector_returns_position_association_details():
+    client = RecordingEwasAtlasClient()
+    connector = connector_for(get_source_spec("ewas_atlas"), client, ResolvedCredential("ewas_atlas"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg19")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == []
+    assert "position query hg19 chr11:637293-640706" in result.message
+    assert "3 compact association record(s)" in result.message
+    assert len(client.calls) == 1
+    assert client.calls[0]["url"] == "https://ngdc.cncb.ac.cn/ewas/rest/pos"
+    assert client.calls[0]["params"] == {"chr": "11", "start": 637293, "end": 640706}
+    assert client.calls[0]["headers"]["Accept"] == "application/json"
+    assert client.calls[0]["rate_limit_per_second"] == 1.0
+
+    record = result.records[0]
+    assert record["category"] == "ewas_association"
+    assert record["label"] == "cg02762115 - cognitive function"
+    assert record["source_id"] == "ES00743:cg02762115"
+    assert record["location"] == "hg19 chr11:640446"
+    assert record["rank"] == "4"
+    assert record["trait"] == "cognitive function"
+    assert record["correlation"] == "neg"
+    assert record["pmid"] == "29311653"
+    assert record["url"] == "https://ngdc.cncb.ac.cn/ewas/search?item=cg02762115&term=Probe+Id"
+    assert "EWAS Atlas DRD4 probe cg02762115 at hg19 chr11:640446" in record["summary"]
+    assert "DRD4 transcript ENST00000176183.5, 3153 bp from TSS" in record["summary"]
+    assert "negative methylation-trait correlation" in record["summary"]
+    assert "rank 4" in record["summary"]
+    assert "PMID 29311653" in record["summary"]
+
+
+def test_ewas_atlas_connector_records_context_when_no_associations_return():
+    client = RecordingEwasAtlasClient(empty=True)
+    connector = connector_for(get_source_spec("ewas_atlas"), client, ResolvedCredential("ewas_atlas"))
+    query = KnowledgeQuery(gene="DRD4", region="11:637293-640706", genome_build="hg38")
+
+    result = connector.query(query)
+
+    assert result.status == "ok"
+    assert result.warnings == [
+        "EWAS Atlas REST reports CpG locations as chrHg19/posHg19; input build hg38 was used as provided."
+    ]
+    assert len(result.records) == 1
+    record = result.records[0]
+    assert record["category"] == "ewas_atlas_context"
+    assert "probe, gene, position, study, and publication objects" in record["summary"]
 
 
 def test_clingen_connector_returns_gene_centered_curations():

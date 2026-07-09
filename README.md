@@ -280,9 +280,21 @@ Example `profile.json`:
       "path": "data/sample_hg38.bam",
       "genome_build": "hg38"
     }
-  ]
+  ],
+  "sample_context": {
+    "tissue": "whole blood",
+    "ancestry": "European",
+    "batch_id": "EPIC-run-2026-07",
+    "cell_composition_method": "reference-based",
+    "methylation_reference_cohort_id": "blood-reference-v1",
+    "phenotype_terms": ["HP:0000001"]
+  }
 }
 ```
+
+`sample_context` is optional, but clinical-support eligibility uses it to show
+which prerequisites are missing. It never converts a missing field into a
+negative result.
 
 For a non-hg38 BAM source, include a matching `reference_fasta` in that source object. The built-in hg38 extraction path uses `data/reference/hg38/hg38.analysisSet.fa`.
 
@@ -301,7 +313,9 @@ curl.exe -X POST http://127.0.0.1:8766/api/v1/jobs `
     "genome_build": "auto",
     "options": {
       "update_general_database": false,
-      "overwrite_general_database": false
+      "overwrite_general_database": false,
+      "interpretation_mode": "dual",
+      "use_dynamic_knowledge_base": true
     }
   }'
 ```
@@ -329,6 +343,16 @@ results/api/jobs/JOB_ID/genes/GENE/
 ```
 
 `report.json` is the canonical machine-readable report. It includes its schema version, region and source provenance, interpreted variants, methylation insights, population context, predictive theses, warnings, and artifact links.
+
+Schema-v2 reports add an evidence-calibrated interpretation payload with one
+record per observed ALT allele, independent call-QC/evidence/applicability
+assessments, an immutable evidence snapshot, and clinical-support downgrade
+blockers. The `build_knowledge_bases` operation is the explicit evidence
+refresh path; pass its `evidence_snapshot_id` with a compatible `source_job_id`
+to reuse that exact snapshot. Raw methylation means and DRD4 candidate-gene
+markers are never used as individual phenotype forecasts. A DRD4 VNTR or
+promoter duplication is reported as `not_assessed` unless a dedicated repeat/SV
+assay is supplied.
 
 ### Independent operations
 

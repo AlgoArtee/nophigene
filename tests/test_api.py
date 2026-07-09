@@ -134,11 +134,19 @@ def test_profile_crud_validates_files_and_keeps_id_immutable(tmp_path: Path) -> 
     manager = JobManager(jobs_root=tmp_path / "jobs", profile_store=store)
     client = _test_app(store, manager).test_client()
 
-    create = client.post("/api/v1/profiles", json=_profile_payload(files))
+    payload = _profile_payload(files)
+    payload["sample_context"] = {
+        "tissue": "whole blood",
+        "ancestry": "European",
+        "phenotype_terms": ["HP:0000001"],
+    }
+    create = client.post("/api/v1/profiles", json=payload)
     assert create.status_code == 201
     profile = create.get_json()
     assert profile["id"] == "sample-one"
     assert Path(profile["idat_prefix"]).is_absolute()
+    assert profile["sample_context"]["tissue"] == "whole blood"
+    assert profile["sample_context"]["phenotype_terms"] == ["HP:0000001"]
 
     listing = client.get("/api/v1/profiles").get_json()
     assert listing["count"] == 1
@@ -227,6 +235,9 @@ def test_job_validation_rejects_empty_and_oversized_gene_lists() -> None:
                 "article_pdf_folder": "data/articles",
                 "article_pdf_recursive": False,
                 "max_article_pdfs": "25",
+                "interpretation_mode": "dual",
+                "evidence_snapshot_id": "evidence-123",
+                "requested_models": [{"model_id": "PGS000001"}],
             },
         }
     )
@@ -238,6 +249,20 @@ def test_job_validation_rejects_empty_and_oversized_gene_lists() -> None:
     assert normalized["options"]["article_pdf_folder"] == "data/articles"
     assert normalized["options"]["article_pdf_recursive"] is False
     assert normalized["options"]["max_article_pdfs"] == 25
+    assert normalized["options"]["interpretation_mode"] == "dual"
+    assert normalized["options"]["evidence_snapshot_id"] == "evidence-123"
+    assert normalized["options"]["requested_models"] == [{"model_id": "PGS000001"}]
+
+    with pytest.raises(Exception) as bad_mode:
+        normalize_job_request(
+            {
+                "operation": "build_knowledge_bases",
+                "genes": ["DRD4"],
+                "profile_id": "sample-one",
+                "options": {"interpretation_mode": "diagnostic"},
+            }
+        )
+    assert getattr(bad_mode.value, "code", "") == "invalid_interpretation_mode"
 
     with pytest.raises(Exception) as bad_article_limit:
         normalize_job_request(
@@ -458,7 +483,7 @@ def test_all_workflow_operations_and_multi_gene_methylprep_reuse(
         assert (gene_dir / "variants.csv").is_file()
         assert (gene_dir / "methylation.csv").is_file()
         report_payload = (gene_dir / "report.json").read_text(encoding="utf-8")
-        assert '"schema_version": "1.0"' in report_payload
+        assert '"schema_version": "2.0"' in report_payload
         assert '"source_provenance"' in report_payload
     assert (jobs_root / ("6" * 32) / "artifacts.zip").is_file()
 

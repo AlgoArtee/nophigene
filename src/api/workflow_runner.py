@@ -72,7 +72,7 @@ JOB_OPERATIONS = {
 }
 MAX_GENES_PER_JOB = 100
 RESULT_SCHEMA_VERSION = "1.0"
-REPORT_SCHEMA_VERSION = "1.0"
+REPORT_SCHEMA_VERSION = "2.0"
 
 
 def normalize_job_request(payload: Any) -> dict[str, Any]:
@@ -163,6 +163,20 @@ def normalize_job_request(payload: Any) -> dict[str, Any]:
         "article_pdf_folder": str(options.get("article_pdf_folder") or "").strip(),
         "article_pdf_recursive": bool(options.get("article_pdf_recursive", True)),
     }
+    interpretation_mode = str(options.get("interpretation_mode") or "research").strip().lower()
+    interpretation_mode = interpretation_mode.replace("-", "_").replace(" ", "_")
+    if interpretation_mode not in {"research", "clinical_support", "dual"}:
+        raise APIError(
+            "invalid_interpretation_mode",
+            "'options.interpretation_mode' must be research, clinical_support, or dual.",
+            422,
+        )
+    normalized_options["interpretation_mode"] = interpretation_mode
+    normalized_options["evidence_snapshot_id"] = str(options.get("evidence_snapshot_id") or "").strip()
+    requested_models = options.get("requested_models") or []
+    if not isinstance(requested_models, list) or not all(isinstance(model, dict) for model in requested_models):
+        raise APIError("invalid_requested_models", "'options.requested_models' must be a list of model objects.", 422)
+    normalized_options["requested_models"] = [dict(model) for model in requested_models]
     try:
         normalized_options["max_article_pdfs"] = min(
             1000,
@@ -450,7 +464,28 @@ class WorkflowRunner:
 
         variants = load_variants(variant_source["path"], resolved["region"])
         dynamic_knowledge_base_path: Path | None = None
-        if operation == "build_knowledge_bases" or request_payload["options"]["use_dynamic_knowledge_base"]:
+        requested_snapshot_id = request_payload["options"].get("evidence_snapshot_id", "")
+        source_snapshot_path = Path(str((source or {}).get("dynamic_knowledge_base_path") or ""))
+        if source_snapshot_path.is_file():
+            source_snapshot_payload = read_json(source_snapshot_path, default={})
+            source_snapshot_id = str(
+                (source_snapshot_payload or {}).get("evidence_snapshot", {}).get("snapshot_id", "")
+            )
+            if requested_snapshot_id and requested_snapshot_id != source_snapshot_id:
+                raise AnalysisError(
+                    f"Requested evidence snapshot '{requested_snapshot_id}' does not match the source job snapshot."
+                )
+            dynamic_knowledge_base_path = source_snapshot_path
+            outcome["dynamic_knowledge_base_path"] = str(dynamic_knowledge_base_path)
+            outcome["evidence_snapshot_id"] = source_snapshot_id
+            outcome["evidence_snapshot_reused"] = True
+            if operation == "build_knowledge_bases":
+                return outcome
+        elif requested_snapshot_id:
+            raise AnalysisError(
+                "evidence_snapshot_id requires a source job that contains the requested dynamic knowledge-base artifact."
+            )
+        elif operation == "build_knowledge_bases" or request_payload["options"]["use_dynamic_knowledge_base"]:
             dynamic_payload = self._build_dynamic_knowledge_base_artifact(
                 gene=gene,
                 resolved=resolved,
@@ -467,6 +502,9 @@ class WorkflowRunner:
             )
             outcome["dynamic_provider_count"] = len(dynamic_payload.get("provider_statuses", []))
             outcome["dynamic_workflow_count"] = len(dynamic_payload.get("workflow_runs", []))
+            outcome["evidence_snapshot_id"] = str(
+                dynamic_payload.get("evidence_snapshot", {}).get("snapshot_id", "")
+            )
             if operation == "build_knowledge_bases":
                 return outcome
         methylation = build_gene_methylation_table(
@@ -488,6 +526,10 @@ class WorkflowRunner:
             update_general_database_enabled=request_payload["options"]["update_general_database"],
             overwrite_general_database=request_payload["options"]["overwrite_general_database"],
             dynamic_knowledge_base_path=dynamic_knowledge_base_path,
+            genome_build=resolved["genome_build"],
+            interpretation_mode=request_payload["options"]["interpretation_mode"],
+            sample_context=profile.get("sample_context", {}),
+            requested_models=request_payload["options"].get("requested_models", []),
         )
         variants_path = gene_dir / "variants.csv"
         methylation_path = gene_dir / "methylation.csv"
@@ -639,6 +681,7 @@ class WorkflowRunner:
             "population_insights": prepared.population_insights,
             "population_database": prepared.population_database,
             "predictive_theses": prepared.predictive_theses,
+            "interpretation": getattr(prepared, "interpretation", {}),
             "general_database": {
                 "path": prepared.general_database_path,
                 "status": prepared.general_database_status,
@@ -728,6 +771,7 @@ class WorkflowRunner:
             population_insights=analysis_payload.get("population_insights", {}),
             predictive_theses=analysis_payload.get("predictive_theses", {}),
             analysis_scope=resolved["scope"],
+            interpretation=analysis_payload.get("interpretation", {}),
         )
         artifacts = {
             "report_html": _artifact_url(job_id, f"genes/{gene}/report.html"),
@@ -764,6 +808,18 @@ class WorkflowRunner:
                     {"metric": "variant_count", "value": len(variants)},
                     {"metric": "methylation_probe_count", "value": len(methylation)},
                     {"metric": "has_population_statistics", "value": popstats is not None},
+                    {
+                        "metric": "interpretation_mode",
+                        "value": analysis_payload.get("interpretation", {})
+                        .get("interpretation_context", {})
+                        .get("mode", "research"),
+                    },
+                    {
+                        "metric": "evidence_snapshot_id",
+                        "value": analysis_payload.get("interpretation", {})
+                        .get("evidence_snapshot", {})
+                        .get("snapshot_id", ""),
+                    },
                 ]
             )
         return artifacts

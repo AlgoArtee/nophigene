@@ -156,6 +156,39 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "homepage": "https://www.encodeproject.org/",
                 },
                 {
+                    "source_key": "ewas_catalog",
+                    "name": "EWAS Catalog",
+                    "lane": "regulatory",
+                    "status": "ok",
+                    "message": "Queried EWAS Catalog gene results for DRD4; 1 compact association record(s) returned.",
+                    "record_count": 1,
+                    "homepage": "https://www.ewascatalog.org/",
+                },
+                {
+                    "source_key": "ewas_atlas",
+                    "name": "EWAS Atlas / EWAS Open Platform",
+                    "lane": "regulatory",
+                    "status": "ok",
+                    "message": (
+                        "Queried EWAS Atlas REST position query hg19 chr11:637293-640706; "
+                        "1 compact association record(s) returned for DRD4."
+                    ),
+                    "record_count": 1,
+                    "homepage": "https://ngdc.cncb.ac.cn/ewas/",
+                },
+                {
+                    "source_key": "screen",
+                    "name": "SCREEN",
+                    "lane": "regulatory",
+                    "status": "ok",
+                    "message": (
+                        "Queried SCREEN cCRE Registry for chr11:637293-640706; "
+                        "1 overlapping cCRE record(s) returned for DRD4."
+                    ),
+                    "record_count": 1,
+                    "homepage": "https://screen.encodeproject.org/",
+                },
+                {
                     "source_key": "civic",
                     "name": "CIViC",
                     "lane": "clinical",
@@ -388,6 +421,57 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
                     "url": "https://www.encodeproject.org/experiments/ENCSRDRD4TF/",
                 },
                 {
+                    "source_key": "ewas_catalog",
+                    "category": "ewas_association",
+                    "label": "cg02762115 - age",
+                    "summary": (
+                        "EWAS Catalog DRD4 CpG cg02762115 at chr11:640446: "
+                        "outcome DNA methylation; exposure/trait age; tissue Whole blood; "
+                        "N=2,338; beta 0.0021; p=0E+00; PMID 33450751, Mulder RH; "
+                        "analysis Model 1 with age as a fixed effect."
+                    ),
+                    "source_id": "EWAS0001",
+                    "gene": "DRD4",
+                    "cpg": "cg02762115",
+                    "location": "chr11:640446",
+                    "url": "https://www.ewascatalog.org/?cpg=cg02762115",
+                },
+                {
+                    "source_key": "ewas_atlas",
+                    "category": "ewas_association",
+                    "label": "cg02762115 - cognitive function",
+                    "summary": (
+                        "EWAS Atlas DRD4 probe cg02762115 at hg19 chr11:640446: "
+                        "Shelf; DRD4 transcript ENST00000176183.5, 3153 bp from TSS; "
+                        "trait cognitive function; negative methylation-trait correlation; "
+                        "rank 4; study ES00743; PMID 29311653; "
+                        "position query hg19 chr11:637293-640706."
+                    ),
+                    "source_id": "ES00743:cg02762115",
+                    "gene": "DRD4",
+                    "probe_id": "cg02762115",
+                    "trait": "cognitive function",
+                    "rank": "4",
+                    "url": "https://ngdc.cncb.ac.cn/ewas/search?item=cg02762115&term=Probe+Id",
+                },
+                {
+                    "source_key": "screen",
+                    "category": "candidate_regulatory_element",
+                    "label": "EH38E2937824 - PLS",
+                    "summary": (
+                        "SCREEN cCRE EH38E2937824 overlaps DRD4 query window at "
+                        "GRCh38 chr11:637026-637375: promoter-like signature (PLS); "
+                        "CTCF-bound; intersecting genes: DRD4 (protein_coding); "
+                        "max assay Z-scores DNase 3.52, H3K4me3 4.00, H3K27ac 2.03, CTCF 1.88; "
+                        "rDHS EH38D4573084; query window chr11:637293-640706."
+                    ),
+                    "source_id": "EH38E2937824",
+                    "gene": "DRD4",
+                    "ccre_group": "PLS",
+                    "location": "GRCh38 chr11:637026-637375",
+                    "url": "https://screen.encodeproject.org/search/?q=EH38E2937824&assembly=GRCh38",
+                },
+                {
                     "source_key": "civic",
                     "category": "cancer_variant",
                     "label": "DRD4 V194G",
@@ -566,6 +650,29 @@ def test_data_sources_payload_combines_curated_and_dynamic_sources() -> None:
         "2/2 released file(s); outputs optimal IDR thresholded peaks, signal p-value; "
         "assemblies GRCh38; lab ENCODE Processing Pipeline; project ENCODE; "
         "status released; released 2026-01-15."
+    ]
+    assert by_key["ewas_catalog"]["status"] == "ok"
+    assert by_key["ewas_catalog"]["findings"] == [
+        "EWAS Catalog DRD4 CpG cg02762115 at chr11:640446: "
+        "outcome DNA methylation; exposure/trait age; tissue Whole blood; "
+        "N=2,338; beta 0.0021; p=0E+00; PMID 33450751, Mulder RH; "
+        "analysis Model 1 with age as a fixed effect."
+    ]
+    assert by_key["ewas_atlas"]["status"] == "ok"
+    assert by_key["ewas_atlas"]["findings"] == [
+        "EWAS Atlas DRD4 probe cg02762115 at hg19 chr11:640446: "
+        "Shelf; DRD4 transcript ENST00000176183.5, 3153 bp from TSS; "
+        "trait cognitive function; negative methylation-trait correlation; "
+        "rank 4; study ES00743; PMID 29311653; "
+        "position query hg19 chr11:637293-640706."
+    ]
+    assert by_key["screen"]["status"] == "ok"
+    assert by_key["screen"]["findings"] == [
+        "SCREEN cCRE EH38E2937824 overlaps DRD4 query window at "
+        "GRCh38 chr11:637026-637375: promoter-like signature (PLS); "
+        "CTCF-bound; intersecting genes: DRD4 (protein_coding); "
+        "max assay Z-scores DNase 3.52, H3K4me3 4.00, H3K27ac 2.03, CTCF 1.88; "
+        "rDHS EH38D4573084; query window chr11:637293-640706."
     ]
     assert by_key["civic"]["status"] == "ok"
     assert by_key["civic"]["findings"] == [
@@ -803,7 +910,7 @@ def test_knowledge_workflows_render_core_safety_defaults(monkeypatch) -> None:
 
     assert "Knowledge Workflows" in page
     assert 'value="clinical_variant_triage"' in page
-    assert 'data-workflow-sources="clinvar,clingen,medgen,ensembl,dbsnp,civic,panelapp,mavedb,omim,oncokb,hgmd,varsome,franklin"' in page
+    assert 'data-workflow-sources="clinvar,clingen,medgen,ensembl,opentargets,dbsnp,civic,panelapp,mavedb,omim,oncokb,hgmd,varsome,franklin"' in page
     assert 'value="local_pdf_article_evidence"' in page
     assert 'data-workflow-sources="local_pdf_articles"' in page
     assert 'value="licensed_aggregator_review"' in page

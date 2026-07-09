@@ -2186,7 +2186,7 @@
         {% if analysis_unlocked %}
         <button type="button" class="tab-button" data-tab-target="analysis" aria-selected="false">Run Analysis</button>
         {% endif %}
-        {% if result and result.predictive_theses %}
+        {% if result and result.predictive_theses and not result.interpretation %}
         <button type="button" class="tab-button" data-tab-target="predictive_theses" aria-selected="false">Predictive Theses</button>
         {% endif %}
         <button type="button" class="tab-button" data-tab-target="central_database" aria-selected="false">Central Database</button>
@@ -3790,6 +3790,45 @@
                     <section class="subtab-panel" data-detail-group-panel="variant" data-detail-panel="interpretation">
                       <div class="viewer-scroll">
                         <div class="insight-stack">
+                          {% if result.interpretation %}
+                          <details class="insight-card expandable-card" open>
+                            <summary class="expandable-summary">
+                              <div class="expandable-copy">
+                                <span class="insight-kicker">Evidence-calibrated report</span>
+                                <h4>{{ result.interpretation.interpretation_context.mode | replace("_", " ") | title }}</h4>
+                                <p>{{ result.interpretation.mode_summaries.research.message }}</p>
+                              </div>
+                            </summary>
+                            <div class="expandable-body">
+                              <p><strong>Evidence snapshot:</strong> {{ result.interpretation.evidence_snapshot.snapshot_id }}. {{ result.interpretation.evidence_snapshot.refresh_policy | replace("_", " ") | title }}.</p>
+                              {% if result.interpretation.findings %}
+                              <div class="table-wrap">
+                                <table class="data-table">
+                                  <thead><tr><th>Exact allele</th><th>GT / dosage</th><th>Call QC</th><th>Evidence</th><th>Clinical-support status</th><th>Blockers</th></tr></thead>
+                                  <tbody>
+                                    {% for finding in result.interpretation.findings %}
+                                    <tr>
+                                      <td>{{ finding.variant.rsid or finding.variant.allele_key }}</td>
+                                      <td>{{ finding.variant.gt_raw }} / {{ finding.variant.alt_dosage }}</td>
+                                      <td>{{ finding.call_quality.status }}</td>
+                                      <td>{{ finding.evidence_strength.tier }} ({{ finding.evidence_strength.evidence_count }})</td>
+                                      <td>{{ finding.clinical_support.status }}</td>
+                                      <td>{{ finding.clinical_support.eligibility_blockers | join(", ") }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+                              </div>
+                              {% else %}
+                              <p>No GT-confirmed non-reference allele was available for evidence-calibrated interpretation.</p>
+                              {% endif %}
+                              <p><strong>Methylation:</strong> {{ result.interpretation.methylation_assessment.status }}. Raw mean beta values are descriptive only.</p>
+                              {% if result.interpretation.drd4_repeat_assay %}
+                              <p><strong>DRD4 repeat/SV assay:</strong> {{ result.interpretation.drd4_repeat_assay.status }} — {{ result.interpretation.drd4_repeat_assay.reason }}</p>
+                              {% endif %}
+                            </div>
+                          </details>
+                          {% endif %}
                           <details class="insight-card expandable-card">
                             <summary class="expandable-summary">
                               <div class="expandable-copy">
@@ -4647,7 +4686,7 @@
           </section>
         </div>
       </section>
-      {% if result and result.predictive_theses %}
+      {% if result and result.predictive_theses and not result.interpretation %}
       <section class="frame tab-panel analysis-panel predictive-panel{% if initial_tab == 'predictive_theses' %} is-active{% endif %}" data-tab-panel="predictive_theses"{% if initial_tab != 'predictive_theses' %} hidden{% endif %} style="display:{% if initial_tab == 'predictive_theses' %}block{% else %}none{% endif %};">
         <div class="predictive-shell">
           <section class="analysis-panel-inner">
